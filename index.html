@@ -1,0 +1,1277 @@
+<title>LECXIA 国語塾FC 成長戦略</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --paper:#F1F3F0;
+  --surface:#FBFBFA;
+  --surface-2:#E7EAE6;
+  --surface-3:#DCE0DB;
+  --ink:#171A18;
+  --ink-2:#4C534E;
+  --ink-3:#79817B;
+  --rule:#DADED8;
+  --rule-2:#C2C8C0;
+  --s1:#15619E;
+  --s2:#C8452E;
+  --s3:#0E8168;
+  --s4:#B0821F;
+  --s5:#6B5CA5;
+  --accent:#C8452E;
+  --accent-soft:#F5E3DF;
+  --good:#0E8168;
+  --good-soft:#DDEEE8;
+  --warn:#B0821F;
+  --warn-soft:#F3EAD5;
+  --info-soft:#DDE8F2;
+  --shadow:0 1px 2px rgba(23,26,24,.06), 0 8px 24px -16px rgba(23,26,24,.35);
+  --max:1200px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --paper:#121517;
+    --surface:#1A1E21;
+    --surface-2:#232830;
+    --surface-3:#2C333B;
+    --ink:#ECEFEA;
+    --ink-2:#B0B8B4;
+    --ink-3:#858E89;
+    --rule:#2C3238;
+    --rule-2:#3B434A;
+    --s1:#3F8BCB;
+    --s2:#E0664B;
+    --s3:#1FA184;
+    --s4:#AE8420;
+    --s5:#9084C9;
+    --accent:#E0664B;
+    --accent-soft:#3A2621;
+    --good:#1FA184;
+    --good-soft:#16302A;
+    --warn:#AE8420;
+    --warn-soft:#2E2716;
+    --info-soft:#1B2A38;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#121517;
+  --surface:#1A1E21;
+  --surface-2:#232830;
+  --surface-3:#2C333B;
+  --ink:#ECEFEA;
+  --ink-2:#B0B8B4;
+  --ink-3:#858E89;
+  --rule:#2C3238;
+  --rule-2:#3B434A;
+  --s1:#3F8BCB;
+  --s2:#E0664B;
+  --s3:#1FA184;
+  --s4:#AE8420;
+  --s5:#9084C9;
+  --accent:#E0664B;
+  --accent-soft:#3A2621;
+  --good:#1FA184;
+  --good-soft:#16302A;
+  --warn:#AE8420;
+  --warn-soft:#2E2716;
+  --info-soft:#1B2A38;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;
+  font-size:15px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:700;text-wrap:balance;margin:0;line-height:1.4}
+p{margin:0}
+a{color:var(--s1)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+
+/* ---------- masthead ---------- */
+.masthead{border-bottom:1px solid var(--rule);background:var(--surface)}
+.mast-inner{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between;padding-top:26px;padding-bottom:20px}
+.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.mast-title{font-size:clamp(25px,3.4vw,38px);letter-spacing:.01em;margin-top:6px}
+.mast-title .kern{color:var(--accent)}
+.mast-sub{color:var(--ink-2);font-size:13.5px;margin-top:8px;max-width:62ch}
+.mast-meta{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink-3);text-align:right}
+.mast-meta b{color:var(--ink-2);font-weight:700}
+
+/* ---------- tabs ---------- */
+.tabbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb, var(--surface) 88%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto;background:none;border:0;border-bottom:2px solid transparent;
+  font:inherit;font-size:13px;font-weight:700;color:var(--ink-3);
+  padding:13px 14px;cursor:pointer;white-space:nowrap;letter-spacing:.02em;
+}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .num{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-3);margin-right:6px}
+.tab[aria-selected="true"] .num{color:var(--accent)}
+
+/* ---------- panels ---------- */
+.panel{padding:34px 0 72px}
+.panel[hidden]{display:none!important}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.sec-head h2{font-size:23px}
+.sec-head .tagline{font-size:12.5px;color:var(--ink-3)}
+.lede{color:var(--ink-2);font-size:14px;max-width:74ch;margin-bottom:26px}
+.block{margin-top:38px}
+.block > h3{font-size:17px;margin-bottom:4px}
+.block > .sub{font-size:12.5px;color:var(--ink-3);margin-bottom:16px}
+
+/* ---------- primitives ---------- */
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(184px,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.card.flat{background:transparent;border-style:dashed}
+
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:2px}
+.stat .k{font-size:11.5px;color:var(--ink-3);font-weight:700;letter-spacing:.04em}
+.stat .v{font-family:"IBM Plex Mono",monospace;font-size:27px;font-weight:600;letter-spacing:-.02em;line-height:1.25;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:14px;font-weight:500;margin-left:2px;color:var(--ink-2)}
+.stat .n{font-size:11.5px;color:var(--ink-3);line-height:1.55}
+.stat.hot .v{color:var(--accent)}
+.stat.pos .v{color:var(--good)}
+
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.chip.a{background:var(--accent-soft);color:var(--accent)}
+.chip.b{background:var(--info-soft);color:var(--s1)}
+.chip.c{background:var(--good-soft);color:var(--good)}
+.chip.d{background:var(--warn-soft);color:var(--warn)}
+
+.deflist{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;font-size:13.5px;align-items:baseline}
+.deflist dt{color:var(--ink-3);font-size:12px;font-weight:700;white-space:nowrap}
+.deflist dd{margin:0;color:var(--ink)}
+
+.note{font-size:12px;color:var(--ink-3);line-height:1.7;margin-top:12px}
+.rule{height:1px;background:var(--rule);border:0;margin:34px 0}
+
+/* ---------- research ---------- */
+.model{display:grid;gap:10px}
+.model-row{display:grid;grid-template-columns:112px 1fr;gap:14px;align-items:stretch}
+.model-tag{display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;border-radius:8px;background:var(--surface-2);color:var(--ink-2);text-align:center;padding:8px;line-height:1.4}
+.model-body{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:12px 15px;font-size:13px}
+.model-body b{font-family:"Shippori Mincho",serif}
+.model-arrow{grid-column:1/-1;text-align:center;color:var(--rule-2);font-size:14px;line-height:1}
+
+.swot{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.swot section{border:1px solid var(--rule);border-radius:10px;padding:16px 18px;background:var(--surface)}
+.swot h4{font-size:14px;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.swot h4::before{content:"";width:3px;height:15px;border-radius:2px;background:var(--rule-2)}
+.swot.q1 h4::before{background:var(--good)}
+.swot ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+.swot .s h4::before{background:var(--s3)}
+.swot .w h4::before{background:var(--s2)}
+.swot .o h4::before{background:var(--s1)}
+.swot .t h4::before{background:var(--s4)}
+
+/* ---------- why now ---------- */
+.reason{display:grid;grid-template-columns:auto 1fr;gap:0 22px;background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:22px 24px;margin-bottom:16px}
+.reason .idx{font-family:"Shippori Mincho",serif;font-size:34px;font-weight:800;color:var(--accent);line-height:1;grid-row:span 2;letter-spacing:-.02em}
+.reason h4{font-size:18px;margin-bottom:2px}
+.reason .kicker{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.reason .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0}
+.reason .fact{background:var(--surface-2);border-radius:8px;padding:10px 13px}
+.reason .fact .fv{font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;letter-spacing:-.01em}
+.reason .fact .fk{font-size:11px;color:var(--ink-3);line-height:1.5}
+.reason .sowhat{border-top:1px dashed var(--rule-2);padding-top:12px;margin-top:4px;font-size:13.5px}
+.reason .sowhat b{color:var(--accent)}
+.reason p{font-size:13.5px;color:var(--ink-2)}
+
+.timeline{position:relative;margin-top:8px;padding:26px 0 6px;overflow-x:auto}
+.timeline-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(148px,1fr);gap:0;min-width:760px;position:relative}
+.timeline-track::before{content:"";position:absolute;left:0;right:0;top:9px;height:2px;background:var(--rule-2)}
+.tl-item{position:relative;padding:26px 12px 0 0}
+.tl-item::before{content:"";position:absolute;left:0;top:3px;width:14px;height:14px;border-radius:50%;background:var(--surface);border:2px solid var(--rule-2)}
+.tl-item.on::before{background:var(--accent);border-color:var(--accent)}
+.tl-item .y{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--ink-3)}
+.tl-item.on .y{color:var(--accent)}
+.tl-item .t{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+
+/* ---------- strategy ---------- */
+.pillar{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.pillar .pk{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--ink-3)}
+.pillar h4{font-size:16.5px}
+.pillar p{font-size:13px;color:var(--ink-2)}
+.pillar .kpi{margin-top:auto;padding-top:12px;border-top:1px dashed var(--rule-2);font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:4px}
+.pillar .kpi b{font-family:"IBM Plex Mono",monospace;color:var(--ink);font-weight:600}
+
+table.matrix{width:100%;border-collapse:collapse;font-size:13px}
+table.matrix th,table.matrix td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.matrix th{font-size:11.5px;letter-spacing:.05em;color:var(--ink-3);font-weight:700;background:var(--surface-2);border-bottom:1px solid var(--rule-2)}
+table.matrix tr:last-child td{border-bottom:0}
+table.matrix td:first-child{font-weight:700}
+.scroller{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+.scroller table{min-width:640px}
+
+/* ---------- targets ---------- */
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:1px solid var(--rule);border-radius:10px}
+.seg{display:flex;background:var(--surface-2);border-radius:8px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:12px;font-weight:700;border:0;background:none;color:var(--ink-3);padding:6px 12px;border-radius:6px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.controls input[type="search"], .controls select{
+  font:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--rule-2);border-radius:8px;
+  background:var(--surface);color:var(--ink);
+}
+.controls input[type="search"]{min-width:190px;flex:1}
+.controls .count{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.controls .count b{font-family:"IBM Plex Mono",monospace;color:var(--ink);font-weight:600}
+
+.tlist{display:flex;flex-direction:column;gap:9px}
+.trow{
+  display:grid;grid-template-columns:38px minmax(210px,1.05fr) minmax(240px,1.5fr) minmax(240px,1.5fr);
+  gap:0 18px;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:15px 18px;align-items:start;
+}
+.trow .rank{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-3);font-weight:600;padding-top:2px}
+.trow .head{display:flex;flex-direction:column;gap:6px}
+.trow .name{font-family:"Shippori Mincho",serif;font-size:15px;font-weight:700;line-height:1.45}
+.trow .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.trow .cnt{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;color:var(--ink)}
+.trow .cnt span{font-size:11px;color:var(--ink-3);font-weight:400;margin-left:3px}
+.trow .fieldlabel{font-size:10.5px;font-weight:700;letter-spacing:.09em;color:var(--ink-3);display:block;margin-bottom:3px}
+.trow .fieldbody{font-size:13px;color:var(--ink-2);line-height:1.7}
+.trow .hook .fieldbody{color:var(--ink);border-left:2px solid var(--rule-2);padding-left:11px;font-family:"Shippori Mincho",serif;font-size:13.5px}
+.trow.tA{border-left:3px solid var(--s2)}
+.trow.tB{border-left:3px solid var(--s1)}
+.trow.tC{border-left:3px solid var(--s4)}
+@media(max-width:900px){
+  .trow{grid-template-columns:34px 1fr;gap:10px 14px}
+  .trow .head{grid-column:2}
+  .trow .why,.trow .hook{grid-column:2}
+}
+
+/* ---------- roi ---------- */
+.roi-layout{display:grid;grid-template-columns:minmax(280px,340px) 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.roi-layout{grid-template-columns:1fr}}
+.knobs{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px;position:sticky;top:58px}
+.knobs h4{font-size:14px;margin-bottom:12px}
+.knob{margin-bottom:15px}
+.knob label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink-2);margin-bottom:5px;gap:10px}
+.knob label b{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink);font-weight:600}
+.knob input[type="range"]{width:100%;accent-color:var(--s1);height:20px;cursor:pointer}
+.knob-group{border-top:1px dashed var(--rule-2);padding-top:14px;margin-top:16px}
+.knob-group .gh{font-size:10.5px;font-weight:700;letter-spacing:.1em;color:var(--ink-3);margin-bottom:12px}
+.resetbtn{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--rule-2);background:var(--surface);color:var(--ink-2);border-radius:7px;padding:6px 12px;cursor:pointer}
+.resetbtn:hover{border-color:var(--ink-3);color:var(--ink)}
+
+.funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.fstep{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px;position:relative}
+.fstep .fl{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.fstep .fv{font-family:"IBM Plex Mono",monospace;font-size:23px;font-weight:600;letter-spacing:-.02em}
+.fstep .fr{font-size:11px;color:var(--ink-3)}
+.fstep:last-child{background:var(--accent-soft);border-color:transparent}
+.fstep:last-child .fv{color:var(--accent)}
+.fstep:last-child .fl,.fstep:last-child .fr{color:var(--accent)}
+
+.chartbox{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px}
+.chartbox h4{font-size:14px}
+.chartbox .csub{font-size:12px;color:var(--ink-3);margin:2px 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);margin-bottom:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.verdict{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--good);border-radius:0 10px 10px 0;padding:16px 20px;font-size:13.5px}
+.verdict b{font-family:"IBM Plex Mono",monospace;color:var(--good);font-weight:600}
+
+/* ---------- roadmap ---------- */
+.phase{display:grid;grid-template-columns:132px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule)}
+.phase:first-of-type{border-top:0}
+.phase .pmark .pd{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--accent);letter-spacing:.04em}
+.phase .pmark .pt{font-family:"Shippori Mincho",serif;font-size:16px;font-weight:700;line-height:1.4;margin-top:2px}
+.phase ul{margin:0;padding-left:1.15em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px}
+.phase ul b{color:var(--ink)}
+.owner{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.05em;padding:1px 7px;border-radius:4px;margin-right:7px;vertical-align:1px}
+.owner.ai{background:var(--info-soft);color:var(--s1)}
+.owner.lx{background:var(--warn-soft);color:var(--warn)}
+
+.srcs{font-size:12px;color:var(--ink-3);line-height:1.9}
+.srcs li{margin-bottom:2px}
+@media(max-width:640px){
+  .wrap{padding:0 16px}
+  .reason{grid-template-columns:1fr;gap:8px}
+  .reason .idx{grid-row:auto;font-size:26px}
+  .phase{grid-template-columns:1fr;gap:10px}
+  .model-row{grid-template-columns:1fr}
+}
+</style>
+
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <div>
+      <div class="eyebrow">事前リサーチ / 成長戦略 / ROI シミュレーション</div>
+      <h1 class="mast-title">株式会社LECXIA <span class="kern">国語専門塾FC</span> 成長戦略ボード</h1>
+      <p class="mast-sub">「国語」という一教科に絞り込んだ特化型FCを、都市部82商圏へ面展開するための分析盤。市場データ・制度変更・ターゲット母数・投資回収を一枚に載せています。</p>
+    </div>
+    <div class="mast-meta">
+      <div><b>作成</b> 株式会社アイドマ・ホールディングス</div>
+      <div><b>宛先</b> 田中 社長</div>
+      <div><b>更新</b> 2026年9月7日</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="セクション">
+  <div class="wrap">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-p="research"><span class="num">01</span>事前リサーチ</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="market"><span class="num">02</span>市場環境</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="why"><span class="num">03</span>今すぐやる3つの理由</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="strategy"><span class="num">04</span>成長戦略</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="targets"><span class="num">05</span>営業ターゲット30</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="roi"><span class="num">06</span>ROIシミュレーション</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="road"><span class="num">07</span>90日ロードマップ</button>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ 01 RESEARCH ============ -->
+<section class="panel" id="p-research" role="tabpanel">
+  <div class="sec-head"><h2>事前リサーチ</h2><span class="tagline">公開情報 ＋ 前回商談メモの統合サマリー</span></div>
+  <p class="lede">「国語専門」という一点突破の特化型ブランドを、既存教室への<b>間借り導入</b>という低リスクな形で配るモデル。加盟側の初期費用・家賃リスクが構造的に小さいことが、そのまま営業の最大の武器になります。</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:10px">企業プロフィール</div>
+      <dl class="deflist">
+        <dt>企業名</dt><dd>株式会社LECXIA（レクシア）</dd>
+        <dt>Webサイト</dt><dd><a href="https://www.lecxia.co.jp/" target="_blank" rel="noopener">www.lecxia.co.jp</a></dd>
+        <dt>窓口</dt><dd>田中 社長（トップ直轄の意思決定）</dd>
+        <dt>事業内容</dt><dd>国語専門の個別指導塾運営／フランチャイズ展開／個人塾向けコンサルティング</dd>
+        <dt>主力にしたい事業</dt><dd>FC展開（既存塾への「国語専門塾」別ブランド導入）</dd>
+        <dt>実績</dt><dd>医学部・東大合格者の輩出。姫路・博多などで「国語＋地名」検索1位</dd>
+        <dt>目標商圏</dt><dd>県庁所在地・人口30万人以上の都市部</dd>
+        <dt>想定顧客</dt><dd>個人塾オーナー、小規模事業者（トップダウンで決裁できる層）</dd>
+      </dl>
+      <p class="note">※ 本ボード作成環境からは同社サイトへ直接アクセスできなかったため、企業情報は前回商談メモと公開検索情報に基づく整理です。数値・固有名詞は初回提示時に必ず口頭でご確認ください。</p>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:12px">ビジネスモデル</div>
+      <div class="model">
+        <div class="model-row">
+          <div class="model-tag">FC本部<br>LECXIA</div>
+          <div class="model-body"><b>ブランド・カリキュラム・指導者育成・Web集客</b><br><span style="color:var(--ink-2);font-size:12.5px">収益＝加盟金＋月額ライセンス料。人と場所を持たない、資産の軽い本部構造。</span></div>
+        </div>
+        <div class="model-arrow">↓ 別ブランドとして「間借り」導入</div>
+        <div class="model-row">
+          <div class="model-tag">加盟教室<br>既存スクール</div>
+          <div class="model-body"><b>今ある教室・今ある空きコマ・今いる生徒</b><br><span style="color:var(--ink-2);font-size:12.5px">追加の家賃ゼロ／新規講師採用ゼロ。既存名簿へのアップセルで初月から動く。</span></div>
+        </div>
+        <div class="model-arrow">↓</div>
+        <div class="model-row">
+          <div class="model-tag">生徒・保護者</div>
+          <div class="model-body"><b>「国語ならここ」という地域一番の指名</b><br><span style="color:var(--ink-2);font-size:12.5px">全教科塾との比較ではなく、悩み（読解・記述）で直接指名される。</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>強み・課題の整理</h3>
+    <p class="sub">前回商談で語られた内容を、営業設計に使える形に分解</p>
+    <div class="swot">
+      <section class="s">
+        <h4>強み（Strength）</h4>
+        <ul>
+          <li>「国語専門」という、業界でほぼ空白のポジション</li>
+          <li>医学部・東大合格実績＝品質の証明が既にある</li>
+          <li>間借りモデルで加盟側の初期費用・家賃リスクが低い</li>
+          <li>「国語＋地名」で新規地域でも短期にSEO1位を取れる再現性</li>
+        </ul>
+      </section>
+      <section class="w">
+        <h4>課題（Weakness）</h4>
+        <ul>
+          <li>個人塾コンサルは立地・状況依存で成果がぶれ、労力に見合わない</li>
+          <li>法人FCはオーナーと現場社員の温度差で運用が回らない</li>
+          <li>加盟候補の母集団形成が、交流会とSNS DMという属人的手段に依存</li>
+          <li>都市部の商圏を面で押さえる営業リソースが不足</li>
+        </ul>
+      </section>
+      <section class="o">
+        <h4>機会（Opportunity）</h4>
+        <ul>
+          <li>2026年4月の高校授業料実質無償化で、家計の教育費が塾へ再配分</li>
+          <li>2025年度共通テストで国語に「実用的文章」の大問が新設</li>
+          <li>次期学習指導要領で「言語能力」が学習の基盤として再定義へ</li>
+          <li>倒産増で、看板を変えたい個人塾オーナーが過去最多水準に</li>
+        </ul>
+      </section>
+      <section class="t">
+        <h4>脅威（Threat）</h4>
+        <ul>
+          <li>少子化：小学生581万人・中学生310万人とも過去最少</li>
+          <li>市場規模は2030年に向け▲9.0%の縮小予測</li>
+          <li>大手FCによる「国語コース」の後追い参入リスク</li>
+          <li>先行者利益の窓は、制度が動く2026〜2027年で閉じる</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>前回商談のハイライト</h3>
+    <p class="sub">次回の入り口として押さえるべき3点</p>
+    <div class="grid g3">
+      <div class="card"><div class="chip d">満足度</div><p style="margin-top:10px;font-size:13.5px;color:var(--ink-2)">アイドマの連絡の早さ・手数・スピード感には高評価。<b style="color:var(--ink)">信頼の土台はできている</b>ため、次は「量を出す仕組み」の話に進める。</p></div>
+      <div class="card"><div class="chip b">進行中</div><p style="margin-top:10px;font-size:13.5px;color:var(--ink-2)">MiTok（動画比較プラットフォーム）への無料掲載動画を制作中。第三者メディアからの言及は<b style="color:var(--ink)">AI検索対策の被リンク資産</b>になる。</p></div>
+      <div class="card"><div class="chip a">要望</div><p style="margin-top:10px;font-size:13.5px;color:var(--ink-2)">MiTok掲載ページから自社サイトへの<b style="color:var(--ink)">直接リンク設置</b>のご要望。次回までに社内確認の結論を持参する。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 MARKET ============ -->
+<section class="panel" id="p-market" role="tabpanel" hidden>
+  <div class="sec-head"><h2>市場環境</h2><span class="tagline">縮む市場・増える倒産・上がる単価</span></div>
+  <p class="lede">学習塾市場は「全体は縮むが、1人あたり単価は上がる」二極化の局面に入りました。淘汰されるのは<b>特徴のない小規模塾</b>で、伸びるのは<b>専門特化と高付加価値</b>。LECXIAのポジションは、市場の勝ち筋の側にあります。</p>
+
+  <div class="grid g4">
+    <div class="stat"><span class="k">市場規模（2025年）</span><span class="v">5,980<small>億円</small></span><span class="n">学習塾・家庭教師 国内推計</span></div>
+    <div class="stat hot"><span class="k">5年後予測</span><span class="v">−9.0<small>%</small></span><span class="n">2030年 5,442億円へ縮小</span></div>
+    <div class="stat"><span class="k">小学生数（2025年）</span><span class="v">581<small>万人</small></span><span class="n">過去最少・ピークの約4〜5割</span></div>
+    <div class="stat"><span class="k">中学生数（2025年）</span><span class="v">310<small>万人</small></span><span class="n">過去最少</span></div>
+  </div>
+
+  <div class="grid g2 block">
+    <div class="chartbox">
+      <h4>学習塾の倒産件数</h4>
+      <p class="csub">2025年は55件で2006年以降の過去最多を更新（東京商工リサーチ）</p>
+      <div id="ch-bankrupt"></div>
+      <p class="note">負債1億円未満が<b>52件＝94.5%</b>、資本金1千万円未満が<b>43件＝78.1%</b>。淘汰されているのは、まさにLECXIAが加盟候補として狙う小・零細規模の塾です。「潰れる前に、看板を変える」という提案の説得力はここにあります。</p>
+    </div>
+    <div class="chartbox">
+      <h4>市場規模の見通し</h4>
+      <p class="csub">2025年実績 → 2030年予測（学習塾・家庭教師 国内市場）</p>
+      <div id="ch-market"></div>
+      <p class="note">子どもの数が減っても市場が持ちこたえてきたのは、<b>1人あたりの塾費が上がってきた</b>から。逆に言えば、これから選ばれるのは「単価を上げられる理由」を持つ塾だけです。国語専門という説明可能な特化は、値上げの根拠そのものになります。</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>二極化のメカニズム</h3>
+    <p class="sub">なぜ「特徴のない塾」から順に消えるのか</p>
+    <div class="grid g3">
+      <div class="card"><div class="chip">1</div><h4 style="font-size:15px;margin:10px 0 6px">母数が減る</h4><p style="font-size:13px;color:var(--ink-2)">小学生581万人・中学生310万人はいずれも過去最少。同じ商圏で同じ「全教科・補習型」を続ける限り、生徒の奪い合いは必ず値下げ競争になります。</p></div>
+      <div class="card"><div class="chip">2</div><h4 style="font-size:15px;margin:10px 0 6px">コストが上がる</h4><p style="font-size:13px;color:var(--ink-2)">最低賃金の大幅引き上げに加え、タイパ志向の大学生が準備負担の重い塾講師を避ける傾向。求人費と人件費が同時に跳ね、講師を抱えるモデルほど苦しくなります。</p></div>
+      <div class="card"><div class="chip">3</div><h4 style="font-size:15px;margin:10px 0 6px">単価は選ばれた塾だけ上がる</h4><p style="font-size:13px;color:var(--ink-2)">保護者は「何ができる塾か」で払う額を決めます。悩み（読解・記述）に直接答える専門塾は、比較検討の土俵に乗る前に指名される。ここに単価差が生まれます。</p></div>
+    </div>
+    <div class="verdict" style="margin-top:16px">
+      <b>示唆：</b> LECXIAのFCは「講師を増やさず・家賃を増やさず・単価を上げる」という、いま市場が最も必要としている処方箋そのものです。問題は商品ではなく、<b>それを知らない2万件の個人塾オーナーに届いていないこと</b>。ここが営業支援ユニットの守備範囲です。
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 WHY NOW ============ -->
+<section class="panel" id="p-why" role="tabpanel" hidden>
+  <div class="sec-head"><h2>今すぐやらないといけない3つの理由</h2><span class="tagline">法律・制度・世の中の流れ</span></div>
+  <p class="lede">「いつかやる」と「今年やる」で結果が変わる根拠を、制度の日付で示します。3つとも、<b>2026年度中に外部環境が動き切る</b>もの。加盟候補が動く理由が揃っているうちに、母集団を押さえる必要があります。</p>
+
+  <div class="reason">
+    <div class="idx">壱</div>
+    <div>
+      <div class="kicker"><span class="chip a">制度</span><span class="chip">2026年4月 施行</span></div>
+      <h4>高校授業料の実質無償化で、家計の教育費が「塾」へ再配分される</h4>
+      <p>2026年4月から高等学校等就学支援金の所得制限が撤廃され、私立高校についても全国平均授業料相当の<b>年額45万7,200円</b>までが世帯年収に関わらず支給されます。授業料として払っていた原資が、そのまま塾・予備校・習い事の予算に回る局面です。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">45.7<span style="font-size:12px">万円/年</span></div><div class="fk">私立高校の就学支援金上限額</div></div>
+        <div class="fact"><div class="fv">所得制限撤廃</div><div class="fk">年収910万円超の世帯も対象に</div></div>
+        <div class="fact"><div class="fv">2026年度</div><div class="fk">予算の使い道が決まる年</div></div>
+      </div>
+      <div class="sowhat"><b>LECXIAにとって：</b> 塾に回る予算は増えますが、その予算を取るのは「高いなりの理由がある塾」です。制度が変わった年の入塾シーズン（2026年秋〜2027年春）に、加盟教室が「国語専門」という看板を掲げて立っているかどうかで、以後数年の生徒数が決まります。逆算すると、<b>2026年内に加盟・開校まで終えている必要</b>があります。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="idx">弐</div>
+    <div>
+      <div class="kicker"><span class="chip a">入試制度</span><span class="chip">2025年度〜／2026年夏 答申</span></div>
+      <h4>国語が「読解＋情報処理」の教科として制度上、格上げされた</h4>
+      <p>2025年度の大学入学共通テストから、国語に図表・資料を読み取る<b>「実用的な文章」の大問（第3問）が新設</b>され、試験時間は80分→90分、現代文の配点は110点に。さらに2026年夏を目途とする中央教育審議会の答申では、次期学習指導要領で<b>「言語能力」を情報活用能力と並ぶ学習の基盤</b>として位置づける方向が示されており、2030年度から順次全面実施されます。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">＋10<span style="font-size:12px">分</span></div><div class="fk">共通テスト国語 80分→90分</div></div>
+        <div class="fact"><div class="fv">大問5題</div><div class="fk">実用的文章の大問が新設</div></div>
+        <div class="fact"><div class="fv">2030年度</div><div class="fk">次期学習指導要領 全面実施</div></div>
+      </div>
+      <div class="sowhat"><b>LECXIAにとって：</b> 「国語は才能・センス」という業界の言い訳が、制度の側から崩れました。国語＝訓練で点が動く技能教科として扱われる時代に入り、専門塾の必要性を保護者に説明する手間が激減します。ただし<b>これは競合も同じ資料を読んでいる</b>ということ。大手が「国語コース」を出す前に、地域単位で「国語ならここ」の指名を先に取り切れるかの勝負です。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="idx">参</div>
+    <div>
+      <div class="kicker"><span class="chip a">経営環境</span><span class="chip">2025年 実績</span></div>
+      <h4>個人塾オーナーが「このままでは無理」と最も自覚している瞬間</h4>
+      <p>2025年の学習塾の倒産は<b>55件（前年比3.7%増）で2006年以降の過去最多</b>を更新。うち負債1億円未満が52件＝94.5%、資本金1千万円未満が43件＝78.1%と、小・零細塾に集中しています。背景は少子化・物価高に加え、最低賃金の大幅引き上げと、タイパ志向の学生が塾講師を敬遠することによる<b>講師確保コストの高騰</b>です。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">55<span style="font-size:12px">件</span></div><div class="fk">2025年 学習塾の倒産（過去最多）</div></div>
+        <div class="fact"><div class="fv">94.5<span style="font-size:12px">%</span></div><div class="fk">負債1億円未満＝小規模塾</div></div>
+        <div class="fact"><div class="fv">78.1<span style="font-size:12px">%</span></div><div class="fk">資本金1千万円未満</div></div>
+      </div>
+      <div class="sowhat"><b>LECXIAにとって：</b> 「講師を新たに雇わない・家賃を増やさない・既存の空きコマで始める」という間借りFCは、いま起きている苦境への直接の答えです。危機感が最大化しているこの1〜2年が、<b>提案が最も刺さる窓</b>。ここを逃すと、候補は廃業か大手への売却で市場から消えます。母集団そのものが毎年減っていく点で、これは最も期限の厳しい理由です。</div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>制度カレンダー</h3>
+    <p class="sub">外部環境が動く日付と、逆算した営業の締切</p>
+    <div class="timeline">
+      <div class="timeline-track">
+        <div class="tl-item on"><div class="y">2025年度</div><div class="t">共通テスト国語 新課程へ<br>実用的文章の大問を新設</div></div>
+        <div class="tl-item on"><div class="y">2025年</div><div class="t">学習塾の倒産55件<br>過去最多を更新</div></div>
+        <div class="tl-item on"><div class="y">2026年4月</div><div class="t">高校授業料の実質無償化<br>所得制限撤廃・45.7万円</div></div>
+        <div class="tl-item on"><div class="y">2026年 夏</div><div class="t">中教審 答申<br>言語能力＝学習の基盤へ</div></div>
+        <div class="tl-item"><div class="y">2026年秋〜</div><div class="t">再配分された教育費の<br>争奪戦（入塾シーズン）</div></div>
+        <div class="tl-item"><div class="y">2027年 初</div><div class="t">次期学習指導要領<br>告示</div></div>
+        <div class="tl-item"><div class="y">2030年度〜</div><div class="t">全面実施<br>小→中→高と順次</div></div>
+      </div>
+    </div>
+    <div class="verdict" style="margin-top:18px;border-left-color:var(--accent)">
+      <b style="color:var(--accent)">結論：</b> 制度が国語を後押しし、家計に予算が生まれ、候補オーナーの危機感がピークにある——この3つが重なるのは<b style="color:var(--accent)">2026年度</b>だけです。加盟の意思決定から開校まで通常3〜6か月を要するため、2026年秋の入塾シーズンに間に合わせるには、<b style="color:var(--accent)">母集団形成を今期中に立ち上げる</b>必要があります。
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 STRATEGY ============ -->
+<section class="panel" id="p-strategy" role="tabpanel" hidden>
+  <div class="sec-head"><h2>成長戦略</h2><span class="tagline">FC加盟を「属人的な出会い」から「再現可能な仕組み」へ</span></div>
+  <p class="lede">現状のボトルネックは商品力ではなく<b>母集団形成</b>です。交流会とSNS DMは質が高い代わりに量が読めない。狙うべきは、量を安定供給しながら、加盟後に温度差が出ない相手だけを通す設計です。</p>
+
+  <div class="grid g3">
+    <div class="pillar">
+      <span class="pk">PILLAR 01</span>
+      <h4>都市部82商圏を、面で押さえる</h4>
+      <p>政令指定都市20市＋中核市62市＝82商圏を主戦場に設定。1商圏1加盟の先行者優位を明示し、「早い者勝ち」を営業の推進力に変えます。既存教室への間借り導入なので、加盟側の投資判断のハードルは低く保てます。</p>
+      <div class="kpi"><span>目標：<b>年12商圏</b> の加盟獲得</span><span>手段：営業支援ユニットによるアウトバウンド</span></div>
+    </div>
+    <div class="pillar">
+      <span class="pk">PILLAR 02</span>
+      <h4>「国語＋地名」の指名を、AI検索まで拡張する</h4>
+      <p>姫路・博多で実証済みのSEO再現性は、加盟提案そのものの証拠になります。ここにMiTokなど第三者メディアでの言及を重ね、生成AIの回答にも引用される状態をつくる。加盟希望者にとっては「集客が付いてくるFC」という決定的な差別化です。</p>
+      <div class="kpi"><span>目標：<b>新規商圏の検索1位を90日</b> で取得</span><span>手段：自社SEO ＋ 第三者メディア露出</span></div>
+    </div>
+    <div class="pillar">
+      <span class="pk">PILLAR 03</span>
+      <h4>温度差の出ない相手だけを、構造で選ぶ</h4>
+      <p>法人FCで運用が回らない原因は、オーナーと現場社員の温度差。ならば最初から<b>オーナー＝現場</b>の個人・小規模事業者に絞り込む。ターゲット定義の段階で失敗要因を排除すれば、加盟後の解約率と支援工数が同時に下がります。</p>
+      <div class="kpi"><span>目標：<b>加盟の8割をオーナー直営</b>で構成</span><span>手段：リスト設計とスクリーニング基準</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>課題 → 打ち手 → 使うユニット</h3>
+    <p class="sub">前回商談で挙がった課題に、アイドマ側の実行手段を紐づけたもの</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>現状の課題</th><th>打ち手</th><th>担当ユニット</th><th>90日で見る指標</th></tr></thead>
+        <tbody>
+          <tr><td>加盟候補の母集団が交流会・DM頼みで量が読めない</td><td>680万件超の法人データベースから、塾・スクール・教育隣接業種を都市部で抽出し、フォーム送信／メール／電話で継続接触</td><td><span class="chip b">営業支援ユニット</span></td><td>月間アプローチ数・反応率</td></tr>
+          <tr><td>法人FCはオーナーと現場の温度差で回らない</td><td>従業員規模・法人格・代表者属性でリストを事前スクリーニングし、オーナー直営型のみに配信</td><td><span class="chip b">営業支援ユニット</span></td><td>商談のオーナー同席率</td></tr>
+          <tr><td>個人塾コンサルは立地依存で成果がぶれる</td><td>コンサル単発ではなくFC加盟へ商品を一本化。提案資料と初回トークを商圏タイプ別に標準化</td><td><span class="chip d">マネジメント代行</span></td><td>商談化率・成約率</td></tr>
+          <tr><td>ブランド認知が検索チャネルに偏っている</td><td>MiTokへの動画掲載、第三者メディアでの言及を積み上げ、AI検索・被リンク経由の指名を獲得</td><td><span class="chip c">MiTok（無料枠）</span></td><td>指名検索数・資料請求数</td></tr>
+          <tr><td>加盟後の運営支援と本部業務が社長に集中</td><td>問い合わせ一次対応、日程調整、資料送付、加盟後のレポート作成を外部チームへ移管</td><td><span class="chip d">バックオフィス支援</span></td><td>社長の商談可能時間</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">アイドマのクラウドユニットは営業からバックオフィスまで15のユニットで構成されています。まず<b>営業支援ユニット</b>単体で母集団形成を立ち上げ、加盟が積み上がった段階でバックオフィス支援を足す二段構えを推奨します。</p>
+  </div>
+
+  <div class="block">
+    <h3>KPIツリー</h3>
+    <p class="sub">「年間12加盟」を分解すると、毎月やるべきことは1つに絞られる</p>
+    <div class="chartbox"><div id="ch-kpitree"></div></div>
+  </div>
+</section>
+
+<!-- ============ 05 TARGETS ============ -->
+<section class="panel" id="p-targets" role="tabpanel" hidden>
+  <div class="sec-head"><h2>営業ターゲット30</h2><span class="tagline">母数・狙う理由・初回の切り口</span></div>
+  <p class="lede">「〇〇塾」を経営している先を軸に、<b>既に教室と生徒を持っていて、国語だけが空白になっている事業者</b>を30セグメントに分解しました。母数は公的統計・各社公表値・業界推計に基づく概算です。</p>
+
+  <div class="grid g4">
+    <div class="stat"><span class="k">総母数（全国・30セグメント計）</span><span class="v" id="t-total">—</span><span class="n">事業所・教室・事業者数の合算</span></div>
+    <div class="stat"><span class="k">都市部82商圏に絞った母数</span><span class="v" id="t-urban">—</span><span class="n">政令市20＋中核市62／都市部シェア35%想定</span></div>
+    <div class="stat hot"><span class="k">最優先（Tier A・都市部）</span><span class="v" id="t-prio">—</span><span class="n">既存教室に国語を「足す」だけの層</span></div>
+    <div class="stat"><span class="k">主戦場となる商圏数</span><span class="v">82<small>市</small></span><span class="n">うち人口30万人以上は約45市</span></div>
+  </div>
+
+  <div class="chartbox block">
+    <h4>3層別の母数</h4>
+    <p class="csub">全国の母数と、都市部82商圏に絞り込んだ有効母数</p>
+    <div class="legend"><span><i style="background:var(--s5)"></i>全国</span><span><i style="background:var(--s1)"></i>都市部82商圏（35%想定）</span></div>
+    <div id="ch-tiers"></div>
+    <p class="note">Tier Aは「今ある教室に国語コマを足すだけ」で成立する層、Tier Bは「生徒と場所はあるが国語の指導者がいない」層、Tier Cは「新規参入・第2事業としてトップダウンで決められる」層です。</p>
+  </div>
+
+  <div class="block">
+    <h3>ターゲット一覧</h3>
+    <p class="sub">Tierで絞る／母数・優先度で並べ替える／キーワードで検索する</p>
+    <div class="controls">
+      <div class="seg" id="tier-seg">
+        <button aria-pressed="true" data-t="all">すべて（30）</button>
+        <button aria-pressed="false" data-t="A">A・最優先（12）</button>
+        <button aria-pressed="false" data-t="B">B・準優先（10）</button>
+        <button aria-pressed="false" data-t="C">C・開拓（8）</button>
+      </div>
+      <input type="search" id="t-search" placeholder="セグメント名・理由・切り口を検索" aria-label="ターゲット検索">
+      <select id="t-sort" aria-label="並べ替え">
+        <option value="rank">優先度順</option>
+        <option value="count">母数の多い順</option>
+        <option value="countAsc">母数の少ない順</option>
+      </select>
+      <span class="count">表示 <b id="t-shown">30</b> 件 ／ 母数計 <b id="t-sum">—</b></span>
+    </div>
+    <div class="tlist" id="t-list"></div>
+    <p class="note">母数の出所：学習塾の事業所数は経済産業省「特定サービス産業実態調査」の約4.97万事業所を基礎に個人・小規模比率で按分。公文式・学研教室は各社の公表教室数。放課後等デイサービス・児童発達支援は厚生労働省の事業所数統計。その他は業界推計値です。<b>提案時は「桁感」として提示し、実リストはデータベース抽出後の実数で確定させてください。</b></p>
+  </div>
+</section>
+
+<!-- ============ 06 ROI ============ -->
+<section class="panel" id="p-roi" role="tabpanel" hidden>
+  <div class="sec-head"><h2>ROIシミュレーション</h2><span class="tagline">営業支援ユニット導入時の費用対効果</span></div>
+  <p class="lede">左のつまみを動かすと、右側の数字とグラフがその場で再計算されます。初期値は<b>標準シナリオ</b>。まずはここから、社長の肌感に合わせて数字を動かしてみてください。</p>
+
+  <div class="roi-layout">
+    <aside class="knobs">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h4 style="margin:0">前提条件</h4>
+        <button class="resetbtn" id="roi-reset" type="button">標準に戻す</button>
+      </div>
+      <div class="seg" id="preset-seg" style="margin-bottom:18px;width:100%">
+        <button aria-pressed="false" data-preset="cons" style="flex:1">保守</button>
+        <button aria-pressed="true" data-preset="base" style="flex:1">標準</button>
+        <button aria-pressed="false" data-preset="bull" style="flex:1">強気</button>
+      </div>
+
+      <div class="gh" style="font-size:10.5px;font-weight:700;letter-spacing:.1em;color:var(--ink-3);margin-bottom:12px">営業活動</div>
+      <div class="knob"><label for="k-app">月間アプローチ数 <b><span id="v-app"></span>件</b></label><input type="range" id="k-app" min="500" max="6000" step="100"></div>
+      <div class="knob"><label for="k-resp">反応率（返信・資料請求） <b><span id="v-resp"></span>%</b></label><input type="range" id="k-resp" min="0.5" max="6" step="0.1"></div>
+      <div class="knob"><label for="k-meet">反応→商談化率 <b><span id="v-meet"></span>%</b></label><input type="range" id="k-meet" min="10" max="60" step="1"></div>
+      <div class="knob"><label for="k-close">商談→FC加盟 成約率 <b><span id="v-close"></span>%</b></label><input type="range" id="k-close" min="1" max="10" step="0.5"></div>
+
+      <div class="knob-group"><div class="gh">加盟1件あたりの収益</div>
+        <div class="knob"><label for="k-fee">加盟金（初期） <b><span id="v-fee"></span>万円</b></label><input type="range" id="k-fee" min="0" max="300" step="10"></div>
+        <div class="knob"><label for="k-lic">月額ライセンス料 <b><span id="v-lic"></span>万円</b></label><input type="range" id="k-lic" min="1" max="20" step="1"></div>
+        <div class="knob"><label for="k-months">平均継続月数 <b><span id="v-months"></span>ヶ月</b></label><input type="range" id="k-months" min="12" max="72" step="6"></div>
+        <div class="knob"><label for="k-margin">粗利率 <b><span id="v-margin"></span>%</b></label><input type="range" id="k-margin" min="40" max="95" step="5"></div>
+      </div>
+
+      <div class="knob-group"><div class="gh">投資（アイドマ費用）</div>
+        <div class="knob"><label for="k-fixed">ユニット月額費用 <b><span id="v-fixed"></span>万円</b></label><input type="range" id="k-fixed" min="10" max="60" step="1"></div>
+        <div class="knob"><label for="k-init">初期費用 <b><span id="v-init"></span>万円</b></label><input type="range" id="k-init" min="0" max="150" step="5"></div>
+      </div>
+      <p class="note" style="margin-top:4px">※ 費用は一般的なレンジを置いた試算用の初期値です。正式なお見積りは要件確定後にご提示します。</p>
+    </aside>
+
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div>
+        <h3 style="font-size:17px;margin-bottom:2px">12ヶ月後の着地</h3>
+        <p class="sub" style="font-size:12.5px;color:var(--ink-3);margin-bottom:14px">LTVベース（加盟時点で契約期間分の収益を計上）</p>
+        <div class="grid g4">
+          <div class="stat pos"><span class="k">年間ROI</span><span class="v" id="o-roi">—</span><span class="n">（粗利−投資）÷投資</span></div>
+          <div class="stat"><span class="k">年間 加盟数</span><span class="v" id="o-closes">—</span><span class="n">12ヶ月累計</span></div>
+          <div class="stat"><span class="k">年間 粗利</span><span class="v" id="o-profit">—</span><span class="n">獲得加盟のLTV粗利</span></div>
+          <div class="stat"><span class="k">投資回収（実収入ベース）</span><span class="v" id="o-payback">—</span><span class="n" id="o-breakeven">—</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="eyebrow" style="margin-bottom:10px">営業ファネル（月間）</div>
+        <div class="funnel">
+          <div class="fstep"><div class="fl">アプローチ</div><div class="fv" id="f-app">—</div><div class="fr">リスト配信・架電</div></div>
+          <div class="fstep"><div class="fl">反応</div><div class="fv" id="f-resp">—</div><div class="fr" id="f-resp-r">—</div></div>
+          <div class="fstep"><div class="fl">商談</div><div class="fv" id="f-meet">—</div><div class="fr" id="f-meet-r">—</div></div>
+          <div class="fstep"><div class="fl">FC加盟</div><div class="fv" id="f-close">—</div><div class="fr" id="f-close-r">—</div></div>
+        </div>
+      </div>
+
+      <div class="chartbox">
+        <h4>累積の粗利と投資（キャッシュ）</h4>
+        <p class="csub">実収入ベース（加盟金は成約月、月額ライセンスは毎月積み上がる）。2本が交差した月が投資回収のタイミングです。</p>
+        <div class="legend"><span><i style="background:var(--s3)"></i>累積 粗利</span><span><i style="background:var(--s2)"></i>累積 投資</span></div>
+        <div id="ch-payback"></div>
+      </div>
+
+      <div class="chartbox">
+        <h4>成約率の感度分析</h4>
+        <p class="csub">商談→加盟の成約率だけを動かしたときの、年間粗利と損益分岐点</p>
+        <div id="ch-sens"></div>
+      </div>
+
+      <div class="verdict" id="o-verdict"></div>
+
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:10px">この試算の読み方</div>
+        <ul style="margin:0;padding-left:1.2em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">
+          <li>上段の年間ROI・年間粗利は<b>LTVベース</b>（加盟金＋月額ライセンス×継続月数を、加盟が決まった月に計上）。一方、<b>投資回収の月と累積グラフは実収入ベース</b>で、月額ライセンスが毎月積み上がる形で計算しています。前者は事業価値、後者はキャッシュの見え方です。</li>
+          <li>解約・休止は「平均継続月数」に織り込む設計です。加盟後の運営支援が薄いと継続月数が短くなり、ROIはここで最も大きくぶれます。</li>
+          <li>感度分析のとおり、<b>成約率が1ポイント動くと年間粗利は数百万円単位で変わります</b>。だからこそ、リストの精度（オーナー直営に絞り込めているか）が投資判断の本丸です。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 ROADMAP ============ -->
+<section class="panel" id="p-road" role="tabpanel" hidden>
+  <div class="sec-head"><h2>90日ロードマップ</h2><span class="tagline">2026年秋の入塾シーズンから逆算した実行計画</span></div>
+  <p class="lede"><span class="owner ai">アイドマ</span>と<span class="owner lx">LECXIA</span>の役割を分けて記載しています。社長の稼働は「商談に出る」ことに集中していただく設計です。</p>
+
+  <div class="phase">
+    <div class="pmark"><div class="pd">DAY 1–30</div><div class="pt">母集団の設計と初速</div></div>
+    <ul>
+      <li><span class="owner lx">LECXIA</span>国語塾のサービス紹介資料（PDF）をご送付。MiTok掲載動画の制作原資とします。<b>※前回商談のお約束事項</b></li>
+      <li><span class="owner ai">アイドマ</span>資料受領から<b>3日〜1週間</b>で紹介動画を制作。MiTokへ無料掲載し、第三者言及の資産化を開始。</li>
+      <li><span class="owner ai">アイドマ</span>MiTok掲載ページからの<b>自社サイトへの直接リンク設置</b>について、社内確認の結論をご報告。</li>
+      <li><span class="owner ai">アイドマ</span>Tier A（12セグメント）を都市部82商圏で抽出し、オーナー直営型に絞ったテストリストを作成。</li>
+      <li><span class="owner lx">LECXIA</span>加盟条件（加盟金・月額・支援内容・1商圏1加盟の可否）の提示ラインを確定。</li>
+      <li><span class="owner ai">アイドマ</span>セグメント別の初回文面を3〜5パターン作成し、小ロットで配信テストを開始。</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="pmark"><div class="pd">DAY 31–60</div><div class="pt">勝ちパターンの特定</div></div>
+    <ul>
+      <li><span class="owner ai">アイドマ</span>反応率の高いセグメント・文面・時間帯を特定し、配信をそこへ寄せる。</li>
+      <li><span class="owner lx">LECXIA</span>初回商談に社長が同席。<b>「制度が変わる3つの理由」</b>を共通の導入トークとして使用。</li>
+      <li><span class="owner ai">アイドマ</span>商談の失注理由を分類し、資料と条件へ反映。</li>
+      <li><span class="owner lx">LECXIA</span>既存加盟教室の実数（生徒数・単価・立ち上がり月数）を1件分、事例として整備。</li>
+      <li><span class="owner ai">アイドマ</span>「国語＋地名」検索1位の再現性を、加盟メリットとして提案資料に定量で明記。</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="pmark"><div class="pd">DAY 61–90</div><div class="pt">再現と拡張</div></div>
+    <ul>
+      <li><span class="owner ai">アイドマ</span>勝ちパターンを全都市部82商圏へ横展開。月間アプローチ量を計画値まで引き上げ。</li>
+      <li><span class="owner lx">LECXIA</span>1〜3件目の加盟を確定させ、<b>2026年秋の入塾シーズンに開校が間に合う</b>スケジュールを確保。</li>
+      <li><span class="owner ai">アイドマ</span>問い合わせ一次対応・日程調整をバックオフィス支援ユニットへ移管する範囲を設計。</li>
+      <li><span class="owner lx">LECXIA</span>Tier B（放課後等デイ・通信制サポート校など）への横展開可否を、教材面から判断。</li>
+      <li><span class="owner ai">アイドマ</span>3ヶ月の実績値でROIモデルを更新し、次の12ヶ月の投資計画を再設計。</li>
+    </ul>
+  </div>
+
+  <hr class="rule">
+
+  <div class="block" style="margin-top:0">
+    <h3>次回商談で確認したい5つ</h3>
+    <p class="sub">試算の精度を上げるために、社長にしか答えられない数字</p>
+    <div class="grid g2">
+      <div class="card"><b style="font-family:'Shippori Mincho',serif">1. 加盟金と月額ライセンス料の実額</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">ROIの分子を決める最重要変数。レンジでも構いません。</p></div>
+      <div class="card"><b style="font-family:'Shippori Mincho',serif">2. 既存加盟教室の平均継続月数</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">LTVの実測値。ここが読めると試算が提案から計画に変わります。</p></div>
+      <div class="card"><b style="font-family:'Shippori Mincho',serif">3. 加盟決定から開校までの標準日数</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">2026年秋に間に合わせる逆算の起点になります。</p></div>
+      <div class="card"><b style="font-family:'Shippori Mincho',serif">4. 社長が商談に割ける時間の上限</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">月間の商談供給量の上限を、ここに合わせて設計します。</p></div>
+      <div class="card"><b style="font-family:'Shippori Mincho',serif">5. 1商圏1加盟にするかどうか</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">「先行者優位」を営業トークに使えるかどうかが決まります。</p></div>
+      <div class="card"><b style="font-family:'Shippori Mincho',serif">6. Tier B（福祉・通信制）への提供可否</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">母数が約6.2万件あり、開放すれば市場が一気に広がります。</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>出典</h3>
+    <ul class="srcs">
+      <li>東京商工リサーチ「2025年の『学習塾』倒産 過去最多の55件」 — <a href="https://www.tsr-net.co.jp/data/detail/1202296_1527.html" target="_blank" rel="noopener">tsr-net.co.jp</a></li>
+      <li>帝国データバンク「『学習塾』の倒産動向（2025年、速報）」 — <a href="https://www.tdb.co.jp/report/industry/20260104_gakusyu25y/" target="_blank" rel="noopener">tdb.co.jp</a></li>
+      <li>学習塾・家庭教師市場の規模と5年後予測 — <a href="https://www.crex-data.com/industry/education/cram-school" target="_blank" rel="noopener">CREX経済データプラットフォーム</a>／<a href="https://nyutai.bpsinc.jp/column/1597/" target="_blank" rel="noopener">塾業界の市場規模</a></li>
+      <li>高等学校等就学支援金（2026年4月・所得制限撤廃／私立45万7,200円） — <a href="https://hojyokin-portal.jp/columns/koko_mushoka" target="_blank" rel="noopener">補助金ポータル</a>／<a href="https://benesse.jp/juken/202506/20250610-1.html" target="_blank" rel="noopener">ベネッセ教育情報</a></li>
+      <li>2025年度 大学入学共通テスト 国語の新課程（実用的文章の大問新設・80→90分） — <a href="https://benesse.jp/juken/202502/20250208-1.html" target="_blank" rel="noopener">ベネッセ教育情報</a></li>
+      <li>次期学習指導要領と言語能力・情報活用能力（2026年夏 答申／2030年度全面実施） — <a href="https://www.mext.go.jp/content/20260708-mxt_kyoiku01-000050888-6.pdf" target="_blank" rel="noopener">文部科学省 改訂スケジュール</a>／<a href="https://www.shijyukukai.jp/2026/06/30355" target="_blank" rel="noopener">月刊私塾界</a></li>
+      <li>初等中等教育段階における生成AIの利活用に関するガイドライン Ver.2.0 — <a href="https://www.mext.go.jp/content/20241226-mxt_shuukyo02-000030823_001.pdf" target="_blank" rel="noopener">文部科学省</a></li>
+      <li>学習塾の事業所数 — <a href="https://www.meti.go.jp/statistics/tyo/tokusabizi/result-2/h21/pdf/h21outline27.pdf" target="_blank" rel="noopener">経済産業省 特定サービス産業実態調査</a></li>
+      <li>中核市62市・政令指定都市20市 — <a href="https://uub.jp/cpf/chukaku.html" target="_blank" rel="noopener">中核市の一覧</a></li>
+      <li>アイドマ・ホールディングス クラウドユニット／Sales Platform — <a href="https://www.aidma-hd.jp/crowdunit_category/" target="_blank" rel="noopener">aidma-hd.jp</a>／MiTok — <a href="https://mitok-ai.com/" target="_blank" rel="noopener">mitok-ai.com</a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer style="border-top:1px solid var(--rule);background:var(--surface);margin-top:0">
+  <div class="wrap" style="padding-top:20px;padding-bottom:28px;font-size:12px;color:var(--ink-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <span>株式会社LECXIA 様向け 事前リサーチ・成長戦略・ROI分析／株式会社アイドマ・ホールディングス</span>
+    <span class="mono">2026-09-07</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------------- tabs ---------------- */
+var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+tabs.forEach(function(t){
+  t.addEventListener("click", function(){
+    tabs.forEach(function(x){
+      x.setAttribute("aria-selected", x === t ? "true" : "false");
+      document.getElementById("p-" + x.dataset.p).hidden = (x !== t);
+    });
+    window.scrollTo({top:0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+  });
+});
+
+/* ---------------- helpers ---------------- */
+var NF = new Intl.NumberFormat("ja-JP");
+function n(v){ return NF.format(Math.round(v)); }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function svg(w,h,inner){
+  return '<svg viewBox="0 0 '+w+' '+h+'" role="img" preserveAspectRatio="xMidYMid meet" '+
+    'style="max-width:'+Math.round(w*1.2)+'px;margin:0 auto">'+inner+'</svg>';
+}
+function txt(x,y,s,opt){
+  opt = opt || {};
+  return '<text x="'+x+'" y="'+y+'" fill="'+(opt.fill||"var(--ink-2)")+'" font-size="'+(opt.size||11)+'" '+
+    'font-family="'+(opt.mono?"IBM Plex Mono, monospace":"Zen Kaku Gothic New, sans-serif")+'" '+
+    'font-weight="'+(opt.weight||400)+'" text-anchor="'+(opt.anchor||"start")+'" '+
+    (opt.baseline?'dominant-baseline="'+opt.baseline+'" ':'')+'>'+esc(s)+'</text>';
+}
+function rrect(x,y,w,h,r,fill){
+  if(h<=0) return "";
+  r = Math.min(r, h/2, w/2);
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+r+'" fill="'+fill+'"></rect>';
+}
+
+/* ---------------- chart: bankruptcies ---------------- */
+(function(){
+  var data = [{l:"2023年",v:45},{l:"2024年",v:53,note:"前年比 +17.7%"},{l:"2025年",v:55,note:"過去最多"}];
+  var W=520,H=250, padL=8, padB=46, padT=34, plotH=H-padB-padT, bw=96, gap=64;
+  var max=60, s="";
+  [0,20,40,60].forEach(function(g){
+    var y = padT + plotH - (g/max)*plotH;
+    s += '<line x1="'+padL+'" y1="'+y+'" x2="'+(W-8)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s += txt(W-4, y, String(g), {fill:"var(--ink-3)", size:10, mono:true, anchor:"start", baseline:"middle"});
+  });
+  data.forEach(function(d,i){
+    var x = padL + 40 + i*(bw+gap);
+    var h = (d.v/max)*plotH, y = padT + plotH - h;
+    var c = i===2 ? "var(--s2)" : "var(--s1)";
+    s += rrect(x, y, bw, h, 4, c);
+    s += txt(x+bw/2, y-9, String(d.v)+"件", {fill:"var(--ink)", size:14, weight:600, mono:true, anchor:"middle"});
+    s += txt(x+bw/2, padT+plotH+19, d.l, {fill:"var(--ink-2)", size:11.5, anchor:"middle"});
+    if(d.note) s += txt(x+bw/2, padT+plotH+35, d.note, {fill: i===2?"var(--s2)":"var(--ink-3)", size:10.5, weight:700, anchor:"middle"});
+  });
+  s += txt(padL, 12, "件数", {fill:"var(--ink-3)", size:10});
+  document.getElementById("ch-bankrupt").innerHTML = svg(W,H,s);
+})();
+
+/* ---------------- chart: market ---------------- */
+(function(){
+  var W=520,H=250,padT=34,padB=46,plotH=H-padT-padB,max=6400;
+  var data=[{l:"2025年 実績",v:5980,c:"var(--s1)"},{l:"2030年 予測",v:5442,c:"var(--s4)"}];
+  var s="", bw=120, x0=56;
+  [0,2000,4000,6000].forEach(function(g){
+    var y=padT+plotH-(g/max)*plotH;
+    s+='<line x1="8" y1="'+y+'" x2="'+(W-8)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(W-4,y,n(g),{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+  });
+  data.forEach(function(d,i){
+    var x=x0+i*(bw+120), h=(d.v/max)*plotH, y=padT+plotH-h;
+    s+=rrect(x,y,bw,h,4,d.c);
+    s+=txt(x+bw/2,y-9,n(d.v),{fill:"var(--ink)",size:15,weight:600,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+19,d.l,{fill:"var(--ink-2)",size:11.5,anchor:"middle"});
+  });
+  var ax=x0+bw+14, bx=x0+bw+120-14, ay=padT+plotH-(5980/max)*plotH, by=padT+plotH-(5442/max)*plotH;
+  s+='<path d="M '+ax+' '+(ay+16)+' L '+bx+' '+(by+16)+'" stroke="var(--s2)" stroke-width="2" stroke-dasharray="4 3" fill="none"></path>';
+  s+=txt((ax+bx)/2, (ay+by)/2+6, "−9.0%", {fill:"var(--s2)",size:13,weight:700,mono:true,anchor:"middle"});
+  s+=txt(8,12,"億円",{fill:"var(--ink-3)",size:10});
+  document.getElementById("ch-market").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- targets data ---------------- */
+var TARGETS = [
+ {t:"A",name:"個人経営の学習塾（1〜2教室オーナー）",c:20000,
+  why:"2025年の倒産55件のうち94.5%が負債1億円未満。生徒数減で単価も上げられず、差別化のテーマを探している真っ最中。オーナー＝現場のため、話が通れば即決できる。",
+  hook:"今の教室のまま、空きコマに『国語専門』の別看板をもう1つ。家賃も講師も増やさずに、単価と紹介を上げませんか。"},
+ {t:"A",name:"子ども向け英語・英会話スクール",c:8500,
+  why:"英語だけでは中学以降の離脱が早い。「英語長文が読めない原因は日本語の読解力」という説明が保護者に極めて通りやすく、既存名簿へのアップセルが最速で効く。",
+  hook:"英語の伸び悩みの正体は、実は日本語の読解です。今の生徒に国語コマを足すだけで、退会防止と単価アップが同時に起こります。"},
+ {t:"A",name:"中学受験専門の小規模塾",c:3000,
+  why:"合否を分けるのは国語だと誰もが知っているのに、「国語を教えられる講師がいない」のが業界の定説。指導法とセットで持ち込める点が決定的な差になる。",
+  hook:"御塾の合格実績で、いちばん伸びしろが残っているのは国語です。教材と指導法をパッケージごとお持ちします。"},
+ {t:"A",name:"数学・理数／算数専門塾",c:1200,
+  why:"同じ特化型として思想が近く、「もう一教科を特化で足す」という発想に抵抗がない。理系生徒ほど国語で失点する構造も共有できる。",
+  hook:"理数特化の御塾に、対になる『国語特化』を。同じ生徒に2ブランドで通ってもらう設計です。"},
+ {t:"A",name:"公文式教室 指導者",c:16000,
+  why:"自営の個人事業主でトップダウン即決。国語教材はあるが、受験国語・記述という出口の指導が弱く、修了後の生徒の受け皿がない。",
+  hook:"公文の国語を終えた生徒の『次』が今はありません。卒業生の受け皿として、国語専門コースを置きませんか。"},
+ {t:"A",name:"学研教室 指導者",c:17800,
+  why:"全国17,799教室・会員31.2万人。小学生の在籍は厚いが、中学以降につなぐ導線が課題。読解という縦に伸びる商材と相性が良い。",
+  hook:"小6で卒業していく生徒を、国語専門で中高まで継続させる導線をつくります。今の教室・今の時間帯のままで。"},
+ {t:"A",name:"個別指導FCの加盟オーナー（明光・ITTO・スクールIE 等）",c:12000,
+  why:"FCの仕組み・契約・研修プロセスへの理解があり、説明コストが最も低い。複数教室を持つオーナーほど空きコマの収益化に敏感。",
+  hook:"既存FCの契約に触れずに、空き時間だけで第2ブランドを。加盟から開校まで最短で走れる相手は、実は御社のようなオーナーです。"},
+ {t:"A",name:"郊外・ロードサイドの補習型 地域密着塾",c:9000,
+  why:"商圏人口が細るほど「何屋か」の明確さが集客を左右する。近さで選ばれてきた塾ほど、指名される理由を至急つくる必要がある。",
+  hook:"『近いから通う』はもう効きません。『国語ならここ』で、地域一番の指名を取りにいきましょう。"},
+ {t:"A",name:"そろばん教室",c:9000,
+  why:"低学年の在籍は多いが高学年で必ず抜ける。読み書き系への横展開は保護者への説明が自然で、教室・机・時間帯をそのまま使える。",
+  hook:"そろばんを卒業していく小4〜小5に、国語という次の受け皿を。同じ教室・同じ時間帯で回せます。"},
+ {t:"A",name:"書道・習字教室",c:10000,
+  why:"「読む・書く」という文脈が完全に一致し、保護者の納得感が高い。設備投資ゼロで、今の生徒名簿がそのまま見込み客になる。",
+  hook:"書写の先にある『読解と記述』へ。今の名簿がそのまま国語コースの見込み客です。"},
+ {t:"A",name:"幼児教室・知育教室",c:3000,
+  why:"小学校入学と同時に卒業されてしまうのが最大の課題。国語は幼児期の言語教育の自然な延長として説明でき、在籍期間を数年単位で延ばせる。",
+  hook:"就学と同時に卒業されてしまう問題を、国語専門コースで小学生まで引き延ばします。"},
+ {t:"A",name:"プログラミング／STEAM教室",c:10000,
+  why:"ブームが一巡し2本目の柱を探す局面。生成AI時代に問われる『言語化力』と論理性という訴求が、今いちばん刺さるセグメント。",
+  hook:"AIに的確な指示を出せる子は、日本語で論理を組める子です。プログラミングの対になる国語を置きませんか。"},
+
+ {t:"B",name:"通信制高校サポート校・学習センター",c:1300,
+  why:"レポート提出は読解と記述の連続。国語支援のニーズが構造的に高いのに、専門の指導者がいない。退学防止が直接収益に効く。",
+  hook:"レポートが書けずに単位を落とす生徒に、国語専門の指導を。退学防止がそのまま収益になります。"},
+ {t:"B",name:"フリースクール・不登校支援施設",c:500,
+  why:"学び直しの一歩目は必ず国語。少人数・個別・自分のペースという設計思想が一致し、カリキュラムの移植コストが低い。",
+  hook:"学び直しの一歩目は国語です。無理なく再開できる個別カリキュラムを、まるごと提供します。"},
+ {t:"B",name:"放課後等デイサービス（学習支援型）",c:22000,
+  why:"報酬改定で個別最適な支援の付加価値が問われる局面。空き時間・部屋・スタッフ・保護者との接点をすべて既に持っている。",
+  hook:"療育の時間外に、保護者が本当に求めている『教科の支援』を。同じ場所・同じ体制で始められます。"},
+ {t:"B",name:"民間学童・アフタースクール",c:3000,
+  why:"預かりだけでは単価が頭打ちになるため、オプション講座を常に探している。夕方の空き枠がそのまま粗利になる。",
+  hook:"学童のオプション講座でいちばん需要があるのが国語です。夕方の空き枠を、そのまま売上に変えます。"},
+ {t:"B",name:"児童発達支援事業所",c:12000,
+  why:"就学準備の相談で最も多いのが言語と読解。就学後に必ず顕在化する『読めない・書けない』に先回りできる。",
+  hook:"就学後に必ず出てくる『読めない・書けない』に、専門カリキュラムで先回りしませんか。"},
+ {t:"B",name:"音楽・ダンス・体操などの習い事スクール",c:20000,
+  why:"平日昼〜夕方の空き枠が遊休資産になっている。保護者リストを保有しており、案内コストがほぼゼロ。",
+  hook:"週に数回しか使っていない教室の空き時間を、貸すのではなく『経営する』提案です。"},
+ {t:"B",name:"家庭教師派遣会社",c:1500,
+  why:"派遣型は講師依存でスケールしない構造。教室型の第2の柱を求めており、既存の生徒基盤をそのまま移せる。",
+  hook:"講師頼みのモデルから、ブランドで集客する教室型へ。今の生徒基盤をそのまま移せます。"},
+ {t:"B",name:"医学部・難関大専門予備校",c:150,
+  why:"共通テスト国語での失点が理系生徒の構造的な弱点。単価が高く、1加盟あたりの収益性が最も良い。",
+  hook:"理系の合否を分けているのは国語です。御校の弱点科目を、専門ブランドごと補完します。"},
+ {t:"B",name:"日本語学校・留学生予備校",c:900,
+  why:"日本語能力＝読解力そのもの。EJUや大学入試の記述対策に直結し、既存カリキュラムの上位商材になる。",
+  hook:"進学したい留学生が最後に詰まるのは記述です。受験国語のメソッドをそのまま持ち込みます。"},
+ {t:"B",name:"オンライン専業塾",c:1000,
+  why:"オンラインのみでは低単価・高解約になりやすく、リアル拠点でのブランド確立を模索している。地域SEOの実績が刺さる。",
+  hook:"オンラインの弱点は『地域での指名』です。国語＋地名で検索1位という武器をお渡しします。"},
+
+ {t:"C",name:"塾業界からの独立志望者（教室長・講師）",c:3000,
+  why:"自分の教室を持ちたいが、大手FCの初期費用と家賃リスクで踏み切れない層。間借りモデルはこの障壁を丸ごと外す。",
+  hook:"家賃も講師も要らない開業モデルです。今の教室を辞める前に、副業からでも始められます。"},
+ {t:"C",name:"元教員・元公務員の独立層",c:2000,
+  why:"指導力はあるが集客と経営の型がない。国語は最も教えたい教科であり、志望動機と商材が一致している。",
+  hook:"教えることは既にプロです。足りない集客と経営の型だけを、こちらが用意します。"},
+ {t:"C",name:"保育園・幼稚園・認定こども園の運営法人",c:37000,
+  why:"卒園と同時に関係が切れるのが構造的な悩み。小学生向け事業への接続を求めており、園の信頼をそのまま載せ替えられる。",
+  hook:"卒園生が戻ってくる仕組みを。園で築いた信頼を、そのまま小学生の国語塾に載せ替えます。"},
+ {t:"C",name:"書店・図書館併設スペースの運営者",c:11000,
+  why:"本と国語は文脈が完全一致し、地域からの納得感が圧倒的。空間の遊休時間を収益化したいニーズも強い。",
+  hook:"本屋が国語塾をやる。これ以上に説明のいらない業態はありません。"},
+ {t:"C",name:"コワーキング／レンタルスペース運営",c:2500,
+  why:"平日夕方以降と土日の稼働率が課題。席を貸すより自ら事業主になったほうが坪単価が跳ねることを、数字で示せる。",
+  hook:"席を貸すより、教室を経営するほうが坪単価は何倍にもなります。空き時間の使い道を変えませんか。"},
+ {t:"C",name:"士業事務所（税理士・行政書士 等）の第2事業",c:40000,
+  why:"地域の信用と顧客基盤を持ち、人を増やさずに粗利の高い事業を探している層。紹介による集客が最初から成立する。",
+  hook:"先生の地域信用が、そのまま集客力になります。人を雇わずに始められる教育事業です。"},
+ {t:"C",name:"不動産オーナー・地域デベロッパー",c:5000,
+  why:"テナント空室と遊休区画の活用が恒常的な課題。賃料収入より自主事業のほうが利回りが高いという提案が刺さる。",
+  hook:"空き区画をテナント募集で埋めるより、国語塾として自ら運営したほうが利回りは上がります。"},
+ {t:"C",name:"後継者不在・M&A売却を検討中の塾オーナー",c:1500,
+  why:"廃業か売却かの二択で悩んでおり、『ブランド転換』という第3の選択肢を誰も提示していない。判断期限が明確で動きが速い。",
+  hook:"畳む前に、看板を変えるという選択があります。生徒を残したまま、国語専門へ業態転換できます。"}
+];
+
+var TIER_META = {
+  A:{label:"最優先", note:"既存教室に国語を『足す』だけ", cls:"a"},
+  B:{label:"準優先", note:"生徒と場所はあるが国語が空白", cls:"b"},
+  C:{label:"開拓",   note:"新規参入・第2事業／即決層", cls:"d"}
+};
+var URBAN_SHARE = 0.35;
+
+/* summary stats */
+(function(){
+  var total = TARGETS.reduce(function(a,b){return a+b.c;},0);
+  var urban = total*URBAN_SHARE;
+  var prio  = TARGETS.filter(function(d){return d.t==="A";}).reduce(function(a,b){return a+b.c;},0)*URBAN_SHARE;
+  document.getElementById("t-total").innerHTML = n(total)+'<small>件</small>';
+  document.getElementById("t-urban").innerHTML = n(urban)+'<small>件</small>';
+  document.getElementById("t-prio").innerHTML  = n(prio)+'<small>件</small>';
+})();
+
+/* tier chart */
+(function(){
+  var tiers = ["A","B","C"];
+  var rows = tiers.map(function(t){
+    var sum = TARGETS.filter(function(d){return d.t===t;}).reduce(function(a,b){return a+b.c;},0);
+    var cnt = TARGETS.filter(function(d){return d.t===t;}).length;
+    return {t:t, sum:sum, urban:sum*URBAN_SHARE, cnt:cnt};
+  });
+  var max = 130000;
+  var W=560,H=260,padL=196,padR=68,plotW=W-padL-padR,rowH=64,top=34;
+  var s="";
+  [0,50000,100000].forEach(function(g){
+    var x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-10)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-14)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-16,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  });
+  s+=txt(W-padR+6,top-16,"件",{fill:"var(--ink-3)",size:10});
+  rows.forEach(function(r,i){
+    var y=top+i*rowH;
+    var m=TIER_META[r.t];
+    s+=txt(0,y+11,"Tier "+r.t+"・"+m.label+"（"+r.cnt+"セグメント）",{fill:"var(--ink)",size:12.5,weight:700});
+    s+=txt(0,y+29,m.note,{fill:"var(--ink-3)",size:10.5});
+    s+=rrect(padL,y-2,(r.sum/max)*plotW,17,4,"var(--s5)");
+    s+=rrect(padL,y+19,(r.urban/max)*plotW,17,4,"var(--s1)");
+    s+=txt(padL+(r.sum/max)*plotW+8,y+10,n(r.sum),{fill:"var(--ink-2)",size:11,mono:true,baseline:"middle"});
+    s+=txt(padL+(r.urban/max)*plotW+8,y+31,n(r.urban),{fill:"var(--ink-2)",size:11,mono:true,baseline:"middle"});
+  });
+  document.getElementById("ch-tiers").innerHTML=svg(W,H,s);
+})();
+
+/* target list */
+var state={tier:"all",q:"",sort:"rank"};
+function renderTargets(){
+  var list = TARGETS.map(function(d,i){ d._rank=i+1; return d; });
+  if(state.tier!=="all") list=list.filter(function(d){return d.t===state.tier;});
+  if(state.q){
+    var q=state.q.toLowerCase();
+    list=list.filter(function(d){return (d.name+d.why+d.hook).toLowerCase().indexOf(q)>=0;});
+  }
+  if(state.sort==="count") list=list.slice().sort(function(a,b){return b.c-a.c;});
+  if(state.sort==="countAsc") list=list.slice().sort(function(a,b){return a.c-b.c;});
+
+  document.getElementById("t-shown").textContent=list.length;
+  document.getElementById("t-sum").textContent=n(list.reduce(function(a,b){return a+b.c;},0))+"件";
+
+  document.getElementById("t-list").innerHTML = list.map(function(d){
+    var m=TIER_META[d.t];
+    return '<article class="trow t'+d.t+'">'+
+      '<div class="rank">'+String(d._rank).padStart(2,"0")+'</div>'+
+      '<div class="head">'+
+        '<div class="name">'+esc(d.name)+'</div>'+
+        '<div class="meta"><span class="chip '+m.cls+'">Tier '+d.t+'・'+m.label+'</span>'+
+        '<span class="cnt">'+n(d.c)+'<span>件</span></span></div>'+
+        '<div style="font-size:11px;color:var(--ink-3)">都市部想定 '+n(d.c*URBAN_SHARE)+'件</div>'+
+      '</div>'+
+      '<div class="why"><span class="fieldlabel">なぜ狙うか</span><p class="fieldbody">'+esc(d.why)+'</p></div>'+
+      '<div class="hook"><span class="fieldlabel">初回の切り口</span><p class="fieldbody">'+esc(d.hook)+'</p></div>'+
+    '</article>';
+  }).join("");
+}
+document.querySelectorAll("#tier-seg button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll("#tier-seg button").forEach(function(x){x.setAttribute("aria-pressed", x===b?"true":"false");});
+    state.tier=b.dataset.t; renderTargets();
+  });
+});
+document.getElementById("t-search").addEventListener("input",function(e){state.q=e.target.value.trim();renderTargets();});
+document.getElementById("t-sort").addEventListener("change",function(e){state.sort=e.target.value;renderTargets();});
+renderTargets();
+
+/* ---------------- KPI tree ---------------- */
+(function(){
+  var W=760,H=250,s="";
+  var nodes=[
+    {x:0,w:180,y:96,t:"年間 12加盟",sub:"都市部12商圏を獲得",c:"var(--s2)",big:true},
+    {x:236,w:180,y:20,t:"月1件の加盟",sub:"成約率3.5%",c:"var(--s1)"},
+    {x:236,w:180,y:96,t:"月15商談",sub:"商談化率30%",c:"var(--s1)"},
+    {x:236,w:180,y:172,t:"月50反応",sub:"反応率2.5%",c:"var(--s1)"},
+    {x:520,w:230,y:96,t:"月2,000件のアプローチ",sub:"これだけが実行変数",c:"var(--s3)",big:true}
+  ];
+  s+='<path d="M 180 108 L 208 108 L 208 34 L 236 34" stroke="var(--rule-2)" stroke-width="1.5" fill="none"></path>';
+  s+='<path d="M 180 108 L 236 108" stroke="var(--rule-2)" stroke-width="1.5" fill="none"></path>';
+  s+='<path d="M 180 108 L 208 108 L 208 186 L 236 186" stroke="var(--rule-2)" stroke-width="1.5" fill="none"></path>';
+  s+='<path d="M 416 34 L 468 34 L 468 108 L 520 108" stroke="var(--rule-2)" stroke-width="1.5" fill="none"></path>';
+  s+='<path d="M 416 108 L 520 108" stroke="var(--rule-2)" stroke-width="1.5" fill="none"></path>';
+  s+='<path d="M 416 186 L 468 186 L 468 108 L 520 108" stroke="var(--rule-2)" stroke-width="1.5" fill="none"></path>';
+  nodes.forEach(function(nd){
+    s+='<rect x="'+nd.x+'" y="'+nd.y+'" width="'+nd.w+'" height="'+(nd.big?42:36)+'" rx="8" fill="var(--surface-2)" stroke="'+nd.c+'" stroke-width="1.5"></rect>';
+    s+=txt(nd.x+14,nd.y+(nd.big?19:17),nd.t,{fill:"var(--ink)",size:nd.big?14:13,weight:700});
+    s+=txt(nd.x+14,nd.y+(nd.big?34:31),nd.sub,{fill:"var(--ink-3)",size:10.5});
+  });
+  s+=txt(0,12,"目標",{fill:"var(--ink-3)",size:10});
+  s+=txt(520,12,"実行",{fill:"var(--ink-3)",size:10});
+  document.getElementById("ch-kpitree").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- ROI ---------------- */
+var PRESETS={
+  cons:{app:2000,resp:1.8,meet:25,close:2.5,fee:80, lic:5,months:30,margin:70,fixed:25,init:30},
+  base:{app:2000,resp:2.5,meet:30,close:3.5,fee:100,lic:5,months:36,margin:70,fixed:25,init:30},
+  bull:{app:3000,resp:3.5,meet:35,close:5.0,fee:120,lic:5,months:42,margin:75,fixed:25,init:30}
+};
+var KEYS=["app","resp","meet","close","fee","lic","months","margin","fixed","init"];
+var STEP={app:0,resp:1,meet:0,close:1,fee:0,lic:0,months:0,margin:0,fixed:0,init:0};
+
+function readInputs(){
+  var o={};
+  KEYS.forEach(function(k){ o[k]=parseFloat(document.getElementById("k-"+k).value); });
+  return o;
+}
+function setInputs(p){
+  KEYS.forEach(function(k){ document.getElementById("k-"+k).value=p[k]; });
+}
+function calc(p){
+  var resp=p.app*(p.resp/100);
+  var meet=resp*(p.meet/100);
+  var close=meet*(p.close/100);
+  var ltv=p.fee*10000 + p.lic*10000*p.months;
+  var gpPer=ltv*(p.margin/100);
+  var annualCloses=close*12;
+  var annualProfit=annualCloses*gpPer;
+  var invest=p.fixed*10000*12 + p.init*10000;
+  var roi=invest>0 ? (annualProfit-invest)/invest*100 : 0;
+  var beCloses=gpPer>0 ? invest/gpPer : Infinity;
+  var payback=null, cumP=[], cumC=[];
+  for(var m=1;m<=12;m++){
+    /* 実収入ベース：加盟金は成約月に、月額ライセンスは翌月以降も積み上がる */
+    var cash = close*p.fee*10000*m + p.lic*10000*close*(m*(m+1)/2);
+    var cp = cash*(p.margin/100);
+    var cc = p.init*10000 + p.fixed*10000*m;
+    cumP.push(cp); cumC.push(cc);
+    if(payback===null && cp>=cc) payback=m;
+  }
+  return {resp:resp,meet:meet,close:close,ltv:ltv,gpPer:gpPer,annualCloses:annualCloses,
+          annualProfit:annualProfit,invest:invest,roi:roi,beCloses:beCloses,payback:payback,cumP:cumP,cumC:cumC};
+}
+function yen(v){
+  if(Math.abs(v)>=100000000) return (v/100000000).toFixed(2)+"億円";
+  return n(v/10000)+"万円";
+}
+function update(){
+  var p=readInputs();
+  KEYS.forEach(function(k){
+    document.getElementById("v-"+k).textContent = STEP[k] ? p[k].toFixed(1) : n(p[k]);
+  });
+  var r=calc(p);
+
+  document.getElementById("o-roi").innerHTML = (r.roi>=0?"+":"")+Math.round(r.roi)+'<small>%</small>';
+  document.getElementById("o-roi").parentElement.className = "stat "+(r.roi>=0?"pos":"hot");
+  document.getElementById("o-closes").innerHTML = r.annualCloses.toFixed(1)+'<small>件</small>';
+  document.getElementById("o-profit").innerHTML = yen(r.annualProfit).replace(/(万円|億円)/,'<small>$1</small>');
+  document.getElementById("o-payback").innerHTML = r.payback ? r.payback+'<small>ヶ月目</small>' : '<span style="font-size:18px">12ヶ月内に未達</span>';
+  document.getElementById("o-breakeven").textContent = "損益分岐："+r.beCloses.toFixed(1)+"件の加盟";
+
+  document.getElementById("f-app").textContent=n(p.app);
+  document.getElementById("f-resp").textContent=r.resp.toFixed(0);
+  document.getElementById("f-meet").textContent=r.meet.toFixed(1);
+  document.getElementById("f-close").textContent=r.close.toFixed(2);
+  document.getElementById("f-resp-r").textContent="反応率 "+p.resp.toFixed(1)+"%";
+  document.getElementById("f-meet-r").textContent="商談化 "+p.meet+"%";
+  document.getElementById("f-close-r").textContent="成約 "+p.close.toFixed(1)+"%";
+
+  drawPayback(r);
+  drawSens(p);
+
+  var v=document.getElementById("o-verdict");
+  if(r.roi>=0 && r.payback){
+    v.style.borderLeftColor="var(--good)";
+    v.innerHTML='<b>判定：</b> 年間 <b>'+r.annualCloses.toFixed(1)+'件</b> の加盟で、投資 <b>'+yen(r.invest)+
+      '</b> に対して粗利 <b>'+yen(r.annualProfit)+'</b>。ROIは <b>'+Math.round(r.roi)+'%</b>、'+
+      '（いずれもLTVベース）。実際の入金で見ても投資回収は <b>'+r.payback+'ヶ月目</b>、加盟が <b>'+r.beCloses.toFixed(1)+'件</b> 決まれば元が取れます。';
+  } else {
+    v.style.borderLeftColor="var(--accent)";
+    v.innerHTML='<b style="color:var(--accent)">判定：</b> この前提では12ヶ月以内に投資を回収できません。投資 <b style="color:var(--accent)">'+yen(r.invest)+
+      '</b> に対し粗利は <b style="color:var(--accent)">'+yen(r.annualProfit)+'</b>。回収には年間 <b style="color:var(--accent)">'+r.beCloses.toFixed(1)+
+      '件</b> の加盟が必要です。アプローチ量か成約率、あるいは平均継続月数のいずれかを引き上げる必要があります。';
+  }
+}
+
+function drawPayback(r){
+  var W=680,H=280,padL=64,padR=58,padT=24,padB=40;
+  var plotW=W-padL-padR, plotH=H-padT-padB;
+  var max=Math.max(r.cumP[11], r.cumC[11], 1);
+  var ticks=4, s="";
+  for(var i=0;i<=ticks;i++){
+    var val=max*i/ticks, y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-10,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){ return padL + ((m-1)/11)*plotW; }
+  function py(v){ return padT + plotH - (v/max)*plotH; }
+  [1,3,6,9,12].forEach(function(m){
+    s+=txt(px(m),padT+plotH+18,m+"ヶ月",{fill:"var(--ink-3)",size:10.5,mono:true,anchor:"middle"});
+  });
+  function line(arr,color){
+    var d=arr.map(function(v,i){return (i?"L":"M")+" "+px(i+1)+" "+py(v);}).join(" ");
+    return '<path d="'+d+'" fill="none" stroke="'+color+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>';
+  }
+  s+=line(r.cumC,"var(--s2)");
+  s+=line(r.cumP,"var(--s3)");
+  if(r.payback){
+    var x=px(r.payback);
+    s+='<line x1="'+x+'" y1="'+padT+'" x2="'+x+'" y2="'+(padT+plotH)+'" stroke="var(--s3)" stroke-width="1.5" stroke-dasharray="4 4"></line>';
+    s+='<circle cx="'+x+'" cy="'+py(r.cumP[r.payback-1])+'" r="5" fill="var(--s3)" stroke="var(--surface)" stroke-width="2"></circle>';
+    s+=txt(x+8,padT+12,"回収 "+r.payback+"ヶ月目",{fill:"var(--s3)",size:11,weight:700});
+  }
+  s+='<circle cx="'+px(12)+'" cy="'+py(r.cumP[11])+'" r="4" fill="var(--s3)"></circle>';
+  s+=txt(px(12)+8,py(r.cumP[11]),n(r.cumP[11]/10000),{fill:"var(--s3)",size:11,weight:600,mono:true,baseline:"middle"});
+  s+='<circle cx="'+px(12)+'" cy="'+py(r.cumC[11])+'" r="4" fill="var(--s2)"></circle>';
+  s+=txt(px(12)+8,py(r.cumC[11]),n(r.cumC[11]/10000),{fill:"var(--s2)",size:11,weight:600,mono:true,baseline:"middle"});
+  document.getElementById("ch-payback").innerHTML=svg(W,H,s);
+}
+
+function drawSens(p){
+  var rates=[1,2,3,4,5,6,7,8];
+  var vals=rates.map(function(cr){
+    var q=Object.assign({},p,{close:cr});
+    return {r:cr, profit:calc(q).annualProfit};
+  });
+  var invest=p.fixed*10000*12+p.init*10000;
+  var max=Math.max.apply(null,vals.map(function(v){return v.profit;}).concat([invest*1.2]));
+  var W=680,H=270,padL=64,padR=20,padT=26,padB=54;
+  var plotW=W-padL-padR, plotH=H-padT-padB;
+  var bw=plotW/rates.length*0.62, gap=plotW/rates.length;
+  var s="";
+  var curIdx=0, curD=Infinity;
+  rates.forEach(function(r,i){ var d=Math.abs(r-p.close); if(d<curD){curD=d;curIdx=i;} });
+  for(var i=0;i<=4;i++){
+    var val=max*i/4, y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-10,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  vals.forEach(function(v,i){
+    var x=padL+i*gap+(gap-bw)/2;
+    var h=(v.profit/max)*plotH, y=padT+plotH-h;
+    var cur=(i===curIdx);
+    s+=rrect(x,y,bw,h,4,cur?"var(--s2)":"var(--s1)");
+    s+=txt(x+bw/2,y-7,n(v.profit/10000),{fill:cur?"var(--s2)":"var(--ink-2)",size:10.5,weight:600,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+18,v.r+"%",{fill:cur?"var(--s2)":"var(--ink-3)",size:11,weight:cur?700:400,mono:true,anchor:"middle"});
+    if(cur) s+=txt(x+bw/2,padT+plotH+34,"現在 "+p.close.toFixed(1)+"%",{fill:"var(--s2)",size:10,weight:700,anchor:"middle"});
+  });
+  var iy=padT+plotH-(invest/max)*plotH;
+  s+='<line x1="'+padL+'" y1="'+iy+'" x2="'+(padL+plotW)+'" y2="'+iy+'" stroke="var(--s4)" stroke-width="2" stroke-dasharray="6 4"></line>';
+  s+=txt(padL+6,iy-7,"年間投資額 "+n(invest/10000)+"万円（この線を超えれば黒字）",{fill:"var(--s4)",size:10.5,weight:700});
+  s+=txt(padL,H-8,"横軸：商談→FC加盟の成約率",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("ch-sens").innerHTML=svg(W,H,s);
+}
+
+KEYS.forEach(function(k){
+  document.getElementById("k-"+k).addEventListener("input",function(){
+    document.querySelectorAll("#preset-seg button").forEach(function(x){x.setAttribute("aria-pressed","false");});
+    update();
+  });
+});
+document.querySelectorAll("#preset-seg button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll("#preset-seg button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    setInputs(PRESETS[b.dataset.preset]); update();
+  });
+});
+document.getElementById("roi-reset").addEventListener("click",function(){
+  document.querySelectorAll("#preset-seg button").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.preset==="base"?"true":"false");});
+  setInputs(PRESETS.base); update();
+});
+setInputs(PRESETS.base);
+update();
+
+})();
+</script>
