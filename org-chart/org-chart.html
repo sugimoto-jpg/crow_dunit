@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>組織図</title>
+<style>
+  @page { size: A4 landscape; margin: 9mm 11mm; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "IPAGothic", "IPAPGothic", sans-serif;
+    color: #1a1a1a;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .sheet-title { font-size: 15px; font-weight: bold; letter-spacing: .08em; }
+  .sheet-head { display: flex; align-items: baseline; justify-content: space-between;
+                border-bottom: 2px solid #2f5496; padding-bottom: 5px; margin-bottom: 16px; }
+  .sheet-head .date { font-size: 10px; color: #555; }
+
+  /* ---- boxes ---- */
+  .box { border: 1px solid #8ea9c9; background: #fff; text-align: center; }
+  .box .ttl { background: #d9e4f1; border-bottom: 1px solid #8ea9c9;
+              font-weight: bold; padding: 4px 6px; font-size: 11px; }
+  .box .body { padding: 6px; }
+  .lead { font-size: 9.5px; color: #333; }
+  .lead b { font-size: 10.5px; }
+
+  .company { width: 64mm; margin: 0 auto; }
+  .company .ttl { background: #2f5496; color: #fff; border-color: #2f5496; font-size: 12px; }
+
+  .ceo { width: 64mm; margin: 0 auto; }
+  .ceo .ttl { background: #bcd0e8; font-size: 11px; }
+  .ceo .name { font-size: 15px; font-weight: bold; padding: 8px; }
+
+  .sec { width: 64mm; margin: 0 auto; }
+  .sec .ttl { background: #cfdcee; }
+
+  /* ---- connectors ---- */
+  .v { width: 2px; background: #7f7f7f; margin: 0 auto; }
+  .v14 { height: 11mm; }
+  .v18 { height: 11mm; }
+
+  .bus-wrap { position: relative; height: 11mm; }
+  .bus-wrap .hline { position: absolute; top: 0; left: calc((100% - 50px)/12); right: calc((100% - 50px)/12); height: 2px; background: #7f7f7f; }
+  .bus-wrap .stem  { position: absolute; top: -11mm; left: 50%; margin-left: -1px; width: 2px; height: 11mm; background: #7f7f7f; }
+
+  /* partner on the side of CEO */
+  .ceo-row { position: relative; }
+  .partner { position: absolute; right: 0; top: 0; width: 52mm; }
+  .partner .ttl { background: #e8e8e8; border-color: #a6a6a6; }
+  .partner { border-color: #a6a6a6; }
+  .ceo-row .side-line { position: absolute; top: 34px; height: 2px; background: #7f7f7f;
+                        left: calc(50% + 32mm); width: calc(50% - 32mm - 52mm); }
+
+  /* ---- unit row ---- */
+  .units { display: flex; gap: 10px; align-items: stretch; min-height: 62mm; }
+  .col { flex: 1 1 0; display: flex; flex-direction: column; }
+  .col .drop { width: 2px; height: 9mm; background: #7f7f7f; margin: 0 auto; }
+  .unit { flex: 1; display: flex; flex-direction: column; }
+  .unit .body { flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 7px; }
+
+  .role { border: 1px solid #c9d6e6; background: #f4f8fc; padding: 4px; font-size: 9.5px; }
+  .role .org { color: #44546a; }
+  .role .cnt { font-weight: bold; }
+  .tasks { border-top: 1px dashed #b7c6d8; padding-top: 6px; margin-top: 2px; font-size: 9.5px; color: #333; }
+  .tasks .cap { display: block; font-size: 8.5px; color: #7f7f7f; margin-bottom: 2px; letter-spacing: .04em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; }
+  .chip { border: 1px solid #b7c6d8; background: #eef3f9; border-radius: 2px; padding: 1px 5px; font-size: 9px; }
+
+  /* ---- new units (proposed today) ---- */
+  .new .ttl { background: #ffe600; border-color: #e0a800; box-shadow: inset 0 0 0 2px #f2b800; }
+  .new { border-color: #e0a800; }
+  .propose { background: #fff8cc; border-bottom: 1px solid #e0a800; color: #8a5a00;
+             font-size: 8.5px; font-weight: bold; letter-spacing: .06em; padding: 2px; }
+  .box .ttl { white-space: nowrap; }
+  .new .ttl { font-size: 10.5px; }
+
+  .legend { margin-top: 6mm; font-size: 9.5px; color: #444; display: flex; align-items: center; gap: 6px; }
+  .legend .swatch { display: inline-block; width: 26px; height: 12px; background: #ffe600;
+                    border: 1px solid #e0a800; box-shadow: inset 0 0 0 2px #f2b800; }
+</style>
+</head>
+<body>
+
+<div class="sheet-head">
+  <div class="sheet-title">組織図</div>
+  <div class="date">ＯｆｆｉｃｅＫ合同会社　御中</div>
+</div>
+
+<!-- 会社 -->
+<div class="box company">
+  <div class="ttl">ＯｆｆｉｃｅＫ合同会社</div>
+</div>
+<div class="v v14"></div>
+
+<!-- 社長 ＋ 協業パートナー -->
+<div class="ceo-row">
+  <div class="box ceo">
+    <div class="ttl">社長</div>
+    <div class="name">髙橋正義　様</div>
+  </div>
+  <div class="side-line"></div>
+  <div class="box partner">
+    <div class="ttl">協業パートナー</div>
+    <div class="body">
+      <div class="lead">アイドマ・ホールディングス<br><b>杉本賢亮</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="v v18"></div>
+
+<!-- 秘書 -->
+<div class="box sec">
+  <div class="ttl">秘書ユニット</div>
+  <div class="body">
+    <div class="lead">アイドマ・ホールディングス<br>プロジェクトリーダー<span class="cnt">1名</span>／秘書<span class="cnt">1名</span></div>
+  </div>
+</div>
+
+<!-- 秘書から各ユニットへ -->
+<div class="bus-wrap">
+  <div class="stem"></div>
+  <div class="hline"></div>
+</div>
+
+<div class="units">
+
+  <div class="col">
+    <div class="drop"></div>
+    <div class="box unit">
+      <div class="ttl">営業支援</div>
+      <div class="body">
+        <div class="role"><span class="org">アイドマ・ホールディングス</span><br>プロジェクトリーダー<span class="cnt">2名</span></div>
+        <div class="role"><span class="org">アイドマメンバー</span><br><span class="cnt">6名</span></div>
+        <div class="tasks">
+          <span class="cap">主な業務</span>
+          <div class="chips">
+            <span class="chip">電話</span><span class="chip">メール</span><span class="chip">FAX</span>
+            <span class="chip">DM</span><span class="chip">手紙</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="drop"></div>
+    <div class="box unit">
+      <div class="ttl">セールスユニット</div>
+      <div class="body">
+        <div class="role"><span class="org">アイドマ・ホールディングス</span><br>プロジェクトリーダー<span class="cnt">1名</span></div>
+        <div class="role"><span class="org">オンラインセールス</span><br>想定<span class="cnt">3名</span></div>
+        <div class="tasks">
+          <span class="cap">主な業務</span>
+          オンライン商談<br>商談の資料作成
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="drop"></div>
+    <div class="box unit">
+      <div class="ttl">フィールドワーク</div>
+      <div class="body">
+        <div class="role"><span class="org">アイドマ・ホールディングス</span><br>プロジェクトリーダー<span class="cnt">1名</span></div>
+        <div class="role"><span class="org">アイドマメンバー</span></div>
+        <div class="tasks">
+          <span class="cap">主な業務</span>
+          フィールドワーク<br><b>42,000名</b>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="drop"></div>
+    <div class="box unit">
+      <div class="ttl">生産性向上ユニット</div>
+      <div class="body">
+        <div class="role"><span class="org">メイクブイ・ホールディングス</span><br>プロジェクトリーダー<span class="cnt">1名</span></div>
+        <div class="role"><span class="org">アイドマメンバー</span></div>
+        <div class="tasks">
+          <span class="cap">主な業務</span>
+          組織図<br>ワークフロー<br>マニュアル作成
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="drop"></div>
+    <div class="box unit new">
+      <div class="ttl">HRユニット</div>
+      <div class="propose">本日ご提案</div>
+      <div class="body">
+        <div class="role"><span class="org">アイドマ・ホールディングス</span><br>プロジェクトリーダー<span class="cnt">1名</span></div>
+        <div class="role"><span class="org">アイドマメンバー</span></div>
+        <div class="tasks">
+          <span class="cap">主な業務</span>
+          母集団形成<br>採用記事執筆<br>書類選考<br>面接<br>入社手続き
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="drop"></div>
+    <div class="box unit new">
+      <div class="ttl">サービス開発ユニット</div>
+      <div class="propose">本日ご提案</div>
+      <div class="body">
+        <div class="role"><span class="org">アイドマ・ホールディングス</span><br>プロジェクトリーダー<span class="cnt">1名</span></div>
+        <div class="role"><span class="org">アイドマメンバー</span></div>
+        <div class="tasks">
+          <span class="cap">主な業務</span>
+          市場リサーチ<br>ビジネスモデル構築
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="legend"><span class="swatch"></span>黄色枠：本日ご提案のユニット（HRユニット／サービス開発ユニット）</div>
+
+</body>
+</html>
