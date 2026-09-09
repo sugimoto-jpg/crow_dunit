@@ -34,8 +34,27 @@
   .ceo .ttl { background: #bcd0e8; font-size: 11px; }
   .ceo .name { font-size: 15px; font-weight: bold; padding: 8px; }
 
-  .sec { width: 64mm; margin: 0 auto; }
+  .sec { width: 62mm; }
   .sec .ttl { background: #cfdcee; }
+
+  /* 社長直下（マネジメント代行ユニット＋秘書ユニット）の並び */
+  .mid-row { display: flex; justify-content: center; gap: 16mm; align-items: stretch; }
+  .mid-row > .box { width: 62mm; }
+  .mid-bus { position: relative; height: 8mm; }
+  .mid-bus .hline { position: absolute; top: 0; left: calc(50% - 39mm); width: 78mm; height: 2px; background: #7f7f7f; }
+  .mid-bus .dropL { position: absolute; top: 0; left: calc(50% - 39mm); width: 2px; height: 8mm; background: #7f7f7f; }
+  .mid-bus .dropR { position: absolute; top: 0; left: calc(50% + 39mm); width: 2px; height: 8mm; background: #7f7f7f; }
+  .mid-foot { position: relative; height: 9mm; }
+  .mid-foot .dropL { position: absolute; top: 0; left: calc(50% - 39mm); width: 2px; height: 5mm; background: #7f7f7f; }
+  .mid-foot .dropR { position: absolute; top: 0; left: calc(50% + 39mm); width: 2px; height: 5mm; background: #7f7f7f; }
+  .mid-foot .hline { position: absolute; top: 5mm; left: calc(50% - 39mm); width: 78mm; height: 2px; background: #7f7f7f; }
+  .mid-foot .up { position: absolute; top: 5mm; left: 50%; margin-left: -1px; width: 2px; height: 4mm; background: #7f7f7f; }
+
+  /* 黄色で塗りつぶすユニット（マネジメント代行） */
+  .fill-new { border-color: #e0a800; background: #fff9d6; }
+  .fill-new .ttl { background: #ffe600; border-color: #e0a800; box-shadow: inset 0 0 0 2px #f2b800; }
+  .fill-new .role { background: #fffdf0; border-color: #e6cf88; }
+  .fill-new .tasks { border-top-color: #e0a800; }
 
   /* ---- connectors ---- */
   .v { width: 2px; background: #7f7f7f; margin: 0 auto; }
@@ -44,7 +63,7 @@
 
   .bus-wrap { position: relative; height: 11mm; }
   .bus-wrap .hline { position: absolute; top: 0; left: calc((100% - 50px)/12); right: calc((100% - 50px)/12); height: 2px; background: #7f7f7f; }
-  .bus-wrap .stem  { position: absolute; top: -11mm; left: 50%; margin-left: -1px; width: 2px; height: 11mm; background: #7f7f7f; }
+  .bus-wrap .stem  { position: absolute; top: -5mm; left: 50%; margin-left: -1px; width: 2px; height: 5mm; background: #7f7f7f; }
 
   /* partner on the side of CEO */
   .ceo-row { position: relative; }
@@ -110,17 +129,40 @@
   </div>
 </div>
 
-<div class="v v18"></div>
+<div class="v v14"></div>
 
-<!-- 秘書 -->
-<div class="box sec">
-  <div class="ttl">秘書ユニット</div>
-  <div class="body">
-    <div class="lead">アイドマ・ホールディングス<br>プロジェクトリーダー<span class="cnt">1名</span>／秘書<span class="cnt">1名</span></div>
+<!-- マネジメント代行ユニット ＋ 秘書ユニット -->
+<div class="mid-bus">
+  <div class="hline"></div>
+  <div class="dropL"></div>
+  <div class="dropR"></div>
+</div>
+
+<div class="mid-row">
+  <div class="box sec fill-new">
+    <div class="ttl">マネジメント代行ユニット</div>
+    <div class="propose">本日ご提案</div>
+    <div class="body">
+      <div class="lead">社長に代わって組織のマネジメントを推進<br>各ユニットの統括・進捗管理</div>
+    </div>
+  </div>
+
+  <div class="box sec">
+    <div class="ttl">秘書ユニット</div>
+    <div class="body">
+      <div class="lead">アイドマ・ホールディングス<br>プロジェクトリーダー<span class="cnt">1名</span>／秘書<span class="cnt">1名</span></div>
+    </div>
   </div>
 </div>
 
-<!-- 秘書から各ユニットへ -->
+<div class="mid-foot">
+  <div class="dropL"></div>
+  <div class="dropR"></div>
+  <div class="hline"></div>
+  <div class="up"></div>
+</div>
+
+<!-- 各ユニットへ -->
 <div class="bus-wrap">
   <div class="stem"></div>
   <div class="hline"></div>
@@ -225,7 +267,7 @@
 
 </div>
 
-<div class="legend"><span class="swatch"></span>黄色枠：本日ご提案のユニット（HRユニット／サービス開発ユニット）</div>
+<div class="legend"><span class="swatch"></span>黄色：本日ご提案のユニット（マネジメント代行ユニット／HRユニット／サービス開発ユニット）</div>
 
 </body>
 </html>
