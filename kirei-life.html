@@ -1,0 +1,1606 @@
+<title>きれいライフサービス 紹介元をつくる設計</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@700&family=M+PLUS+1p:wght@400;500;700&family=Red+Hat+Mono:wght@400;700&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#ECEDEF;
+  --surface:#FBFBFC;
+  --surface-2:#E3E5E9;
+  --surface-3:#D5D8DE;
+  --ink:#16171A;
+  --ink-2:#4A4D53;
+  --ink-3:#787C83;
+  --rule:#DBDDE2;
+  --rule-2:#C0C3CA;
+  --s1:#8C3A5A;
+  --s2:#00879B;
+  --s3:#8A6410;
+  --s4:#3A5FA8;
+  --s5:#3F7A32;
+  --brand:#8C3A5A;
+  --brand-soft:#F4E4EA;
+  --accent:#00879B;
+  --accent-soft:#DCEEF1;
+  --good:#3F7A32;
+  --good-soft:#E2EDDE;
+  --warn:#8A6410;
+  --warn-soft:#F2EAD6;
+  --info-soft:#E0E6F3;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#131417;
+    --surface:#1C1E22;
+    --surface-2:#262930;
+    --surface-3:#31353D;
+    --ink:#EBECEF;
+    --ink-2:#AFB2B9;
+    --ink-3:#82868D;
+    --rule:#2C2F35;
+    --rule-2:#3B3F47;
+    --s1:#C5637F;
+    --s2:#20A3AC;
+    --s3:#A8821C;
+    --s4:#6E8FD8;
+    --s5:#4E9C42;
+    --brand:#C5637F;
+    --brand-soft:#311B23;
+    --accent:#20A3AC;
+    --accent-soft:#122A2D;
+    --good:#4E9C42;
+    --good-soft:#182A15;
+    --warn:#A8821C;
+    --warn-soft:#2B2513;
+    --info-soft:#1A2133;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#131417;
+  --surface:#1C1E22;
+  --surface-2:#262930;
+  --surface-3:#31353D;
+  --ink:#EBECEF;
+  --ink-2:#AFB2B9;
+  --ink-3:#82868D;
+  --rule:#2C2F35;
+  --rule-2:#3B3F47;
+  --s1:#C5637F;
+  --s2:#20A3AC;
+  --s3:#A8821C;
+  --s4:#6E8FD8;
+  --s5:#4E9C42;
+  --brand:#C5637F;
+  --brand-soft:#311B23;
+  --accent:#20A3AC;
+  --accent-soft:#122A2D;
+  --good:#4E9C42;
+  --good-soft:#182A15;
+  --warn:#A8821C;
+  --warn-soft:#2B2513;
+  --info-soft:#1A2133;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);
+  font-family:"M PLUS 1p","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  font-size:15px;line-height:1.85;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"Kaisei Decol","Hiragino Mincho ProN",serif;font-weight:700;margin:0;line-height:1.46;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:3px}
+.mono{font-family:"Red Hat Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.wave{height:3px;background:linear-gradient(90deg,var(--brand) 0 22%,var(--rule-2) 22% 78%,var(--accent) 78% 100%);border:0;margin:0;opacity:.75}
+
+.masthead{background:var(--surface);border-bottom:1px solid var(--rule)}
+.mast-inner{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-end;padding:26px 0 20px}
+.eyebrow{font-family:"Red Hat Mono",monospace;font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.mast-title{font-size:clamp(23px,3.2vw,36px);font-weight:700;margin-top:8px;letter-spacing:.01em}
+.mast-title em{font-style:normal;color:var(--brand)}
+.mast-sub{color:var(--ink-2);font-size:13.5px;margin-top:9px;max-width:65ch}
+.mast-meta{font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-align:right}
+.mast-meta b{color:var(--ink-2);font-weight:700}
+.flash{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);color:var(--accent);
+  font-size:12px;font-weight:700;padding:5px 13px;border-radius:4px;margin-top:12px}
+
+.tabbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:none;border:0;border-bottom:3px solid transparent;font:inherit;font-size:13px;font-weight:700;
+  color:var(--ink-3);padding:13px 14px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brand)}
+.tab .num{font-family:"Red Hat Mono",monospace;font-size:10px;color:var(--ink-3);margin-right:6px;font-weight:700}
+.tab[aria-selected="true"] .num{color:var(--brand)}
+
+.panel{padding:34px 0 76px}
+.panel[hidden]{display:none!important}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.sec-head h2{font-size:24px}
+.sec-head .tagline{font-size:12.5px;color:var(--ink-3)}
+.lede{color:var(--ink-2);font-size:14px;max-width:76ch;margin:10px 0 26px}
+.block{margin-top:40px}
+.block > h3{font-size:17.5px}
+.block > .sub{font-size:12.5px;color:var(--ink-3);margin:3px 0 16px}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(186px,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.card.flat{background:transparent;border-style:dashed}
+
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:15px 17px;display:flex;flex-direction:column;gap:1px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;top:0;left:0;width:36px;height:3px;background:var(--rule-2)}
+.stat.hot::before{background:var(--brand);width:100%}
+.stat.pos::before{background:var(--good);width:100%}
+.stat.info::before{background:var(--accent);width:100%}
+.stat.warn::before{background:var(--warn);width:100%}
+.stat .k{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.stat .v{font-family:"Red Hat Mono",monospace;font-size:25px;font-weight:700;letter-spacing:-.03em;line-height:1.35;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:13px;margin-left:2px;color:var(--ink-2);font-family:"M PLUS 1p",sans-serif;font-weight:400}
+.stat .n{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:2px}
+.stat.hot .v{color:var(--brand)}
+.stat.pos .v{color:var(--good)}
+.stat.info .v{color:var(--accent)}
+.stat.warn .v{color:var(--warn)}
+
+.chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.chip.a{background:var(--brand-soft);color:var(--brand)}
+.chip.b{background:var(--accent-soft);color:var(--accent)}
+.chip.c{background:var(--good-soft);color:var(--good)}
+.chip.d{background:var(--warn-soft);color:var(--warn)}
+.chip.e{background:var(--info-soft);color:var(--s4)}
+
+.deflist{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;font-size:13.5px;align-items:baseline}
+.deflist dt{color:var(--ink-3);font-size:12px;font-weight:700;white-space:nowrap}
+.deflist dd{margin:0}
+.note{font-size:12px;color:var(--ink-3);line-height:1.78;margin-top:12px}
+.callout{background:var(--warn-soft);border-radius:10px;padding:14px 17px;font-size:12.5px;color:var(--ink-2);margin-top:14px}
+.callout b{color:var(--ink)}
+.callout.teal{background:var(--accent-soft)}
+
+.swot{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:14px}
+.swot section{border:1px solid var(--rule);border-radius:10px;padding:16px 18px;background:var(--surface)}
+.swot h4{font-size:14px;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.swot h4::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--rule-2)}
+.swot .s h4::before{background:var(--s5)}
+.swot .w h4::before{background:var(--s1)}
+.swot .o h4::before{background:var(--s2)}
+.swot .t h4::before{background:var(--s3)}
+.swot ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+
+.reason{background:var(--surface);border:1px solid var(--rule);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.reason .rhead{display:flex;gap:16px;align-items:flex-start;padding:20px 24px 0}
+.reason .idx{font-family:"Kaisei Decol",serif;font-size:32px;font-weight:700;color:var(--brand);line-height:1;flex:0 0 auto}
+.reason .kicker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.reason h4{font-size:18px}
+.reason .rbody{padding:12px 24px 20px}
+.reason p{font-size:13.5px;color:var(--ink-2)}
+.reason .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(188px,1fr));gap:10px;margin:15px 0 4px}
+.reason .fact{background:var(--surface-2);border-radius:8px;padding:10px 13px}
+.reason .fact .fv{font-family:"Red Hat Mono",monospace;font-size:19px;font-weight:700}
+.reason .fact .fk{font-size:11px;color:var(--ink-3);line-height:1.5}
+.reason .sowhat{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:13.5px}
+.reason .sowhat b{color:var(--brand)}
+
+/* 戦略転換 */
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch}
+@media(max-width:800px){.vs{grid-template-columns:1fr}}
+.vs-col{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.vs-col.bad{border-top:4px solid var(--brand)}
+.vs-col.good{border-top:4px solid var(--accent)}
+.vs-col .vt{font-family:"Red Hat Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--ink-3)}
+.vs-col h4{font-size:17px;margin:5px 0 12px}
+.vs-col ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:8px}
+.vs-col ul b{color:var(--ink)}
+.vs-mid{display:flex;align-items:center;justify-content:center;font-family:"Kaisei Decol",serif;font-size:20px;color:var(--rule-2)}
+@media(max-width:800px){.vs-mid{padding:4px 0}}
+
+.timeline{overflow-x:auto;padding:24px 0 4px}
+.timeline-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(156px,1fr);min-width:840px;position:relative}
+.timeline-track::before{content:"";position:absolute;left:0;right:0;top:9px;height:2px;background:var(--rule-2)}
+.tl-item{position:relative;padding:26px 12px 0 0}
+.tl-item::before{content:"";position:absolute;left:0;top:2px;width:15px;height:15px;border-radius:50%;background:var(--surface);border:3px solid var(--rule-2)}
+.tl-item.on::before{background:var(--brand);border-color:var(--brand)}
+.tl-item.now::before{background:var(--accent);border-color:var(--accent);width:19px;height:19px;top:0}
+.tl-item .y{font-family:"Red Hat Mono",monospace;font-size:11.5px;font-weight:700;color:var(--ink-3)}
+.tl-item.on .y{color:var(--brand)}
+.tl-item.now .y{color:var(--accent)}
+.tl-item .t{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+
+.pillar{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.pillar .pk{font-family:"Red Hat Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.09em;color:var(--ink-3)}
+.pillar h4{font-size:16.5px}
+.pillar p{font-size:13px;color:var(--ink-2)}
+.pillar .kpi{margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:4px}
+.pillar .kpi b{font-family:"Red Hat Mono",monospace;color:var(--ink);font-weight:700}
+
+.scroller{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+table.matrix{width:100%;border-collapse:collapse;font-size:13px;min-width:660px}
+table.matrix th,table.matrix td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.matrix th{font-size:11.5px;color:var(--ink-3);font-weight:700;background:var(--surface-2)}
+table.matrix tr:last-child td{border-bottom:0}
+table.matrix td:first-child{font-weight:700}
+table.matrix td.num{font-family:"Red Hat Mono",monospace;text-align:right;white-space:nowrap;font-weight:700}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:1px solid var(--rule);border-radius:10px}
+.seg{display:flex;background:var(--surface-2);border-radius:8px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:12px;font-weight:700;border:0;background:none;color:var(--ink-3);padding:6px 12px;border-radius:6px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.controls input[type="search"],.controls select{font:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--rule-2);border-radius:8px;background:var(--surface);color:var(--ink)}
+.controls input[type="search"]{min-width:190px;flex:1}
+.controls .count{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.controls .count b{font-family:"Red Hat Mono",monospace;color:var(--ink);font-weight:700}
+
+.tlist{display:flex;flex-direction:column;gap:9px}
+.trow{display:grid;grid-template-columns:38px minmax(206px,1.02fr) minmax(238px,1.5fr) minmax(238px,1.5fr);gap:0 18px;
+  background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--rule-2);border-radius:0 10px 10px 0;padding:15px 18px;align-items:start}
+.trow.tA{border-left-color:var(--s2)}
+.trow.tB{border-left-color:var(--s1)}
+.trow.tC{border-left-color:var(--s3)}
+.trow .rank{font-family:"Red Hat Mono",monospace;font-size:13px;color:var(--ink-3);font-weight:700;padding-top:2px}
+.trow .head{display:flex;flex-direction:column;gap:6px}
+.trow .name{font-family:"Kaisei Decol",serif;font-size:14.5px;font-weight:700;line-height:1.45}
+.trow .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.trow .cnt{font-family:"Red Hat Mono",monospace;font-size:13px;font-weight:700}
+.trow .cnt span{font-size:11px;color:var(--ink-3);font-weight:400;margin-left:3px;font-family:"M PLUS 1p",sans-serif}
+.trow .fieldlabel{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);display:block;margin-bottom:3px}
+.trow .fieldbody{font-size:13px;color:var(--ink-2);line-height:1.7}
+.trow .hook .fieldbody{color:var(--ink);border-left:3px solid var(--rule-2);padding-left:11px}
+@media(max-width:900px){
+  .trow{grid-template-columns:34px 1fr;gap:10px 14px}
+  .trow .head,.trow .why,.trow .hook{grid-column:2}
+}
+
+.taskgroup{background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.taskgroup header{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:13px 16px;background:var(--surface-2)}
+.taskgroup header h4{font-size:14px}
+.taskgroup header .hh{font-family:"Red Hat Mono",monospace;font-size:12px;color:var(--ink-2);font-weight:700}
+.taskgroup ul{list-style:none;margin:0;padding:6px 0}
+.taskgroup li{display:flex;justify-content:space-between;gap:12px;padding:7px 16px;font-size:13px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.taskgroup li:last-child{border-bottom:0}
+.taskgroup li b{font-family:"Red Hat Mono",monospace;font-size:12px;color:var(--ink-3);font-weight:400;white-space:nowrap}
+.taskgroup li.key{color:var(--ink)}
+.taskgroup li.key > span:first-child::before{content:"◆";color:var(--brand);font-size:8px;margin-right:7px;vertical-align:2px}
+
+.chartbox{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px}
+.chartbox h4{font-size:14px}
+.chartbox .csub{font-size:12px;color:var(--ink-3);margin:2px 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);margin-bottom:10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+
+.roi-layout{display:grid;grid-template-columns:minmax(280px,336px) 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.roi-layout{grid-template-columns:1fr}}
+.knobs{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px;position:sticky;top:58px;max-height:calc(100vh - 74px);overflow-y:auto}
+.knob{margin-bottom:14px}
+.knob label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink-2);margin-bottom:5px;gap:10px}
+.knob label b{font-family:"Red Hat Mono",monospace;font-size:13px;color:var(--ink);font-weight:700}
+.knob input[type="range"]{width:100%;accent-color:var(--accent);height:20px;cursor:pointer}
+.knob-group{border-top:1px solid var(--rule);padding-top:14px;margin-top:16px}
+.gh{font-family:"Red Hat Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);margin-bottom:12px}
+.gh span{color:var(--accent)}
+.resetbtn{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--rule-2);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:6px 12px;cursor:pointer}
+.resetbtn:hover{border-color:var(--ink-3);color:var(--ink)}
+.verdict{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--good);border-radius:0 10px 10px 0;padding:16px 20px;font-size:13.5px}
+.verdict b{font-family:"Red Hat Mono",monospace;color:var(--good);font-weight:700}
+
+.funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(136px,1fr));gap:10px}
+.fstep{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:13px 14px}
+.fstep .fl{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.fstep .fv{font-family:"Red Hat Mono",monospace;font-size:22px;font-weight:700}
+.fstep .fr{font-size:11px;color:var(--ink-3)}
+.fstep.end{background:var(--accent-soft);border-color:transparent}
+.fstep.end .fv,.fstep.end .fl,.fstep.end .fr{color:var(--accent)}
+
+.phase{display:grid;grid-template-columns:140px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule)}
+.phase:first-of-type{border-top:0}
+.phase .pd{font-family:"Red Hat Mono",monospace;font-size:12px;color:var(--brand);font-weight:700}
+.phase .pt{font-family:"Kaisei Decol",serif;font-size:16px;font-weight:700;line-height:1.4;margin-top:2px}
+.phase ul{margin:0;padding-left:1.15em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px}
+.phase ul b{color:var(--ink)}
+.owner{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:4px;margin-right:7px;vertical-align:1px}
+.owner.ai{background:var(--accent-soft);color:var(--accent)}
+.owner.kl{background:var(--brand-soft);color:var(--brand)}
+.srcs{font-size:12px;color:var(--ink-3);line-height:1.9}
+@media(max-width:640px){
+  .wrap{padding:0 16px}
+  .phase{grid-template-columns:1fr;gap:10px}
+  .reason .rhead{flex-direction:column;gap:6px}
+}
+</style>
+
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <div>
+      <div class="eyebrow">事前リサーチ / 成長戦略 / 2ユニット ROIシミュレーション</div>
+      <h1 class="mast-title">きれいライフサービス <em>紹介元をつくる</em> 設計</h1>
+      <p class="mast-sub">ポータルサイトで「お客様を買う」のをやめた判断は正しい。次にやるべきは、<b>紹介してくれる法人を関東圏につくること</b>です。買った客は毎回お金がかかり、価格で比べられる。つくった紹介元は、一度できれば無料で仕事を運び続けます。</p>
+      <div class="flash">◆ 本ボードの主題：成果報酬で払い続けるか、紹介元という資産をつくるか</div>
+    </div>
+    <div class="mast-meta">
+      <div><b>作成</b> 株式会社アイドマ・ホールディングス</div>
+      <div><b>宛先</b> 国井 伸寛 様</div>
+      <div><b>更新</b> 2026年9月13日</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="セクション">
+  <div class="wrap">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-p="research"><span class="num">01</span>事前リサーチ</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="market"><span class="num">02</span>市場環境</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="shift"><span class="num">03</span>買うか、つくるか</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="why"><span class="num">04</span>今すぐやる3つの理由</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="strategy"><span class="num">05</span>成長戦略</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="targets"><span class="num">06</span>紹介元ターゲット30</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="remote"><span class="num">07</span>在宅ワーカー活用</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="roi"><span class="num">08</span>ROIシミュレーション</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="road"><span class="num">09</span>90日ロードマップ</button>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- 01 -->
+<section class="panel" id="p-research" role="tabpanel">
+  <div class="sec-head"><h2>事前リサーチ</h2><span class="tagline">前回商談メモの構造化</span></div>
+  <p class="lede">「顧客にたどり着いて、しっかり説明さえできれば良さを分かってもらえる」——前回の商談で一致したこの認識が、すべての出発点です。<b>問題は説明の中身ではなく、たどり着く経路の数</b>。いま経路は4本しかなく、そのすべてが地元に限られています。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">現在の獲得経路</span><span class="v">4<small>本</small></span><span class="n">社協広告・市役所ポスター・知人紹介・不動産会社</span></div>
+    <div class="stat hot"><span class="k">撤退したポータル</span><span class="v">20<small>%</small></span><span class="n">成果報酬。案件が続く限り毎回発生</span></div>
+    <div class="stat"><span class="k">目標エリア</span><span class="v">1都3県</span><span class="n">東京・埼玉・千葉・神奈川</span></div>
+    <div class="stat warn"><span class="k">受け入れ可能な費用</span><span class="v">成果<small>報酬型</small></span><span class="n">月額固定・長期縛りには抵抗</span></div>
+  </div>
+
+  <div class="grid g2 block">
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:10px">企業プロフィール</div>
+      <dl class="deflist">
+        <dt>企業名</dt><dd>株式会社きれいライフサービス</dd>
+        <dt>Webサイト</dt><dd><a href="https://kirei3939.com/" target="_blank" rel="noopener">kirei3939.com</a></dd>
+        <dt>代表</dt><dd>国井 伸寛 様</dd>
+        <dt>事業</dt><dd>不用品回収・遺品整理・家財整理（一軒家丸ごと含む）、特殊清掃、事故物件対応、家屋解体</dd>
+        <dt>背景</dt><dd>元・精神保健福祉の経験。顧客の心とニーズを汲み取った提案ができる</dd>
+        <dt>強み</dt><dd>片付けた後に再び散らからないためのアドバイスまで行う。相見積もりで他社が安ければそちらを勧めることもある</dd>
+        <dt>獲得経路</dt><dd>社会福祉協議会の広告、市役所のポスター、知人紹介、不動産会社からの依頼</dd>
+        <dt>撤退済み</dt><dd>くらしのマーケット（成果報酬20%）、くらしのコンシェルジュ</dd>
+        <dt>進行中</dt><dd>MiTokの無料ショート動画による自社の強みのPR</dd>
+      </dl>
+      <p class="note">※ 本ボード作成環境からは同社サイトへ直接アクセスできなかったため、企業情報は前回商談メモに基づく整理です。</p>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:12px">構造の整理</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div><span class="chip c">正しい判断</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">ポータルからの撤退は合理的です。あそこは<b style="color:var(--ink)">最初に提示した金額の安さだけが比較される場所</b>。御社の強み（福祉視点・再発防止のアドバイス・正直さ）が最も評価されない土俵でした。</p></div>
+        <div><span class="chip a">構造的な問題</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">ただし撤退すると、残るのは地元の4経路だけ。<b style="color:var(--ink)">ゴミ屋敷案件は地元だけでは数が限られます</b>。母数を広げないと、質で選ばれる機会そのものが増えません。</p></div>
+        <div><span class="chip b">打ち手の方向</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">エンド顧客を直接取りにいくと、また価格比較の土俵に戻ります。<b style="color:var(--ink)">狙うべきは、困っている人に最初に相談される法人</b>——不動産管理会社、ケアマネジャー、士業、葬儀社。ここは価格ではなく信用で選ばれます。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>いまの経路と、増やせる経路</h3>
+    <p class="sub">地元4経路の先に、関東圏の法人ルートが手つかずで残っています</p>
+    <div class="chartbox">
+      <div id="ch-routes"></div>
+      <p class="note">現在の4経路は<b>いずれも「待ち」の経路</b>です。広告を見た人、ポスターを見た人、知っている人からの紹介。数はコントロールできません。一方、法人への働きかけは<b style="color:var(--accent)">こちらから件数を決められる唯一の経路</b>です。</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>強み・課題の整理</h3>
+    <div class="swot">
+      <section class="s"><h4>強み</h4><ul>
+        <li>元・精神保健福祉の経験にもとづく、顧客の心を汲んだ対応</li>
+        <li>片付けた後に再発しないためのアドバイス・指導まで行う</li>
+        <li>他社のほうが安ければそちらを勧める正直さ。リピートと紹介が発生している</li>
+        <li>不用品回収から特殊清掃・解体まで一貫して受けられる対応範囲</li>
+      </ul></section>
+      <section class="w"><h4>課題</h4><ul>
+        <li>新規顧客の獲得窓口が4経路しかなく、すべて地元に限られる</li>
+        <li>親身さ・質・福祉視点が、ネットや文字だけでは伝わらない</li>
+        <li>相見積もりで価格競争に巻き込まれ、質で選ばれにくい</li>
+        <li>成果が出る前の固定費・長期契約には踏み切れない資金前提</li>
+      </ul></section>
+      <section class="o"><h4>機会</h4><ul>
+        <li>2027年3月31日の相続登記期限に向け、士業・不動産が駆け込み対応中</li>
+        <li>改正空家法で「片付けないと固定資産税が上がる」強制力が生まれた</li>
+        <li>孤独死76,020人、空き家900万戸——需要は構造的に拡大している</li>
+        <li>悪質業者のトラブル相談が過去最大規模。正直さが差別化になる局面</li>
+      </ul></section>
+      <section class="t"><h4>脅威</h4><ul>
+        <li>安さ重視の競合に仕事を取られ続ける</li>
+        <li>地元経路だけでは案件数が頭打ちになる</li>
+        <li>ポータルに戻れば、また価格比較の土俵に乗せられる</li>
+        <li>紹介元を先に押さえた同業に、関東圏のルートを固定される</li>
+      </ul></section>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="panel" id="p-market" role="tabpanel" hidden>
+  <div class="sec-head"><h2>市場環境</h2><span class="tagline">需要は構造的に増え、同時に不信も増えている</span></div>
+  <p class="lede">孤独死は年間<b>76,020人</b>、空き家は<b>900万戸</b>。需要は間違いなく増えています。しかし同時に、不用品回収の相談件数は年間<b>15,824件</b>。<b>市場が伸びるほど、悪質業者も増えている</b>——この構造こそが、国井社長の姿勢が価値を持つ理由です。</p>
+
+  <div class="grid g4">
+    <div class="stat warn"><span class="k">自宅で亡くなった一人暮らし（2024年）</span><span class="v">76,020<small>人</small></span><span class="n">警察庁が2025年4月に初公表</span></div>
+    <div class="stat warn"><span class="k">全国の空き家（2023年10月）</span><span class="v">900<small>万戸</small></span><span class="n">空き家率13.8%・過去最高</span></div>
+    <div class="stat hot"><span class="k">不用品回収の消費生活相談（2024年度）</span><span class="v">15,824<small>件</small></span><span class="n">高額請求・契約内容の相違</span></div>
+    <div class="stat info"><span class="k">特殊清掃＋遺品整理の平均費用</span><span class="v">60<small>万円</small></span><span class="n">特殊清掃のみなら平均約39万円</span></div>
+  </div>
+
+  <div class="grid g2 block">
+    <div class="chartbox">
+      <h4>需要の規模</h4>
+      <p class="csub">孤独死、空き家、後期高齢者——3つの数字が同じ方向を指しています</p>
+      <div id="ch-demand"></div>
+      <p class="note">2025年には後期高齢者が約2,180万人（人口の約17%）に達します。単身高齢世帯の増加は、そのまま<b>遺品整理・特殊清掃・実家の家財整理</b>の件数になります。需要の心配をする必要はありません。心配すべきは、その需要が御社に届くかどうかだけです。</p>
+    </div>
+    <div class="chartbox">
+      <h4>相談件数の増加</h4>
+      <p class="csub">不用品回収サービスに関する消費生活相談の推移</p>
+      <div id="ch-trouble"></div>
+      <p class="note">「安価な定額パックのはずが作業後に高額請求された」「トラック詰め放題で頼んだのに荷台の高さまでと言われた」——これが相談の典型です。<b style="color:var(--brand)">つまり市場全体が「業者選びで失敗する場所」だと認識されている</b>。ここで<b>紹介という経路の価値が跳ね上がります</b>。信用できる人が紹介した業者なら、比較されません。</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>この市場での勝ち方</h3>
+    <div class="grid g3">
+      <div class="card"><span class="chip b">1</span><h4 style="font-size:15px;margin:10px 0 6px">比較される場所に立たない</h4><p style="font-size:13px;color:var(--ink-2)">ポータルも一括見積もサイトも、<b>最初の提示額で並べられる場所</b>です。御社の価値は会って話して初めて伝わる。ならば、<b>会う前に比較されない経路</b>＝紹介だけを増やすのが合理的です。</p></div>
+      <div class="card"><span class="chip b">2</span><h4 style="font-size:15px;margin:10px 0 6px">困っている人の「手前」にいる人を押さえる</h4><p style="font-size:13px;color:var(--ink-2)">ゴミ屋敷で悩む人は、まず誰に相談するか。ケアマネジャー、地域包括、大家、管理会社、司法書士。<b>その人たちが紹介先を持っていない</b>——ここが空いています。</p></div>
+      <div class="card"><span class="chip b">3</span><h4 style="font-size:15px;margin:10px 0 6px">一度つくれば、無料で回り続ける</h4><p style="font-size:13px;color:var(--ink-2)">広告もポータルも、止めれば流入も止まります。紹介元は違う。<b>良い仕事をするほど、同じ相手から何度も来る</b>。御社の強み（丁寧さ・再発防止）が、そのまま次の案件を呼ぶ構造です。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 買うか、つくるか -->
+<section class="panel" id="p-shift" role="tabpanel" hidden>
+  <div class="sec-head"><h2>買うか、つくるか</h2><span class="tagline">成果報酬と月額固定は、そもそも比べるものが違う</span></div>
+  <p class="lede">前回「成果が出る前の月額固定費は難しい、成果報酬なら受け入れやすい」とお聞きしました。<b>まったく正当なご判断です</b>。ただし、比べるべきなのは「固定費 vs 成果報酬」ではなく、<b>「毎回払い続けるもの vs 一度つくれば残るもの」</b>だと考えています。</p>
+
+  <div class="vs">
+    <div class="vs-col bad">
+      <div class="vt">MODEL A</div>
+      <h4>お客様を「買う」</h4>
+      <ul>
+        <li><b>ポータル・一括見積・広告</b>。成果報酬20%なら、30万円の案件で6万円。</li>
+        <li>払った瞬間に<b>何も残りません</b>。次の案件でまた6万円。</li>
+        <li>最初に提示した金額で比較されるため、<b>安く出さないと選ばれない</b>。</li>
+        <li>御社の強み（福祉視点・再発防止・正直さ）は、<b>比較表に載らない</b>。</li>
+        <li>止めれば流入もゼロ。<b>払い続けている限りしか案件は来ない</b>。</li>
+      </ul>
+    </div>
+    <div class="vs-mid">対</div>
+    <div class="vs-col good">
+      <div class="vt">MODEL B</div>
+      <h4>紹介元を「つくる」</h4>
+      <ul>
+        <li><b>不動産管理・ケアマネ・士業・葬儀社</b>に会いに行き、提携をつくる。</li>
+        <li>一度関係ができれば、<b>紹介1件あたりの費用はゼロ</b>。</li>
+        <li>紹介された時点で、<b>比較されていません</b>。相見積もりになりにくい。</li>
+        <li>紹介者は「信用できる業者」を探している。<b>御社の姿勢がそのまま評価軸</b>。</li>
+        <li>良い仕事をするほど、<b>同じ相手から繰り返し来る</b>。積み上がる資産になる。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>3年間で、いくら払うことになるか</h3>
+    <p class="sub">同じ年間112件を取り続けたときの、支払いの総額を並べたもの</p>
+    <div class="chartbox">
+      <div class="legend"><span><i style="background:var(--s1)"></i>ポータル成果報酬（20%）</span><span><i style="background:var(--s2)"></i>紹介元をつくる（営業支援＋在宅）</span></div>
+      <div id="ch-buildvsbuy"></div>
+      <p class="note">ポータルは案件が続く限り、毎年672万円を払い続けます。紹介元づくりは<b>1年目に456万円かかりますが、2年目以降は維持費だけ</b>。3年間の差は<b style="color:var(--accent)">約1,370万円</b>です。<b>月額固定費が高いのではなく、成果報酬が安く見えているだけ</b>——これが本ボードで最もお伝えしたい一点です。</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>それでも残る不安への答え</h3>
+    <div class="grid g2">
+      <div class="card"><span class="chip a">不安①</span><h4 style="font-size:15px;margin:9px 0 7px">成果が出る前に払うのが怖い</h4><p style="font-size:13px;color:var(--ink-2)">当然です。ですので、<b>最初の3ヶ月は「紹介元が何社できたか」だけを見てください</b>。案件が出る前でも、提携した法人の数は毎月増えます。これは成果報酬型では絶対に手に入らない、<b>お金を払った証拠が残る指標</b>です。3ヶ月で紹介元が増えていなければ、そこで止める判断ができます。</p></div>
+      <div class="card"><span class="chip a">不安②</span><h4 style="font-size:15px;margin:9px 0 7px">長期の契約縛りが嫌だ</h4><p style="font-size:13px;color:var(--ink-2)">前回「3〜5年縛り」への拒否感を伺いました。ここは商談で<b>契約期間と解約条件を最初に確認してください</b>。また、アイドマの営業支援には<b>契約終了後にチームと営業システムを自社に残せる</b>仕組みがあります。縛られるのではなく、<b>終わったときに何が残るか</b>で判断していただくのが正しい見方です。</p></div>
+      <div class="card"><span class="chip a">不安③</span><h4 style="font-size:15px;margin:9px 0 7px">法人営業は自分の得意分野ではない</h4><p style="font-size:13px;color:var(--ink-2)">エンド顧客への対応と法人開拓は、まったく別の仕事です。<b>国井社長がやるべきは、提携が決まった後の顔合わせだけ</b>。リスト作成・電話・案内状の送付・日程調整は外部が担当します。社長の時間は<b>現地調査と顧客対応</b>——福祉視点の強みが出る場面に集中させます。</p></div>
+      <div class="card"><span class="chip a">不安④</span><h4 style="font-size:15px;margin:9px 0 7px">1件あたりいくらかかるのかが見えない</h4><p style="font-size:13px;color:var(--ink-2)">計算できます。年間456万円の投資で年46件の紹介案件が出れば、<b>1件あたりの獲得コストは約10万円</b>。ポータルの成果報酬20%（30万円案件なら6万円）より高く見えますが、<b>2年目は同じ紹介元から追加費用ゼロで来ます</b>。2年通算なら1件あたり約3万円。3年目はさらに下がります。</p></div>
+    </div>
+    <div class="callout teal"><b>結論として、ご提案の形はこうです。</b>「成果報酬でお客様を買う」のではなく、「<b>関東圏に紹介元を50社つくる</b>」ことに投資する。見るべき指標は案件数ではなく<b>提携社数</b>。3ヶ月で増えなければ止める。増えていれば、それは翌年も再来年も仕事を運んでくれる資産です。</div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="panel" id="p-why" role="tabpanel" hidden>
+  <div class="sec-head"><h2>今すぐやらないといけない3つの理由</h2><span class="tagline">法律・制度・世の中の流れ</span></div>
+  <p class="lede">3つとも、<b>紹介元になる相手が「今この瞬間に動いている」理由</b>です。とくに1つ目は、あと約6ヶ月で期限を迎えます。</p>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">1</div><div>
+      <div class="kicker"><span class="chip a">法律</span><span class="chip">2027年3月31日 期限</span></div>
+      <h4>相続登記の義務化で、放置されていた実家が一斉に動き出している</h4>
+    </div></div>
+    <div class="rbody">
+      <p>2024年4月1日から相続登記が義務化され、相続を知った日から3年以内の登記申請が義務となり、正当な理由なく怠れば<b>10万円以下の過料</b>が科されます。この義務は<b>施行前に発生した相続にも遡って適用</b>され、その期限が<b>2027年3月31日</b>。さらに2026年4月1日からは住所等変更登記も義務化され（2年以内、5万円以下の過料）、対象はすべての不動産所有者に広がりました。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">2027/3/31</div><div class="fk">施行前の相続分の登記期限</div></div>
+        <div class="fact"><div class="fv">10<span style="font-size:12px">万円以下</span></div><div class="fk">相続登記を怠った場合の過料</div></div>
+        <div class="fact"><div class="fv">2026/4/1</div><div class="fk">住所等変更登記も義務化</div></div>
+      </div>
+      <div class="sowhat"><b>きれいライフサービスにとって：</b>いま<b>司法書士・税理士・不動産会社が、駆け込みの相続案件を大量に抱えています</b>。そして登記の次に必ず出てくるのが「この家の中身をどうするか」。相続人の多くは遠方に住んでいて、自分では片付けられません。<b>士業の先生は今まさに、家財整理を任せられる業者を探しています</b>。この期限が過ぎれば駆け込みは終わります。<b>紹介元として関係を作るなら、残り約6ヶ月が最大の好機</b>です。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">2</div><div>
+      <div class="kicker"><span class="chip a">制度</span><span class="chip">2023年12月13日 施行済み</span></div>
+      <h4>改正空家法で、「片付けないと税金が上がる」という金銭的な強制力が生まれた</h4>
+    </div></div>
+    <div class="rbody">
+      <p>2023年12月13日施行の改正空家等対策特別措置法で、新たに<b>「管理不全空家」</b>という区分が設けられました。自治体から勧告を受けると<b>住宅用地特例が解除</b>され、土地の固定資産税が<b>3倍から最大6倍</b>に跳ね上がります。全国の空き家は<b>900万戸（空き家率13.8%）</b>で過去最高。このまま対策がなければ2038年には3軒に1軒が空き家になると予測されています。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">最大6<span style="font-size:12px">倍</span></div><div class="fk">勧告を受けた場合の土地の固定資産税</div></div>
+        <div class="fact"><div class="fv">900<span style="font-size:12px">万戸</span></div><div class="fk">全国の空き家（空き家率13.8%）</div></div>
+        <div class="fact"><div class="fv">管理不全空家</div><div class="fk">改正で新設された区分</div></div>
+      </div>
+      <div class="sowhat"><b>きれいライフサービスにとって：</b>これまで「いつか片付けよう」で済んでいた空き家に、<b>期限と金額が付きました</b>。所有者は勧告を受ける前に動く必要があり、動くには家財を出さなければなりません。そして所有者の多くは、<b>自治体の空き家相談窓口・不動産会社・解体業者に最初に相談します</b>。この3者が、御社にとっての紹介元です。<b>解体業者は特に有望</b>——家財が残ったままでは解体に着手できず、片付け業者を必ず探しているためです。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">3</div><div>
+      <div class="kicker"><span class="chip a">世の中の流れ</span><span class="chip">2025年4月 初公表</span></div>
+      <h4>市場が伸びるほど悪質業者も増え、「信用できる業者」の価値が上がっている</h4>
+    </div></div>
+    <div class="rbody">
+      <p>警察庁は2025年4月、2024年の1年間に自宅で亡くなった一人暮らしの人が<b>76,020人</b>だったと初めて公表しました。2025年には後期高齢者が約2,180万人（人口の約17%）に達します。一方で、不用品回収サービスに関する消費生活相談は<b>2024年度だけで15,824件</b>。高額請求や契約内容の相違が典型例で、<b>市場が拡大するほどトラブルも増える構造</b>になっています。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">76,020<span style="font-size:12px">人</span></div><div class="fk">2024年に自宅で亡くなった一人暮らしの方</div></div>
+        <div class="fact"><div class="fv">15,824<span style="font-size:12px">件</span></div><div class="fk">2024年度の不用品回収関連の相談</div></div>
+        <div class="fact"><div class="fv">2,180<span style="font-size:12px">万人</span></div><div class="fk">2025年の後期高齢者人口</div></div>
+      </div>
+      <div class="sowhat"><b>きれいライフサービスにとって：</b>前回の商談で「ゴミ屋敷で悩む方が悪徳業者に捕まってぼったくられる」というお話がありました。<b>それは社会問題として数字に出ています</b>。だからこそ、ケアマネジャーや地域包括、士業、管理会社は<b>「紹介して失敗しない業者」を本気で探しています</b>。彼らにとって紹介の失敗は自分の信用の失墜だからです。<b>「他社が安ければそちらを勧める」という御社の姿勢は、この人たちにとって最も欲しい情報</b>です。エンド顧客より、紹介者にこそ響きます。</div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>制度カレンダー</h3>
+    <div class="timeline">
+      <div class="timeline-track">
+        <div class="tl-item on"><div class="y">2023年12月13日</div><div class="t">改正空家法 施行<br>管理不全空家の新設</div></div>
+        <div class="tl-item on"><div class="y">2024年4月1日</div><div class="t">相続登記の義務化<br>3年以内・過料10万円以下</div></div>
+        <div class="tl-item on"><div class="y">2025年4月</div><div class="t">孤独死76,020人<br>警察庁が初公表</div></div>
+        <div class="tl-item on"><div class="y">2026年4月1日</div><div class="t">住所等変更登記も義務化<br>2年以内・過料5万円以下</div></div>
+        <div class="tl-item now"><div class="y">2026年9月</div><div class="t">駆け込み対応の真っ最中<br>（現在地）</div></div>
+        <div class="tl-item"><div class="y">2027年3月31日</div><div class="t">施行前の相続分<br>登記期限</div></div>
+        <div class="tl-item"><div class="y">2038年</div><div class="t">空き家が3軒に1軒<br>との予測</div></div>
+      </div>
+    </div>
+    <div class="verdict" style="margin-top:18px;border-left-color:var(--brand)">
+      <b style="color:var(--brand)">結論：</b>需要はこれから何年も増え続けます。急ぐ理由は需要ではなく、<b style="color:var(--brand)">紹介元との関係が「先着順」だから</b>です。士業も管理会社もケアマネも、片付け業者を何社も抱えたりはしません。<b style="color:var(--brand)">1〜2社で十分</b>だからです。相続の駆け込みで彼らが業者を探している今、先に手を挙げた会社がその枠に入ります。
+    </div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="panel" id="p-strategy" role="tabpanel" hidden>
+  <div class="sec-head"><h2>成長戦略</h2><span class="tagline">関東圏に、紹介元を50社つくる</span></div>
+  <p class="lede">目標は案件数ではなく<b>提携社数</b>に置きます。案件は結果であり、提携社数は行動でコントロールできるからです。50社の紹介元から年3件ずつ来れば、年150件。これが目指す構造です。</p>
+
+  <div class="grid g3">
+    <div class="pillar">
+      <span class="pk">PILLAR 01</span>
+      <h4>困っている人の「手前」を押さえる</h4>
+      <p>ゴミ屋敷で悩む人は、まずケアマネや管理会社や大家に相談します。遺品整理は士業と葬儀社。空き家は解体業者と自治体窓口。<b>その全員が、任せられる業者を探しています</b>。電話・手紙・案内状で、こちらから届けます。</p>
+      <div class="kpi"><span>目標：<b>1年で提携50社</b></span><span>手段：営業支援ユニット</span></div>
+    </div>
+    <div class="pillar">
+      <span class="pk">PILLAR 02</span>
+      <h4>「正直さ」を、伝わる形に変える</h4>
+      <p>他社が安ければそちらを勧める——この姿勢は言葉だけでは信じてもらえません。<b>MiTokの動画、施工事例、料金の明示、お客様の声</b>という形に変えて初めて伝わります。紹介者が「この会社なら紹介できる」と判断する材料になります。</p>
+      <div class="kpi"><span>目標：<b>施工事例30本の記事化</b></span><span>手段：MiTok＋在宅ワーカー</span></div>
+    </div>
+    <div class="pillar">
+      <span class="pk">PILLAR 03</span>
+      <h4>社長を、現地調査と顧客対応に戻す</h4>
+      <p>見積書の作成、問い合わせの一次対応、日程調整、報告書づくり。これらに時間を取られるほど、<b>御社で最も価値のある「社長が現場で話す時間」が減ります</b>。事務を外に出し、福祉視点が活きる場面に集中します。</p>
+      <div class="kpi"><span>目標：<b>社長の現場時間を月40時間増やす</b></span><span>手段：生産性向上支援ユニット</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>紹介元ごとの、入り方と着地</h3>
+    <p class="sub">相手によって困りごとが違うので、最初の一言も変わります</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>紹介元</th><th>相手の困りごと</th><th>最初の一言</th><th class="num">想定 年間紹介数</th></tr></thead>
+        <tbody>
+          <tr><td>賃貸管理会社・大家</td><td>退去後の残置物処理。孤独死があった部屋の原状回復</td><td>「残置物の処理、いま何社にお願いされていますか。特殊清掃まで一貫で受けられます」</td><td class="num">6〜12件</td></tr>
+          <tr><td>ケアマネジャー・地域包括</td><td>利用者宅がゴミ屋敷。誰に頼めばいいか分からない</td><td>「利用者さんのお部屋のことでお困りのケース、ありませんか。福祉の現場出身なので事情を汲んで伺えます」</td><td class="num">2〜4件</td></tr>
+          <tr><td>司法書士・税理士事務所</td><td>相続登記の次に「家の中身をどうするか」を聞かれる</td><td>「相続登記のあと、家財のご相談を受けられませんか。遠方の相続人様でも対応できます」</td><td class="num">2〜5件</td></tr>
+          <tr><td>解体業者</td><td>家財が残ったままでは解体に着手できない</td><td>「解体前の家財出し、どうされていますか。先に入って空にしてお渡しできます」</td><td class="num">4〜10件</td></tr>
+          <tr><td>葬儀社</td><td>遺族から遺品整理を聞かれるが自社では受けられない</td><td>「ご遺族から遺品整理のご相談、受けられませんか。葬儀の流れを壊さない形で伺います」</td><td class="num">3〜6件</td></tr>
+          <tr><td>老人ホーム・サ高住</td><td>入居時と退去時に自宅の家財整理が必ず発生する</td><td>「ご入居前のご自宅、どうされていますか。ご家族の負担をこちらで引き受けられます」</td><td class="num">3〜8件</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">紹介元は<b>相手の仕事を楽にする存在</b>として入ります。「仕事をください」ではなく「<b>先生／御社が困っている部分を引き受けます</b>」——この立ち位置が、価格競争にならない理由です。</p>
+  </div>
+
+  <div class="block">
+    <h3>紹介元の積み上がり方</h3>
+    <p class="sub">提携社数は毎月増え、それに応じて紹介案件も増えていきます</p>
+    <div class="chartbox"><div id="ch-buildup"></div></div>
+    <p class="note">最初の数ヶ月は提携社数だけが増え、案件はほとんど出ません。<b>ここで判断を誤らないことが重要</b>です。見るべきは案件数ではなく提携社数。<b style="color:var(--accent)">提携が積み上がってから、案件が後を追って伸びます</b>。</p>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="panel" id="p-targets" role="tabpanel" hidden>
+  <div class="sec-head"><h2>紹介元ターゲット30</h2><span class="tagline">母数・狙う理由・最初の一言</span></div>
+  <p class="lede">関東1都3県（東京・埼玉・千葉・神奈川）の法人を、<b>依頼が直接発生する先・相続の入口・現場で家財が出る先</b>の3層で30セグメントに分けました。母数は業界統計と推計に基づく概算です。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">総母数（関東1都3県・30セグメント計）</span><span class="v" id="t-total">—</span><span class="n">法人・事業所・施設数の合算</span></div>
+    <div class="stat hot"><span class="k">Tier A・依頼が直接発生</span><span class="v" id="t-a">—</span><span class="n">紹介頻度が最も高い層</span></div>
+    <div class="stat pos"><span class="k">目標の提携社数</span><span class="v">50<small>社</small></span><span class="n">母数の0.02%で足りる</span></div>
+    <div class="stat"><span class="k">1年で接触できる件数</span><span class="v">24,000<small>件</small></span><span class="n">月2,000件×12ヶ月</span></div>
+  </div>
+
+  <div class="chartbox block">
+    <h4>3層別の母数</h4>
+    <p class="csub">母数は十分。必要なのは50社なので、当たる順番だけが問題になります。</p>
+    <div id="ch-tiers"></div>
+    <p class="note">Tier Aは1社あたりの紹介頻度が高く、Tier Bは相続の駆け込みで今まさに動いている層、Tier Cは工事の現場から家財が出る層です。<b>まずTier Aと、期限が迫っているTier Bから</b>着手します。</p>
+  </div>
+
+  <div class="block">
+    <h3>ターゲット一覧</h3>
+    <p class="sub">Tierで絞る／母数で並べ替える／キーワードで検索する</p>
+    <div class="controls">
+      <div class="seg" id="tier-seg">
+        <button aria-pressed="true" data-t="all">すべて（30）</button>
+        <button aria-pressed="false" data-t="A">A・直接発生（10）</button>
+        <button aria-pressed="false" data-t="B">B・相続の入口（10）</button>
+        <button aria-pressed="false" data-t="C">C・現場から出る（10）</button>
+      </div>
+      <input type="search" id="t-search" placeholder="業種・理由・切り口を検索" aria-label="ターゲット検索">
+      <select id="t-sort" aria-label="並べ替え">
+        <option value="rank">優先度順</option>
+        <option value="count">母数の多い順</option>
+        <option value="countAsc">母数の少ない順</option>
+      </select>
+      <span class="count">表示 <b id="t-shown">30</b> 件 ／ 母数計 <b id="t-sum">—</b></span>
+    </div>
+    <div class="tlist" id="t-list"></div>
+    <p class="note">母数の出所：不動産業者数は国土交通省の宅建業者数、介護事業所は厚生労働省の介護サービス施設・事業所調査、士業は各士会の会員数を基礎に、関東1都3県のシェアで按分した概算です。<b>実リストはデータベース抽出後の実数で確定させてください。</b></p>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="panel" id="p-remote" role="tabpanel" hidden>
+  <div class="sec-head"><h2>在宅ワーカー活用</h2><span class="tagline">社長を、現場と顧客の前に戻す</span></div>
+  <p class="lede">御社で最も価値が生まれるのは、<b>国井社長がお客様の前で話している時間</b>です。福祉の視点も、再発防止のアドバイスも、そこでしか伝わりません。その時間を増やすために、事務と広報を外に出します。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">移管できる業務量</span><span class="v" id="rw-total">150<small>h/月</small></span><span class="n">正社員1名分に近い稼働</span></div>
+    <div class="stat hot"><span class="k">うち社長が抱えている分</span><span class="v">90<small>h/月</small></span><span class="n">見積・追客・報告書・広報</span></div>
+    <div class="stat"><span class="k">対象業務の数</span><span class="v">18<small>種</small></span><span class="n">5カテゴリに分類</span></div>
+    <div class="stat pos"><span class="k">在宅ワーカー体制</span><span class="v">4〜5<small>名相当</small></span><span class="n">1人1日2〜4時間の分業</span></div>
+  </div>
+
+  <div class="block">
+    <h3>在宅ワーカーに依頼できる業務</h3>
+    <p class="sub">◆ 印は、いま社長の時間をとくに奪っている業務です。時間は月間の想定工数。</p>
+    <div class="grid g2" id="task-groups"></div>
+    <div class="callout"><b>この業種ならではの注意点。</b>お客様の心情に配慮した一次対応と、現地での見積もり判断は<b>社内に残します</b>。外に出すのは、日程調整・書類作成・写真整理・記事化・紹介元への定期連絡といった<b>手順が決まっている作業</b>だけ。最初の1ヶ月は請求と日程調整から始めるのが安全です。</div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：現状</h3>
+    <p class="sub">問い合わせも見積も請求も広報も、すべて社長を通っている</p>
+    <div class="chartbox"><div id="ch-org-before"></div></div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：2ユニット導入後</h3>
+    <p class="sub">社長は現地調査と顧客対応に専念。紹介元の開拓は外付けチームが担う</p>
+    <div class="chartbox"><div id="ch-org-after"></div></div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card"><span class="chip b">ポイント①</span><h4 style="font-size:14.5px;margin:9px 0 6px">現場作業のスタッフは触らない</h4><p style="font-size:13px;color:var(--ink-2)">作業品質は御社の生命線です。<b>現場の体制は一切変えません</b>。増やすのは、現場に仕事を運んでくる経路と、それを支える事務だけです。</p></div>
+      <div class="card"><span class="chip b">ポイント②</span><h4 style="font-size:14.5px;margin:9px 0 6px">紹介元の「維持」こそ外注向き</h4><p style="font-size:13px;color:var(--ink-2)">提携は作って終わりではありません。<b>定期的な連絡、紹介へのお礼状、実績の報告</b>——これを続けられるかで紹介数が決まります。忘れずに続けることこそ、外部チームが最も得意な仕事です。</p></div>
+      <div class="card"><span class="chip b">ポイント③</span><h4 style="font-size:14.5px;margin:9px 0 6px">施工事例が、紹介者への名刺になる</h4><p style="font-size:13px;color:var(--ink-2)">紹介者は「紹介して失敗しないか」を見ています。<b>施工前後の写真と、そこで何を考えたかの記事</b>があれば、それが判断材料になります。撮るのは現場、記事にするのは在宅チームです。</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>社長の時間配分</h3>
+    <p class="sub">月160時間を、どこに使っているか／どこに使えるようになるか</p>
+    <div class="chartbox">
+      <div class="legend">
+        <span><i style="background:var(--s2)"></i>現地調査・お客様対応</span>
+        <span><i style="background:var(--s5)"></i>現場作業・指揮</span>
+        <span><i style="background:var(--s1)"></i>見積・追客・問い合わせ</span>
+        <span><i style="background:var(--s3)"></i>請求・報告書・広報</span>
+        <span><i style="background:var(--s4)"></i>紹介元への連絡</span>
+      </div>
+      <div id="ch-time"></div>
+      <p class="note">現状、現地調査とお客様対応に使えているのは月35時間。事務と広報に65時間が消えています。移管後は<b>月75時間</b>——2倍以上です。この40時間の増分が、そのまま<b>「会って話せば分かってもらえる」機会の数</b>になります。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="panel" id="p-roi" role="tabpanel" hidden>
+  <div class="sec-head"><h2>ROIシミュレーション</h2><span class="tagline">紹介元を積み上げたときの、1年目と2年目</span></div>
+  <p class="lede">左のつまみを動かすと、右の数字とグラフがその場で再計算されます。<b>紹介元は積み上がる資産なので、1年目のROIだけを見ると必ず過小評価になります</b>。2年目の数字も併記しています。</p>
+
+  <div class="roi-layout">
+    <aside class="knobs">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h4 style="margin:0;font-size:14px">前提条件</h4>
+        <button class="resetbtn" id="roi-reset" type="button">標準に戻す</button>
+      </div>
+      <div class="seg" id="preset-seg" style="margin-bottom:18px">
+        <button aria-pressed="false" data-preset="cons" style="flex:1">保守</button>
+        <button aria-pressed="true" data-preset="base" style="flex:1">標準</button>
+        <button aria-pressed="false" data-preset="bull" style="flex:1">強気</button>
+      </div>
+
+      <div class="gh"><span>◆</span> 紹介元の開拓（営業支援ユニット）</div>
+      <div class="knob"><label for="k-app">月間アプローチ数 <b><span id="v-app"></span>件</b></label><input type="range" id="k-app" min="500" max="6000" step="100"></div>
+      <div class="knob"><label for="k-appo">アポイント率 <b><span id="v-appo"></span>%</b></label><input type="range" id="k-appo" min="0.2" max="3" step="0.1"></div>
+      <div class="knob"><label for="k-meet">商談実施率 <b><span id="v-meet"></span>%</b></label><input type="range" id="k-meet" min="50" max="100" step="5"></div>
+      <div class="knob"><label for="k-tie">商談→提携成立率 <b><span id="v-tie"></span>%</b></label><input type="range" id="k-tie" min="5" max="60" step="1"></div>
+      <div class="knob"><label for="k-sfee">ユニット月額費用 <b><span id="v-sfee"></span>万円</b></label><input type="range" id="k-sfee" min="10" max="70" step="1"></div>
+
+      <div class="knob-group"><div class="gh"><span>◆</span> 紹介から案件へ</div>
+        <div class="knob"><label for="k-ref">1紹介元あたり 年間紹介件数 <b><span id="v-ref"></span>件</b></label><input type="range" id="k-ref" min="0.5" max="12" step="0.5"></div>
+        <div class="knob"><label for="k-price">1件あたり平均受注額 <b><span id="v-price"></span>万円</b></label><input type="range" id="k-price" min="5" max="100" step="5"></div>
+        <div class="knob"><label for="k-gm">粗利率 <b><span id="v-gm"></span>%</b></label><input type="range" id="k-gm" min="20" max="70" step="5"></div>
+        <div class="knob"><label for="k-prep">準備期間（提携ゼロの月数） <b><span id="v-prep"></span>ヶ月</b></label><input type="range" id="k-prep" min="0" max="3" step="1"></div>
+      </div>
+
+      <div class="knob-group"><div class="gh"><span>◆</span> 生産性向上支援ユニット</div>
+        <div class="knob"><label for="k-hours">移管する業務量 <b><span id="v-hours"></span>h/月</b></label><input type="range" id="k-hours" min="0" max="240" step="10"></div>
+        <div class="knob"><label for="k-ofee">ユニット月額費用 <b><span id="v-ofee"></span>万円</b></label><input type="range" id="k-ofee" min="0" max="40" step="1"></div>
+      </div>
+
+      <div class="knob-group"><div class="gh"><span>◆</span> 比較用：ポータル</div>
+        <div class="knob"><label for="k-fee">成果報酬率 <b><span id="v-fee"></span>%</b></label><input type="range" id="k-fee" min="5" max="40" step="1"></div>
+      </div>
+      <p class="note" style="margin-top:4px">※ 費用は一般的なレンジを置いた試算用の初期値です。正式なお見積りは要件確定後にご提示します。</p>
+    </aside>
+
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div>
+        <h3 style="font-size:17px">1年目の着地</h3>
+        <p class="sub" style="font-size:12.5px;color:var(--ink-3);margin:3px 0 14px">提携が積み上がる途中なので、案件数は年後半に集中します</p>
+        <div class="grid g4">
+          <div class="stat pos"><span class="k">1年目 ROI</span><span class="v" id="o-roi">—</span><span class="n">（粗利−投資）÷投資</span></div>
+          <div class="stat info"><span class="k">12ヶ月後の提携社数</span><span class="v" id="o-partners">—</span><span class="n">これが積み上がる資産</span></div>
+          <div class="stat"><span class="k">1年目 紹介案件数</span><span class="v" id="o-cases">—</span><span class="n" id="o-casenote">—</span></div>
+          <div class="stat pos"><span class="k">2年目 粗利（提携維持のみ）</span><span class="v" id="o-roi2">—</span><span class="n" id="o-roi2note">—</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="eyebrow" style="margin-bottom:10px">月間のファネル（紹介元の開拓）</div>
+        <div class="funnel">
+          <div class="fstep"><div class="fl">アプローチ</div><div class="fv" id="f-app">—</div><div class="fr">電話・メール・手紙・FAX</div></div>
+          <div class="fstep"><div class="fl">アポイント</div><div class="fv" id="f-appo">—</div><div class="fr" id="f-appo-r">—</div></div>
+          <div class="fstep"><div class="fl">商談</div><div class="fv" id="f-meet">—</div><div class="fr" id="f-meet-r">—</div></div>
+          <div class="fstep end"><div class="fl">提携成立</div><div class="fv" id="f-tie">—</div><div class="fr" id="f-tie-r">—</div></div>
+        </div>
+      </div>
+
+      <div class="chartbox">
+        <h4>提携社数と案件数の推移</h4>
+        <p class="csub">提携が先に増え、案件が後を追う。最初の数ヶ月で判断しないでください。</p>
+        <div class="legend"><span><i style="background:var(--s2)"></i>累積 提携社数</span><span><i style="background:var(--s1)"></i>月間 紹介案件数</span></div>
+        <div id="ch-ramp"></div>
+      </div>
+
+      <div class="chartbox">
+        <h4>累積の粗利と投資</h4>
+        <p class="csub">累積粗利が累積投資を上回る月が、投資回収のタイミングです</p>
+        <div class="legend"><span><i style="background:var(--s5)"></i>累積 粗利</span><span><i style="background:var(--s1)"></i>累積 投資</span></div>
+        <div id="ch-payback"></div>
+      </div>
+
+      <div class="chartbox">
+        <h4>ポータルとの3年比較</h4>
+        <p class="csub">2年目・3年目に同じ件数を取り続けた場合の、支払いの累計</p>
+        <div class="legend"><span><i style="background:var(--s1)"></i>ポータル成果報酬</span><span><i style="background:var(--s2)"></i>紹介元をつくる</span></div>
+        <div id="ch-compare"></div>
+      </div>
+
+      <div class="verdict" id="o-verdict"></div>
+
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:10px">この試算の読み方</div>
+        <ul style="margin:0;padding-left:1.2em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">
+          <li><b>1年目のROIは必ず低く出ます。</b>提携が積み上がる途中だからです。12ヶ月目に成立した紹介元は、その年にはほぼ案件を生みません。<b>2年目は同じ提携社数が丸ごと稼働します</b>——だから2年目の粗利を併記しています。</li>
+          <li><b>最大の不確実要素は「1紹介元あたりの年間紹介件数」です。</b>賃貸管理会社なら年6〜12件、士業なら年2〜5件と幅が大きい。初期値は保守的に3件を置いています。実績が出たら業種別に置き換えてください。</li>
+          <li>提携の維持には手間がかかります。定期連絡・お礼状・実績報告を怠ると紹介は止まります。この試算では<b>2年目も在宅ワーカー費用は継続する前提</b>で計算しています。</li>
+          <li><b>件数が伸びれば、施工体制の確保が先に効いてきます。</b>紹介が月10件を超える水準になると、協力業者の確保・作業日程の組み方が制約になります。営業より先にそちらが詰まるので、提携を増やすペースと施工体制の拡張はセットで見てください。</li>
+          <li>ポータルとの比較は<b>同じ件数を取り続けた場合</b>の支払い額です。ポータル経由は価格競争になりやすく、実際には受注単価も下がる可能性があります。その分は織り込んでいません。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="panel" id="p-road" role="tabpanel" hidden>
+  <div class="sec-head"><h2>90日ロードマップ</h2><span class="tagline">見るべきは案件数ではなく、提携社数</span></div>
+  <p class="lede"><span class="owner kl">きれいライフサービス</span>と<span class="owner ai">アイドマ</span>の役割を分けています。社長の稼働は<b>提携先との顔合わせと、現地調査</b>に集中していただく設計です。</p>
+
+  <div class="card" style="border-left:4px solid var(--accent);border-radius:10px;margin-bottom:24px">
+    <div class="eyebrow" style="margin-bottom:8px">次回商談でお出しするもの</div>
+    <ul style="margin:0;padding-left:1.2em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:5px">
+      <li><b style="color:var(--ink)">MiTok動画の活用方法</b>——撮った動画をどこにどう置けば紹介元への名刺になるか（お約束の内容）</li>
+      <li><b style="color:var(--ink)">他社の成功事例</b>と、業務改善・販路拡大の進め方</li>
+      <li><b style="color:var(--ink)">本ボード</b>——紹介元ターゲット30、切り口、ROIシミュレーション</li>
+      <li><b style="color:var(--ink)">契約期間と解約条件の明示</b>——縛りへの懸念に対する回答</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 1–30</div><div class="pt">紹介元リストの設計と<br>テストマーケティング</div></div>
+    <ul>
+      <li><span class="owner kl">きれいライフ</span>着手する<b>3業種</b>を選定。相続の期限が迫る司法書士、家財が残って困る解体業者、紹介頻度の高い賃貸管理会社が第一候補です。</li>
+      <li><span class="owner ai">アイドマ</span>関東1都3県のリストを抽出し、<b>小ロットのテストマーケティング</b>を実施。業種別・文面別の反応率を測定する。</li>
+      <li><span class="owner ai">アイドマ</span>MiTokの動画を素材に、<b>紹介元向けの1枚資料</b>を作成。「他社が安ければそちらを勧める」という姿勢を、紹介者に伝わる言葉に翻訳する。</li>
+      <li><span class="owner kl">きれいライフ</span>過去の施工事例を3件、写真つきで整理。紹介者が最初に見る材料になります。</li>
+      <li><span class="owner ai">アイドマ</span>在宅ワーカーへの移管を、請求書発行と日程調整から開始する。</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 31–60</div><div class="pt">提携の獲得と<br>勝ちパターンの特定</div></div>
+    <ul>
+      <li><span class="owner ai">アイドマ</span>反応の良かった業種へ配信を寄せる。社長へ<b>提携面談のアポイント</b>を供給開始。</li>
+      <li><span class="owner kl">きれいライフ</span>社長は<b>提携先との顔合わせと現地調査だけ</b>を担当。リスト作成や日程調整には手を出さない。</li>
+      <li><span class="owner ai">アイドマ</span>提携先の管理台帳を整備。<b>いつ・誰と・何を話したか</b>を残し、定期連絡の仕組みをつくる。</li>
+      <li><span class="owner kl">きれいライフ</span>最初の紹介案件を1件、<b>掲載可否の許諾込みで事例化</b>する。次の提携先への説得材料になります。</li>
+      <li><span class="owner ai">アイドマ</span>施工事例のブログ記事化とGoogleビジネスプロフィールの整備を在宅ワーカーへ移管。</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 61–90</div><div class="pt">数字での判断と<br>横展開</div></div>
+    <ul>
+      <li><span class="owner ai">アイドマ</span>3ヶ月の実績（アポ率・提携成立率・業種別の紹介件数）を集計し、<b>ROIモデルを実績値で更新</b>する。</li>
+      <li><span class="owner kl">きれいライフ</span><b>提携社数が増えているかだけを見て、継続するか判断</b>する。案件数はまだ少なくて当然です。</li>
+      <li><span class="owner ai">アイドマ</span>検証済みの型を<b>残りの業種へ横展開</b>。ケアマネ・葬儀社・老人ホームへ広げる。</li>
+      <li><span class="owner kl">きれいライフ</span>紹介元への定期連絡の頻度と内容を確定。<b>ここを続けられるかで、翌年の紹介数が決まります</b>。</li>
+      <li><span class="owner ai">アイドマ</span>契約終了後の内製化（チームと営業システムを自社に残す形）の進め方を設計する。</li>
+    </ul>
+  </div>
+
+  <hr class="wave" style="margin:34px 0">
+
+  <div class="block" style="margin-top:0">
+    <h3>次回商談で確認したい6つ</h3>
+    <p class="sub">試算の精度を上げるために、社長にしか答えられない数字</p>
+    <div class="grid g2">
+      <div class="card"><b>1. 1件あたりの平均受注額と粗利率</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">ROIの分子を決める最重要変数。案件の種類別に幅があれば、その幅も。</p></div>
+      <div class="card"><b>2. 月間の受注件数と、経路ごとの内訳</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">社協・市役所・知人・不動産会社の比率が分かると、伸ばす場所が決まります。</p></div>
+      <div class="card"><b>3. 既存の不動産会社からの紹介は年何件か</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">「1紹介元あたり年間何件」の実測値になります。これが分かれば試算が確定します。</p></div>
+      <div class="card"><b>4. 対応できる月間の作業キャパシティ</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">紹介が増えたときに受けきれるか。営業量の上限を決めます。</p></div>
+      <div class="card"><b>5. 対応可能エリアの実際の範囲</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">1都3県すべてか、移動時間で制約があるか。リスト抽出の条件になります。</p></div>
+      <div class="card"><b>6. 月々に投じられる金額の上限</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">無理のない開始規模を一緒に決めます。小さく始める形も用意できます。</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>出典</h3>
+    <ul class="srcs">
+      <li>相続登記の義務化（2024年4月1日施行・3年以内・過料10万円以下／施行前の相続は2027年3月31日が期限） — <a href="https://www.orixbank.co.jp/column/article/329/" target="_blank" rel="noopener">オリックス銀行</a>／<a href="https://legalestate-kazokushintaku.com/legal-reform/unknownland/" target="_blank" rel="noopener">リーガルエステート</a></li>
+      <li>住所等変更登記の義務化（2026年4月1日施行・2年以内・過料5万円以下） — <a href="https://legalestate-kazokushintaku.com/legal-reform/mandatory-registration-of-change-of-address-of-real-estate/" target="_blank" rel="noopener">リーガルエステート</a>／<a href="https://protectstance.com/column/20260427/inheritance033" target="_blank" rel="noopener">弁護士法人プロテクトスタンス</a></li>
+      <li>改正空家等対策特別措置法（2023年12月13日施行・管理不全空家／住宅用地特例の解除） — <a href="https://www.city.kobe.lg.jp/a92551/business/todokede/jutakutoshikyoku/building/work/akiyahoukaisei.html" target="_blank" rel="noopener">神戸市</a>／<a href="https://nexpert-law.com/column/souzoku/column-22886/" target="_blank" rel="noopener">ネクスパート法律事務所</a></li>
+      <li>全国の空き家900万戸・空き家率13.8%（2023年住宅・土地統計調査） — <a href="https://www.nikkei.com/article/DGXZQOCD3182G0R30C24A5000000/" target="_blank" rel="noopener">日本経済新聞</a></li>
+      <li>2024年に自宅で亡くなった一人暮らしの方 76,020人（警察庁・2025年4月初公表） — <a href="https://gia-nra.jp/sdgs/1656/" target="_blank" rel="noopener">一般社団法人 全国遺品整理業協会</a></li>
+      <li>不用品回収サービスに関する消費生活相談 — <a href="https://www.kokusen.go.jp/news/data/n-20221102_1.html" target="_blank" rel="noopener">国民生活センター</a>／<a href="https://www.recycle-tsushin.com/news/detail_7768.php" target="_blank" rel="noopener">リサイクル通信</a></li>
+      <li>特殊清掃・遺品整理の費用相場 — <a href="https://www.k-clean.jp/column/tokushuseisouhiyou/" target="_blank" rel="noopener">関西クリーンサービス</a>／<a href="https://j-net21.smrj.go.jp/startup/guide/service/20220128.html" target="_blank" rel="noopener">J-Net21（中小機構）</a></li>
+      <li>アイドマ・ホールディングス クラウドユニット — <a href="https://www.aidma-hd.jp/crowdunit_category/" target="_blank" rel="noopener">aidma-hd.jp</a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<hr class="wave">
+<footer style="background:var(--surface);border-top:1px solid var(--rule)">
+  <div class="wrap" style="padding:20px 24px 28px;font-size:12px;color:var(--ink-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <span>株式会社きれいライフサービス 様向け 事前リサーチ・成長戦略・ROI分析／株式会社アイドマ・ホールディングス</span>
+    <span class="mono">2026-09-13</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+var tabs=Array.prototype.slice.call(document.querySelectorAll(".tab"));
+tabs.forEach(function(t){
+  t.addEventListener("click",function(){
+    tabs.forEach(function(x){
+      x.setAttribute("aria-selected",x===t?"true":"false");
+      document.getElementById("p-"+x.dataset.p).hidden=(x!==t);
+    });
+    window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  });
+});
+
+var NF=new Intl.NumberFormat("ja-JP");
+function n(v){return NF.format(Math.round(v));}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function svg(w,h,inner){
+  return '<svg viewBox="0 0 '+w+' '+h+'" role="img" preserveAspectRatio="xMidYMid meet" '+
+    'style="max-width:'+Math.round(w*1.18)+'px;margin:0 auto">'+inner+'</svg>';
+}
+function txt(x,y,s,o){
+  o=o||{};
+  return '<text x="'+x+'" y="'+y+'" fill="'+(o.fill||"var(--ink-2)")+'" font-size="'+(o.size||11)+'" '+
+   'font-family="'+(o.mono?"Red Hat Mono, monospace":(o.disp?"Kaisei Decol, serif":"M PLUS 1p, sans-serif"))+'" '+
+   'font-weight="'+(o.weight||400)+'" text-anchor="'+(o.anchor||"start")+'"'+
+   (o.baseline?' dominant-baseline="'+o.baseline+'"':'')+'>'+esc(s)+'</text>';
+}
+function rrect(x,y,w,h,r,fill){
+  if(h<=0||w<=0) return "";
+  r=Math.min(r,h/2,w/2);
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+r+'" fill="'+fill+'"></rect>';
+}
+function niceMax(v,div){
+  if(!(v>0)) return div;
+  var unit=v/div, step=Math.pow(10,Math.floor(Math.log10(unit))), r=unit/step;
+  var mult=r<=1?1:r<=2?2:r<=2.5?2.5:r<=5?5:10;
+  return step*mult*div;
+}
+
+/* ---- 経路 ---- */
+(function(){
+  var W=760,H=250,s="";
+  var now=[
+    {t:"社会福祉協議会の広告",u:"地元限定・掲載待ち"},
+    {t:"市役所のポスター",u:"地元限定・受動的"},
+    {t:"知人からの紹介",u:"数が読めない"},
+    {t:"不動産会社からの依頼",u:"既に機能している唯一の法人ルート"}
+  ];
+  s+=txt(8,20,"いまの経路（すべて「待ち」）",{fill:"var(--ink-3)",size:11,weight:700});
+  now.forEach(function(c,i){
+    var x=8+i*188;
+    s+='<rect x="'+x+'" y="30" width="176" height="62" rx="8" fill="var(--surface-2)" stroke="var(--rule-2)" stroke-width="1.25"></rect>';
+    s+=txt(x+12,52,c.t,{fill:"var(--ink)",size:12,weight:700,disp:true});
+    s+=txt(x+12,72,c.u,{fill:"var(--ink-3)",size:10.5});
+  });
+  s+='<path d="M 380 100 L 380 118" stroke="var(--rule-2)" stroke-width="1.5"></path>';
+  s+=txt(8,140,"増やせる経路（こちらから件数を決められる）",{fill:"var(--accent)",size:11,weight:700});
+  var next=[
+    {t:"不動産管理・大家",u:"残置物・原状回復",c:"var(--s2)"},
+    {t:"ケアマネ・地域包括",u:"ゴミ屋敷の相談窓口",c:"var(--s2)"},
+    {t:"司法書士・税理士",u:"相続後の家財整理",c:"var(--s1)"},
+    {t:"解体業者・葬儀社",u:"現場から必ず出る",c:"var(--s3)"}
+  ];
+  next.forEach(function(c,i){
+    var x=8+i*188;
+    s+='<rect x="'+x+'" y="150" width="176" height="62" rx="8" fill="var(--accent-soft)" stroke="'+c.c+'" stroke-width="1.75"></rect>';
+    s+=txt(x+12,172,c.t,{fill:"var(--ink)",size:12,weight:700,disp:true});
+    s+=txt(x+12,192,c.u,{fill:"var(--ink-3)",size:10.5});
+  });
+  s+=txt(8,236,"※ 関東1都3県で、この4分類だけでも母数は10万件を超えます。必要な提携はそのうち50社。",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("ch-routes").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 需要の規模 ---- */
+(function(){
+  var W=520,H=250,s="";
+  var cards=[
+    {t:"自宅で亡くなった一人暮らしの方（2024年）",v:"76,020",u:"人",c:"var(--s1)",y:14},
+    {t:"全国の空き家（2023年10月）",v:"9,000,000",u:"戸",c:"var(--s3)",y:94},
+    {t:"後期高齢者人口（2025年）",v:"21,800,000",u:"人",c:"var(--s4)",y:174}
+  ];
+  cards.forEach(function(c){
+    s+='<rect x="8" y="'+c.y+'" width="504" height="68" rx="10" fill="var(--surface-2)"></rect>';
+    s+='<rect x="8" y="'+c.y+'" width="5" height="68" rx="2.5" fill="'+c.c+'"></rect>';
+    s+=txt(26,c.y+22,c.t,{fill:"var(--ink-3)",size:11.5,weight:700});
+    s+=txt(26,c.y+52,c.v,{fill:c.c,size:24,weight:700,mono:true});
+    s+=txt(504,c.y+52,c.u,{fill:"var(--ink-2)",size:12,anchor:"end"});
+  });
+  document.getElementById("ch-demand").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 相談件数 ---- */
+(function(){
+  var W=520,H=250,padT=42,padB=54,plotH=H-padT-padB,max=18000,s="";
+  var data=[
+    {l:"2018年度",v:1354},
+    {l:"2021年度",v:2231},
+    {l:"2024年度",v:15824,hi:true}
+  ];
+  [0,5000,10000,15000].forEach(function(g){
+    var y=padT+plotH-(g/max)*plotH;
+    s+='<line x1="8" y1="'+y+'" x2="'+(W-46)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(W-42,y,n(g),{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+  });
+  s+=txt(8,16,"不用品回収サービスに関する相談（件）",{fill:"var(--ink-3)",size:10});
+  data.forEach(function(d,i){
+    var bw=96,x=54+i*(bw+52),h=(d.v/max)*plotH,y=padT+plotH-h;
+    s+=rrect(x,y,bw,h,5,d.hi?"var(--s1)":"var(--s3)");
+    s+=txt(x+bw/2,y-9,n(d.v),{fill:"var(--ink)",size:13,weight:700,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+20,d.l,{fill:"var(--ink-2)",size:11.5,anchor:"middle"});
+  });
+  s+=txt(8,H-8,"※ 2018・2021年度は国民生活センターの公表値、2024年度は全国の消費生活センター集計。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("ch-trouble").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 3年比較（静的・戦略タブ） ---- */
+(function(){
+  var W=700,H=260,padL=64,padR=20,padT=30,padB=62;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var portal=[672,1344,2016], build=[456,552,648];
+  var max=niceMax(2016*1.12,4),s="";
+  for(var i=0;i<=4;i++){
+    var val=max*i/4,y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-12,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  var slot=plotW/3,bw=slot*0.22;
+  [0,1,2].forEach(function(i){
+    var cx=padL+i*slot+slot/2;
+    var h1=(portal[i]/max)*plotH, h2=(build[i]/max)*plotH;
+    s+=rrect(cx-bw-4,padT+plotH-h1,bw,h1,4,"var(--s1)");
+    s+=rrect(cx+4,padT+plotH-h2,bw,h2,4,"var(--s2)");
+    s+=txt(cx-bw/2-4,padT+plotH-h1-7,n(portal[i]),{fill:"var(--s1)",size:11,weight:700,mono:true,anchor:"middle"});
+    s+=txt(cx+bw/2+4,padT+plotH-h2-7,n(build[i]),{fill:"var(--s2)",size:11,weight:700,mono:true,anchor:"middle"});
+    s+=txt(cx,padT+plotH+20,(i+1)+"年目までの累計",{fill:"var(--ink-2)",size:11.5,anchor:"middle"});
+    var diff=portal[i]-build[i];
+    s+=txt(cx,padT+plotH+38,"差 "+n(diff)+"万円",{fill:"var(--accent)",size:11.5,weight:700,mono:true,anchor:"middle"});
+  });
+  s+=txt(padL,H-6,"※ 年間112件・1件30万円を取り続けた場合。ポータルは成果報酬20%、紹介元は1年目456万円＋2年目以降は維持費96万円/年。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("ch-buildvsbuy").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 積み上がり（静的） ---- */
+(function(){
+  var W=700,H=260,padL=64,padR=64,padT=28,padB=42;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var partners=[],cases=[];
+  var per=3.4;
+  for(var m=1;m<=12;m++){
+    var p=(m<=1)?0:per*(m-1);
+    partners.push(p);
+    cases.push(p*3/12);
+  }
+  var maxP=niceMax(partners[11]*1.15,4);
+  var s="";
+  for(var i=0;i<=4;i++){
+    var val=maxP*i/4,y=padT+plotH-(val/maxP)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-12,"提携社数",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+((m-1)/11)*plotW;}
+  var bw=plotW/12*0.5;
+  for(var m=1;m<=12;m++){
+    var x=px(m)-bw/2, h=(partners[m-1]/maxP)*plotH;
+    s+=rrect(x,padT+plotH-h,bw,h,3,"var(--s2)");
+    if(m%3===0||m===1) s+=txt(px(m),padT+plotH+18,m+"ヶ月",{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  var maxC=Math.max.apply(null,cases)*1.25;
+  var d=cases.map(function(v,i){return (i?"L":"M")+" "+px(i+1)+" "+(padT+plotH-(v/maxC)*plotH);}).join(" ");
+  s+='<path d="'+d+'" fill="none" stroke="var(--s1)" stroke-width="2.5" stroke-linejoin="round"></path>';
+  s+='<circle cx="'+px(12)+'" cy="'+(padT+plotH-(cases[11]/maxC)*plotH)+'" r="4" fill="var(--s1)"></circle>';
+  s+=txt(px(12)+8,padT+plotH-(cases[11]/maxC)*plotH,"月"+cases[11].toFixed(1)+"件",{fill:"var(--s1)",size:11,weight:700,mono:true,baseline:"middle"});
+  s+=txt(px(12)+8,padT+plotH-(partners[11]/maxP)*plotH-10,n(partners[11])+"社",{fill:"var(--s2)",size:11,weight:700,mono:true});
+  s+=txt(padL+4,padT+12,"最初の3ヶ月は案件がほとんど出ません。提携社数だけを見てください。",{fill:"var(--ink-2)",size:11.5,weight:700});
+  document.getElementById("ch-buildup").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- targets ---------------- */
+var TARGETS=[
+ {t:"A",name:"賃貸管理会社",c:12000,
+  why:"退去後の残置物処理が毎月発生し、孤独死があった部屋の原状回復も持ち込まれる。1社と組めば紹介頻度が最も高い層。",
+  hook:"「退去後の残置物の処理、いま何社にお願いされていますか。特殊清掃が必要なお部屋まで一貫でお受けできます」"},
+ {t:"A",name:"賃貸オーナー・不動産保有法人",c:30000,
+  why:"自主管理の大家は、孤独死や残置物が出たときに頼る先を持っていない。一度助けると長く続く関係になる。",
+  hook:"「お部屋で万が一のことがあったとき、すぐ動ける業者をお持ちですか。夜間のご連絡でも対応できます」"},
+ {t:"A",name:"不動産仲介会社",c:28000,
+  why:"売却前に家財を出す必要がある物件が常に発生。売却がスムーズになるため、仲介側にも明確なメリットがある。",
+  hook:"「売却前の家財処分でご成約が止まることはありませんか。先に空にしてお引き渡しできます」"},
+ {t:"A",name:"居宅介護支援事業所・ケアマネジャー",c:7000,
+  why:"利用者宅がゴミ屋敷というケースに日常的に直面するが、紹介先を持っていない。福祉現場出身という経歴が最も響く相手。",
+  hook:"「利用者さんのお部屋のことでお困りのケース、ありませんか。福祉の現場にいたので、事情を汲んで伺えます」"},
+ {t:"A",name:"有料老人ホーム・サービス付き高齢者向け住宅",c:7500,
+  why:"入居時に自宅の家財整理、退去時に居室の片付けが必ず発生する。ご家族が遠方の場合は特に業者が必要になる。",
+  hook:"「ご入居前のご自宅、ご家族はどうされていますか。ご遠方でも、こちらで完結できます」"},
+ {t:"A",name:"訪問介護事業所",c:9000,
+  why:"ヘルパーが最初に部屋の状態を見る立場。手に負えない量になったときの相談先として機能する。",
+  hook:"「ヘルパーさんの手に負えないお部屋、ありませんか。事業所様の負担にならない形でお引き受けします」"},
+ {t:"A",name:"地域包括支援センター",c:1400,
+  why:"高齢者の生活相談の公的窓口。ゴミ屋敷・セルフネグレクトの相談が集まるが、紹介できる業者を探している。",
+  hook:"「ごみ屋敷のご相談、窓口に来ていませんか。ご本人の気持ちを大事にした進め方でお受けします」"},
+ {t:"A",name:"特別養護老人ホーム・介護老人保健施設",c:3000,
+  why:"入所時の自宅整理と、退所・逝去後の居室整理が発生する。公的施設の実績は他への紹介材料になる。",
+  hook:"「ご入所の際、ご自宅の片付けでご家族が困られることはありませんか。施設様からご案内いただける形にできます」"},
+ {t:"A",name:"葬儀社",c:2500,
+  why:"遺族から遺品整理を必ず聞かれるが、自社では受けられない葬儀社が多い。葬儀の直後という最も早いタイミングで接点が持てる。",
+  hook:"「ご遺族から遺品整理のご相談、受けられませんか。葬儀の流れを壊さない形で、後日伺います」"},
+ {t:"A",name:"病院・療養型病床",c:2000,
+  why:"長期入院からの退院・逝去後に自宅が手つかずになっているケースが多い。医療ソーシャルワーカーが窓口になる。",
+  hook:"「退院後のご自宅の状態で、退院調整が止まることはありませんか。片付けからお手伝いできます」"},
+
+ {t:"B",name:"司法書士事務所",c:7000,
+  why:"2027年3月31日の相続登記期限に向けて駆け込み案件を抱えている。登記の次に必ず「家の中身」の相談を受ける。",
+  hook:"「相続登記のあと、家財のご相談を受けられませんか。遠方の相続人様に代わって、こちらで完結できます」"},
+ {t:"B",name:"税理士事務所",c:12000,
+  why:"相続税申告の過程で不動産と家財の扱いに必ず触れる。顧問先の高齢化で、相続案件が構造的に増えている。",
+  hook:"「相続のご相談で、実家の片付けの話は出ませんか。先生のお名前でご案内いただける形をご用意します」"},
+ {t:"B",name:"弁護士事務所（相続・遺産分割）",c:12000,
+  why:"遺産分割でもめている物件は、誰も片付けに動けないまま放置される。中立な第三者として入れる業者が求められる。",
+  hook:"「遺産分割中で手がつけられていないご実家、ありませんか。相続人様全員にご説明したうえで進められます」"},
+ {t:"B",name:"行政書士事務所（遺言・相続手続）",c:9000,
+  why:"生前整理・終活の相談窓口になっている事務所が多い。亡くなる前から関係ができるため、案件が早い段階で入る。",
+  hook:"「終活のご相談で、お荷物の整理の話は出ませんか。生前整理からお手伝いできます」"},
+ {t:"B",name:"生命保険代理店（相続対策）",c:20000,
+  why:"相続対策の提案を通じて資産全体の話をする立場。顧客との関係が長く、紹介が自然に生まれる。",
+  hook:"「相続のご相談を受けられたとき、ご実家の片付けの話は出ませんか。ご案内先としてお使いください」"},
+ {t:"B",name:"相続専門の不動産買取業者",c:1200,
+  why:"買い取る前に家財を出す必要があり、自社で抱えていない業者が多い。取引のたびに発生する構造的な需要。",
+  hook:"「買取前の家財出し、どうされていますか。決済日に間に合う形で空にしてお渡しします」"},
+ {t:"B",name:"家族信託・成年後見の専門家",c:2000,
+  why:"本人が判断できない状態の不動産を扱う。後見人として業者選定の責任を負うため、信頼できる先を強く求めている。",
+  hook:"「後見人として業者を選ばれるとき、判断材料はお持ちですか。見積の根拠を全部お出しします」"},
+ {t:"B",name:"信託銀行・地銀の相続窓口",c:400,
+  why:"1拠点決まれば担当エリア全体に情報が回る。金融機関からの紹介は顧客側の安心感が非常に高い。",
+  hook:"「相続のお手続きのあと、ご実家のことでご相談はありませんか。お客様にご案内いただける形にできます」"},
+ {t:"B",name:"自治体の空き家相談窓口・空き家バンク",c:250,
+  why:"改正空家法で相談が急増している。行政が紹介できる業者リストに載れば、継続的に案件が回ってくる。",
+  hook:"「管理不全空家のご相談、増えていませんか。所有者様に紹介いただける事業者として登録させてください」"},
+ {t:"B",name:"終活・エンディングノート支援団体",c:300,
+  why:"生前整理の意識が最も高い層と接点がある。セミナー登壇という形で、複数の見込み客に一度に届く。",
+  hook:"「終活セミナーで、片付けの話をさせていただけませんか。実例をお見せすると参加者の反応が変わります」"},
+
+ {t:"C",name:"リフォーム会社・工務店",c:22000,
+  why:"着工前に荷物を出す必要があり、職人が代わりに運んでいるケースが多い。工期短縮に直結するため歓迎される。",
+  hook:"「着工前のお荷物、職人さんが動かされていませんか。前日までに空にしてお渡しします」"},
+ {t:"C",name:"原状回復・内装工事業者",c:6000,
+  why:"残置物があると着手できない。管理会社からの依頼を受ける立場なので、下流の片付けを一括で任せたい動機がある。",
+  hook:"「残置物のあるお部屋、着手が遅れませんか。先に入って空にしておきます」"},
+ {t:"C",name:"ハウスクリーニング業者",c:4500,
+  why:"特殊清掃を断っている業者が多く、競合ではなく補完関係。断った案件を回してもらえる。",
+  hook:"「特殊清掃が必要なお部屋、お断りされていませんか。うちで引き取らせてください」"},
+ {t:"C",name:"解体業者",c:3500,
+  why:"家財が残ったままでは解体に着手できない。工期に直結するため、動きが速く、発注も継続的になる。",
+  hook:"「解体前の家財出し、どうされていますか。分別まで済ませてお渡しできるので、処分費も下がります」"},
+ {t:"C",name:"損害保険代理店・損保会社",c:8000,
+  why:"火災・水漏れ・孤独死後の原状回復で保険が絡む。保険金の範囲での対応ができる業者を探している。",
+  hook:"「事故後の原状回復で、業者選びにお困りのことはありませんか。保険のご請求に必要な資料も揃えます」"},
+ {t:"C",name:"害虫駆除業者",c:1500,
+  why:"ゴミ屋敷案件では駆除と片付けがセットで必要になる。どちらか片方しかできない業者同士は自然に組める。",
+  hook:"「駆除だけでは解決しないお宅、ありませんか。片付けとセットでご提案しませんか」"},
+ {t:"C",name:"引っ越し業者",c:1200,
+  why:"引っ越し当日に「これは要らない」と大量に出る。処分の受け皿を持たない業者は毎回困っている。",
+  hook:"「当日に出る不要品、どうされていますか。同日に引き取りに伺える体制があります」"},
+ {t:"C",name:"警備会社・鍵業者",c:2000,
+  why:"孤独死の第一発見に関わることが多く、その後の対応先を求められる立場。緊急時の連携先として価値が高い。",
+  hook:"「解錠されたお部屋で、その後の対応を聞かれることはありませんか。すぐ動ける体制があります」"},
+ {t:"C",name:"社会福祉協議会・自治体の福祉部門",c:330,
+  why:"すでに地元で広告実績がある経路。関東の他自治体へ同じ形を横展開でき、公的な信用がそのまま効く。",
+  hook:"「地元では社協様に広告を出しています。同じ形で、こちらの地域でもご一緒できませんか」"},
+ {t:"C",name:"NPO・生活困窮者支援団体",c:800,
+  why:"支援対象者宅がゴミ屋敷というケースに直面するが、費用の問題で動けない。事情を汲んだ価格提案ができる相手。",
+  hook:"「ご支援先のお部屋のことで、費用面で止まっているケースはありませんか。事情に合わせてご相談できます」"}
+];
+var TIER_META={
+  A:{label:"直接発生",note:"依頼が日常的に発生する層",cls:"b"},
+  B:{label:"相続の入口",note:"2027年3月の期限で今動いている",cls:"a"},
+  C:{label:"現場から出る",note:"工事・事故の現場で家財が出る",cls:"d"}
+};
+
+(function(){
+  var total=TARGETS.reduce(function(a,b){return a+b.c;},0);
+  var a=TARGETS.filter(function(d){return d.t==="A";}).reduce(function(x,y){return x+y.c;},0);
+  document.getElementById("t-total").innerHTML=n(total)+'<small>件</small>';
+  document.getElementById("t-a").innerHTML=n(a)+'<small>件</small>';
+})();
+
+(function(){
+  var rows=["A","B","C"].map(function(t){
+    var sum=TARGETS.filter(function(d){return d.t===t;}).reduce(function(a,b){return a+b.c;},0);
+    return {t:t,sum:sum,cnt:TARGETS.filter(function(d){return d.t===t;}).length};
+  });
+  var max=niceMax(Math.max.apply(null,rows.map(function(r){return r.sum;}))*1.05,4);
+  var W=620,H=230,padL=230,padR=86,plotW=W-padL-padR,rowH=56,top=40,s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-12)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-18)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-20,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+32,top-20,"件",{fill:"var(--ink-3)",size:10});
+  var colors={A:"var(--s2)",B:"var(--s1)",C:"var(--s3)"};
+  rows.forEach(function(r,i){
+    var y=top+i*rowH,m=TIER_META[r.t];
+    s+=txt(0,y+8,"Tier "+r.t+"・"+m.label+"（"+r.cnt+"業種）",{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(0,y+26,m.note,{fill:"var(--ink-3)",size:10.5});
+    s+=rrect(padL,y-6,(r.sum/max)*plotW,24,4,colors[r.t]);
+    s+=txt(padL+(r.sum/max)*plotW+8,y+6,n(r.sum),{fill:"var(--ink-2)",size:11.5,mono:true,baseline:"middle"});
+  });
+  document.getElementById("ch-tiers").innerHTML=svg(W,H,s);
+})();
+
+var state={tier:"all",q:"",sort:"rank"};
+function renderTargets(){
+  var list=TARGETS.map(function(d,i){d._rank=i+1;return d;});
+  if(state.tier!=="all") list=list.filter(function(d){return d.t===state.tier;});
+  if(state.q){
+    var q=state.q.toLowerCase();
+    list=list.filter(function(d){return (d.name+d.why+d.hook).toLowerCase().indexOf(q)>=0;});
+  }
+  if(state.sort==="count") list=list.slice().sort(function(a,b){return b.c-a.c;});
+  if(state.sort==="countAsc") list=list.slice().sort(function(a,b){return a.c-b.c;});
+  document.getElementById("t-shown").textContent=list.length;
+  document.getElementById("t-sum").textContent=n(list.reduce(function(a,b){return a+b.c;},0))+"件";
+  document.getElementById("t-list").innerHTML=list.map(function(d){
+    var m=TIER_META[d.t];
+    return '<article class="trow t'+d.t+'">'+
+      '<div class="rank">'+String(d._rank).padStart(2,"0")+'</div>'+
+      '<div class="head"><div class="name">'+esc(d.name)+'</div>'+
+      '<div class="meta"><span class="chip '+m.cls+'">Tier '+d.t+'・'+m.label+'</span>'+
+      '<span class="cnt">'+n(d.c)+'<span>件</span></span></div></div>'+
+      '<div class="why"><span class="fieldlabel">なぜ狙うか</span><p class="fieldbody">'+esc(d.why)+'</p></div>'+
+      '<div class="hook"><span class="fieldlabel">最初の一言</span><p class="fieldbody">'+esc(d.hook)+'</p></div>'+
+    '</article>';
+  }).join("");
+}
+document.querySelectorAll("#tier-seg button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll("#tier-seg button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    state.tier=b.dataset.t;renderTargets();
+  });
+});
+document.getElementById("t-search").addEventListener("input",function(e){state.q=e.target.value.trim();renderTargets();});
+document.getElementById("t-sort").addEventListener("change",function(e){state.sort=e.target.value;renderTargets();});
+renderTargets();
+
+/* ---------------- 在宅ワーカー業務 ---------------- */
+var TASKS=[
+ {g:"問い合わせ・見積",h:36,items:[
+   {n:"電話・メール・フォームの一次対応と状況ヒアリング",h:12,key:true},
+   {n:"見積書の作成・送付",h:10,key:true},
+   {n:"現地調査の日程調整",h:6},
+   {n:"見積後のフォロー連絡（追客）",h:8,key:true}]},
+ {g:"紹介元の開拓・維持",h:32,items:[
+   {n:"紹介元候補リストの作成・企業情報の収集",h:10,key:true},
+   {n:"案内状・提携依頼状の作成と送付",h:8,key:true},
+   {n:"紹介元への定期連絡・紹介のお礼状",h:8,key:true},
+   {n:"提携先の管理台帳の更新",h:6}]},
+ {g:"現場の事務",h:30,items:[
+   {n:"作業前後の写真整理・報告書の作成",h:10,key:true},
+   {n:"許認可・マニフェスト等の書類管理",h:8},
+   {n:"請求書の発行・入金消込",h:6},
+   {n:"協力業者・処分場との日程調整",h:6}]},
+ {g:"広報・コンテンツ",h:34,items:[
+   {n:"MiTok動画の切り出し・字幕・各SNSへの配信",h:8,key:true},
+   {n:"施工事例の記事化（写真＋解説）",h:12,key:true},
+   {n:"Googleビジネスプロフィールの投稿・口コミ返信",h:6,key:true},
+   {n:"HP・LPの更新（料金の明示・よくある質問）",h:8,key:true}]},
+ {g:"バックオフィス",h:18,items:[
+   {n:"経費精算・仕訳入力",h:6},
+   {n:"車両・保険・許認可の期限管理",h:4},
+   {n:"求人原稿の作成・応募者対応",h:8}]}
+];
+(function(){
+  var total=TASKS.reduce(function(a,b){return a+b.h;},0);
+  document.getElementById("rw-total").innerHTML=total+'<small>h/月</small>';
+  document.getElementById("task-groups").innerHTML=TASKS.map(function(g){
+    return '<section class="taskgroup"><header><h4>'+esc(g.g)+'</h4><span class="hh">'+g.h+' h/月</span></header><ul>'+
+      g.items.map(function(it){
+        return '<li'+(it.key?' class="key"':'')+'><span>'+esc(it.n)+'</span><b>'+it.h+'h</b></li>';
+      }).join("")+'</ul></section>';
+  }).join("");
+})();
+
+/* ---------------- 組織図 ---------------- */
+function orgBox(x,y,w,h,title,sub,opt){
+  opt=opt||{};
+  var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="'+(opt.fill||"var(--surface-2)")+'" stroke="'+(opt.color||"var(--rule-2)")+'" stroke-width="'+(opt.bold?2.5:1.25)+'"'+(opt.dash?' stroke-dasharray="5 4"':'')+'></rect>';
+  s+=txt(x+13,y+(sub?20:h/2+4),title,{fill:opt.tc||"var(--ink)",size:opt.size||12.5,weight:700,disp:true});
+  if(sub) s+=txt(x+13,y+36,sub,{fill:"var(--ink-3)",size:10.5});
+  return s;
+}
+function elbow(x1,y1,x2,y2,my){
+  return '<path d="M '+x1+' '+y1+' L '+x1+' '+my+' L '+x2+' '+my+' L '+x2+' '+y2+'" fill="none" stroke="var(--rule-2)" stroke-width="1.25"></path>';
+}
+(function(){
+  var W=880,H=250,s="";
+  s+=orgBox(320,6,240,50,"国井 社長","すべての窓口と事務がここを通る",{color:"var(--s1)",fill:"var(--brand-soft)",bold:true});
+  var cols=[
+    {x:8,t:"現地調査・お客様対応",u:"社長にしかできない",c:"var(--s5)"},
+    {x:228,t:"見積・追客・問い合わせ",u:"時間を最も奪う",c:"var(--s1)"},
+    {x:448,t:"請求・報告書・広報",u:"社員でなくてもできる",c:"var(--s1)"},
+    {x:668,t:"紹介元への連絡",u:"手が回らず止まりがち",c:"var(--s1)"}
+  ];
+  cols.forEach(function(c){
+    s+=elbow(440,56,c.x+98,88,72);
+    s+=orgBox(c.x,88,196,54,c.t,c.u,{color:c.c});
+  });
+  s+=orgBox(8,170,420,48,"現場スタッフ・協力業者","作業品質は生命線。ここは変えない",{color:"var(--s5)"});
+  s+=txt(452,196,"※ 新規経路は地元4本のみ。増やす余力が社長に残っていない構造。",{fill:"var(--s1)",size:11.5,weight:700});
+  document.getElementById("ch-org-before").innerHTML=svg(W,H,s);
+})();
+(function(){
+  var W=880,H=400,s="";
+  s+=orgBox(320,6,240,50,"国井 社長","現地調査・お客様対応・提携の顔合わせ",{color:"var(--s5)",fill:"var(--good-soft)",bold:true});
+  var colX=[8,304,600],colW=272;
+  var heads=[
+    {t:"現場チーム",u:"作業品質は変えない",c:"var(--s5)"},
+    {t:"紹介元の開拓（外付け）",u:"アイドマ／8名体制",c:"var(--s2)"},
+    {t:"在宅ワーカーチーム",u:"4〜5名相当／月150時間",c:"var(--s3)"}
+  ];
+  heads.forEach(function(hd,i){
+    s+=elbow(440,56,colX[i]+colW/2,86,72);
+    s+=orgBox(colX[i],86,colW,50,hd.t,hd.u,{color:hd.c,bold:true});
+  });
+  function sub(x,y,w,t,h,color){
+    var r='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="30" rx="6" fill="var(--surface)" stroke="'+(color||"var(--rule)")+'" stroke-width="1"></rect>';
+    r+=txt(x+12,y+19,t,{fill:"var(--ink-2)",size:11.5});
+    if(h) r+=txt(x+w-12,y+19,h,{fill:"var(--ink-3)",size:10.5,mono:true,anchor:"end"});
+    return r;
+  }
+  ["不用品回収・遺品整理","特殊清掃・事故物件対応","家屋解体・協力業者の手配"].forEach(function(t,i){ s+=sub(colX[0],148+i*36,colW,t); });
+  ["関東1都3県の法人リスト抽出","電話・メール・手紙で接触","提携アポを社長へ供給"].forEach(function(t,i){ s+=sub(colX[1],148+i*36,colW,t,null,"var(--s2)"); });
+  [["問い合わせ・見積","36h"],["紹介元の開拓・維持","32h"],["現場の事務","30h"],["広報・コンテンツ","34h"],["バックオフィス","18h"]].forEach(function(t,i){
+    s+=sub(colX[2],148+i*36,colW,t[0],t[1]);
+  });
+  s+='<path d="M 440 340 L 440 304" fill="none" stroke="var(--s4)" stroke-width="1.5" stroke-dasharray="4 3"></path>';
+  s+=orgBox(160,340,560,52,"契約終了後：チームと営業システムを自社に残せる","「縛られる」のではなく「終わったときに何が残るか」で判断する",{color:"var(--s4)",fill:"var(--info-soft)",dash:true,size:12});
+  document.getElementById("ch-org-after").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- 社長の時間配分 ---------------- */
+(function(){
+  var cats=[
+    {l:"現地調査・お客様対応",c:"var(--s2)",before:35,after:75},
+    {l:"現場作業・指揮",c:"var(--s5)",before:55,after:62},
+    {l:"見積・追客・問い合わせ",c:"var(--s1)",before:35,after:10},
+    {l:"請求・報告書・広報",c:"var(--s3)",before:25,after:6},
+    {l:"紹介元への連絡",c:"var(--s4)",before:10,after:7}
+  ];
+  var W=740,H=250,padL=76,padR=56,plotW=W-padL-padR,total=160,s="";
+  [["現状",40,"before"],["移管後",132,"after"]].forEach(function(row){
+    var y=row[1],k=row[2],x=padL;
+    s+=txt(0,y+23,row[0],{fill:"var(--ink)",size:13,weight:700,disp:true});
+    cats.forEach(function(c){
+      var w=(c[k]/total)*plotW;
+      if(w<=0) return;
+      s+=rrect(x,y,Math.max(w-2,1),38,4,c.c);
+      if(w>44) s+=txt(x+w/2-1,y+24,String(c[k])+"h",{fill:"#FFFFFF",size:11.5,weight:700,mono:true,anchor:"middle"});
+      x+=w;
+    });
+    s+=txt(padL+plotW+8,y+24,"計160h",{fill:"var(--ink-3)",size:10.5,mono:true});
+  });
+  var ax=padL+(35/total)*plotW, bx=padL+(75/total)*plotW;
+  s+='<path d="M '+ax+' 96 L '+ax+' 112 M '+bx+' 96 L '+bx+' 112" stroke="var(--rule-2)" stroke-width="1" stroke-dasharray="3 3"></path>';
+  s+='<path d="M '+(ax+4)+' 104 L '+(bx-8)+' 104" stroke="var(--brand)" stroke-width="2"></path>';
+  s+='<path d="M '+(bx-8)+' 100 L '+bx+' 104 L '+(bx-8)+' 108 Z" fill="var(--brand)"></path>';
+  s+=txt(bx+8,108,"お客様の前に立つ時間が ＋40h／月（2倍以上）",{fill:"var(--brand)",size:12,weight:700});
+  s+=txt(0,214,"※ 稼働を月160時間として配分。案件が増えるぶん現場作業も増える前提で試算しています。",{fill:"var(--ink-3)",size:11});
+  document.getElementById("ch-time").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- ROI ---------------- */
+var PRESETS={
+  cons:{app:1500,appo:0.5,meet:80,tie:15,sfee:30,ref:2,price:25,gm:35,prep:2,hours:120,ofee:6,fee:20},
+  base:{app:2000,appo:0.8,meet:85,tie:25,sfee:30,ref:3,price:30,gm:40,prep:1,hours:150,ofee:8,fee:20},
+  bull:{app:2400,appo:1.0,meet:88,tie:28,sfee:40,ref:4,price:35,gm:43,prep:1,hours:180,ofee:10,fee:20}
+};
+var KEYS=["app","appo","meet","tie","sfee","ref","price","gm","prep","hours","ofee","fee"];
+var DEC={appo:1,ref:1};
+
+function readInputs(){var o={};KEYS.forEach(function(k){o[k]=parseFloat(document.getElementById("k-"+k).value);});return o;}
+function setInputs(p){KEYS.forEach(function(k){document.getElementById("k-"+k).value=p[k];});}
+
+function calc(p){
+  var appo=p.app*(p.appo/100);
+  var meet=appo*(p.meet/100);
+  var tie=meet*(p.tie/100);
+  var revPer=p.price*10000;
+  var monthCost=p.sfee*10000+p.ofee*10000;
+
+  var partners=[],cases=[],cumProfit=[],cumCost=[],cumCases=0,active=0;
+  for(var m=1;m<=12;m++){
+    if(m>p.prep) active+=tie;
+    partners.push(active);
+    /* 当月の紹介件数＝前月末までに成立した提携社数 × 年間紹介件数/12 */
+    var prev = (m>1)?partners[m-2]:0;
+    var c = prev*(p.ref/12);
+    cases.push(c); cumCases+=c;
+    cumProfit.push(cumCases*revPer*(p.gm/100));
+    cumCost.push(monthCost*m);
+  }
+  var yearCases=cumCases;
+  var yearProfit=yearCases*revPer*(p.gm/100);
+  var invest=monthCost*12;
+  var roi=invest>0?(yearProfit-invest)/invest*100:0;
+  /* 2年目：提携社数は維持、開拓は止めて在宅のみ継続 */
+  var y2Cases=active*p.ref;
+  var y2Profit=y2Cases*revPer*(p.gm/100);
+  var y2Invest=p.ofee*10000*12;
+  var roi2=y2Invest>0?(y2Profit-y2Invest)/y2Invest*100:0;
+  var payback=null;
+  for(var i=0;i<12;i++){ if(payback===null&&cumProfit[i]>=cumCost[i]) payback=i+1; }
+  return {appo:appo,meet:meet,tie:tie,partners:partners,cases:cases,yearCases:yearCases,yearProfit:yearProfit,
+          invest:invest,roi:roi,active:active,y2Cases:y2Cases,y2Profit:y2Profit,y2Invest:y2Invest,roi2:roi2,
+          cumProfit:cumProfit,cumCost:cumCost,payback:payback,revPer:revPer};
+}
+function man(v){return n(v/10000);}
+
+function update(){
+  var p=readInputs();
+  KEYS.forEach(function(k){ document.getElementById("v-"+k).textContent=DEC[k]?p[k].toFixed(1):n(p[k]); });
+  var r=calc(p);
+
+  document.getElementById("o-roi").innerHTML=(r.roi>=0?"+":"")+Math.round(r.roi)+'<small>%</small>';
+  document.getElementById("o-roi").parentElement.className="stat "+(r.roi>=0?"pos":"hot");
+  document.getElementById("o-partners").innerHTML=r.active.toFixed(0)+'<small>社</small>';
+  document.getElementById("o-cases").innerHTML=r.yearCases.toFixed(1)+'<small>件</small>';
+  document.getElementById("o-casenote").textContent="売上 "+man(r.yearCases*r.revPer)+"万円／粗利 "+man(r.yearProfit)+"万円";
+  document.getElementById("o-roi2").innerHTML=man(r.y2Profit)+'<small>万円</small>';
+  document.getElementById("o-roi2note").textContent="年"+r.y2Cases.toFixed(0)+"件／維持費"+man(r.y2Invest)+"万円・手残り"+man(r.y2Profit-r.y2Invest)+"万円";
+
+  document.getElementById("f-app").textContent=n(p.app);
+  document.getElementById("f-appo").textContent=r.appo.toFixed(0);
+  document.getElementById("f-appo-r").textContent="アポ率 "+p.appo.toFixed(1)+"%";
+  document.getElementById("f-meet").textContent=r.meet.toFixed(1);
+  document.getElementById("f-meet-r").textContent="実施率 "+p.meet+"%";
+  document.getElementById("f-tie").textContent=r.tie.toFixed(1);
+  document.getElementById("f-tie-r").textContent="提携率 "+p.tie+"%";
+
+  drawRamp(r);
+  drawPayback(r);
+  drawCompare(r,p);
+
+  var v=document.getElementById("o-verdict");
+  if(r.y2Profit>=r.y2Invest){
+    v.style.borderLeftColor="var(--good)";
+    v.innerHTML='<b>判定：</b> 1年で <b>'+r.active.toFixed(0)+'社</b> の紹介元ができ、1年目の案件は <b>'+r.yearCases.toFixed(1)+
+      '件</b>（粗利 <b>'+man(r.yearProfit)+'万円</b>）。1年目のROIは <b>'+Math.round(r.roi)+
+      '%</b> ですが、<b>2年目は同じ'+r.active.toFixed(0)+'社が丸ごと稼働</b>して年 <b>'+r.y2Cases.toFixed(0)+
+      '件</b>・粗利 <b>'+man(r.y2Profit)+'万円</b>。2年目にかかるのは在宅ワーカーの維持費 <b>'+man(r.y2Invest)+
+      '万円</b>だけなので、手残りは <b>'+man(r.y2Profit-r.y2Invest)+'万円</b>です。<b>1年目の数字だけで判断しないでください</b>。'+
+      (r.y2Cases/12>10?'<br><span style="color:var(--brand)">※ この前提だと2年目は月'+(r.y2Cases/12).toFixed(0)+'件。施工体制（協力業者の確保）の拡張が前提になります。</span>':'');
+  } else {
+    v.style.borderLeftColor="var(--brand)";
+    v.innerHTML='<b style="color:var(--brand)">判定：</b> この前提では2年目でも投資を回収できません。<b style="color:var(--brand)">1紹介元あたりの年間紹介件数</b>が低すぎる可能性があります。'+
+      '賃貸管理会社なら年6〜12件、解体業者なら年4〜10件が目安です。<b style="color:var(--brand)">狙う業種を紹介頻度の高い層に寄せる</b>か、平均受注額を実績値に置き換えてご確認ください。';
+  }
+}
+
+function drawRamp(r){
+  var W=700,H=270,padL=64,padR=66,padT=28,padB=42;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var maxP=niceMax(Math.max(r.partners[11],1)*1.2,4);
+  var s="";
+  for(var i=0;i<=4;i++){
+    var val=maxP*i/4,y=padT+plotH-(val/maxP)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-12,"提携社数",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+((m-1)/11)*plotW;}
+  var bw=plotW/12*0.5;
+  for(var m=1;m<=12;m++){
+    var x=px(m)-bw/2,h=(r.partners[m-1]/maxP)*plotH;
+    s+=rrect(x,padT+plotH-h,bw,h,3,"var(--s2)");
+    if(m%3===0||m===1) s+=txt(px(m),padT+plotH+18,m+"ヶ月",{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  var maxC=Math.max(Math.max.apply(null,r.cases),0.1)*1.3;
+  var d=r.cases.map(function(v,i){return (i?"L":"M")+" "+px(i+1)+" "+(padT+plotH-(v/maxC)*plotH);}).join(" ");
+  s+='<path d="'+d+'" fill="none" stroke="var(--s1)" stroke-width="2.5" stroke-linejoin="round"></path>';
+  var ly=padT+plotH-(r.cases[11]/maxC)*plotH;
+  s+='<circle cx="'+px(12)+'" cy="'+ly+'" r="4" fill="var(--s1)"></circle>';
+  s+=txt(px(12)+8,ly,"月"+r.cases[11].toFixed(1)+"件",{fill:"var(--s1)",size:11,weight:700,mono:true,baseline:"middle"});
+  s+=txt(px(12)+8,padT+plotH-(r.partners[11]/maxP)*plotH-10,r.partners[11].toFixed(0)+"社",{fill:"var(--s2)",size:11,weight:700,mono:true});
+  document.getElementById("ch-ramp").innerHTML=svg(W,H,s);
+}
+
+function drawPayback(r){
+  var W=700,H=260,padL=68,padR=58,padT=24,padB=40;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var max=niceMax(Math.max(r.cumProfit[11],r.cumCost[11],1)*1.06,4),s="";
+  for(var i=0;i<=4;i++){
+    var val=max*i/4,y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-10,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+((m-1)/11)*plotW;}
+  function py(v){return padT+plotH-(v/max)*plotH;}
+  [1,3,6,9,12].forEach(function(m){ s+=txt(px(m),padT+plotH+18,m+"ヶ月",{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"}); });
+  function line(arr,color){
+    return '<path d="'+arr.map(function(v,i){return (i?"L":"M")+" "+px(i+1)+" "+py(v);}).join(" ")+
+      '" fill="none" stroke="'+color+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>';
+  }
+  s+=line(r.cumCost,"var(--s1)");
+  s+=line(r.cumProfit,"var(--s5)");
+  if(r.payback){
+    var x=px(r.payback);
+    s+='<line x1="'+x+'" y1="'+padT+'" x2="'+x+'" y2="'+(padT+plotH)+'" stroke="var(--s5)" stroke-width="1.5" stroke-dasharray="4 4"></line>';
+    s+=txt(x+8,padT+12,"投資回収 "+r.payback+"ヶ月目",{fill:"var(--s5)",size:11,weight:700});
+  } else {
+    s+=txt(padL+6,padT+12,"1年目は投資が上回ります（提携が積み上がる期間のため）",{fill:"var(--ink-3)",size:11.5});
+  }
+  s+='<circle cx="'+px(12)+'" cy="'+py(r.cumProfit[11])+'" r="4" fill="var(--s5)"></circle>';
+  s+=txt(px(12)+8,py(r.cumProfit[11]),n(r.cumProfit[11]/10000),{fill:"var(--s5)",size:11,weight:700,mono:true,baseline:"middle"});
+  s+='<circle cx="'+px(12)+'" cy="'+py(r.cumCost[11])+'" r="4" fill="var(--s1)"></circle>';
+  s+=txt(px(12)+8,py(r.cumCost[11]),n(r.cumCost[11]/10000),{fill:"var(--s1)",size:11,weight:700,mono:true,baseline:"middle"});
+  document.getElementById("ch-payback").innerHTML=svg(W,H,s);
+}
+
+function drawCompare(r,p){
+  var steady=r.y2Cases;
+  var portalYear=steady*r.revPer*(p.fee/100);
+  var buildY1=r.invest, buildRest=p.ofee*10000*12;
+  var portal=[portalYear,portalYear*2,portalYear*3];
+  var build=[buildY1,buildY1+buildRest,buildY1+buildRest*2];
+  var W=700,H=270,padL=64,padR=20,padT=30,padB=64;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var max=niceMax(Math.max(portal[2],build[2],1)*1.12,4),s="";
+  for(var i=0;i<=4;i++){
+    var val=max*i/4,y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-12,"万円（累計）",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  var slot=plotW/3,bw=slot*0.22;
+  [0,1,2].forEach(function(i){
+    var cx=padL+i*slot+slot/2;
+    var h1=(portal[i]/max)*plotH, h2=(build[i]/max)*plotH;
+    s+=rrect(cx-bw-4,padT+plotH-h1,bw,h1,4,"var(--s1)");
+    s+=rrect(cx+4,padT+plotH-h2,bw,h2,4,"var(--s2)");
+    s+=txt(cx-bw/2-4,padT+plotH-h1-7,n(portal[i]/10000),{fill:"var(--s1)",size:10.5,weight:700,mono:true,anchor:"middle"});
+    s+=txt(cx+bw/2+4,padT+plotH-h2-7,n(build[i]/10000),{fill:"var(--s2)",size:10.5,weight:700,mono:true,anchor:"middle"});
+    s+=txt(cx,padT+plotH+20,(i+1)+"年目まで",{fill:"var(--ink-2)",size:11.5,anchor:"middle"});
+    var diff=portal[i]-build[i];
+    s+=txt(cx,padT+plotH+38,(diff>=0?"差 +":"差 −")+n(Math.abs(diff)/10000)+"万円",
+      {fill:diff>=0?"var(--s2)":"var(--s1)",size:11,weight:700,mono:true,anchor:"middle"});
+  });
+  s+=txt(padL,H-6,"※ 2年目以降も年"+steady.toFixed(0)+"件を取り続けた場合。ポータルは成果報酬"+p.fee+"%、紹介元は2年目以降は在宅ワーカー費用のみ。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("ch-compare").innerHTML=svg(W,H,s);
+}
+
+KEYS.forEach(function(k){
+  document.getElementById("k-"+k).addEventListener("input",function(){
+    document.querySelectorAll("#preset-seg button").forEach(function(x){x.setAttribute("aria-pressed","false");});
+    update();
+  });
+});
+document.querySelectorAll("#preset-seg button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll("#preset-seg button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    setInputs(PRESETS[b.dataset.preset]);update();
+  });
+});
+document.getElementById("roi-reset").addEventListener("click",function(){
+  document.querySelectorAll("#preset-seg button").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.preset==="base"?"true":"false");});
+  setInputs(PRESETS.base);update();
+});
+setInputs(PRESETS.base);
+update();
+
+})();
+</script>
