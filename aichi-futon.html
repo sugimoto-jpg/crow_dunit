@@ -1,0 +1,1586 @@
+<title>愛知ふとん店 近隣商圏の再設計</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700;900&family=Zen+Kaku+Gothic+Antique:wght@400;500;700&family=Inconsolata:wght@400;700&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#EDEAE8;
+  --surface:#FCFBFA;
+  --surface-2:#E5E1DE;
+  --surface-3:#D8D3CF;
+  --ink:#1A1614;
+  --ink-2:#514A46;
+  --ink-3:#807873;
+  --rule:#DEDAD6;
+  --rule-2:#C4BDB8;
+  --s1:#A0343F;
+  --s2:#1F5C96;
+  --s3:#3C6B2E;
+  --s4:#6B4D8C;
+  --s5:#8E6C10;
+  --brand:#A0343F;
+  --brand-soft:#F5E3E4;
+  --accent:#1F5C96;
+  --accent-soft:#DFE8F1;
+  --good:#3C6B2E;
+  --good-soft:#E2EBDD;
+  --warn:#8E6C10;
+  --warn-soft:#F2EBD8;
+  --plum-soft:#EAE3F0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#15130F;
+    --surface:#1E1B18;
+    --surface-2:#282421;
+    --surface-3:#332E2A;
+    --ink:#EEEAE6;
+    --ink-2:#B3ACA6;
+    --ink-3:#867E78;
+    --rule:#2F2A26;
+    --rule-2:#3F3934;
+    --s1:#C85460;
+    --s2:#3E8BCB;
+    --s3:#5A9A48;
+    --s4:#9B7CC4;
+    --s5:#A8821C;
+    --brand:#C85460;
+    --brand-soft:#33191C;
+    --accent:#3E8BCB;
+    --accent-soft:#152535;
+    --good:#5A9A48;
+    --good-soft:#1B2A16;
+    --warn:#A8821C;
+    --warn-soft:#2C2513;
+    --plum-soft:#241C30;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#15130F;
+  --surface:#1E1B18;
+  --surface-2:#282421;
+  --surface-3:#332E2A;
+  --ink:#EEEAE6;
+  --ink-2:#B3ACA6;
+  --ink-3:#867E78;
+  --rule:#2F2A26;
+  --rule-2:#3F3934;
+  --s1:#C85460;
+  --s2:#3E8BCB;
+  --s3:#5A9A48;
+  --s4:#9B7CC4;
+  --s5:#A8821C;
+  --brand:#C85460;
+  --brand-soft:#33191C;
+  --accent:#3E8BCB;
+  --accent-soft:#152535;
+  --good:#5A9A48;
+  --good-soft:#1B2A16;
+  --warn:#A8821C;
+  --warn-soft:#2C2513;
+  --plum-soft:#241C30;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);
+  font-family:"Zen Kaku Gothic Antique","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  font-size:15px;line-height:1.85;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"Zen Old Mincho","Hiragino Mincho ProN",serif;font-weight:700;margin:0;line-height:1.48;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:3px}
+.mono{font-family:"Inconsolata",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.stitch{height:1px;background:repeating-linear-gradient(90deg,var(--rule-2) 0 7px,transparent 7px 13px);border:0;margin:0}
+
+.masthead{background:var(--surface);border-bottom:1px solid var(--rule)}
+.mast-inner{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-end;padding:26px 0 20px}
+.eyebrow{font-family:"Inconsolata",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.mast-title{font-size:clamp(24px,3.3vw,37px);font-weight:900;margin-top:8px;letter-spacing:.01em}
+.mast-title em{font-style:normal;color:var(--brand)}
+.mast-sub{color:var(--ink-2);font-size:13.5px;margin-top:9px;max-width:64ch}
+.mast-meta{font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-align:right}
+.mast-meta b{color:var(--ink-2);font-weight:700}
+.flash{display:inline-flex;align-items:center;gap:8px;background:var(--brand-soft);color:var(--brand);
+  font-size:12px;font-weight:700;padding:5px 13px;border-radius:3px;margin-top:12px}
+
+.tabbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:none;border:0;border-bottom:3px solid transparent;font:inherit;font-size:13px;font-weight:700;
+  color:var(--ink-3);padding:13px 14px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brand)}
+.tab .num{font-family:"Inconsolata",monospace;font-size:10.5px;color:var(--ink-3);margin-right:6px;font-weight:700}
+.tab[aria-selected="true"] .num{color:var(--brand)}
+
+.panel{padding:34px 0 76px}
+.panel[hidden]{display:none!important}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.sec-head h2{font-size:24px;font-weight:900}
+.sec-head .tagline{font-size:12.5px;color:var(--ink-3)}
+.lede{color:var(--ink-2);font-size:14px;max-width:76ch;margin:10px 0 26px}
+.block{margin-top:40px}
+.block > h3{font-size:17.5px}
+.block > .sub{font-size:12.5px;color:var(--ink-3);margin:3px 0 16px}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(186px,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:20px}
+.card.flat{background:transparent;border-style:dashed}
+
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:15px 17px;display:flex;flex-direction:column;gap:1px;border-bottom:3px solid var(--rule-2)}
+.stat.hot{border-bottom-color:var(--brand)}
+.stat.pos{border-bottom-color:var(--good)}
+.stat.info{border-bottom-color:var(--accent)}
+.stat.warn{border-bottom-color:var(--warn)}
+.stat .k{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.stat .v{font-family:"Inconsolata",monospace;font-size:27px;font-weight:700;letter-spacing:-.01em;line-height:1.3;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:13px;margin-left:2px;color:var(--ink-2);font-family:"Zen Kaku Gothic Antique",sans-serif;font-weight:400}
+.stat .n{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:2px}
+.stat.hot .v{color:var(--brand)}
+.stat.pos .v{color:var(--good)}
+.stat.info .v{color:var(--accent)}
+.stat.warn .v{color:var(--warn)}
+
+.chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 10px;border-radius:3px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.chip.a{background:var(--brand-soft);color:var(--brand)}
+.chip.b{background:var(--accent-soft);color:var(--accent)}
+.chip.c{background:var(--good-soft);color:var(--good)}
+.chip.d{background:var(--warn-soft);color:var(--warn)}
+.chip.e{background:var(--plum-soft);color:var(--s4)}
+
+.deflist{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;font-size:13.5px;align-items:baseline}
+.deflist dt{color:var(--ink-3);font-size:12px;font-weight:700;white-space:nowrap}
+.deflist dd{margin:0}
+.note{font-size:12px;color:var(--ink-3);line-height:1.78;margin-top:12px}
+.callout{background:var(--warn-soft);border-radius:5px;padding:14px 17px;font-size:12.5px;color:var(--ink-2);margin-top:14px}
+.callout b{color:var(--ink)}
+.callout.blue{background:var(--accent-soft)}
+.callout.red{background:var(--brand-soft)}
+
+.swot{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:14px}
+.swot section{border:1px solid var(--rule);border-radius:5px;padding:16px 18px;background:var(--surface)}
+.swot h4{font-size:14px;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.swot h4::before{content:"";width:14px;height:2px;background:var(--rule-2)}
+.swot .s h4::before{background:var(--s3)}
+.swot .w h4::before{background:var(--s1)}
+.swot .o h4::before{background:var(--s2)}
+.swot .t h4::before{background:var(--s5)}
+.swot ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+
+.reason{background:var(--surface);border:1px solid var(--rule);border-radius:5px;margin-bottom:16px;overflow:hidden}
+.reason .rhead{display:flex;gap:16px;align-items:flex-start;padding:20px 24px 0}
+.reason .idx{font-family:"Zen Old Mincho",serif;font-size:32px;font-weight:900;color:var(--brand);line-height:1;flex:0 0 auto}
+.reason .kicker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.reason h4{font-size:18px;font-weight:900}
+.reason .rbody{padding:12px 24px 20px}
+.reason p{font-size:13.5px;color:var(--ink-2)}
+.reason .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(188px,1fr));gap:10px;margin:15px 0 4px}
+.reason .fact{background:var(--surface-2);border-radius:4px;padding:10px 13px}
+.reason .fact .fv{font-family:"Inconsolata",monospace;font-size:20px;font-weight:700}
+.reason .fact .fk{font-size:11px;color:var(--ink-3);line-height:1.5}
+.reason .sowhat{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:13.5px}
+.reason .sowhat b{color:var(--brand)}
+
+/* 費用の議論 */
+.argue{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--brand);border-radius:0 5px 5px 0;padding:20px 24px;margin-bottom:14px}
+.argue .an{font-family:"Inconsolata",monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--brand)}
+.argue h4{font-size:17px;margin:5px 0 9px}
+.argue p{font-size:13.5px;color:var(--ink-2)}
+.argue p + p{margin-top:10px}
+.argue .pull{background:var(--brand-soft);border-radius:4px;padding:12px 15px;margin-top:12px;font-size:13.5px;color:var(--ink)}
+.argue .pull b{font-family:"Inconsolata",monospace;color:var(--brand);font-weight:700;font-size:15px}
+.argue.calm{border-left-color:var(--s3)}
+.argue.calm .an{color:var(--s3)}
+.argue.calm .pull{background:var(--good-soft)}
+.argue.calm .pull b{color:var(--s3)}
+
+.timeline{overflow-x:auto;padding:24px 0 4px}
+.timeline-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(154px,1fr);min-width:820px;position:relative}
+.timeline-track::before{content:"";position:absolute;left:0;right:0;top:8px;height:2px;background:var(--rule-2)}
+.tl-item{position:relative;padding:26px 12px 0 0}
+.tl-item::before{content:"";position:absolute;left:0;top:1px;width:15px;height:15px;background:var(--surface);border:3px solid var(--rule-2)}
+.tl-item.on::before{background:var(--brand);border-color:var(--brand)}
+.tl-item.now::before{background:var(--accent);border-color:var(--accent);width:19px;height:19px;top:-1px}
+.tl-item .y{font-family:"Inconsolata",monospace;font-size:12px;font-weight:700;color:var(--ink-3)}
+.tl-item.on .y{color:var(--brand)}
+.tl-item.now .y{color:var(--accent)}
+.tl-item .t{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+
+.pillar{background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.pillar .pk{font-family:"Inconsolata",monospace;font-size:11px;font-weight:700;letter-spacing:.09em;color:var(--ink-3)}
+.pillar h4{font-size:16.5px}
+.pillar p{font-size:13px;color:var(--ink-2)}
+.pillar .kpi{margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:4px}
+.pillar .kpi b{font-family:"Inconsolata",monospace;color:var(--ink);font-weight:700}
+
+.scroller{overflow-x:auto;border:1px solid var(--rule);border-radius:5px;background:var(--surface)}
+table.matrix{width:100%;border-collapse:collapse;font-size:13px;min-width:660px}
+table.matrix th,table.matrix td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.matrix th{font-size:11.5px;color:var(--ink-3);font-weight:700;background:var(--surface-2)}
+table.matrix tr:last-child td{border-bottom:0}
+table.matrix td:first-child{font-weight:700}
+table.matrix td.num{font-family:"Inconsolata",monospace;text-align:right;white-space:nowrap;font-weight:700}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:1px solid var(--rule);border-radius:5px}
+.seg{display:flex;background:var(--surface-2);border-radius:4px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:12px;font-weight:700;border:0;background:none;color:var(--ink-3);padding:6px 12px;border-radius:3px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.controls input[type="search"],.controls select{font:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--rule-2);border-radius:4px;background:var(--surface);color:var(--ink)}
+.controls input[type="search"]{min-width:190px;flex:1}
+.controls .count{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.controls .count b{font-family:"Inconsolata",monospace;color:var(--ink);font-weight:700}
+
+.tlist{display:flex;flex-direction:column;gap:9px}
+.trow{display:grid;grid-template-columns:38px minmax(206px,1.02fr) minmax(238px,1.5fr) minmax(238px,1.5fr);gap:0 18px;
+  background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--rule-2);border-radius:0 5px 5px 0;padding:15px 18px;align-items:start}
+.trow.tA{border-left-color:var(--s1)}
+.trow.tB{border-left-color:var(--s2)}
+.trow.tC{border-left-color:var(--s3)}
+.trow .rank{font-family:"Inconsolata",monospace;font-size:13px;color:var(--ink-3);font-weight:700;padding-top:2px}
+.trow .head{display:flex;flex-direction:column;gap:6px}
+.trow .name{font-family:"Zen Old Mincho",serif;font-size:14.5px;font-weight:700;line-height:1.45}
+.trow .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.trow .cnt{font-family:"Inconsolata",monospace;font-size:13.5px;font-weight:700}
+.trow .cnt span{font-size:11px;color:var(--ink-3);font-weight:400;margin-left:3px;font-family:"Zen Kaku Gothic Antique",sans-serif}
+.trow .fieldlabel{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);display:block;margin-bottom:3px}
+.trow .fieldbody{font-size:13px;color:var(--ink-2);line-height:1.7}
+.trow .hook .fieldbody{color:var(--ink);border-left:3px solid var(--rule-2);padding-left:11px}
+@media(max-width:900px){
+  .trow{grid-template-columns:34px 1fr;gap:10px 14px}
+  .trow .head,.trow .why,.trow .hook{grid-column:2}
+}
+
+.taskgroup{background:var(--surface);border:1px solid var(--rule);border-radius:5px;overflow:hidden}
+.taskgroup header{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:13px 16px;background:var(--surface-2)}
+.taskgroup header h4{font-size:14px}
+.taskgroup header .hh{font-family:"Inconsolata",monospace;font-size:12.5px;color:var(--ink-2);font-weight:700}
+.taskgroup ul{list-style:none;margin:0;padding:6px 0}
+.taskgroup li{display:flex;justify-content:space-between;gap:12px;padding:7px 16px;font-size:13px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.taskgroup li:last-child{border-bottom:0}
+.taskgroup li b{font-family:"Inconsolata",monospace;font-size:12.5px;color:var(--ink-3);font-weight:400;white-space:nowrap}
+.taskgroup li.key{color:var(--ink)}
+.taskgroup li.key > span:first-child::before{content:"■";color:var(--brand);font-size:8px;margin-right:7px;vertical-align:2px}
+
+.chartbox{background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:18px}
+.chartbox h4{font-size:14px}
+.chartbox .csub{font-size:12px;color:var(--ink-3);margin:2px 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);margin-bottom:10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+
+.roi-layout{display:grid;grid-template-columns:minmax(280px,336px) 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.roi-layout{grid-template-columns:1fr}}
+.knobs{background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:18px;position:sticky;top:58px;max-height:calc(100vh - 74px);overflow-y:auto}
+.knob{margin-bottom:14px}
+.knob label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink-2);margin-bottom:5px;gap:10px}
+.knob label b{font-family:"Inconsolata",monospace;font-size:13.5px;color:var(--ink);font-weight:700}
+.knob input[type="range"]{width:100%;accent-color:var(--brand);height:20px;cursor:pointer}
+.knob-group{border-top:1px solid var(--rule);padding-top:14px;margin-top:16px}
+.gh{font-family:"Inconsolata",monospace;font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);margin-bottom:12px}
+.gh span{color:var(--brand)}
+.resetbtn{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--rule-2);background:var(--surface);color:var(--ink-2);border-radius:4px;padding:6px 12px;cursor:pointer}
+.resetbtn:hover{border-color:var(--ink-3);color:var(--ink)}
+.plancard{border:1px solid var(--rule);border-radius:4px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:var(--ink-2);background:var(--surface-2);line-height:1.65}
+.plancard b{font-family:"Inconsolata",monospace;color:var(--ink);font-weight:700}
+.verdict{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--good);border-radius:0 5px 5px 0;padding:16px 20px;font-size:13.5px}
+.verdict b{font-family:"Inconsolata",monospace;color:var(--good);font-weight:700}
+
+.funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(136px,1fr));gap:10px}
+.fstep{background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:13px 14px}
+.fstep .fl{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.fstep .fv{font-family:"Inconsolata",monospace;font-size:23px;font-weight:700}
+.fstep .fr{font-size:11px;color:var(--ink-3)}
+.fstep.end{background:var(--brand-soft);border-color:transparent}
+.fstep.end .fv,.fstep.end .fl,.fstep.end .fr{color:var(--brand)}
+
+.phase{display:grid;grid-template-columns:142px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule)}
+.phase:first-of-type{border-top:0}
+.phase .pd{font-family:"Inconsolata",monospace;font-size:12.5px;color:var(--brand);font-weight:700}
+.phase .pt{font-family:"Zen Old Mincho",serif;font-size:16px;font-weight:700;line-height:1.4;margin-top:2px}
+.phase ul{margin:0;padding-left:1.15em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px}
+.phase ul b{color:var(--ink)}
+.owner{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:3px;margin-right:7px;vertical-align:1px}
+.owner.ai{background:var(--accent-soft);color:var(--accent)}
+.owner.af{background:var(--brand-soft);color:var(--brand)}
+.free{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:3px;background:var(--good-soft);color:var(--good);margin-left:6px}
+.srcs{font-size:12px;color:var(--ink-3);line-height:1.9}
+@media(max-width:640px){
+  .wrap{padding:0 16px}
+  .phase{grid-template-columns:1fr;gap:10px}
+  .reason .rhead{flex-direction:column;gap:6px}
+}
+</style>
+
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <div>
+      <div class="eyebrow">事前リサーチ / 費用対効果 / 成長戦略</div>
+      <h1 class="mast-title">愛知ふとん店 <em>近隣商圏</em> の再設計</h1>
+      <p class="mast-sub">京急川崎駅前で100年。打ち直しの技術は残っているのに、それを知らない人が徒歩圏に9万世帯いる。「費用をかけずに」を出発点に、<b>無料でやり切る範囲</b>と<b>お金をかけたほうが得になる境目</b>を、数字で線引きしました。</p>
+      <div class="flash">■ 本ボードの主題：費用をかけるべきか、かけなくてよいか——その判断材料</div>
+    </div>
+    <div class="mast-meta">
+      <div><b>作成</b> 株式会社アイドマ・ホールディングス</div>
+      <div><b>宛先</b> 株式会社愛知川崎店 小林 様</div>
+      <div><b>更新</b> 2026年9月13日</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="セクション">
+  <div class="wrap">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-p="research"><span class="num">01</span>事前リサーチ</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="market"><span class="num">02</span>市場環境</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="cost"><span class="num">03</span>費用をかける理由</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="why"><span class="num">04</span>今すぐやる3つの理由</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="strategy"><span class="num">05</span>成長戦略</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="targets"><span class="num">06</span>集客ターゲット30</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="remote"><span class="num">07</span>在宅ワーカー活用</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="roi"><span class="num">08</span>ROIシミュレーション</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="road"><span class="num">09</span>90日ロードマップ</button>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- 01 -->
+<section class="panel" id="p-research" role="tabpanel">
+  <div class="sec-head"><h2>事前リサーチ</h2><span class="tagline">前回商談メモと公開情報の統合</span></div>
+  <p class="lede">商品も技術も、立地も揃っています。京急川崎駅前徒歩1分、商店街の中、100年の歴史、そして<b>競合が減り続けている打ち直しという技術</b>。足りないのは、それを近隣の人が知らないという一点だけです。</p>
+
+  <div class="grid g4">
+    <div class="stat hot"><span class="k">創業からの歴史</span><span class="v">100<small>年超</small></span><span class="n">手づくり布団・打ち直しの技術</span></div>
+    <div class="stat info"><span class="k">商圏人口（川崎区）</span><span class="v">233,887<small>人</small></span><span class="n">うち65歳以上 51,452人（22.0%）</span></div>
+    <div class="stat warn"><span class="k">職人の年齢</span><span class="v">60<small>代以上</small></span><span class="n">10年後の技術継承が課題</span></div>
+    <div class="stat"><span class="k">課題解決に出せる金額</span><span class="v">0<small>円</small></span><span class="n">前回商談でのご意向</span></div>
+  </div>
+
+  <div class="grid g2 block">
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:10px">店舗プロフィール</div>
+      <dl class="deflist">
+        <dt>企業名</dt><dd>株式会社愛知川崎店（愛知ふとん店）</dd>
+        <dt>Webサイト</dt><dd><a href="https://www.ones-ownbyaichi.jp/" target="_blank" rel="noopener">ones-ownbyaichi.jp</a>／<a href="https://www.aichi-futon.com/" target="_blank" rel="noopener">aichi-futon.com</a></dd>
+        <dt>所在地</dt><dd>神奈川県川崎市川崎区砂子1-1-6（京急川崎駅前 徒歩1分・川崎銀座街）</dd>
+        <dt>営業時間</dt><dd>10:00〜20:00／水曜定休</dd>
+        <dt>事業</dt><dd>手づくり布団の製造・販売、布団のリフォーム（打ち直し・仕立て直し）</dd>
+        <dt>強み</dt><dd>100年以上の歴史、職人による打ち直し技術、競合減少による希少性</dd>
+        <dt>商圏</dt><dd>店舗近隣。遠方は送料が商品代金と同等になるため対象外</dd>
+        <dt>ご意向</dt><dd>費用をかけずに近隣からの来店・問い合わせを増やしたい</dd>
+      </dl>
+      <p class="note">※ 本ボード作成環境からは同社サイトへ直接アクセスできなかったため、所在地・営業時間は公開情報に基づく整理です。商談前にご確認ください。</p>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:12px">状況の整理</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div><span class="chip c">追い風</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">同業の専門店が減り続け、<b style="color:var(--ink)">打ち直しができる店そのものが希少</b>になっています。需要が消えたのではなく、受け皿が消えている。競合が減った分の顧客が、いま行き場を探しています。</p></div>
+        <div><span class="chip a">向かい風</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">職人が60代以上。10年後の技術継承と店舗維持が懸念されています。<b style="color:var(--ink)">時計は止まりません</b>——認知を広げるために使える年数も、同じ速さで減っています。</p></div>
+        <div><span class="chip b">前提条件</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">遠方発送は送料が商品代金と同等になるため成立しません。つまり<b style="color:var(--ink)">近隣商圏で勝つ以外に道がない</b>。これは制約ではなく、戦略が一つに定まっているということです。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>徒歩・自転車圏に、まだ届いていない人がどれだけいるか</h3>
+    <p class="sub">川崎区の世帯を、打ち直しの需要が生まれる状況で分けたもの</p>
+    <div class="chartbox">
+      <div id="ch-market-size"></div>
+      <p class="note">川崎区の65歳以上は51,452人（22.0%）。綿布団を持ち、打ち直しという選択肢を知れば頼む可能性のある層です。<b>年間に必要な受注は数百件</b>——母数の1%にも届けば十分に足ります。問題は市場の大きさではなく、<b style="color:var(--brand)">そこに届く手段を持っていないこと</b>だけです。</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>強み・課題の整理</h3>
+    <div class="swot">
+      <section class="s"><h4>強み</h4><ul>
+        <li>100年以上の歴史と、職人による打ち直し・仕立て直しの技術</li>
+        <li>京急川崎駅前徒歩1分・商店街内という、通行量のある立地</li>
+        <li>競合の専門店が減り、技術を持つ店そのものが希少</li>
+        <li>打ち直しは客単価が高く、少ない件数で売上が立つ</li>
+      </ul></section>
+      <section class="w"><h4>課題</h4><ul>
+        <li>近隣ターゲット層への認知拡大・集客ノウハウがない</li>
+        <li>WEB・ショート動画が未着手</li>
+        <li>職人の高齢化（60代以上）と技術継承の見通し</li>
+        <li>集客に投じられる予算がない（0円が前提）</li>
+      </ul></section>
+      <section class="o"><h4>機会</h4><ul>
+        <li>小規模事業者持続化補助金で、販路開拓費の2/3が補助される</li>
+        <li>同業の廃業で、打ち直しの需要が行き場を探している</li>
+        <li>宅配運賃の上昇で、通販勢が近隣商圏に入りにくい</li>
+        <li>捨てずに直すという価値観が、世代を問わず広がっている</li>
+      </ul></section>
+      <section class="t"><h4>脅威</h4><ul>
+        <li>認知が広がらないまま職人が引退し、事業規模が縮小する</li>
+        <li>浮いた需要が量販店・ネット通販へ流れて戻らない</li>
+        <li>投資を回収できる年数が、毎年1年ずつ減っていく</li>
+        <li>補助金の公募には締切があり、逃すと次は1年後</li>
+      </ul></section>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="panel" id="p-market" role="tabpanel" hidden>
+  <div class="sec-head"><h2>市場環境</h2><span class="tagline">需要は消えていない。受け皿が消えている</span></div>
+  <p class="lede">布団の打ち直しという需要が減ったのではありません。<b>打ち直しができる店が減った</b>のです。2025年の休廃業・解散は過去最多を更新し、そのうち<b>代表者60代以上が90.6%</b>。これは競合の話であり、同時に自社の時計の話でもあります。</p>
+
+  <div class="grid g4">
+    <div class="stat hot"><span class="k">2025年 休廃業・解散</span><span class="v">67,210<small>件</small></span><span class="n">過去最多を更新</span></div>
+    <div class="stat hot"><span class="k">うち代表者60代以上</span><span class="v">90.6<small>%</small></span><span class="n">初めて9割を超えた</span></div>
+    <div class="stat warn"><span class="k">80代以上の代表者</span><span class="v">34.0<small>%</small></span><span class="n">初の30%超</span></div>
+    <div class="stat info"><span class="k">小売業の休廃業・解散</span><span class="v">7,903<small>件</small></span><span class="n">前年比 9.6%増</span></div>
+  </div>
+
+  <div class="grid g2 block">
+    <div class="chartbox">
+      <h4>市場から退出する企業</h4>
+      <p class="csub">2025年の休廃業・解散は過去最多。代表者の年齢構成が、退出の理由を語っています。</p>
+      <div id="ch-exit"></div>
+      <p class="note">後継者不在のまま事業を続けてきた企業の退出が本格化しています。同業が1軒減るたびに、その店に通っていた顧客が行き場を失う。<b>その顧客は「打ち直しができる店」を探しますが、見つからなければ買い替えるか、捨てます</b>。探してもらえる場所にいるかどうかが、すべてを分けます。</p>
+    </div>
+    <div class="chartbox">
+      <h4>打ち直しの価格帯</h4>
+      <p class="csub">1件あたりの受注額が大きいことが、この事業の最大の武器です。</p>
+      <div id="ch-price"></div>
+      <p class="note">掛け・敷の打ち直しが1枚1万円前後、羽毛のリフォームは27,000〜70,000円が相場です。家族分をまとめて頼まれることも多く、<b style="color:var(--brand)">1件あたりの受注額は数万円規模</b>。つまり<b>少ない件数で費用を回収できる</b>——これが次のタブの議論の土台になります。</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>この市場での勝ち方</h3>
+    <div class="grid g3">
+      <div class="card"><span class="chip a">1</span><h4 style="font-size:15px;margin:10px 0 6px">「直せる店」として見つけてもらう</h4><p style="font-size:13px;color:var(--ink-2)">買い替えを検討している人と、打ち直しを探している人は別の言葉で検索します。<b>「布団 打ち直し 川崎」で一番上にいること</b>が、この商売では広告より効きます。しかもこれは無料でできます。</p></div>
+      <div class="card"><span class="chip a">2</span><h4 style="font-size:15px;margin:10px 0 6px">一度きりの客にしない</h4><p style="font-size:13px;color:var(--ink-2)">打ち直しは5〜10年周期。<b>過去に来た方の台帳が、そのまま将来の売上</b>です。はがき1枚の案内で戻ってくる可能性がある顧客を、記録していない・案内していないなら、そこが最も安い売上源になります。</p></div>
+      <div class="card"><span class="chip a">3</span><h4 style="font-size:15px;margin:10px 0 6px">運んでくれる人と組む</h4><p style="font-size:13px;color:var(--ink-2)">布団は重く、自分で持ち込めない人がいます。工務店・引っ越し業者・遺品整理・ケアマネジャー——<b>お客様の家に入る仕事の人</b>と組めば、広告費ゼロで紹介が生まれます。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 費用をかける理由 -->
+<section class="panel" id="p-cost" role="tabpanel" hidden>
+  <div class="sec-head"><h2>費用をかける理由</h2><span class="tagline">かけるべき境目と、かけなくてよい範囲</span></div>
+  <p class="lede">まず率直に申し上げます。<b>費用をかけずにできることは、たしかにあります</b>。そしてそれは先にやり切るべきです。ただし「0円」と「無料」は同じ意味ではありません。以下、5つの論点に分けて整理します。<b>結論は最後の段階投資の図</b>にまとめています。</p>
+
+  <div class="argue calm">
+    <div class="an">論点 0 ／ 先に認めるべきこと</div>
+    <h4>無料でできることは、確かにある。そしてそれを先にやり切るべきです</h4>
+    <p>Googleビジネスプロフィールの整備、写真の追加、口コミへの返信、営業時間や「打ち直し」というキーワードの登録。AIナレーターのショート動画。ホームページの更新。過去のお客様への案内はがき。<b>これらは費用がかかりません</b>。そして打ち直しのような「探して見つける」商売では、これらの効果が非常に大きい。</p>
+    <p>ですから、最初の3ヶ月は<b>1円も使わない設計で構いません</b>。次のタブ以降でご提案する内容も、STEP 0はすべて無料の施策です。費用の話は、そこで得た数字を見てから判断すれば十分です。</p>
+    <div class="pull">この提案の前提：<b>まず無料で全部やる。</b>そのうえで、無料では届かない部分だけに、最小の費用を当てる。</div>
+  </div>
+
+  <div class="argue">
+    <div class="an">論点 1 ／ 0円の正体</div>
+    <h4>0円は無料ではありません。職人の時間で払っています</h4>
+    <p>Googleビジネスプロフィールへの投稿、写真の撮影、動画の編集、はがきの宛名書き、口コミへの返信。これらに毎月20時間かかるとします。その20時間は、誰の時間でしょうか。<b>打ち直しをしている職人の手が止まる20時間</b>です。</p>
+    <p>打ち直し1件に職人の手が4時間かかり、その1件の粗利が24,000円だとすると、職人の1時間は<b>6,000円の粗利</b>を生んでいます。20時間をPR作業に使えば、<b>月に12万円分の製造能力を失っている</b>計算になります。それでも「費用は0円」と言えるでしょうか。</p>
+    <div class="pull">月20時間のPR作業＝<b>約12万円</b>の機会費用。外注すれば数万円で済む作業に、最も高い時間を当てていることになります。</div>
+    <p class="note" style="margin-top:14px;color:var(--ink-2)"><b>ただし、この議論には条件があります。</b>職人の手が今すでに空いているなら、機会費用はほぼゼロです。だから商談で最初に伺いたいのは、<b>「いま、職人さんの手は空いていますか。それとも埋まっていますか」</b>——ここで答えが変わります。手が空いているなら、0円で時間を使うのは正しい判断です。</p>
+  </div>
+
+  <div class="argue">
+    <div class="an">論点 2 ／ 回収に必要な件数</div>
+    <h4>客単価が高いので、回収に必要な件数が極端に少ない</h4>
+    <p>打ち直しの受注単価を平均4万円、粗利率を60%とすると、1件あたりの粗利は<b>24,000円</b>です。ここから逆算すると、費用を回収するのに必要な件数は驚くほど少なくなります。</p>
+    <div class="chartbox" style="margin-top:14px">
+      <div id="ch-breakeven"></div>
+    </div>
+    <div class="pull">月5万円の施策なら、<b>月に2.1件</b>増えれば元が取れます。1日あたり0.07件。<b>2週間に1件</b>です。</div>
+    <p style="margin-top:12px">これが、広告費が売上の数%にしかならない低単価商売との決定的な違いです。単価の高い商売では、<b>費用対効果の計算が「率」ではなく「件数」で語れる</b>。そして件数で語ると、必要な数は現実的な範囲に収まります。</p>
+  </div>
+
+  <div class="argue">
+    <div class="an">論点 3 ／ 制度を使う</div>
+    <h4>補助金を使えば、自己負担は3分の1になります</h4>
+    <p>小規模事業者持続化補助金（一般型・通常枠）は、<b>販路開拓の費用を補助率2/3・上限50万円で補助</b>します。チラシ・ポスティング・ホームページ・動画制作・店舗看板といった、まさに今必要な費用が対象です。広報費とウェブサイト関連費はそれぞれ上限30万円。インボイス特例に該当すれば上限100万円まで上がります。</p>
+    <p>つまり<b>50万円の販路開拓を、自己負担約16.7万円で実行できる</b>ということです。年間で割れば月1.4万円。前述の計算に当てはめると、<b>年間で11件</b>増えれば自己負担分は回収できます。</p>
+    <div class="pull">50万円の施策 → 自己負担 <b>約16.7万円</b>。回収に必要なのは<b>年11件</b>、月にすると1件弱です。</div>
+    <p style="margin-top:12px"><b>ただし締切があります。</b>2026年度の申請受付は11月5日から12月15日17:00まで。その前に商工会議所で「事業支援計画書（様式4）」を発行してもらう必要があり、その受付締切は<b>12月4日</b>です。川崎商工会議所への相談には時間がかかるため、<b>10月中に動き始めないと現実的に間に合いません</b>。</p>
+  </div>
+
+  <div class="argue">
+    <div class="an">論点 4 ／ 窓は閉まる</div>
+    <h4>競合が減った分の顧客は、待ってくれません</h4>
+    <p>2025年の休廃業・解散は67,210件で過去最多、うち代表者60代以上が90.6%。<b>同業が1軒閉じるたびに、その顧客が行き場を失います</b>。その方は「打ち直しができる店」を探しますが、すぐに見つからなければ諦めて買い替えるか、捨てます。</p>
+    <p>この需要は、<b>今その瞬間に検索して見つかった店に行きます</b>。半年後に体制が整ってから探してもらえるものではありません。競合減少という追い風は、<b>認知がある店だけが受け取る</b>——そういう性質の追い風です。</p>
+    <div class="pull">競合減少は永久の追い風ではなく、<b>一度きりの顧客の移動</b>。取り逃した分は戻りません。</div>
+  </div>
+
+  <div class="argue">
+    <div class="an">論点 5 ／ いちばん重い理由</div>
+    <h4>投資を回収できる年数が、毎年1年ずつ減っています</h4>
+    <p>職人は60代以上で、10年後の技術継承と店舗維持が懸念されている——これは前回の商談で挙がった、この会社で最も重い事実です。そしてこの事実は、費用対効果の計算そのものを変えます。</p>
+    <p>投資の回収期間を考えるとき、通常は「何年で回収できるか」を見ます。しかし<b>回収に使える年数の上限が決まっている</b>場合、話は逆になります。今年やれば10年かけて回収できる投資が、<b>3年後に始めれば7年しかありません</b>。つまり<b>先送りするほど、同じ投資のリスクが上がっていく</b>。</p>
+    <div class="pull">「まだ様子を見る」という判断は、リスクを避ける判断に見えて、<b>実はリスクを毎年増やしている</b>判断です。</div>
+    <p style="margin-top:12px">逆に言えば、認知を広げて受注が安定すれば、<b>それは技術継承の原資にもなります</b>。若い職人を雇える会社と雇えない会社を分けるのは、技術の質ではなく仕事の量です。集客への投資は、宣伝への投資ではなく<b>100年続いた技術を次に渡すための投資</b>だと捉えていただくのが、いちばん実態に近いと考えています。</p>
+  </div>
+
+  <div class="block">
+    <h3>結論：3段階で投資する</h3>
+    <p class="sub">いきなり大きく使う必要はありません。順番があります。</p>
+    <div class="chartbox"><div id="ch-steps"></div></div>
+    <div class="callout blue"><b>次回商談でのご提案は、STEP 0だけです。</b>無料の動画3本、Googleビジネスプロフィールの整備、ホームページの改善。ここに後から請求が発生しないことは、資料でお示しします。<b>STEP 1・2は、STEP 0で数字が出てから判断していただければ十分です</b>。数字が出なければ、投資しないという判断も正しい判断です。</div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="panel" id="p-why" role="tabpanel" hidden>
+  <div class="sec-head"><h2>今すぐやらないといけない3つの理由</h2><span class="tagline">法律・制度・世の中の流れ</span></div>
+  <p class="lede">「いつかやる」と「今期やる」で結果が変わる根拠を、制度の日付と統計で示します。<b>1つ目は、費用の前提そのものを変えられる制度</b>です。</p>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">1</div><div>
+      <div class="kicker"><span class="chip a">制度</span><span class="chip">2026年12月15日 締切</span></div>
+      <h4>小規模事業者持続化補助金の申請期限が、今期の行動を決める</h4>
+    </div></div>
+    <div class="rbody">
+      <p>小規模事業者持続化補助金（一般型・通常枠）の2026年度の申請受付は<b>11月5日から12月15日17:00まで</b>。補助率は<b>2/3</b>、補助上限は<b>50万円</b>（インボイス特例で100万円、賃金引上げ特例で200万円）。対象経費にはチラシ・ポスティングなどの広報費（上限30万円）とウェブサイト関連費（上限30万円）が含まれます。申請には商工会議所が発行する<b>事業支援計画書（様式4）が必須</b>で、その発行受付締切は<b>12月4日</b>です。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">2/3</div><div class="fk">補助率（自己負担は1/3）</div></div>
+        <div class="fact"><div class="fv">50<span style="font-size:12px">万円</span></div><div class="fk">補助上限（特例で最大250万円）</div></div>
+        <div class="fact"><div class="fv">12/4</div><div class="fk">商工会議所の様式4 発行締切</div></div>
+      </div>
+      <div class="sowhat"><b>愛知ふとん店にとって：</b>「費用をかけられない」という前提を、制度が変えられます。<b>50万円の販路開拓が、自己負担16.7万円で実行できる</b>。しかも川崎商工会議所での様式4の発行には相談・面談の時間がかかるため、<b>10月中に相談を始めないと現実的に間に合いません</b>。逃せば次の機会は約1年後。<b>この1点だけでも、今月動く理由になります</b>。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">2</div><div>
+      <div class="kicker"><span class="chip a">世の中の流れ</span><span class="chip">2025年10月 値上げ実施済み</span></div>
+      <h4>宅配運賃の上昇で、遠方への販売という逃げ道が経済的に閉じた</h4>
+    </div></div>
+    <div class="rbody">
+      <p>ヤマト運輸は2025年10月に個人向け料金を<b>平均10%引き上げ</b>（同一地域内で190円〜最大750円の増額）。佐川急便も2026年4月に資材を含む料金を改定し、2026年10月からは安全サービスが1個220円で有料化されます。背景にあるのは燃料・資材費の高騰、ドライバー不足と人件費上昇、そして物流の2024年問題。<b>春闘での5%超の賃上げが翌年の運賃改定につながる循環が定着</b>しており、今後も上昇圧力は続く見通しです。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">+10<span style="font-size:12px">%</span></div><div class="fk">ヤマト運輸の個人向け値上げ（2025年10月）</div></div>
+        <div class="fact"><div class="fv">最大750<span style="font-size:12px">円</span></div><div class="fk">200サイズの増額幅</div></div>
+        <div class="fact"><div class="fv">継続</div><div class="fk">賃上げ → 運賃改定の循環が定着</div></div>
+      </div>
+      <div class="sowhat"><b>愛知ふとん店にとって：</b>前回の商談で「遠方は送料が商品代金と同等になる」という話が出ました。これは一時的な不運ではなく、<b>構造として固定されつつある状況</b>です。全国通販という選択肢は経済的に閉じました。<b>裏を返せば、通販勢もこの商圏には入ってこられません</b>。近隣商圏は守られた市場であり、そこでシェアを取ることが唯一かつ確実な成長経路です。ならば地域の認知への投資は、選択肢ではなく前提条件になります。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">3</div><div>
+      <div class="kicker"><span class="chip a">世の中の流れ</span><span class="chip">2025年 過去最多</span></div>
+      <h4>同業の廃業が加速し、行き場を失った需要が今この瞬間に動いている</h4>
+    </div></div>
+    <div class="rbody">
+      <p>2025年の休廃業・解散は<b>67,210件で過去最多</b>を更新しました。代表者が60代以上の企業が<b>90.6%</b>と初めて9割を超え、80代以上も<b>34.0%</b>と初の3割超。小売業だけで7,903件（前年比9.6%増）が市場から退出しています。後継者不在のまま続けてきた企業の退出が本格化している、というのがこの数字の意味です。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">67,210<span style="font-size:12px">件</span></div><div class="fk">2025年の休廃業・解散（過去最多）</div></div>
+        <div class="fact"><div class="fv">90.6<span style="font-size:12px">%</span></div><div class="fk">代表者60代以上の比率</div></div>
+        <div class="fact"><div class="fv">7,903<span style="font-size:12px">件</span></div><div class="fk">小売業の休廃業・解散（+9.6%）</div></div>
+      </div>
+      <div class="sowhat"><b>愛知ふとん店にとって：</b>これは<b>チャンスと警告が同時に書かれた数字</b>です。チャンスとしては、同業が減るほど打ち直しができる店の希少性が上がり、行き場を失った需要が動いている。警告としては、<b>その退出企業の9割が60代以上の代表者</b>——つまり同じ時計が自社にも流れています。競合が減っていく市場で最後に残るのは、技術がある店ではなく<b>技術があり、かつ見つけてもらえる店</b>です。この2つを同時に満たす時間は、あと何年あるでしょうか。</div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>制度カレンダー</h3>
+    <div class="timeline">
+      <div class="timeline-track">
+        <div class="tl-item on"><div class="y">2025年10月</div><div class="t">ヤマト運輸 個人向け<br>平均10%値上げ</div></div>
+        <div class="tl-item on"><div class="y">2026年1月</div><div class="t">2025年の休廃業・解散<br>67,210件で過去最多</div></div>
+        <div class="tl-item on"><div class="y">2026年4月</div><div class="t">佐川急便<br>資材含む料金改定</div></div>
+        <div class="tl-item now"><div class="y">2026年9月</div><div class="t">無料施策の着手<br>（現在地）</div></div>
+        <div class="tl-item"><div class="y">2026年10月</div><div class="t">川崎商工会議所へ相談<br>補助金の準備開始</div></div>
+        <div class="tl-item"><div class="y">2026年12月4日</div><div class="t">事業支援計画書<br>（様式4）発行締切</div></div>
+        <div class="tl-item"><div class="y">2026年12月15日</div><div class="t">持続化補助金<br>申請締切 17:00</div></div>
+        <div class="tl-item"><div class="y">2027年〜</div><div class="t">次の公募まで<br>約1年待ち</div></div>
+      </div>
+    </div>
+    <div class="verdict" style="margin-top:18px;border-left-color:var(--brand)">
+      <b style="color:var(--brand)">結論：</b>今月から無料施策を始め、<b style="color:var(--brand)">10月に商工会議所へ相談、12月の締切に間に合わせる</b>。この順番なら、費用の負担は最小で、かつ今期の窓を逃しません。逆にここを外すと、次に同じ条件が揃うのは1年後です。<b style="color:var(--brand)">そして1年後は、職人の年齢も1歳上がっています</b>。
+    </div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="panel" id="p-strategy" role="tabpanel" hidden>
+  <div class="sec-head"><h2>成長戦略</h2><span class="tagline">無料でやり切り、効いたものだけに費用を当てる</span></div>
+  <p class="lede">3本柱はすべて<b>STEP 0（無料）から始められます</b>。効果が見えたものだけを、補助金を使って拡大する設計です。</p>
+
+  <div class="grid g3">
+    <div class="pillar">
+      <span class="pk">PILLAR 01</span>
+      <h4>「打ち直し 川崎」で見つかる店になる<span class="free">無料で着手可</span></h4>
+      <p>Googleビジネスプロフィールに「布団の打ち直し」「仕立て直し」「羽毛リフォーム」を明記し、施工前後の写真を並べ、口コミに返信する。買い替えを探している人ではなく、<b>直したい人に見つけてもらう</b>ための整備です。費用はかかりません。</p>
+      <div class="kpi"><span>目標：<b>「布団 打ち直し 川崎」で上位表示</b></span><span>費用：0円（作業時間のみ）</span></div>
+    </div>
+    <div class="pillar">
+      <span class="pk">PILLAR 02</span>
+      <h4>過去のお客様を、資産として扱う<span class="free">無料で着手可</span></h4>
+      <p>打ち直しは5〜10年周期。過去に来られた方の記録があれば、<b>はがき1枚で戻ってくる可能性のある顧客</b>です。最も安く、最も確実な売上源。まず台帳を整え、季節の案内を出せる状態にします。</p>
+      <div class="kpi"><span>目標：<b>顧客台帳の整備と年2回の案内</b></span><span>費用：はがき代のみ</span></div>
+    </div>
+    <div class="pillar">
+      <span class="pk">PILLAR 03</span>
+      <h4>お客様の家に入る人と組む<span class="free">無料で着手可</span></h4>
+      <p>工務店、引っ越し業者、遺品整理、ケアマネジャー、地域包括支援センター。<b>布団の相談を受ける立場にいるのに、紹介先を持っていない人</b>が近隣にいます。挨拶と案内チラシだけで紹介が生まれます。</p>
+      <div class="kpi"><span>目標：<b>紹介チャネル20先との関係構築</b></span><span>費用：印刷代のみ</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>施策ごとの費用と効果</h3>
+    <p class="sub">無料でできることと、費用が必要なことの線引き</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>施策</th><th>費用</th><th>期待できること</th><th class="num">月間の想定工数</th></tr></thead>
+        <tbody>
+          <tr><td>Googleビジネスプロフィールの整備・投稿</td><td><span class="chip c">0円</span></td><td>「打ち直し」で検索した近隣の人に見つかる。この商売で最も効く施策</td><td class="num">6h</td></tr>
+          <tr><td>口コミの依頼と返信</td><td><span class="chip c">0円</span></td><td>検索順位と来店判断の両方に効く。既存客への一言で増やせる</td><td class="num">3h</td></tr>
+          <tr><td>AIナレーターのショート動画</td><td><span class="chip c">0円</span></td><td>打ち直しの工程を見せる。言葉で説明しにくい価値が伝わる</td><td class="num">4h</td></tr>
+          <tr><td>ホームページの改善・記事更新</td><td><span class="chip c">0円</span></td><td>料金の明示と工程の説明。問い合わせ前の不安を減らす</td><td class="num">8h</td></tr>
+          <tr><td>顧客台帳の整備と案内はがき</td><td><span class="chip d">はがき代</span></td><td>再来の掘り起こし。最も低コストで確実な売上源</td><td class="num">6h</td></tr>
+          <tr><td>紹介チャネルへの挨拶回り・案内状</td><td><span class="chip d">印刷代</span></td><td>工務店・介護・遺品整理からの紹介。継続的に効く</td><td class="num">8h</td></tr>
+          <tr><td>ポスティング・折込チラシ</td><td><span class="chip a">有料</span></td><td>検索しない層に届く唯一の手段。高齢世帯には最も強い</td><td class="num">2h</td></tr>
+          <tr><td>店頭看板・のぼり・のれんの刷新</td><td><span class="chip a">有料</span></td><td>駅前徒歩1分という立地を活かす。通行客の来店動機になる</td><td class="num">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">上4つは完全に無料で、合計<b>月21時間</b>の作業です。この21時間を誰がやるかが、次のタブの主題になります。下2つが補助金の対象になる施策です。</p>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="panel" id="p-targets" role="tabpanel" hidden>
+  <div class="sec-head"><h2>集客ターゲット30</h2><span class="tagline">母数・狙う理由・声のかけ方</span></div>
+  <p class="lede">遠方が成立しない以上、狙うのは<b>川崎区を中心とした近隣</b>です。個人のお客様・まとまった枚数が動く事業者・紹介してくれる人の3層で30セグメントに分けました。件数は川崎区／川崎市の統計と業界推計に基づく概算です。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">総母数（30セグメント計）</span><span class="v" id="t-total">—</span><span class="n">川崎区・川崎市の推計</span></div>
+    <div class="stat hot"><span class="k">Tier A・近隣の個人</span><span class="v" id="t-a">—</span><span class="n">世帯・人ベース</span></div>
+    <div class="stat pos"><span class="k">年間に必要な受注</span><span class="v">150<small>件前後</small></span><span class="n">母数の0.2%にも満たない</span></div>
+    <div class="stat"><span class="k">紹介チャネル（Tier C）</span><span class="v" id="t-c">—</span><span class="n">挨拶回りで回り切れる数</span></div>
+  </div>
+
+  <div class="chartbox block">
+    <h4>3層別の母数</h4>
+    <p class="csub">個人は数で、事業者は1件あたりの枚数で、紹介チャネルは継続性で効きます。</p>
+    <div id="ch-tiers"></div>
+    <p class="note">Tier Cの紹介チャネルは合計でも2,000先ほど。<b>一軒ずつ挨拶に行ける現実的な数</b>です。しかも1先あたりの費用はゼロ。ここが、予算をかけずに最も成果が出る領域です。</p>
+  </div>
+
+  <div class="block">
+    <h3>ターゲット一覧</h3>
+    <p class="sub">Tierで絞る／件数で並べ替える／キーワードで検索する</p>
+    <div class="controls">
+      <div class="seg" id="tier-seg">
+        <button aria-pressed="true" data-t="all">すべて（30）</button>
+        <button aria-pressed="false" data-t="A">A・近隣の個人（10）</button>
+        <button aria-pressed="false" data-t="B">B・地域の事業者（10）</button>
+        <button aria-pressed="false" data-t="C">C・紹介チャネル（10）</button>
+      </div>
+      <input type="search" id="t-search" placeholder="ターゲット・理由・切り口を検索" aria-label="ターゲット検索">
+      <select id="t-sort" aria-label="並べ替え">
+        <option value="rank">優先度順</option>
+        <option value="count">件数の多い順</option>
+        <option value="countAsc">件数の少ない順</option>
+      </select>
+      <span class="count">表示 <b id="t-shown">30</b> 件 ／ 母数計 <b id="t-sum">—</b></span>
+    </div>
+    <div class="tlist" id="t-list"></div>
+    <p class="note">件数の出所：川崎区の人口233,887人・65歳以上51,452人（22.0%）は自治体統計。その他は川崎市の施設数・事業所数の公開情報と業界推計に基づく概算です。<b>提案時は「桁感」としてお伝えし、実際のリストは抽出後の実数で確定させてください。</b></p>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="panel" id="p-remote" role="tabpanel" hidden>
+  <div class="sec-head"><h2>在宅ワーカー活用</h2><span class="tagline">職人の手を、布団に戻す</span></div>
+  <p class="lede">前のタブで挙げた無料施策は、合計<b>月40時間</b>ほどの作業になります。問題は、その40時間を<b>職人の手でやるのか、外に出すのか</b>です。職人の1時間が6,000円の粗利を生んでいるなら、この判断だけで月に数万円の差がつきます。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">移管できる業務量</span><span class="v" id="rw-total">40<small>h/月</small></span><span class="n">小さな店舗に現実的な規模</span></div>
+    <div class="stat hot"><span class="k">職人の時間の価値</span><span class="v">6,000<small>円/h</small></span><span class="n">粗利24,000円 ÷ 1件4時間で試算</span></div>
+    <div class="stat warn"><span class="k">40時間を職人がやる場合</span><span class="v">24<small>万円</small></span><span class="n">失う製造能力（粗利ベース）</span></div>
+    <div class="stat pos"><span class="k">対象業務の数</span><span class="v">16<small>種</small></span><span class="n">4カテゴリに分類</span></div>
+  </div>
+
+  <div class="block">
+    <h3>在宅ワーカーに依頼できる業務</h3>
+    <p class="sub">■ 印は、いま職人・店主の時間をとくに奪っている業務です。時間は月間の想定工数。</p>
+    <div class="grid g2" id="task-groups"></div>
+    <div class="callout"><b>小さな店舗では「全部出す」必要はありません。</b>まずは<b>Googleビジネスプロフィールの投稿と写真整理、顧客台帳の入力</b>という、手順が完全に決まっていて量が多い作業だけを出します。月10〜15時間から始められる規模です。効果が見えなければそこで止められます。</div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：現状</h3>
+    <p class="sub">職人が、布団も作り、写真も撮り、はがきの宛名も書いている</p>
+    <div class="chartbox"><div id="ch-org-before"></div></div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：在宅ワーカー活用後</h3>
+    <p class="sub">職人は布団と接客に専念。PR・事務は外のチームが回す</p>
+    <div class="chartbox"><div id="ch-org-after"></div></div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card"><span class="chip b">ポイント①</span><h4 style="font-size:14.5px;margin:9px 0 6px">雇用ではないので、小さく始めて止められる</h4><p style="font-size:13px;color:var(--ink-2)">パートを雇えば、仕事が減っても給与は発生します。<b>在宅ワーカーは必要な時間だけ</b>。月10時間から試して、合わなければ戻せます。</p></div>
+      <div class="card"><span class="chip b">ポイント②</span><h4 style="font-size:14.5px;margin:9px 0 6px">職人にしかできないことだけ残す</h4><p style="font-size:13px;color:var(--ink-2)">打ち直しの技術、お客様への説明、仕上がりの判断。ここは絶対に代替できません。<b>逆に、写真の整理や宛名印刷は誰がやっても同じ</b>です。</p></div>
+      <div class="card"><span class="chip b">ポイント③</span><h4 style="font-size:14.5px;margin:9px 0 6px">補助金の申請書類も任せられる</h4><p style="font-size:13px;color:var(--ink-2)">持続化補助金の申請には、事業計画の作成と商工会議所とのやり取りが必要です。<b>この下書きと期限管理こそ、外に出すべき作業</b>。職人が書類を書く時間は最も高くつきます。</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>職人の時間配分</h3>
+    <p class="sub">月160時間を、どこに使っているか／どこに使えるようになるか</p>
+    <div class="chartbox">
+      <div class="legend">
+        <span><i style="background:var(--s1)"></i>打ち直し・製造</span>
+        <span><i style="background:var(--s2)"></i>接客・説明・見積</span>
+        <span><i style="background:var(--s3)"></i>PR・写真・動画・投稿</span>
+        <span><i style="background:var(--s5)"></i>事務・台帳・はがき</span>
+      </div>
+      <div id="ch-time"></div>
+      <p class="note">PRに本気で取り組むと、職人の時間から月40時間が消えます。移管すれば製造に使える時間が<b>月110時間から145時間へ</b>。単純に<b>打ち直し8件分</b>の製造能力に相当します。粗利にして月19万円分——<b>これが「0円でやる」ことの本当の値段</b>です。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="panel" id="p-roi" role="tabpanel" hidden>
+  <div class="sec-head"><h2>ROIシミュレーション</h2><span class="tagline">0円プラン・小額プラン・補助金活用プランの比較</span></div>
+  <p class="lede">上のボタンで<b>3つのシナリオを切り替えて比較</b>できます。重要なのは、<b>職人の時間を費用として計上していること</b>です。0円プランが本当に0円なのかが、ここで見えます。</p>
+
+  <div class="roi-layout">
+    <aside class="knobs">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h4 style="margin:0;font-size:14px">前提条件</h4>
+        <button class="resetbtn" id="roi-reset" type="button">標準に戻す</button>
+      </div>
+      <div class="seg" id="plan-seg" style="margin-bottom:12px">
+        <button aria-pressed="false" data-plan="free" style="flex:1">0円</button>
+        <button aria-pressed="true" data-plan="hojo" style="flex:1">補助金</button>
+        <button aria-pressed="false" data-plan="paid" style="flex:1">投資</button>
+      </div>
+      <div class="plancard" id="plan-desc"></div>
+
+      <div class="gh"><span>■</span> 集客の効果</div>
+      <div class="knob"><label for="k-leads">月間の新規問い合わせ増 <b><span id="v-leads"></span>件</b></label><input type="range" id="k-leads" min="0" max="40" step="1"></div>
+      <div class="knob"><label for="k-visit">問い合わせ→来店率 <b><span id="v-visit"></span>%</b></label><input type="range" id="k-visit" min="30" max="100" step="5"></div>
+      <div class="knob"><label for="k-win">来店→受注率 <b><span id="v-win"></span>%</b></label><input type="range" id="k-win" min="20" max="100" step="5"></div>
+
+      <div class="knob-group"><div class="gh"><span>■</span> 1件あたりの収益</div>
+        <div class="knob"><label for="k-price">平均受注単価 <b><span id="v-price"></span>円</b></label><input type="range" id="k-price" min="10000" max="100000" step="2500"></div>
+        <div class="knob"><label for="k-gm">粗利率 <b><span id="v-gm"></span>%</b></label><input type="range" id="k-gm" min="30" max="90" step="5"></div>
+      </div>
+
+      <div class="knob-group"><div class="gh"><span>■</span> かかる費用</div>
+        <div class="knob"><label for="k-ad">販促費（月額換算） <b><span id="v-ad"></span>円</b></label><input type="range" id="k-ad" min="0" max="200000" step="1000"></div>
+        <div class="knob"><label for="k-ofee">在宅ワーカー費用（月額） <b><span id="v-ofee"></span>円</b></label><input type="range" id="k-ofee" min="0" max="200000" step="5000"></div>
+      </div>
+
+      <div class="knob-group"><div class="gh"><span>■</span> 職人の時間</div>
+        <div class="knob"><label for="k-ownerh">職人がPR・事務に使う時間 <b><span id="v-ownerh"></span>h/月</b></label><input type="range" id="k-ownerh" min="0" max="60" step="1"></div>
+        <div class="knob"><label for="k-ownerrate">職人の1時間あたり粗利 <b><span id="v-ownerrate"></span>円</b></label><input type="range" id="k-ownerrate" min="0" max="10000" step="500"></div>
+      </div>
+      <p class="note" style="margin-top:4px">※ 職人の手がすでに空いている場合は、1時間あたり粗利を<b>0円</b>にしてください。そのときは0円プランが最も合理的になります。</p>
+    </aside>
+
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div>
+        <h3 style="font-size:17px">1ヶ月あたりの収支</h3>
+        <p class="sub" style="font-size:12.5px;color:var(--ink-3);margin:3px 0 14px">職人の時間を機会費用として含めた、本当の手残り</p>
+        <div class="grid g4">
+          <div class="stat pos"><span class="k">月間 粗利増</span><span class="v" id="o-gp">—</span><span class="n" id="o-gpnote">—</span></div>
+          <div class="stat warn"><span class="k">月間 費用合計</span><span class="v" id="o-cost">—</span><span class="n" id="o-costnote">—</span></div>
+          <div class="stat hot"><span class="k">実質の手残り</span><span class="v" id="o-net">—</span><span class="n">粗利増 −（販促費＋在宅費＋職人の機会費用）</span></div>
+          <div class="stat info"><span class="k">損益分岐に必要な件数</span><span class="v" id="o-be">—</span><span class="n">この費用を回収するのに必要な月間受注</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="eyebrow" style="margin-bottom:10px">月間のファネル</div>
+        <div class="funnel">
+          <div class="fstep"><div class="fl">問い合わせ</div><div class="fv" id="f-leads">—</div><div class="fr">電話・Web・来店</div></div>
+          <div class="fstep"><div class="fl">来店</div><div class="fv" id="f-visit">—</div><div class="fr" id="f-visit-r">—</div></div>
+          <div class="fstep end"><div class="fl">受注</div><div class="fv" id="f-win">—</div><div class="fr" id="f-win-r">—</div></div>
+          <div class="fstep"><div class="fl">月商増</div><div class="fv" id="f-rev">—</div><div class="fr">平均単価 × 受注件数</div></div>
+        </div>
+      </div>
+
+      <div class="chartbox">
+        <h4>3つのシナリオの比較</h4>
+        <p class="csub">同じ前提条件のまま、費用のかけ方だけを変えたときの月間の手残り</p>
+        <div class="legend"><span><i style="background:var(--s3)"></i>粗利増</span><span><i style="background:var(--s5)"></i>販促費＋在宅費</span><span><i style="background:var(--s1)"></i>職人の機会費用</span></div>
+        <div id="ch-scenarios"></div>
+      </div>
+
+      <div class="chartbox">
+        <h4>1年間の累積</h4>
+        <p class="csub">累積の粗利増と、累積の費用（職人の機会費用を含む）</p>
+        <div class="legend"><span><i style="background:var(--s3)"></i>累積 粗利増</span><span><i style="background:var(--s1)"></i>累積 費用</span></div>
+        <div id="ch-cum"></div>
+      </div>
+
+      <div class="chartbox">
+        <h4>平均単価の感度分析</h4>
+        <p class="csub">1件あたりの受注額が変わると、同じ集客量でも結果が大きく変わります</p>
+        <div id="ch-sens"></div>
+      </div>
+
+      <div class="verdict" id="o-verdict"></div>
+
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:10px">この試算の読み方</div>
+        <ul style="margin:0;padding-left:1.2em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">
+          <li><b>この試算の要は「職人の1時間あたり粗利」です。</b>手が埋まっているなら6,000円、空いているなら0円。<b>この1つで結論が反転します</b>。商談で最初に伺うべきはここです。</li>
+          <li>補助金プランの販促費は<b>自己負担分のみ</b>を計上しています（50万円の販路開拓を補助率2/3で実施した場合、自己負担16.7万円を12ヶ月で割って月約1.4万円）。採択されなければこの前提は崩れるため、<b>不採択の場合の代替案も同時に用意する</b>必要があります。</li>
+          <li>平均受注単価は4万円を初期値としました。掛け・敷の打ち直しが1枚1万円前後、羽毛リフォームが27,000〜70,000円という相場から、<b>家族分をまとめて依頼されるケースを想定</b>した数字です。実績値をご共有いただければ置き換えます。</li>
+          <li>既存客の再来（打ち直しの5〜10年周期）はこの試算に含めていません。<b>顧客台帳を整えた場合の上振れ要因</b>として、別枠でご覧ください。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="panel" id="p-road" role="tabpanel" hidden>
+  <div class="sec-head"><h2>90日ロードマップ</h2><span class="tagline">最初の30日は、1円も使いません</span></div>
+  <p class="lede"><span class="owner af">愛知ふとん店</span>と<span class="owner ai">アイドマ</span>の役割を分けています。<b>DAY 1–30はすべて無料の施策</b>。費用の判断は、そこで数字を見てからで構いません。</p>
+
+  <div class="card" style="border-left:4px solid var(--good);border-radius:5px;margin-bottom:24px">
+    <div class="eyebrow" style="margin-bottom:8px">次回商談（月曜 15:00・無料相談会）でお出しするもの</div>
+    <ul style="margin:0;padding-left:1.2em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:5px">
+      <li><b style="color:var(--ink)">無料動画3本制作の流れ</b>——資料送付からメールのやり取りまでの手順</li>
+      <li><b style="color:var(--ink)">後から請求が発生しないことのエビデンス</b>——書面での確認資料（お約束の対応事項）</li>
+      <li><b style="color:var(--ink)">オウンドメディア『経道』および「守り君」「くるみちゃん」の活用方法</b></li>
+      <li><b style="color:var(--ink)">本ボード</b>——ターゲット30、費用対効果、補助金のスケジュール</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 1–30</div><div class="pt">無料でできることを<br>全部やり切る</div></div>
+    <ul>
+      <li><span class="owner ai">アイドマ</span>AIナレーターによる<b>無料PRショート動画3本</b>を制作。打ち直しの工程と施工前後を見せる内容にする。</li>
+      <li><span class="owner af">愛知ふとん店</span>Googleビジネスプロフィールに「布団の打ち直し」「仕立て直し」「羽毛リフォーム」を明記し、施工前後の写真を追加する。<span class="free">0円</span></li>
+      <li><span class="owner af">愛知ふとん店</span>直近に来られたお客様に口コミをお願いする。声をかけるだけで増えます。<span class="free">0円</span></li>
+      <li><span class="owner ai">アイドマ</span>ホームページに<b>打ち直しの料金と工程</b>を明示するページの構成案を提示する。</li>
+      <li><span class="owner af">愛知ふとん店</span>過去の顧客台帳の所在を確認する。紙でも構いません。何件あるかを数えるところから。</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 31–60</div><div class="pt">数字を見て、<br>補助金の準備に入る</div></div>
+    <ul>
+      <li><span class="owner af">愛知ふとん店</span>Googleビジネスプロフィールの<b>表示回数・電話数・経路検索数</b>を確認する。無料で見られる数字です。</li>
+      <li><span class="owner af">愛知ふとん店</span><b>川崎商工会議所へ相談</b>。持続化補助金の事業支援計画書（様式4）の発行に向けた面談を予約する。</li>
+      <li><span class="owner ai">アイドマ</span>補助金で実施する販路開拓の内容（チラシ・HP・看板・動画）と見積を整理し、申請書の下書きを支援する。</li>
+      <li><span class="owner af">愛知ふとん店</span>紹介チャネル（工務店・引っ越し・遺品整理・ケアマネジャー）へ<b>挨拶回りを10先</b>。案内チラシを置かせてもらう。<span class="free">印刷代のみ</span></li>
+      <li><span class="owner ai">アイドマ</span>顧客台帳のデータ化と、季節の案内はがきの文面を作成する。</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 61–90</div><div class="pt">申請と、<br>効いたものへの集中</div></div>
+    <ul>
+      <li><span class="owner af">愛知ふとん店</span><b>12月4日までに様式4を取得し、12月15日17:00までに申請</b>を完了させる。ここが今期最大の締切です。</li>
+      <li><span class="owner ai">アイドマ</span>3ヶ月の数字（問い合わせ数・来店数・受注件数・平均単価）を集計し、<b>どの施策が効いたかを特定</b>する。</li>
+      <li><span class="owner af">愛知ふとん店</span>効いた施策だけに絞る。効かなかったものは止める。<b>ここまで費用はほぼ発生していません</b>。</li>
+      <li><span class="owner ai">アイドマ</span>実績値でROIモデルを更新し、次の投資判断の材料にする。採択・不採択それぞれの場合の進め方を用意する。</li>
+      <li><span class="owner af">愛知ふとん店</span>職人の手が空いているか埋まっているかを再確認。埋まっているなら、在宅ワーカーへの移管を検討する段階です。</li>
+    </ul>
+  </div>
+
+  <hr class="stitch" style="margin:34px 0">
+
+  <div class="block" style="margin-top:0">
+    <h3>次回商談で確認したい6つ</h3>
+    <p class="sub">試算の精度を上げるために、店主にしか答えられないこと</p>
+    <div class="grid g2">
+      <div class="card"><b>1. いま、職人さんの手は空いていますか</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">この答えで、0円プランが正しいかどうかが決まります。最重要の質問です。</p></div>
+      <div class="card"><b>2. 打ち直し1件あたりの平均単価と所要時間</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">費用対効果の計算の土台。実績値があれば試算が一気に確かになります。</p></div>
+      <div class="card"><b>3. 月間の受注件数と、その入り口の内訳</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">紹介・通りがかり・Webの比率がわかると、伸ばす場所が決まります。</p></div>
+      <div class="card"><b>4. 過去の顧客台帳は何件ありますか</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">紙でも構いません。最も安く確実な売上源がどれだけ眠っているかの確認です。</p></div>
+      <div class="card"><b>5. 商工会議所の会員ですか</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">補助金の様式4発行に関わります。非会員でも相談は可能です。</p></div>
+      <div class="card"><b>6. 事業承継について、何かお考えはありますか</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">投資を回収できる年数に直結します。無理にお答えいただく必要はありません。</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>出典</h3>
+    <ul class="srcs">
+      <li>小規模事業者持続化補助金（2026年度・一般型通常枠／申請受付11月5日〜12月15日、様式4発行締切12月4日、補助率2/3・上限50万円） — <a href="https://shiomi-gyosei.com/%e8%a3%9c%e5%8a%a9%e9%87%91%e3%83%bb%e5%8a%a9%e6%88%90%e9%87%91%e3%81%ab%e3%81%a4%e3%81%84%e3%81%a6/smallsub2026/" target="_blank" rel="noopener">行政書士潮海事務所</a>／<a href="https://hojyokin-portal.jp/columns/jizokuka2025_summary" target="_blank" rel="noopener">補助金ポータル</a></li>
+      <li>2025年の休廃業・解散 67,210件で過去最多、代表者60代以上90.6%・80代以上34.0% — <a href="https://prtimes.jp/main/html/rd/p/000000025.000126976.html" target="_blank" rel="noopener">東京商工リサーチ</a>／<a href="https://www.tdb.co.jp/report/industry/20260109-kyuhaigyo25y/" target="_blank" rel="noopener">帝国データバンク</a></li>
+      <li>小売業の休廃業・解散 7,903件（前年比9.6%増） — <a href="https://netshop.impress.co.jp/n/2026/01/15/15428" target="_blank" rel="noopener">ネットショップ担当者フォーラム</a></li>
+      <li>ヤマト運輸の個人向け料金改定（2025年10月・平均10%） — <a href="https://news.yahoo.co.jp/articles/cbef427da6cbf3a52e71abc39e87c7c90f9ee958" target="_blank" rel="noopener">ファイナンシャルフィールド</a>／<a href="https://www.pricey.jp/web/articles/4484" target="_blank" rel="noopener">プライシー</a></li>
+      <li>布団の打ち直し・羽毛リフォームの料金相場 — <a href="https://www.nihonbashi-nishikawa.com/column/comforter/down-duvet-repair/" target="_blank" rel="noopener">日本橋西川</a>／<a href="https://kaimin-times.com/blogs/futon-mattress/futon-reform-price-10158" target="_blank" rel="noopener">快眠タイムズ</a></li>
+      <li>川崎市川崎区の人口・年齢構成 — <a href="https://www.city.kawasaki.jp/shisei/category/51-4-3-1-1-0-0-0-0-0.html" target="_blank" rel="noopener">川崎市 統計情報</a></li>
+      <li>愛知ふとん店の店舗情報 — <a href="https://www.kawasaki-ginza.com/store/view/47" target="_blank" rel="noopener">川崎銀座街</a></li>
+      <li>アイドマ・ホールディングス クラウドユニット — <a href="https://www.aidma-hd.jp/crowdunit_category/" target="_blank" rel="noopener">aidma-hd.jp</a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<hr class="stitch">
+<footer style="background:var(--surface);border-top:1px solid var(--rule)">
+  <div class="wrap" style="padding:20px 24px 28px;font-size:12px;color:var(--ink-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <span>株式会社愛知川崎店 様向け 事前リサーチ・費用対効果・成長戦略／株式会社アイドマ・ホールディングス</span>
+    <span class="mono">2026-09-13</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+var tabs=Array.prototype.slice.call(document.querySelectorAll(".tab"));
+tabs.forEach(function(t){
+  t.addEventListener("click",function(){
+    tabs.forEach(function(x){
+      x.setAttribute("aria-selected",x===t?"true":"false");
+      document.getElementById("p-"+x.dataset.p).hidden=(x!==t);
+    });
+    window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  });
+});
+
+var NF=new Intl.NumberFormat("ja-JP");
+function n(v){return NF.format(Math.round(v));}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function svg(w,h,inner){
+  return '<svg viewBox="0 0 '+w+' '+h+'" role="img" preserveAspectRatio="xMidYMid meet" '+
+    'style="max-width:'+Math.round(w*1.18)+'px;margin:0 auto">'+inner+'</svg>';
+}
+function txt(x,y,s,o){
+  o=o||{};
+  return '<text x="'+x+'" y="'+y+'" fill="'+(o.fill||"var(--ink-2)")+'" font-size="'+(o.size||11)+'" '+
+   'font-family="'+(o.mono?"Inconsolata, monospace":(o.disp?"Zen Old Mincho, serif":"Zen Kaku Gothic Antique, sans-serif"))+'" '+
+   'font-weight="'+(o.weight||400)+'" text-anchor="'+(o.anchor||"start")+'"'+
+   (o.baseline?' dominant-baseline="'+o.baseline+'"':'')+'>'+esc(s)+'</text>';
+}
+function rrect(x,y,w,h,r,fill){
+  if(h<=0||w<=0) return "";
+  r=Math.min(r,h/2,w/2);
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+r+'" fill="'+fill+'"></rect>';
+}
+function niceMax(v,div){
+  if(!(v>0)) return div;
+  var unit=v/div, step=Math.pow(10,Math.floor(Math.log10(unit))), r=unit/step;
+  var mult=r<=1?1:r<=2?2:r<=2.5?2.5:r<=5?5:10;
+  return step*mult*div;
+}
+
+/* ---- 商圏の規模 ---- */
+(function(){
+  var W=700,H=240,padL=214,padR=98,plotW=W-padL-padR,top=40,rowH=44,max=60000,s="";
+  var rows=[
+    {l:"65歳以上の人口",s:"綿布団を持つ可能性が最も高い層",v:51452,c:"var(--s1)"},
+    {l:"15〜64歳の人口",s:"親世代の布団を相談される層",v:159326,c:"var(--s2)",clip:true},
+    {l:"0〜14歳の人口",s:"こども布団・お昼寝布団",v:23109,c:"var(--s3)"},
+    {l:"年間に必要な受注件数",s:"母数の0.2%にも満たない",v:150,c:"var(--s5)"}
+  ];
+  [0,20000,40000,60000].forEach(function(g){
+    var x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-14)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-14)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-22,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  });
+  s+=txt(W-padR+8,top-22,"人",{fill:"var(--ink-3)",size:10});
+  rows.forEach(function(r,i){
+    var y=top+i*rowH;
+    s+=txt(0,y+5,r.l,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(0,y+22,r.s,{fill:"var(--ink-3)",size:10});
+    var w=Math.min((r.v/max)*plotW,plotW);
+    s+=rrect(padL,y-6,Math.max(w,2),20,3,r.c);
+    if(r.clip) s+=txt(padL+w-8,y+5,"▶",{fill:"#FFFFFF",size:11,anchor:"end",baseline:"middle"});
+    s+=txt(padL+Math.min(w,plotW)+8,y+5,n(r.v)+(r.clip?"（表示上限超）":""),{fill:"var(--ink-2)",size:11,mono:true,baseline:"middle"});
+  });
+  s+=txt(0,H-10,"※ 川崎区の人口233,887人の内訳。年間必要件数は平均単価4万円・年商600万円増を想定した目安です。",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("ch-market-size").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 休廃業 ---- */
+(function(){
+  var W=520,H=260,padT=42,padB=56,plotH=H-padT-padB,max=100,s="";
+  var data=[
+    {l:"60代以上",v:90.6,c:"var(--s1)"},
+    {l:"うち80代以上",v:34.0,c:"var(--s5)"}
+  ];
+  [0,25,50,75,100].forEach(function(g){
+    var y=padT+plotH-(g/max)*plotH;
+    s+='<line x1="8" y1="'+y+'" x2="'+(W-34)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(W-30,y,String(g),{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+  });
+  s+=txt(8,16,"休廃業・解散した企業の代表者年齢（%）",{fill:"var(--ink-3)",size:10});
+  data.forEach(function(d,i){
+    var bw=124,x=86+i*(bw+92),h=(d.v/max)*plotH,y=padT+plotH-h;
+    s+=rrect(x,y,bw,h,4,d.c);
+    s+=txt(x+bw/2,y-10,d.v+"%",{fill:"var(--ink)",size:17,weight:700,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+20,d.l,{fill:"var(--ink-2)",size:12,anchor:"middle"});
+  });
+  s+=txt(8,H-8,"2025年の休廃業・解散 67,210件（過去最多）の内訳。小売業は7,903件・前年比9.6%増。",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("ch-exit").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 価格帯 ---- */
+(function(){
+  var W=520,H=260,padL=128,padR=40,plotW=W-padL-padR,top=42,rowH=46,max=70000,s="";
+  var rows=[
+    {l:"掛け布団の打ち直し",lo:8000,hi:15000,c:"var(--s3)"},
+    {l:"敷布団の打ち直し",lo:8000,hi:15000,c:"var(--s3)"},
+    {l:"羽毛リフォーム（標準）",lo:27000,hi:37000,c:"var(--s2)"},
+    {l:"羽毛リフォーム（生地込）",lo:40000,hi:70000,c:"var(--s1)"}
+  ];
+  [0,20000,40000,60000].forEach(function(g){
+    var x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-14)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-16)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-22,n(g/1000)+"千",{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  });
+  s+=txt(8,16,"1枚あたりの料金相場（円）",{fill:"var(--ink-3)",size:10});
+  rows.forEach(function(r,i){
+    var y=top+i*rowH;
+    s+=txt(0,y+10,r.l,{fill:"var(--ink)",size:11.5,weight:700});
+    var x1=padL+(r.lo/max)*plotW, x2=padL+(r.hi/max)*plotW;
+    s+=rrect(x1,y-2,x2-x1,20,3,r.c);
+    s+=txt(x2+8,y+9,n(r.lo/1000)+"〜"+n(r.hi/1000)+"千円",{fill:"var(--ink-2)",size:10.5,mono:true,baseline:"middle"});
+  });
+  s+=txt(0,H-10,"※ 家族分をまとめて依頼されることが多く、1件あたりの受注額はこの数倍になります。",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("ch-price").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 損益分岐件数 ---- */
+(function(){
+  var W=700,H=250,padL=150,padR=150,plotW=W-padL-padR,top=44,rowH=38,max=10,s="";
+  var gp=24000;
+  var costs=[10000,30000,50000,100000,14000];
+  var labels=["月1万円の施策","月3万円の施策","月5万円の施策","月10万円の施策","補助金活用（月1.4万円相当）"];
+  var colors=["var(--s3)","var(--s3)","var(--s2)","var(--s1)","var(--s5)"];
+  [0,2,4,6,8,10].forEach(function(g){
+    var x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-14)+'" x2="'+x+'" y2="'+(top+costs.length*rowH-14)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-22,String(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  });
+  s+=txt(W-padR+8,top-22,"件/月",{fill:"var(--ink-3)",size:10});
+  costs.forEach(function(c,i){
+    var y=top+i*rowH, need=c/gp;
+    s+=txt(0,y+5,labels[i],{fill:"var(--ink)",size:11.5,weight:700});
+    s+=rrect(padL,y-7,(need/max)*plotW,20,3,colors[i]);
+    s+=txt(padL+(need/max)*plotW+8,y+5,need.toFixed(1)+"件",{fill:"var(--ink-2)",size:11.5,mono:true,weight:700,baseline:"middle"});
+  });
+  s+=txt(0,14,"1件あたりの粗利 24,000円（平均単価40,000円 × 粗利率60%）で試算",{fill:"var(--ink-3)",size:11});
+  s+=txt(0,H-10,"※ 補助金活用は、50万円の販路開拓を補助率2/3で実施した場合の自己負担16.7万円を12ヶ月で割ったもの。",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("ch-breakeven").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 段階投資 ---- */
+(function(){
+  var W=880,H=250,s="";
+  var steps=[
+    {n:"STEP 0",t:"無料でやり切る",c:"var(--s3)",items:["Googleビジネスプロフィール整備","口コミの依頼と返信","AI動画3本・HP改善"],cost:"0円",dur:"1〜3ヶ月目"},
+    {n:"STEP 1",t:"小さく試す",c:"var(--s2)",items:["顧客台帳の整備と案内はがき","紹介チャネルへの挨拶回り","在宅ワーカー 月10〜15時間"],cost:"月3〜6万円",dur:"2〜4ヶ月目"},
+    {n:"STEP 2",t:"補助金で拡大",c:"var(--s1)",items:["ポスティング・折込チラシ","店頭看板・のぼりの刷新","ホームページの本格改修"],cost:"自己負担 月1.4万円",dur:"申請〜翌年度"}
+  ];
+  var bw=274,gap=19;
+  steps.forEach(function(st,i){
+    var x=8+i*(bw+gap);
+    s+='<rect x="'+x+'" y="34" width="'+bw+'" height="158" rx="6" fill="var(--surface-2)" stroke="'+st.c+'" stroke-width="'+(i===0?2.5:1.25)+'"></rect>';
+    s+='<rect x="'+x+'" y="34" width="'+bw+'" height="4" rx="2" fill="'+st.c+'"></rect>';
+    s+=txt(x+14,60,st.n,{fill:st.c,size:11.5,weight:700,mono:true});
+    s+=txt(x+14,82,st.t,{fill:"var(--ink)",size:15,weight:700,disp:true});
+    st.items.forEach(function(it,j){
+      s+=txt(x+14,106+j*20,"・"+it,{fill:"var(--ink-2)",size:11});
+    });
+    s+=txt(x+14,178,st.cost,{fill:st.c,size:13,weight:700,mono:true});
+    s+=txt(x+bw-14,178,st.dur,{fill:"var(--ink-3)",size:10.5,anchor:"end"});
+    if(i<2){
+      var ax=x+bw+3;
+      s+='<path d="M '+ax+' 113 L '+(ax+gap-7)+' 113" stroke="var(--rule-2)" stroke-width="1.5"></path>';
+      s+='<path d="M '+(ax+gap-12)+' 109 L '+(ax+gap-7)+' 113 L '+(ax+gap-12)+' 117 Z" fill="var(--rule-2)"></path>';
+    }
+  });
+  s+=txt(8,20,"効果が出たものだけを次のステップへ。出なければ止める。",{fill:"var(--ink-3)",size:11});
+  s+=txt(8,218,"次回商談でご提案するのは STEP 0 だけです。費用の判断は、STEP 0 の数字を見てからで構いません。",{fill:"var(--s3)",size:12.5,weight:700});
+  s+=txt(8,238,"STEP 1・2は、効果が確認できてから。補助金の締切（12月15日）だけは、先に押さえておく必要があります。",{fill:"var(--ink-2)",size:11.5});
+  document.getElementById("ch-steps").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- targets ---------------- */
+var TARGETS=[
+ {t:"A",name:"綿布団を持つ65歳以上の世帯",c:25000,
+  why:"川崎区の65歳以上は51,452人。嫁入り布団や親から譲られた綿布団を今も使っている層で、打ち直しという選択肢を知れば最も頼みやすい。",
+  hook:"「そのお布団、捨てなくても新品同様に戻せます」——買い替えではなく直すという選択肢を、まず知ってもらう。"},
+ {t:"A",name:"転入・引っ越しの世帯",c:25000,
+  why:"川崎区は転入が多く、引っ越しを機に寝具を見直す世帯が毎年発生。荷物を減らしたいタイミングで打ち直しの提案が刺さる。",
+  hook:"「引っ越しで布団を持っていくか迷われたら、打ち直してから運ぶ手もあります」——処分の相談から入る。"},
+ {t:"A",name:"嫁入り布団を長年使っている世帯",c:12000,
+  why:"捨てるに捨てられない布団の代表格。思い入れがあるため価格より「直せること」が決め手になり、単価が取りやすい。",
+  hook:"「嫁入り道具のお布団、押し入れで眠っていませんか。中身は生きています」——捨てられない理由に寄り添う。"},
+ {t:"A",name:"在宅介護中の世帯",c:10000,
+  why:"川崎区の要介護認定は約1万人規模。汚れや硬さの問題で寝具を頻繁に見直す必要があり、床ずれ対策の相談が生まれる。",
+  hook:"「介護用の敷布団、硬さで悩まれていませんか。中綿の量で調整できます」——困りごとから入る。"},
+ {t:"A",name:"アレルギー・ダニ対策を探す子育て世帯",c:8000,
+  why:"打ち直しは中綿を打ち直して天日に当てる工程そのものがダニ・ホコリ対策。新品を買うより安く、説明に説得力がある。",
+  hook:"「打ち直しは中身を全部ほぐして日に当てます。新品を買うより安く、アレルギー対策になります」"},
+ {t:"A",name:"実家じまい・生前整理中の40〜60代",c:3000,
+  why:"大量の布団の処分に困っている。捨てるにも粗大ごみの手間と費用がかかるため、「直して使う」提案が経済合理性を持つ。",
+  hook:"「ご実家のお布団、処分に困っていませんか。使えるものは直して、残りはご相談ください」"},
+ {t:"A",name:"新築・リフォーム完了世帯",c:2500,
+  why:"住まいを整えたタイミングで寝具も見直す。川崎区の新設住宅着工は年間数千戸規模で、工務店経由の紹介とも重なる。",
+  hook:"「新しいお部屋に、お手持ちのお布団を仕立て直して合わせませんか」——サイズ変更の相談として。"},
+ {t:"A",name:"結婚・出産で寝具を新調する世帯",c:2000,
+  why:"人生の節目で「良いものを長く」という判断が働く。手づくり布団の価値が最も伝わる層で、その後の打ち直しにもつながる。",
+  hook:"「手づくりの布団は、10年後に打ち直してまた10年使えます」——最初の一組として提案する。"},
+ {t:"A",name:"入園・入学を控える家庭",c:1900,
+  why:"お昼寝布団・こども布団の需要が毎年必ず発生する。サイズ指定への対応は既製品にない強みで、地域の口コミが回りやすい。",
+  hook:"「園指定のサイズ、既製品で合わなくてお困りではありませんか。お作りできます」"},
+ {t:"A",name:"二世帯同居を始める世帯",c:600,
+  why:"親世帯の布団を持ち込むかどうかの判断が発生する。両世帯分の見直しが一度に起きるため、1件あたりの枚数が多い。",
+  hook:"「同居を始められるとき、お布団の置き場と枚数で必ず悩まれます。まとめてご相談ください」"},
+
+ {t:"B",name:"有料老人ホーム・サービス付き高齢者向け住宅",c:280,
+  why:"入居者の入れ替わりで寝具の更新が定期的に発生。施設側は清潔さと衛生管理を重視しており、打ち直しの工程が説明材料になる。",
+  hook:"「入居者様の入れ替わりのたびに、お布団はどうされていますか。打ち直しなら費用を抑えて清潔にできます」"},
+ {t:"B",name:"保育園・認定こども園",c:600,
+  why:"お昼寝布団が毎年動く。園指定のサイズへの対応は既製品にない強みで、1園決まれば毎年の需要になる。",
+  hook:"「お昼寝布団の指定サイズ、保護者の方が探すのに困っていませんか。園から案内できる形をご用意します」"},
+ {t:"B",name:"整体院・接骨院・鍼灸院",c:230,
+  why:"施術ベッドの敷物が消耗品として動く。患者との会話で寝具の話が出やすく、紹介チャネルとしても機能する二重の価値。",
+  hook:"「施術用の敷物、消耗が早くありませんか。それと、患者さんの腰痛のご相談で布団の話は出ませんか」"},
+ {t:"B",name:"企業の仮眠室・防災備蓄担当",c:1500,
+  why:"川崎区は工場・事業所が多く、仮眠室の寝具と防災備蓄の毛布・布団が対象になる。年度末の予算消化と重なると動きやすい。",
+  hook:"「仮眠室のお布団、いつから使われていますか。備蓄品の入れ替えと一緒にご相談いただけます」"},
+ {t:"B",name:"民泊・簡易宿所の運営者",c:200,
+  why:"清潔感が口コミ評価に直結するため寝具の更新頻度が高い。小規模事業者が多く、コストを抑えたい動機が強い。",
+  hook:"「レビューで寝具のことを書かれたことはありませんか。買い替えより安く新品同様にできます」"},
+ {t:"B",name:"旅館・民宿・ビジネスホテル",c:120,
+  why:"1館あたりの枚数が最も多い。打ち直しなら買い替えより大幅に安く、まとまった受注になれば数ヶ月分の売上に相当する。",
+  hook:"「客室のお布団、何組お持ちですか。全部買い替えると大変な金額になりますが、打ち直しなら半分以下です」"},
+ {t:"B",name:"学生寮・社員寮・寄宿舎",c:150,
+  why:"入退去のサイクルで定期的に寝具が動く。管理者が一括で判断するため、1件決まれば継続的な取引になりやすい。",
+  hook:"「入退去のたびの寝具の入れ替え、費用がかさんでいませんか。打ち直しで回す方法があります」"},
+ {t:"B",name:"特別養護老人ホーム・介護老人保健施設",c:110,
+  why:"公的施設は予算が年度で確保されており、衛生管理の基準も明確。実績ができれば他施設への横展開がしやすい。",
+  hook:"「衛生管理の面で、お布団の更新基準はお決まりですか。打ち直しという選択肢もご検討いただけます」"},
+ {t:"B",name:"寺社・道場・宿坊",c:90,
+  why:"座布団や宿坊の寝具が対象。川崎大師をはじめ川崎区には参拝者を迎える施設があり、伝統的な手仕事との相性が良い。",
+  hook:"「座布団の打ち直し、承っています。100年やっている店ですので、同じ仕立てでお戻しできます」"},
+ {t:"B",name:"産婦人科・助産院",c:40,
+  why:"入院用の寝具が動くうえ、退院する家族への紹介元にもなる。出産を機に寝具を整える家庭への導線が生まれる。",
+  hook:"「退院される方に、赤ちゃんのお布団のご相談先としてご案内いただけませんか」"},
+
+ {t:"C",name:"ケアマネジャー・居宅介護支援事業所",c:230,
+  why:"利用者宅に上がり、寝具の状態を直接見ている。困りごとの相談を受ける立場にありながら、紹介先を持っていないことが多い。",
+  hook:"「利用者さんのお布団のこと、ご相談を受けられませんか。ご紹介いただければ、こちらから伺います」"},
+ {t:"C",name:"自治会・町内会・老人クラブ",c:180,
+  why:"回覧板・集会という接点があり、高齢世帯に直接届く。地域の信頼が介在するため、チラシより圧倒的に効く。",
+  hook:"「敬老会や集まりの場で、お布団のお手入れの話をさせていただけませんか。無料の出張説明もできます」"},
+ {t:"C",name:"地域の工務店・リフォーム会社",c:900,
+  why:"住まいのリフォーム時に寝具の相談を受けるが、対応先を持っていない。紹介の見返りとして相互紹介も成立する。",
+  hook:"「リフォームのとき、お布団はどうされていますか。うちにお回しいただければ、御社のお客様にも喜ばれます」"},
+ {t:"C",name:"不動産仲介・賃貸管理会社",c:320,
+  why:"入居・退去のたびに寝具の処分と新調が発生する。入居者への案内チラシを置いてもらうだけで接点が生まれる。",
+  hook:"「ご入居者様に、お布団のご相談先として置いていただけませんか。駅前徒歩1分なのでご案内しやすいです」"},
+ {t:"C",name:"クリーニング店",c:110,
+  why:"布団クリーニングは受けても、打ち直しはできない店が多い。競合ではなく補完関係で、相互紹介が自然に成立する。",
+  hook:"「クリーニングでは落とせない、中綿のへたりのご相談。うちにお回しいただけませんか」"},
+ {t:"C",name:"引っ越し業者",c:80,
+  why:"引っ越しの現場で「この布団どうしますか」という会話が必ず発生する。処分の代わりに打ち直しという提案先になる。",
+  hook:"「お客様から布団の処分を頼まれたとき、直すという選択肢もご案内いただけませんか」"},
+ {t:"C",name:"遺品整理・生前整理業者",c:60,
+  why:"大量の布団を前に「捨てるしかない」と判断している現場。思い入れのある品を残せる提案は、業者にとっても価値がある。",
+  hook:"「ご遺族が捨てるのをためらわれるお布団、ありませんか。1枚だけ残して直すという方法があります」"},
+ {t:"C",name:"家具・インテリア店",c:130,
+  why:"ベッドや寝室家具を売る際に寝具の話が出る。既製品しか扱わない店にとって、手づくり・打ち直しは補完商材になる。",
+  hook:"「ベッドをご購入されるお客様に、お手持ちのお布団の仕立て直しをご案内いただけませんか」"},
+ {t:"C",name:"地域包括支援センター",c:49,
+  why:"高齢者の生活相談の窓口。公的機関からの紹介は信頼度が高く、1センターで担当エリア全体に情報が回る。",
+  hook:"「高齢の方のお布団のご相談、窓口に来ていませんか。出張でのご相談も承っています」"},
+ {t:"C",name:"川崎銀座街ほかの商店街・商店会",c:25,
+  why:"自店が属する商店街のネットワーク。共同イベント・回覧・掲示板という無料の告知手段があり、加盟店同士の紹介も生まれる。",
+  hook:"「商店街のイベントで、打ち直しの実演をさせていただけませんか。人が集まる企画になります」"}
+];
+var TIER_META={
+  A:{label:"近隣の個人",note:"数で効く。来店してもらう相手",cls:"a"},
+  B:{label:"地域の事業者",note:"1件あたりの枚数で効く",cls:"b"},
+  C:{label:"紹介チャネル",note:"継続性で効く。費用はほぼゼロ",cls:"c"}
+};
+
+(function(){
+  var total=TARGETS.reduce(function(a,b){return a+b.c;},0);
+  var a=TARGETS.filter(function(d){return d.t==="A";}).reduce(function(x,y){return x+y.c;},0);
+  var c=TARGETS.filter(function(d){return d.t==="C";}).reduce(function(x,y){return x+y.c;},0);
+  document.getElementById("t-total").innerHTML=n(total)+'<small>件</small>';
+  document.getElementById("t-a").innerHTML=n(a)+'<small>件</small>';
+  document.getElementById("t-c").innerHTML=n(c)+'<small>先</small>';
+})();
+
+(function(){
+  var rows=["A","B","C"].map(function(t){
+    var sum=TARGETS.filter(function(d){return d.t===t;}).reduce(function(a,b){return a+b.c;},0);
+    return {t:t,sum:sum,cnt:TARGETS.filter(function(d){return d.t===t;}).length};
+  });
+  var max=niceMax(Math.max.apply(null,rows.map(function(r){return r.sum;}))*1.05,4);
+  var W=620,H=230,padL=232,padR=86,plotW=W-padL-padR,rowH=56,top=40,s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-12)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-18)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-20,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+8,top-20,"件",{fill:"var(--ink-3)",size:10});
+  var colors={A:"var(--s1)",B:"var(--s2)",C:"var(--s3)"};
+  rows.forEach(function(r,i){
+    var y=top+i*rowH,m=TIER_META[r.t];
+    s+=txt(0,y+8,"Tier "+r.t+"・"+m.label+"（"+r.cnt+"区分）",{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(0,y+26,m.note,{fill:"var(--ink-3)",size:10.5});
+    s+=rrect(padL,y-6,Math.max((r.sum/max)*plotW,2),24,3,colors[r.t]);
+    s+=txt(padL+Math.max((r.sum/max)*plotW,2)+8,y+6,n(r.sum),{fill:"var(--ink-2)",size:11.5,mono:true,baseline:"middle"});
+  });
+  document.getElementById("ch-tiers").innerHTML=svg(W,H,s);
+})();
+
+var state={tier:"all",q:"",sort:"rank"};
+function renderTargets(){
+  var list=TARGETS.map(function(d,i){d._rank=i+1;return d;});
+  if(state.tier!=="all") list=list.filter(function(d){return d.t===state.tier;});
+  if(state.q){
+    var q=state.q.toLowerCase();
+    list=list.filter(function(d){return (d.name+d.why+d.hook).toLowerCase().indexOf(q)>=0;});
+  }
+  if(state.sort==="count") list=list.slice().sort(function(a,b){return b.c-a.c;});
+  if(state.sort==="countAsc") list=list.slice().sort(function(a,b){return a.c-b.c;});
+  document.getElementById("t-shown").textContent=list.length;
+  document.getElementById("t-sum").textContent=n(list.reduce(function(a,b){return a+b.c;},0))+"件";
+  document.getElementById("t-list").innerHTML=list.map(function(d){
+    var m=TIER_META[d.t];
+    return '<article class="trow t'+d.t+'">'+
+      '<div class="rank">'+String(d._rank).padStart(2,"0")+'</div>'+
+      '<div class="head"><div class="name">'+esc(d.name)+'</div>'+
+      '<div class="meta"><span class="chip '+m.cls+'">Tier '+d.t+'・'+m.label+'</span>'+
+      '<span class="cnt">'+n(d.c)+'<span>件</span></span></div></div>'+
+      '<div class="why"><span class="fieldlabel">なぜ狙うか</span><p class="fieldbody">'+esc(d.why)+'</p></div>'+
+      '<div class="hook"><span class="fieldlabel">声のかけ方</span><p class="fieldbody">'+esc(d.hook)+'</p></div>'+
+    '</article>';
+  }).join("");
+}
+document.querySelectorAll("#tier-seg button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll("#tier-seg button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    state.tier=b.dataset.t;renderTargets();
+  });
+});
+document.getElementById("t-search").addEventListener("input",function(e){state.q=e.target.value.trim();renderTargets();});
+document.getElementById("t-sort").addEventListener("change",function(e){state.sort=e.target.value;renderTargets();});
+renderTargets();
+
+/* ---------------- 在宅ワーカー業務 ---------------- */
+var TASKS=[
+ {g:"ネットでの見つかりやすさ",h:13,items:[
+   {n:"Googleビジネスプロフィールの投稿・写真追加",h:6,key:true},
+   {n:"口コミへの返信文の作成",h:3,key:true},
+   {n:"ホームページの新着情報・料金ページの更新",h:4,key:true}]},
+ {g:"動画・写真",h:9,items:[
+   {n:"施工前後の写真の整理・加工",h:4,key:true},
+   {n:"ショート動画の字幕づけ・投稿",h:4,key:true},
+   {n:"撮影リスト（撮るべき工程）の作成",h:1}]},
+ {g:"顧客・事務",h:11,items:[
+   {n:"顧客台帳のデータ化・入力",h:5,key:true},
+   {n:"案内はがきの宛名印刷と発送準備",h:3,key:true},
+   {n:"見積書・納品書・請求書の作成",h:3}]},
+ {g:"紹介・制度",h:7,items:[
+   {n:"紹介チャネル（工務店・介護等）のリスト作成",h:2},
+   {n:"案内チラシの原稿づくり",h:2},
+   {n:"補助金の申請書類の下書きと期限管理",h:3,key:true}]}
+];
+(function(){
+  var total=TASKS.reduce(function(a,b){return a+b.h;},0);
+  document.getElementById("rw-total").innerHTML=total+'<small>h/月</small>';
+  document.getElementById("task-groups").innerHTML=TASKS.map(function(g){
+    return '<section class="taskgroup"><header><h4>'+esc(g.g)+'</h4><span class="hh">'+g.h+' h/月</span></header><ul>'+
+      g.items.map(function(it){
+        return '<li'+(it.key?' class="key"':'')+'><span>'+esc(it.n)+'</span><b>'+it.h+'h</b></li>';
+      }).join("")+'</ul></section>';
+  }).join("");
+})();
+
+/* ---------------- 組織図 ---------------- */
+function orgBox(x,y,w,h,title,sub,opt){
+  opt=opt||{};
+  var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="5" fill="'+(opt.fill||"var(--surface-2)")+'" stroke="'+(opt.color||"var(--rule-2)")+'" stroke-width="'+(opt.bold?2.5:1.25)+'"'+(opt.dash?' stroke-dasharray="5 4"':'')+'></rect>';
+  s+=txt(x+13,y+(sub?20:h/2+4),title,{fill:opt.tc||"var(--ink)",size:opt.size||12.5,weight:700,disp:true});
+  if(sub) s+=txt(x+13,y+36,sub,{fill:"var(--ink-3)",size:10.5});
+  return s;
+}
+function elbow(x1,y1,x2,y2,my){
+  return '<path d="M '+x1+' '+y1+' L '+x1+' '+my+' L '+x2+' '+my+' L '+x2+' '+y2+'" fill="none" stroke="var(--rule-2)" stroke-width="1.25"></path>';
+}
+(function(){
+  var W=880,H=246,s="";
+  s+=orgBox(320,6,240,50,"職人・店主","製造も接客もPRも事務も",{color:"var(--s1)",fill:"var(--brand-soft)",bold:true});
+  var cols=[
+    {x:8,t:"打ち直し・製造",u:"職人にしかできない",c:"var(--s3)"},
+    {x:228,t:"接客・説明・見積",u:"職人にしかできない",c:"var(--s3)"},
+    {x:448,t:"写真・動画・投稿",u:"誰がやっても同じ",c:"var(--s1)"},
+    {x:668,t:"台帳・はがき・書類",u:"誰がやっても同じ",c:"var(--s1)"}
+  ];
+  cols.forEach(function(c){
+    s+=elbow(440,56,c.x+98,88,72);
+    s+=orgBox(c.x,88,196,54,c.t,c.u,{color:c.c});
+  });
+  s+='<rect x="8" y="170" width="864" height="50" rx="5" fill="var(--brand-soft)"></rect>';
+  s+=txt(24,193,"右の2つに月40時間を使うと、打ち直し8件分（粗利19万円）の製造能力が消える。",{fill:"var(--s1)",size:13,weight:700,disp:true});
+  s+=txt(24,212,"「0円でやる」の本当の値段は、ここに出ています。",{fill:"var(--ink-2)",size:11.5});
+  document.getElementById("ch-org-before").innerHTML=svg(W,H,s);
+})();
+(function(){
+  var W=880,H=330,s="";
+  s+=orgBox(320,6,240,50,"職人・店主","布団と、お客様への説明に専念",{color:"var(--s3)",fill:"var(--good-soft)",bold:true});
+  var colX=[8,304,600],colW=272;
+  var heads=[
+    {t:"職人が担う領域",u:"代替できない仕事だけ",c:"var(--s3)"},
+    {t:"店頭・接客",u:"駅前徒歩1分の立地を活かす",c:"var(--s2)"},
+    {t:"在宅ワーカー",u:"1〜2名相当／月40時間",c:"var(--s5)"}
+  ];
+  heads.forEach(function(hd,i){
+    s+=elbow(440,56,colX[i]+colW/2,86,72);
+    s+=orgBox(colX[i],86,colW,50,hd.t,hd.u,{color:hd.c,bold:true});
+  });
+  function sub(x,y,w,t,h,color){
+    var r='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="30" rx="4" fill="var(--surface)" stroke="'+(color||"var(--rule)")+'" stroke-width="1"></rect>';
+    r+=txt(x+12,y+19,t,{fill:"var(--ink-2)",size:11.5});
+    if(h) r+=txt(x+w-12,y+19,h,{fill:"var(--ink-3)",size:10.5,mono:true,anchor:"end"});
+    return r;
+  }
+  ["打ち直し・仕立て直し","仕上がりの判断","技術の継承"].forEach(function(t,i){ s+=sub(colX[0],148+i*36,colW,t); });
+  ["来店対応・見積・採寸","引き取り・お届け"].forEach(function(t,i){ s+=sub(colX[1],148+i*36,colW,t,null,"var(--s2)"); });
+  [["ネットでの見つかりやすさ","13h"],["動画・写真","9h"],["顧客・事務","11h"],["紹介・制度（補助金）","7h"]].forEach(function(t,i){
+    s+=sub(colX[2],148+i*36,colW,t[0],t[1]);
+  });
+  s+=txt(8,306,"月10〜15時間から始められます。効果が見えなければ、そこで止められる形です。",{fill:"var(--s3)",size:12.5,weight:700});
+  document.getElementById("ch-org-after").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- 職人の時間配分 ---------------- */
+(function(){
+  var cats=[
+    {l:"打ち直し・製造",c:"var(--s1)",before:110,after:145},
+    {l:"接客・説明・見積",c:"var(--s2)",before:10,after:10},
+    {l:"PR・写真・動画",c:"var(--s3)",before:22,after:2},
+    {l:"事務・台帳・はがき",c:"var(--s5)",before:18,after:3}
+  ];
+  var W=740,H=250,padL=76,padR=56,plotW=W-padL-padR,total=160,s="";
+  [["現状",40,"before"],["移管後",132,"after"]].forEach(function(row){
+    var y=row[1],k=row[2],x=padL;
+    s+=txt(0,y+23,row[0],{fill:"var(--ink)",size:13,weight:700,disp:true});
+    cats.forEach(function(c){
+      var w=(c[k]/total)*plotW;
+      if(w<=0) return;
+      s+=rrect(x,y,Math.max(w-2,1),38,3,c.c);
+      if(w>44) s+=txt(x+w/2-1,y+24,String(c[k])+"h",{fill:"#FFFFFF",size:11.5,weight:700,mono:true,anchor:"middle"});
+      x+=w;
+    });
+    s+=txt(padL+plotW+8,y+24,"計160h",{fill:"var(--ink-3)",size:10.5,mono:true});
+  });
+  var ax=padL+(110/total)*plotW, bx=padL+(145/total)*plotW;
+  s+='<path d="M '+ax+' 96 L '+ax+' 112 M '+bx+' 96 L '+bx+' 112" stroke="var(--rule-2)" stroke-width="1" stroke-dasharray="3 3"></path>';
+  s+='<path d="M '+(ax+4)+' 104 L '+(bx-8)+' 104" stroke="var(--brand)" stroke-width="2"></path>';
+  s+='<path d="M '+(bx-8)+' 100 L '+bx+' 104 L '+(bx-8)+' 108 Z" fill="var(--brand)"></path>';
+  s+=txt(bx+8,108,"製造時間が ＋35h／月（打ち直し 約8件分）",{fill:"var(--brand)",size:12,weight:700});
+  s+=txt(0,214,"※ 稼働を月160時間として配分。PRに本気で取り組むほど、職人の手が布団から離れる構造になっています。",{fill:"var(--ink-3)",size:11});
+  document.getElementById("ch-time").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- ROI ---------------- */
+var PLANS={
+  free:{leads:3,ad:0,ofee:0,ownerh:40,
+    desc:"<b>0円プラン</b>：販促費も外注費もゼロ。Googleビジネスプロフィール・口コミ・AI動画・HP更新を、すべて店内でまかないます。費用は出ませんが、職人の時間が月40時間かかります。"},
+  hojo:{leads:14,ad:14000,ofee:50000,ownerh:5,
+    desc:"<b>補助金活用プラン</b>：持続化補助金（補助率2/3・上限50万円）でチラシ・HP・看板を実施。販促費は自己負担分のみ（50万円÷3÷12ヶ月＝月約1.4万円）。作業は在宅ワーカーへ。"},
+  paid:{leads:20,ad:80000,ofee:80000,ownerh:5,
+    desc:"<b>投資プラン</b>：補助金を待たず、ポスティング・折込チラシ・看板刷新を自費で実施。最も早く結果が出ますが、月の支出は最大になります。"}
+};
+var BASE={visit:70,win:65,price:40000,gm:60,ownerrate:6000};
+var KEYS=["leads","visit","win","price","gm","ad","ofee","ownerh","ownerrate"];
+var currentPlan="hojo";
+
+function readInputs(){var o={};KEYS.forEach(function(k){o[k]=parseFloat(document.getElementById("k-"+k).value);});return o;}
+function setPlan(p){
+  currentPlan=p;
+  var pl=PLANS[p];
+  var o=Object.assign({},BASE,{leads:pl.leads,ad:pl.ad,ofee:pl.ofee,ownerh:pl.ownerh});
+  KEYS.forEach(function(k){ document.getElementById("k-"+k).value=o[k]; });
+  document.getElementById("plan-desc").innerHTML=pl.desc;
+  document.querySelectorAll("#plan-seg button").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.plan===p?"true":"false");});
+}
+
+function calc(p){
+  var visits=p.leads*(p.visit/100);
+  var orders=visits*(p.win/100);
+  var rev=orders*p.price;
+  var gp=rev*(p.gm/100);
+  var gpPer=p.price*(p.gm/100);
+  var oppo=p.ownerh*p.ownerrate;
+  var cash=p.ad+p.ofee;
+  var cost=cash+oppo;
+  var net=gp-cost;
+  var be=gpPer>0?cost/gpPer:Infinity;
+  return {visits:visits,orders:orders,rev:rev,gp:gp,gpPer:gpPer,oppo:oppo,cash:cash,cost:cost,net:net,be:be};
+}
+function yen(v){ return n(v)+"円"; }
+
+function update(){
+  var p=readInputs();
+  KEYS.forEach(function(k){ document.getElementById("v-"+k).textContent=n(p[k]); });
+  var r=calc(p);
+
+  document.getElementById("o-gp").innerHTML=n(r.gp/10000)+'<small>万円</small>';
+  document.getElementById("o-gpnote").textContent="月商増 "+n(r.rev/10000)+"万円 × 粗利率 "+p.gm+"%";
+  document.getElementById("o-cost").innerHTML=n(r.cost/10000)+'<small>万円</small>';
+  document.getElementById("o-costnote").textContent="現金 "+n(r.cash/10000)+"万円 ＋ 職人の時間 "+n(r.oppo/10000)+"万円";
+  document.getElementById("o-net").innerHTML=(r.net>=0?"+":"−")+n(Math.abs(r.net)/10000)+'<small>万円</small>';
+  document.getElementById("o-net").parentElement.className="stat "+(r.net>=0?"pos":"hot");
+  document.getElementById("o-be").innerHTML=(isFinite(r.be)?r.be.toFixed(1):"—")+'<small>件/月</small>';
+
+  document.getElementById("f-leads").textContent=n(p.leads);
+  document.getElementById("f-visit").textContent=r.visits.toFixed(1);
+  document.getElementById("f-visit-r").textContent="来店率 "+p.visit+"%";
+  document.getElementById("f-win").textContent=r.orders.toFixed(1);
+  document.getElementById("f-win-r").textContent="受注率 "+p.win+"%";
+  document.getElementById("f-rev").textContent=n(r.rev/10000)+"万";
+
+  drawScenarios(p);
+  drawCum(r);
+  drawSens(p);
+
+  var v=document.getElementById("o-verdict");
+  if(r.net>=0){
+    v.style.borderLeftColor="var(--good)";
+    v.innerHTML='<b>判定：</b> 月 <b>'+r.orders.toFixed(1)+'件</b> の受注増で、粗利は <b>'+n(r.gp/10000)+
+      '万円/月</b>。現金の支出 <b>'+n(r.cash/10000)+'万円</b> と職人の時間 <b>'+n(r.oppo/10000)+
+      '万円</b> を引いても、手残りは <b>+'+n(r.net/10000)+'万円/月</b>（年 <b>'+n(r.net*12/10000)+
+      '万円</b>）。この費用を回収するのに必要な受注は <b>月'+r.be.toFixed(1)+'件</b> です。';
+  } else {
+    v.style.borderLeftColor="var(--brand)";
+    v.innerHTML='<b style="color:var(--brand)">判定：</b> この前提では月 <b style="color:var(--brand)">'+n(Math.abs(r.net)/10000)+
+      '万円のマイナス</b>です。粗利 <b style="color:var(--brand)">'+n(r.gp/10000)+'万円</b> に対し、現金 <b style="color:var(--brand)">'+
+      n(r.cash/10000)+'万円</b>＋職人の時間 <b style="color:var(--brand)">'+n(r.oppo/10000)+
+      '万円</b> がかかっています。回収には <b style="color:var(--brand)">月'+r.be.toFixed(1)+
+      '件</b> が必要です。<b style="color:var(--brand)">職人の手が空いているなら、右の「職人の1時間あたり粗利」を0円にしてください</b>——結論が変わります。';
+  }
+}
+
+function drawScenarios(p){
+  var keys=["free","hojo","paid"];
+  var names={free:"0円プラン",hojo:"補助金活用",paid:"投資プラン"};
+  var vals=keys.map(function(k){
+    var pl=PLANS[k];
+    var q=Object.assign({},p,{leads:pl.leads,ad:pl.ad,ofee:pl.ofee,ownerh:pl.ownerh});
+    var rr=calc(q);
+    return {k:k,gp:rr.gp,cash:rr.cash,oppo:rr.oppo,net:rr.net};
+  });
+  var W=700,H=290,padL=64,padR=20,padT=30,padB=74;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var max=niceMax(Math.max.apply(null,vals.map(function(v){return Math.max(v.gp,v.cash+v.oppo);}))*1.15,4);
+  var slot=plotW/keys.length,bw=slot*0.2,s="";
+  for(var i=0;i<=4;i++){
+    var val=max*i/4,y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-12,"万円/月",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  vals.forEach(function(v,i){
+    var cx=padL+i*slot+slot/2, cur=(v.k===currentPlan);
+    var hg=(v.gp/max)*plotH, hc=(v.cash/max)*plotH, ho=(v.oppo/max)*plotH;
+    s+=rrect(cx-bw-4,padT+plotH-hg,bw,hg,3,"var(--s3)");
+    s+=rrect(cx+4,padT+plotH-hc,bw,hc,3,"var(--s5)");
+    s+=rrect(cx+4,padT+plotH-hc-ho-2,bw,ho,3,"var(--s1)");
+    s+=txt(cx-bw/2-4,padT+plotH-hg-7,n(v.gp/10000),{fill:"var(--s3)",size:10.5,weight:700,mono:true,anchor:"middle"});
+    s+=txt(cx+bw/2+4,padT+plotH-hc-ho-9,n((v.cash+v.oppo)/10000),{fill:"var(--s1)",size:10.5,weight:700,mono:true,anchor:"middle"});
+    s+=txt(cx,padT+plotH+20,names[v.k],{fill:cur?"var(--brand)":"var(--ink-2)",size:12,weight:cur?700:400,anchor:"middle"});
+    s+=txt(cx,padT+plotH+38,"手残り "+(v.net>=0?"+":"−")+n(Math.abs(v.net)/10000)+"万円",
+      {fill:v.net>=0?"var(--s3)":"var(--s1)",size:11.5,weight:700,mono:true,anchor:"middle"});
+    if(cur) s+=txt(cx,padT+plotH+56,"■ 選択中",{fill:"var(--brand)",size:10,weight:700,anchor:"middle"});
+  });
+  document.getElementById("ch-scenarios").innerHTML=svg(W,H,s);
+}
+
+function drawCum(r){
+  var W=700,H=260,padL=68,padR=58,padT=24,padB=40;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var cumGp=[],cumCost=[];
+  for(var m=1;m<=12;m++){ cumGp.push(r.gp*m); cumCost.push(r.cost*m); }
+  var max=niceMax(Math.max(cumGp[11],cumCost[11],1)*1.06,4),s="";
+  for(var i=0;i<=4;i++){
+    var val=max*i/4,y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-10,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+((m-1)/11)*plotW;}
+  function py(v){return padT+plotH-(v/max)*plotH;}
+  [1,3,6,9,12].forEach(function(m){ s+=txt(px(m),padT+plotH+18,m+"ヶ月",{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"}); });
+  function line(arr,color){
+    return '<path d="'+arr.map(function(v,i){return (i?"L":"M")+" "+px(i+1)+" "+py(v);}).join(" ")+
+      '" fill="none" stroke="'+color+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>';
+  }
+  s+=line(cumCost,"var(--s1)");
+  s+=line(cumGp,"var(--s3)");
+  s+='<circle cx="'+px(12)+'" cy="'+py(cumGp[11])+'" r="4" fill="var(--s3)"></circle>';
+  s+=txt(px(12)+8,py(cumGp[11]),n(cumGp[11]/10000),{fill:"var(--s3)",size:11,weight:700,mono:true,baseline:"middle"});
+  s+='<circle cx="'+px(12)+'" cy="'+py(cumCost[11])+'" r="4" fill="var(--s1)"></circle>';
+  s+=txt(px(12)+8,py(cumCost[11]),n(cumCost[11]/10000),{fill:"var(--s1)",size:11,weight:700,mono:true,baseline:"middle"});
+  var diff=cumGp[11]-cumCost[11];
+  s+=txt(padL+6,padT+14,"1年後の差："+(diff>=0?"+":"−")+n(Math.abs(diff)/10000)+"万円",
+    {fill:diff>=0?"var(--s3)":"var(--s1)",size:12.5,weight:700});
+  document.getElementById("ch-cum").innerHTML=svg(W,H,s);
+}
+
+function drawSens(p){
+  var prices=[20000,30000,40000,50000,70000,100000];
+  var curIdx=0,curD=Infinity;
+  prices.forEach(function(v,i){var d=Math.abs(v-p.price);if(d<curD){curD=d;curIdx=i;}});
+  var vals=prices.map(function(pr){ var q=calc(Object.assign({},p,{price:pr})); return {p:pr,net:q.net}; });
+  var maxV=Math.max.apply(null,vals.map(function(v){return v.net;}));
+  var minV=Math.min.apply(null,vals.map(function(v){return v.net;}));
+  var top=Math.max(maxV,10000), bot=Math.min(minV,0), range=top-bot||1;
+  var W=700,H=270,padL=64,padR=20,padT=28,padB=64;
+  var plotW=W-padL-padR,plotH=H-padT-padB,slot=plotW/prices.length,bw=slot*0.56,s="";
+  for(var i=0;i<=4;i++){
+    var val=bot+range*i/4,y=padT+plotH-((val-bot)/range)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  var zeroY=padT+plotH-((0-bot)/range)*plotH;
+  s+='<line x1="'+padL+'" y1="'+zeroY+'" x2="'+(padL+plotW)+'" y2="'+zeroY+'" stroke="var(--rule-2)" stroke-width="1.5"></line>';
+  s+=txt(padL-8,padT-12,"手残り（万円/月）",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  vals.forEach(function(v,i){
+    var x=padL+i*slot+(slot-bw)/2;
+    var y1=padT+plotH-((v.net-bot)/range)*plotH;
+    var t=Math.min(zeroY,y1), h=Math.abs(y1-zeroY), cur=(i===curIdx);
+    var col=cur?"var(--brand)":(v.net>=0?"var(--s3)":"var(--s1)");
+    s+=rrect(x,t,bw,Math.max(h,2),3,col);
+    s+=txt(x+bw/2,(v.net>=0?t-7:t+h+15),(v.net>=0?"+":"−")+n(Math.abs(v.net)/10000),{fill:col,size:10.5,weight:700,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+30,n(v.p/10000)+"万円",{fill:cur?"var(--brand)":"var(--ink-3)",size:10.5,weight:cur?700:400,mono:true,anchor:"middle"});
+    if(cur) s+=txt(x+bw/2,padT+plotH+46,"現在の設定",{fill:"var(--brand)",size:10,weight:700,anchor:"middle"});
+  });
+  s+=txt(padL,H-6,"横軸：打ち直し1件あたりの平均受注単価。家族分をまとめて受けられるかで、ここが大きく動きます。",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("ch-sens").innerHTML=svg(W,H,s);
+}
+
+KEYS.forEach(function(k){
+  document.getElementById("k-"+k).addEventListener("input",update);
+});
+document.querySelectorAll("#plan-seg button").forEach(function(b){
+  b.addEventListener("click",function(){ setPlan(b.dataset.plan); update(); });
+});
+document.getElementById("roi-reset").addEventListener("click",function(){ setPlan("hojo"); update(); });
+setPlan("hojo");
+update();
+
+})();
+</script>
