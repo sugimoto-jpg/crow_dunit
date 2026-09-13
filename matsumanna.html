@@ -1,0 +1,1510 @@
+<title>松ンナ 法人ルート開拓ボード</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Murecho:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#EDF0EB;
+  --surface:#FAFBF9;
+  --surface-2:#E4E9E1;
+  --surface-3:#D6DCD2;
+  --ink:#161A15;
+  --ink-2:#4B5348;
+  --ink-3:#798175;
+  --rule:#DBE0D6;
+  --rule-2:#BFC7B9;
+  --s1:#1F6E38;
+  --s2:#96326E;
+  --s3:#A96E00;
+  --s4:#0F6796;
+  --s5:#B0432B;
+  --accent:#A96E00;
+  --accent-soft:#F3E9D4;
+  --brand:#1F6E38;
+  --brand-soft:#DDEBE0;
+  --good:#1F6E38;
+  --good-soft:#DDEBE0;
+  --alert:#B0432B;
+  --alert-soft:#F6E2DC;
+  --info-soft:#DCE8F0;
+  --plum-soft:#F2E0EC;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#11150F;
+    --surface:#1A1F18;
+    --surface-2:#242A21;
+    --surface-3:#2E362A;
+    --ink:#EAEEE6;
+    --ink-2:#AFB7AA;
+    --ink-3:#848C7F;
+    --rule:#2B322A;
+    --rule-2:#3B433A;
+    --s1:#3D9C57;
+    --s2:#C45D96;
+    --s3:#B5810F;
+    --s4:#3390C4;
+    --s5:#D06144;
+    --accent:#C9931F;
+    --accent-soft:#332813;
+    --brand:#3D9C57;
+    --brand-soft:#162A1B;
+    --good:#3D9C57;
+    --good-soft:#162A1B;
+    --alert:#D06144;
+    --alert-soft:#331D17;
+    --info-soft:#152836;
+    --plum-soft:#2D1928;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#11150F;
+  --surface:#1A1F18;
+  --surface-2:#242A21;
+  --surface-3:#2E362A;
+  --ink:#EAEEE6;
+  --ink-2:#AFB7AA;
+  --ink-3:#848C7F;
+  --rule:#2B322A;
+  --rule-2:#3B433A;
+  --s1:#3D9C57;
+  --s2:#C45D96;
+  --s3:#B5810F;
+  --s4:#3390C4;
+  --s5:#D06144;
+  --accent:#C9931F;
+  --accent-soft:#332813;
+  --brand:#3D9C57;
+  --brand-soft:#162A1B;
+  --good:#3D9C57;
+  --good-soft:#162A1B;
+  --alert:#D06144;
+  --alert-soft:#331D17;
+  --info-soft:#152836;
+  --plum-soft:#2D1928;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);
+  font-family:"Murecho","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"Zen Maru Gothic","Murecho",sans-serif;font-weight:700;margin:0;line-height:1.42;text-wrap:balance}
+p{margin:0}
+a{color:var(--s4)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.mono{font-family:"DM Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.needles{height:10px;background:repeating-linear-gradient(78deg,var(--rule-2) 0 1.5px,transparent 1.5px 9px);border:0;margin:0;opacity:.9}
+
+.masthead{background:var(--surface);border-bottom:1px solid var(--rule)}
+.mast-inner{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-end;padding:26px 0 20px}
+.eyebrow{font-family:"DM Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.mast-title{font-size:clamp(25px,3.4vw,38px);font-weight:900;margin-top:8px;letter-spacing:.005em}
+.mast-title em{font-style:normal;color:var(--brand)}
+.mast-sub{color:var(--ink-2);font-size:13.5px;margin-top:9px;max-width:64ch}
+.mast-meta{font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-align:right}
+.mast-meta b{color:var(--ink-2);font-weight:700}
+.deadline{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);color:var(--accent);
+  font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;margin-top:12px}
+
+.tabbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:none;border:0;border-bottom:3px solid transparent;font:inherit;font-size:13px;font-weight:700;
+  color:var(--ink-3);padding:13px 15px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brand)}
+.tab .num{font-family:"DM Mono",monospace;font-size:10px;color:var(--ink-3);margin-right:6px}
+.tab[aria-selected="true"] .num{color:var(--brand)}
+
+.panel{padding:34px 0 76px}
+.panel[hidden]{display:none!important}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.sec-head h2{font-size:24px;font-weight:900}
+.sec-head .tagline{font-size:12.5px;color:var(--ink-3)}
+.lede{color:var(--ink-2);font-size:14px;max-width:76ch;margin:10px 0 26px}
+.block{margin-top:40px}
+.block > h3{font-size:17.5px}
+.block > .sub{font-size:12.5px;color:var(--ink-3);margin:3px 0 16px}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(186px,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:20px}
+.card.flat{background:transparent;border-style:dashed}
+
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:15px 17px;display:flex;flex-direction:column;gap:1px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--rule-2)}
+.stat.hot::before{background:var(--accent)}
+.stat.pos::before{background:var(--brand)}
+.stat.info::before{background:var(--s4)}
+.stat.warn::before{background:var(--alert)}
+.stat .k{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.stat .v{font-family:"DM Mono",monospace;font-size:25px;font-weight:500;letter-spacing:-.02em;line-height:1.35;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:13px;margin-left:2px;color:var(--ink-2);font-family:"Murecho",sans-serif}
+.stat .n{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:2px}
+.stat.hot .v{color:var(--accent)}
+.stat.pos .v{color:var(--brand)}
+.stat.warn .v{color:var(--alert)}
+
+.chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.chip.a{background:var(--accent-soft);color:var(--accent)}
+.chip.b{background:var(--info-soft);color:var(--s4)}
+.chip.c{background:var(--brand-soft);color:var(--brand)}
+.chip.d{background:var(--plum-soft);color:var(--s2)}
+.chip.e{background:var(--alert-soft);color:var(--alert)}
+
+.deflist{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;font-size:13.5px;align-items:baseline}
+.deflist dt{color:var(--ink-3);font-size:12px;font-weight:700;white-space:nowrap}
+.deflist dd{margin:0}
+.note{font-size:12px;color:var(--ink-3);line-height:1.75;margin-top:12px}
+.callout{background:var(--accent-soft);border-radius:10px;padding:13px 16px;font-size:12.5px;color:var(--ink-2);margin-top:14px}
+.callout b{color:var(--ink)}
+
+.swot{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:14px}
+.swot section{border:1px solid var(--rule);border-radius:12px;padding:16px 18px;background:var(--surface)}
+.swot h4{font-size:14px;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.swot h4::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--rule-2)}
+.swot .s h4::before{background:var(--s1)}
+.swot .w h4::before{background:var(--s5)}
+.swot .o h4::before{background:var(--s4)}
+.swot .t h4::before{background:var(--s3)}
+.swot ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+
+.reason{background:var(--surface);border:1px solid var(--rule);border-radius:12px;margin-bottom:16px;overflow:hidden}
+.reason .rhead{display:flex;gap:16px;align-items:flex-start;padding:20px 24px 0}
+.reason .idx{font-family:"Zen Maru Gothic",sans-serif;font-size:36px;font-weight:900;color:var(--accent);line-height:1;flex:0 0 auto}
+.reason .kicker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.reason h4{font-size:18px;font-weight:900}
+.reason .rbody{padding:12px 24px 20px}
+.reason p{font-size:13.5px;color:var(--ink-2)}
+.reason .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(188px,1fr));gap:10px;margin:15px 0 4px}
+.reason .fact{background:var(--surface-2);border-radius:10px;padding:10px 13px}
+.reason .fact .fv{font-family:"DM Mono",monospace;font-size:19px;font-weight:500}
+.reason .fact .fk{font-size:11px;color:var(--ink-3);line-height:1.5}
+.reason .sowhat{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:13.5px}
+.reason .sowhat b{color:var(--accent)}
+
+.timeline{overflow-x:auto;padding:24px 0 4px}
+.timeline-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(152px,1fr);min-width:820px;position:relative}
+.timeline-track::before{content:"";position:absolute;left:0;right:0;top:9px;height:2px;background:var(--rule-2)}
+.tl-item{position:relative;padding:26px 12px 0 0}
+.tl-item::before{content:"";position:absolute;left:0;top:2px;width:16px;height:16px;border-radius:50%;background:var(--surface);border:3px solid var(--rule-2)}
+.tl-item.on::before{background:var(--accent);border-color:var(--accent)}
+.tl-item .y{font-family:"DM Mono",monospace;font-size:11.5px;font-weight:500;color:var(--ink-3)}
+.tl-item.on .y{color:var(--accent)}
+.tl-item .t{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+
+.pillar{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.pillar .pk{font-family:"DM Mono",monospace;font-size:10.5px;letter-spacing:.09em;color:var(--ink-3)}
+.pillar h4{font-size:16.5px}
+.pillar p{font-size:13px;color:var(--ink-2)}
+.pillar .kpi{margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:4px}
+.pillar .kpi b{font-family:"DM Mono",monospace;color:var(--ink);font-weight:500}
+
+.scroller{overflow-x:auto;border:1px solid var(--rule);border-radius:12px;background:var(--surface)}
+table.matrix{width:100%;border-collapse:collapse;font-size:13px;min-width:660px}
+table.matrix th,table.matrix td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.matrix th{font-size:11.5px;color:var(--ink-3);font-weight:700;background:var(--surface-2)}
+table.matrix tr:last-child td{border-bottom:0}
+table.matrix td:first-child{font-weight:700}
+table.matrix td.num{font-family:"DM Mono",monospace;text-align:right;white-space:nowrap}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:1px solid var(--rule);border-radius:12px}
+.seg{display:flex;background:var(--surface-2);border-radius:20px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:12px;font-weight:700;border:0;background:none;color:var(--ink-3);padding:6px 13px;border-radius:20px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.controls input[type="search"],.controls select{font:inherit;font-size:13px;padding:7px 12px;border:1px solid var(--rule-2);border-radius:20px;background:var(--surface);color:var(--ink)}
+.controls input[type="search"]{min-width:190px;flex:1}
+.controls .count{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.controls .count b{font-family:"DM Mono",monospace;color:var(--ink);font-weight:500}
+
+.tlist{display:flex;flex-direction:column;gap:9px}
+.trow{display:grid;grid-template-columns:38px minmax(206px,1.02fr) minmax(238px,1.5fr) minmax(238px,1.5fr);gap:0 18px;
+  background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--rule-2);border-radius:12px;padding:15px 18px;align-items:start}
+.trow.tA{border-left-color:var(--s1)}
+.trow.tB{border-left-color:var(--s4)}
+.trow.tC{border-left-color:var(--s2)}
+.trow .rank{font-family:"DM Mono",monospace;font-size:13px;color:var(--ink-3);padding-top:2px}
+.trow .head{display:flex;flex-direction:column;gap:6px}
+.trow .name{font-family:"Zen Maru Gothic",sans-serif;font-size:14.5px;font-weight:700;line-height:1.45}
+.trow .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.trow .cnt{font-family:"DM Mono",monospace;font-size:13px;font-weight:500}
+.trow .cnt span{font-size:11px;color:var(--ink-3);margin-left:3px;font-family:"Murecho",sans-serif}
+.trow .fieldlabel{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);display:block;margin-bottom:3px}
+.trow .fieldbody{font-size:13px;color:var(--ink-2);line-height:1.7}
+.trow .hook .fieldbody{color:var(--ink);border-left:3px solid var(--rule-2);padding-left:11px}
+@media(max-width:900px){
+  .trow{grid-template-columns:34px 1fr;gap:10px 14px}
+  .trow .head,.trow .why,.trow .hook{grid-column:2}
+}
+
+.taskgroup{background:var(--surface);border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.taskgroup header{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:13px 16px;background:var(--surface-2)}
+.taskgroup header h4{font-size:14px}
+.taskgroup header .hh{font-family:"DM Mono",monospace;font-size:12px;color:var(--ink-2)}
+.taskgroup ul{list-style:none;margin:0;padding:6px 0}
+.taskgroup li{display:flex;justify-content:space-between;gap:12px;padding:7px 16px;font-size:13px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.taskgroup li:last-child{border-bottom:0}
+.taskgroup li b{font-family:"DM Mono",monospace;font-size:12px;color:var(--ink-3);font-weight:400;white-space:nowrap}
+.taskgroup li.key{color:var(--ink)}
+.taskgroup li.key > span:first-child::before{content:"●";color:var(--accent);font-size:8px;margin-right:7px;vertical-align:2px}
+
+.chartbox{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px}
+.chartbox h4{font-size:14px}
+.chartbox .csub{font-size:12px;color:var(--ink-3);margin:2px 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);margin-bottom:10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+
+.roi-layout{display:grid;grid-template-columns:minmax(280px,336px) 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.roi-layout{grid-template-columns:1fr}}
+.knobs{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px;position:sticky;top:58px;max-height:calc(100vh - 74px);overflow-y:auto}
+.knob{margin-bottom:14px}
+.knob label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink-2);margin-bottom:5px;gap:10px}
+.knob label b{font-family:"DM Mono",monospace;font-size:13px;color:var(--ink);font-weight:500}
+.knob input[type="range"]{width:100%;accent-color:var(--brand);height:20px;cursor:pointer}
+.knob-group{border-top:1px solid var(--rule);padding-top:14px;margin-top:16px}
+.gh{font-family:"DM Mono",monospace;font-size:10.5px;letter-spacing:.08em;color:var(--ink-3);margin-bottom:12px}
+.gh span{color:var(--brand)}
+.resetbtn{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--rule-2);background:var(--surface);color:var(--ink-2);border-radius:20px;padding:6px 14px;cursor:pointer}
+.resetbtn:hover{border-color:var(--ink-3);color:var(--ink)}
+.verdict{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--brand);border-radius:12px;padding:16px 20px;font-size:13.5px}
+.verdict b{font-family:"DM Mono",monospace;color:var(--brand);font-weight:500}
+
+.funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(136px,1fr));gap:10px}
+.fstep{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:13px 14px}
+.fstep .fl{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.fstep .fv{font-family:"DM Mono",monospace;font-size:22px;font-weight:500}
+.fstep .fr{font-size:11px;color:var(--ink-3)}
+.fstep.end{background:var(--brand-soft);border-color:transparent}
+.fstep.end .fv,.fstep.end .fl,.fstep.end .fr{color:var(--brand)}
+
+.phase{display:grid;grid-template-columns:142px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule)}
+.phase:first-of-type{border-top:0}
+.phase .pd{font-family:"DM Mono",monospace;font-size:12px;color:var(--accent)}
+.phase .pt{font-family:"Zen Maru Gothic",sans-serif;font-size:16px;font-weight:700;line-height:1.4;margin-top:2px}
+.phase ul{margin:0;padding-left:1.15em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px}
+.phase ul b{color:var(--ink)}
+.owner{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:20px;margin-right:7px;vertical-align:1px}
+.owner.ai{background:var(--info-soft);color:var(--s4)}
+.owner.mm{background:var(--brand-soft);color:var(--brand)}
+.srcs{font-size:12px;color:var(--ink-3);line-height:1.9}
+@media(max-width:640px){
+  .wrap{padding:0 16px}
+  .phase{grid-template-columns:1fr;gap:10px}
+  .reason .rhead{flex-direction:column;gap:6px}
+}
+</style>
+
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <div>
+      <div class="eyebrow">事前リサーチ / 成長戦略 / 2ユニット ROIシミュレーション</div>
+      <h1 class="mast-title">株式会社MatsuMaNna <em>松ンナ</em> 法人ルート開拓ボード</h1>
+      <p class="mast-sub">代表個人のファンから「松ンナ」の定期購買へ。表示で戦わず、体験で決めてもらう法人ルートを、ターゲット30業種と投資対効果まで一枚に落とした分析盤です。</p>
+      <div class="deadline">◆ 次回商談：9月14日（月）9:00〜 Zoom ／ 本ボードが提出物です</div>
+    </div>
+    <div class="mast-meta">
+      <div><b>作成</b> 株式会社アイドマ・ホールディングス</div>
+      <div><b>宛先</b> 山崎 マナ 社長</div>
+      <div><b>更新</b> 2026年9月13日</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="セクション">
+  <div class="wrap">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-p="research"><span class="num">01</span>事前リサーチ</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="market"><span class="num">02</span>市場環境</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="why"><span class="num">03</span>今すぐやる3つの理由</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="strategy"><span class="num">04</span>成長戦略</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="targets"><span class="num">05</span>B2Bターゲット30</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="remote"><span class="num">06</span>在宅ワーカー活用</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="roi"><span class="num">07</span>ROIシミュレーション</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="road"><span class="num">08</span>明日からの90日</button>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- 01 -->
+<section class="panel" id="p-research" role="tabpanel">
+  <div class="sec-head"><h2>事前リサーチ</h2><span class="tagline">前回商談メモの構造化</span></div>
+  <p class="lede">商品も体験談も熱量も揃っている。足りないのは<b>「代表に会わなくても売れる導線」</b>ひとつです。映画・楽曲・SNSでつくった認知が購入につながっていないのは、認知の量の問題ではなく、<b>認知と購入のあいだに法人という受け皿がない</b>ためです。</p>
+
+  <div class="grid g4">
+    <div class="stat pos"><span class="k">商品単価（30本入）</span><span class="v">14,580<small>円</small></span><span class="n">1本あたり約450円・税込</span></div>
+    <div class="stat info"><span class="k">卸価格（代理店）</span><span class="v">5〜4<small>掛け</small></span><span class="n">10ケース（120箱）以上で4掛け</span></div>
+    <div class="stat hot"><span class="k">講座単価（10月〜）</span><span class="v">33,000<small>円</small></span><span class="n">松ンナ1箱付き・客層の厳選</span></div>
+    <div class="stat warn"><span class="k">実務体制</span><span class="v">2<small>名</small></span><span class="n">代表＋時短スタッフ1名</span></div>
+  </div>
+
+  <div class="grid g2 block">
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:10px">企業プロフィール</div>
+      <dl class="deflist">
+        <dt>企業名</dt><dd>株式会社MatsuMaNna</dd>
+        <dt>Webサイト</dt><dd><a href="https://manamana.co.jp/profile/" target="_blank" rel="noopener">manamana.co.jp</a></dd>
+        <dt>代表</dt><dd>山崎 マナ 社長</dd>
+        <dt>商品</dt><dd>松葉入り植物発酵ペースト「松ンナ（松酵素）」／特許出願済み</dd>
+        <dt>事業</dt><dd>直販・講座（デトックスランチ会）、卸・代理店、法人福利厚生、イベント協賛</dd>
+        <dt>体制</dt><dd>代表＋スタッフ1名（時短勤務）</dd>
+        <dt>ビジョン</dt><dd>食卓と習慣から腸内環境を整え、健康と人生を前向きに変える。全国のカフェへの普及と雇用の拡大</dd>
+        <dt>現在の接点</dt><dd>経営者交流会（守一クラブ等）、TikTokライブ、ゴルフコンペ、丸の内の大手カフェ導入実績</dd>
+      </dl>
+      <p class="note">※ 本ボード作成環境からは同社サイトへ直接アクセスできなかったため、企業情報は前回商談メモに基づく整理です。数値・固有名詞は商談前に必ずご確認ください。</p>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:12px">いま起きていること</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div><span class="chip c">できている</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">映画主演・オリコン上位の楽曲・受賞・メディア露出。飲用者からの体調変化や減量の声。TikTokライブでの完売。<b style="color:var(--ink)">認知と体感は、すでに証明済み</b>です。</p></div>
+        <div><span class="chip a">詰まっている</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">代表個人へのファン化は進むが、それが松ンナの購入に変換されていない。<b style="color:var(--ink)">導線が代表の登場を前提にしている</b>ため、代表が動いた分しか売れません。</p></div>
+        <div><span class="chip e">危ない</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">エビデンス取得に約2,000万円。自己資金の切り崩しによる資金繰りの逼迫。<b style="color:var(--ink)">話題性には賞味期限があり、使い切る前に収益化の型を作る必要</b>があります。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>チャネル別の1件あたり月商</h3>
+    <p class="sub">同じ1件でも、どのチャネルかで売上が48倍変わる。ここが営業の優先順位そのものです。</p>
+    <div class="chartbox">
+      <div id="ch-channel"></div>
+      <p class="note">卸価格（5掛け＝1箱7,290円、10ケース以上の4掛け＝1箱5,832円）で試算。<b>カフェ1店舗を48店開拓するより、代理店1社・高級老人ホーム2施設を取るほうが早い</b>——これが法人ルートを先に置く理由です。カフェは「全国普及」というビジョンの本丸ですが、売上の土台は施設・法人・代理店で先に作ります。</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>強み・課題の整理</h3>
+    <div class="swot">
+      <section class="s"><h4>強み</h4><ul>
+        <li>代表自身の深刻な健康トラブル克服体験に裏打ちされた熱量と発信力</li>
+        <li>20年実績のマクロビオティック酵素ペーストに松葉を加えた独自商品（特許出願済み）</li>
+        <li>映画・楽曲・受賞によるメディア露出と、他社にない物語性</li>
+        <li>体感性の高さ——短期間での体調変化・減量実感という一次情報の蓄積</li>
+      </ul></section>
+      <section class="w"><h4>課題</h4><ul>
+        <li>代表個人の認知から商品購入への導線が設計されていない</li>
+        <li>単体でのエビデンス取得費用（約2,000万円）を負担できない</li>
+        <li>2名体制のため、複雑な運用や事務処理に対応できない</li>
+        <li>自己資金の切り崩しによる資金繰りの制約と、施策選定の慎重さ</li>
+      </ul></section>
+      <section class="o"><h4>機会</h4><ul>
+        <li>健康経営優良法人の認定企業が過去最多——企業が健康に予算を出す理由が制度化</li>
+        <li>サプリ通販市場は縮小、日常の食として出す健康志向食品は拡大</li>
+        <li>高齢者施設・社員食堂という「毎朝1本が出る場所」が全国7万件超</li>
+        <li>法人バイヤーが仕入先の製造管理体制を見直す局面に入っている</li>
+      </ul></section>
+      <section class="t"><h4>脅威</h4><ul>
+        <li>景表法改正・ステマ規制により、体験談ベースの販促が最も危険なゾーンに</li>
+        <li>機能性表示のハードル上昇で、表示による差別化がさらに困難に</li>
+        <li>資金の底突きによる事業継続の断念</li>
+        <li>メディア露出で得た話題性の失効（機会損失）</li>
+      </ul></section>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="panel" id="p-market" role="tabpanel" hidden>
+  <div class="sec-head"><h2>市場環境</h2><span class="tagline">広告で売るサプリは縮み、食として出すものは伸びている</span></div>
+  <p class="lede">健康食品市場はいま、きれいに二極化しています。<b>通販広告で顧客を買うモデルは縮小</b>し、<b>日常の食として流通するものは拡大</b>。松ンナはペースト＝食品側にあり、市場の伸びている側に立っています。問題は、売り方が縮んでいる側の作法になっていることです。</p>
+
+  <div class="grid g4">
+    <div class="stat warn"><span class="k">健康食品・機能性表示食品・サプリ市場（2025年度）</span><span class="v">9,147<small>億円</small></span><span class="n">前年度比 −0.8%</span></div>
+    <div class="stat warn"><span class="k">2026年度 予測</span><span class="v">9,079<small>億円</small></span><span class="n">前年度比 −0.7%・縮小が続く</span></div>
+    <div class="stat pos"><span class="k">健康志向食品（明らか食品・飲料／2025年）</span><span class="v">1兆8,390<small>億円</small></span><span class="n">前年比 +1.4%・拡大</span></div>
+    <div class="stat info"><span class="k">健康経営優良法人2026 認定</span><span class="v">26,850<small>法人</small></span><span class="n">中小23,085＋大規模3,765</span></div>
+  </div>
+
+  <div class="grid g2 block">
+    <div class="chartbox">
+      <h4>市場の二極化</h4>
+      <p class="csub">サプリ・機能性表示食品市場と、健康志向の「明らか食品・飲料」市場の対比</p>
+      <div id="ch-split"></div>
+      <p class="note">サプリ市場が縮んでいる理由は、需要の消失ではなく<b>物価高による新規顧客獲得効率の悪化</b>です。広告出稿を抑える動きが強まり、通販で顧客を買うモデルの採算が合わなくなっている。<b>いまD2C通販の広告投資に踏み込むのは、市場のいちばん厳しい入口に立つこと</b>を意味します。</p>
+    </div>
+    <div class="chartbox">
+      <h4>健康経営優良法人の認定数</h4>
+      <p class="csub">中小規模法人部門は前年から3,289法人の増加</p>
+      <div id="ch-kenko"></div>
+      <p class="note">認定を取る企業は、認定要件を満たすために<b>具体的な健康施策を毎年ひとつは足す必要</b>があります。松ンナの福利厚生導入は、その「足すもの」の候補として、予算と稟議の通し方が既に用意されている——ここが法人ルートの本質的な強みです。</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>この市場での勝ち方</h3>
+    <div class="grid g3">
+      <div class="card"><span class="chip c">1</span><h4 style="font-size:15px;margin:10px 0 6px">表示ではなく、体験で決めてもらう</h4><p style="font-size:13px;color:var(--ink-2)">エビデンス2,000万円をかけて表示で勝負する道は、資金的に取れません。代わりに使えるのが、松ンナ最大の資産である<b>体感の速さ</b>。試食・試飲から導入までを1本の型にすれば、広告表現に踏み込まずに売れます。</p></div>
+      <div class="card"><span class="chip c">2</span><h4 style="font-size:15px;margin:10px 0 6px">1件で月10万円超が立つ先に絞る</h4><p style="font-size:13px;color:var(--ink-2)">2名体制で回すには、件数ではなく1件の大きさで勝つしかありません。高齢者施設・社員食堂・福利厚生・代理店。<b>入居者や社員がいる場所は、1件で数十〜数百箱が毎月動きます</b>。</p></div>
+      <div class="card"><span class="chip c">3</span><h4 style="font-size:15px;margin:10px 0 6px">代表の時間を、商談だけに使う</h4><p style="font-size:13px;color:var(--ink-2)">代表の熱量は最強の営業ツールですが、それを受発注や経費精算に使っている限り出力は上がりません。<b>会う前の工程を全部外に出し、代表は「決める場」にだけ現れる</b>設計にします。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="panel" id="p-why" role="tabpanel" hidden>
+  <div class="sec-head"><h2>今すぐやらないといけない3つの理由</h2><span class="tagline">法律・制度・世の中の流れ</span></div>
+  <p class="lede">3つとも、すでに施行されているか今期に締切があるものです。いずれも<b>「代表の体験談で売る」から「法人ルートで売る」への転換</b>を、外側から強制しています。</p>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">1</div><div>
+      <div class="kicker"><span class="chip a">法律</span><span class="chip">2023年10月／2024年10月 施行済み</span></div>
+      <h4>体験談と口コミで売る手法が、いま最も行政処分リスクの高いゾーンに入った</h4>
+    </div></div>
+    <div class="rbody">
+      <p>2023年10月にステマ規制（景品表示法の指定告示）が施行され、事業者が関与した口コミ・投稿に広告であることの明示がなければ不当表示になります。罰を受けるのは<b>投稿者ではなく事業者</b>です。さらに2024年10月施行の改正景品表示法で<b>確約手続</b>が導入され、<b>直罰規定</b>（措置命令を経ずに100万円以下の罰金）が新設、課徴金も過去10年以内に納付命令を受けた事業者は<b>3%→4.5%</b>に引き上げられました。健康食品は、体調変化や減量の表現がそのまま優良誤認・薬機法の論点になる領域です。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">100<span style="font-size:12px">万円以下</span></div><div class="fk">直罰規定の罰金（2024年10月〜）</div></div>
+        <div class="fact"><div class="fv">4.5<span style="font-size:12px">%</span></div><div class="fk">繰り返し違反時の課徴金率</div></div>
+        <div class="fact"><div class="fv">事業者</div><div class="fk">ステマ規制で責任を負うのは投稿者ではなく</div></div>
+      </div>
+      <div class="sowhat"><b>松ンナにとって：</b>いま最も伸ばしやすい「飲用者の声を集めて拡散する」やり方が、いちばん危険な打ち手になりました。エビデンスに2,000万円を投じられない以上、<b>表示で戦う土俵からは降りるのが合理的</b>です。法人ルートなら、担当者に実際に試してもらい、体感で導入を決めてもらえる——広告表現に踏み込まずに売れる唯一の道です。<b>同時に、既存のSNS・アフィリエイト運用の表記整備は今すぐ必要</b>で、これは在宅ワーカーの定型業務として設計できます。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">2</div><div>
+      <div class="kicker"><span class="chip a">制度</span><span class="chip">2026年9月1日 完全施行</span></div>
+      <h4>機能性表示のハードルが上がり、法人バイヤーが仕入先の製造体制を見直し始めた</h4>
+    </div></div>
+    <div class="rbody">
+      <p>紅麹問題を受けた制度改正で、2025年4月以降、機能性表示食品の安全性確認基準が厳格化され、健康被害情報の行政への報告が義務化されました。そして<b>2026年9月1日から、サプリメント形状の機能性表示食品にGMP（適正製造規範）の遵守が義務化</b>され、2年間の経過措置が終了して完全施行に入っています。表示を取るコストと責任は、明確に上がりました。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">2026/9/1</div><div class="fk">GMP遵守義務の完全施行</div></div>
+        <div class="fact"><div class="fv">2025/4〜</div><div class="fk">安全性確認基準の厳格化</div></div>
+        <div class="fact"><div class="fv">報告義務</div><div class="fk">健康被害情報の行政への届出</div></div>
+      </div>
+      <div class="sowhat"><b>松ンナにとって：</b>これは追い風です。機能性表示を取らない一般食品として売る判断が、業界全体で合理的になりました。そして重要なのは<b>仕入れる側の目線</b>——カフェ本部・高齢者施設・企業総務は、健康を謳う商品の調達で「誰がどう作っているか」を以前より厳しく見ます。<b>20年実績のある製造基盤と特許出願済みという事実は、「表示」ではなく「調達要件」として出せる武器</b>です。この見直しが各法人で進んでいるいまが、棚と契約が動く時期です。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">3</div><div>
+      <div class="kicker"><span class="chip a">世の中の流れ</span><span class="chip">健康経営優良法人2027 申請期</span></div>
+      <h4>企業が健康に予算を出す理由が制度になり、その申請シーズンが今</h4>
+    </div></div>
+    <div class="rbody">
+      <p>健康経営優良法人2026の認定は中小規模法人部門で<b>23,085法人</b>（前年19,796法人）、大規模法人部門で<b>3,765法人</b>（前年3,400法人）と、いずれも大幅に増加しました。人手不足のなか、健康施策は採用と定着の武器として位置づけられています。認定の申請受付は例年8月頃に始まり、翌年3月に認定が発表されるサイクル。つまり<b>2027年認定に向けた施策の検討は、まさに今期に行われています</b>。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">23,085<span style="font-size:12px">法人</span></div><div class="fk">健康経営優良法人2026（中小）</div></div>
+        <div class="fact"><div class="fv">+3,289<span style="font-size:12px">法人</span></div><div class="fk">前年からの増加数（中小部門）</div></div>
+        <div class="fact"><div class="fv">今期</div><div class="fk">2027年認定に向けた施策の検討時期</div></div>
+      </div>
+      <div class="sowhat"><b>松ンナにとって：</b>福利厚生の提案がいちばん通りやすいのは、<b>「認定要件を満たす施策をひとつ足したい」と担当者が探している瞬間</b>です。予算も稟議のルートも既に用意されているため、ゼロから必要性を説く必要がありません。この窓は年単位で開閉します。<b>今期を逃すと、次は1年後</b>。話題性の賞味期限と資金繰りを考えれば、待てる時間ではありません。</div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>制度カレンダー</h3>
+    <div class="timeline">
+      <div class="timeline-track">
+        <div class="tl-item on"><div class="y">2023年10月</div><div class="t">ステマ規制 施行<br>事業者が責任を負う</div></div>
+        <div class="tl-item on"><div class="y">2024年10月</div><div class="t">改正景表法 施行<br>確約手続・直罰・課徴金4.5%</div></div>
+        <div class="tl-item on"><div class="y">2025年4月</div><div class="t">機能性表示食品<br>安全性基準の厳格化</div></div>
+        <div class="tl-item on"><div class="y">2026年3月</div><div class="t">健康経営優良法人2026<br>26,850法人を認定</div></div>
+        <div class="tl-item on"><div class="y">2026年9月1日</div><div class="t">機能性表示食品<br>GMP義務 完全施行</div></div>
+        <div class="tl-item on"><div class="y">2026年 今期</div><div class="t">健康経営優良法人2027<br>施策検討・申請の時期</div></div>
+        <div class="tl-item"><div class="y">2027年3月</div><div class="t">2027年認定 発表<br>次の窓は1年後</div></div>
+      </div>
+    </div>
+    <div class="verdict" style="margin-top:18px;border-left-color:var(--accent)">
+      <b style="color:var(--accent)">結論：</b>表示で戦う道は制度的に閉じ、体験で決めてもらう法人ルートが開いています。そして法人側の予算が動く窓は<b style="color:var(--accent)">今期</b>。資金繰りに余裕がない以上、<b style="color:var(--accent)">回収の早いチャネルから順に、いま着手する</b>——それが唯一の順番です。
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="panel" id="p-strategy" role="tabpanel" hidden>
+  <div class="sec-head"><h2>成長戦略</h2><span class="tagline">「松ンナ単体で回る仕組み」を3本で組む</span></div>
+  <p class="lede">目標は、代表個人への依存を減らして松ンナ単体で事業が回ること。そのために必要なのは新しい商品でも新しい発信でもなく、<b>「会う前」と「決めたあと」を代表以外が回せる状態</b>です。</p>
+
+  <div class="grid g3">
+    <div class="pillar">
+      <span class="pk">PILLAR 01</span>
+      <h4>毎朝1本が出る場所を押さえる</h4>
+      <p>高齢者施設・社員食堂・福利厚生・代理店。入居者や社員がいる場所は、1件で数十〜数百箱が毎月動きます。カフェ全国普及というビジョンの本丸には、まずここで作った土台から入ります。</p>
+      <div class="kpi"><span>目標：<b>1件あたり月商5万円以上</b>の先に集中</span><span>手段：営業支援ユニット</span></div>
+    </div>
+    <div class="pillar">
+      <span class="pk">PILLAR 02</span>
+      <h4>代表は「決める場」にだけ現れる</h4>
+      <p>リスト作成・サンプル送付・日程調整・議事録・フォロー連絡を全部外に出し、代表は商談と講座とメディアだけに時間を使う。熱量は最強の営業ツールですが、使う場所を選ばないと出力が落ちます。</p>
+      <div class="kpi"><span>目標：<b>代表の商談時間 月40時間</b>を確保</span><span>手段：生産性向上支援ユニット</span></div>
+    </div>
+    <div class="pillar">
+      <span class="pk">PILLAR 03</span>
+      <h4>表示で戦わず、体験で決めてもらう</h4>
+      <p>サンプル送付 → 担当者の試食 → 試食会・説明 → 導入、の4ステップを標準化。同時に広告表現のチェックリストを整備し、ステマ規制・薬機法・景表法のリスクを構造的に外します。</p>
+      <div class="kpi"><span>目標：<b>サンプル送付から導入まで60日</b></span><span>手段：型の標準化＋在宅ワーカー運用</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>課題 → 打ち手 → 使うユニット</h3>
+    <p class="sub">前回商談で挙がった課題に、実行手段を紐づけたもの</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>現状の課題</th><th>打ち手</th><th>担当</th><th>90日で見る指標</th></tr></thead>
+        <tbody>
+          <tr><td>代表の認知から購入への導線がない</td><td>680万件超の法人データベースから施設・法人・売り場を抽出し、電話・メール・手紙・FAXでアプローチ。代表は商談から参加する</td><td><span class="chip b">営業支援ユニット</span></td><td>月間アポイント数・商談実施数</td></tr>
+          <tr><td>エビデンス取得費用（約2,000万円）が負担できない</td><td>表示に依存しない販売プロセスへ移行。サンプル→試食→導入の型を標準化し、体感で決めてもらう</td><td><span class="chip b">営業支援ユニット</span></td><td>サンプル送付数・導入転換率</td></tr>
+          <tr><td>2名体制で複雑な運用と事務処理に対応できない</td><td>受発注・請求・サンプル手配・日程調整・CRM入力を在宅ワーカーへ移管し、マニュアル化する</td><td><span class="chip d">生産性向上支援</span></td><td>代表の事務時間（週次）</td></tr>
+          <tr><td>ステマ規制・景表法・薬機法のリスクが放置されている</td><td>広告表現チェックリストとPR表記ルールを整備し、SNS・LP・体験談投稿の運用を在宅ワーカーの定型業務にする</td><td><span class="chip d">生産性向上支援</span></td><td>表記未整備コンテンツの残数</td></tr>
+          <tr><td>資金繰りが厳しく、回収の遅い施策を取れない</td><td>1件あたり月商の大きい施設・代理店ルートから着手し、カフェ・小売は型ができてから広げる</td><td><span class="chip b">営業支援ユニット</span></td><td>1社あたり平均月商</td></tr>
+          <tr><td>「数字とビジネス構造に落とす右腕」がいない</td><td>週次でファネル数値（接触→アポ→商談→導入）を可視化し、意思決定の材料を毎週そろえる</td><td><span class="chip b">両ユニット</span></td><td>週次レポートの継続率</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>導入までの型</h3>
+    <p class="sub">「代表が会えば決まる」を、代表なしでも8割まで進む工程に分解する</p>
+    <div class="chartbox"><div id="ch-flow"></div></div>
+    <p class="note">工程1〜3と工程6は在宅ワーカー、工程4は営業支援ユニット、代表が出るのは<b>工程5の試食・説明だけ</b>。ここに熱量を集中させます。</p>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="panel" id="p-targets" role="tabpanel" hidden>
+  <div class="sec-head"><h2>B2Bターゲット30</h2><span class="tagline">母数・狙う理由・初回の切り口</span></div>
+  <p class="lede">「松ンナが毎日出る場所」「健康に予算がある法人」「売り場と紹介者」の3層で30業種に分解しました。母数は公的統計と業界調査に基づく概算です。<b>件数ではなく、1件あたりの大きさで優先順位を決めてください。</b></p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">総母数（30業種計）</span><span class="v" id="t-total">—</span><span class="n">事業所・施設・法人数の合算</span></div>
+    <div class="stat pos"><span class="k">Tier A・毎日出る場所</span><span class="v" id="t-a">—</span><span class="n">習慣化して定期購買になる先</span></div>
+    <div class="stat hot"><span class="k">1件で月10万円超が狙える施設ルート</span><span class="v">74,019<small>件</small></span><span class="n">高齢者施設・サ高住・デイ・社員食堂</span></div>
+    <div class="stat"><span class="k">1年で接触できる件数</span><span class="v">36,000<small>件</small></span><span class="n">月3,000件×12ヶ月＝母数の約6%</span></div>
+  </div>
+
+  <div class="chartbox block">
+    <h4>3層別の母数</h4>
+    <p class="csub">母数は十分にある。問題は、どこから当たるかの順番です。</p>
+    <div id="ch-tiers"></div>
+    <p class="note">Tier Aは「毎日ひとり1本が出る場所」、Tier Bは「健康施策の予算と稟議ルートが既にある法人」、Tier Cは「売り場を持つ、あるいは紹介者になりうる事業者」です。</p>
+  </div>
+
+  <div class="block">
+    <h3>ターゲット一覧</h3>
+    <p class="sub">Tierで絞る／母数で並べ替える／キーワードで検索する</p>
+    <div class="controls">
+      <div class="seg" id="tier-seg">
+        <button aria-pressed="true" data-t="all">すべて（30）</button>
+        <button aria-pressed="false" data-t="A">A・毎日出る場所（10）</button>
+        <button aria-pressed="false" data-t="B">B・健康予算（10）</button>
+        <button aria-pressed="false" data-t="C">C・売り場と紹介（10）</button>
+      </div>
+      <input type="search" id="t-search" placeholder="業種・理由・切り口を検索" aria-label="ターゲット検索">
+      <select id="t-sort" aria-label="並べ替え">
+        <option value="rank">優先度順</option>
+        <option value="count">母数の多い順</option>
+        <option value="countAsc">母数の少ない順</option>
+      </select>
+      <span class="count">表示 <b id="t-shown">30</b> 件 ／ 母数計 <b id="t-sum">—</b></span>
+    </div>
+    <div class="tlist" id="t-list"></div>
+    <p class="note">母数の出所：フィットネス関連は矢野経済研究所の2025年調査（パーソナル2,368／24時間型5,034／小規模2,156／ヨガ1,877施設）、サービス付き高齢者向け住宅8,019棟、健康経営優良法人2026の認定数（中小23,085／大規模3,765）は経済産業省発表。その他は経済センサスおよび業界推計に基づく概算です。<b>実リストはデータベース抽出後の実数で確定させてください。</b></p>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="panel" id="p-remote" role="tabpanel" hidden>
+  <div class="sec-head"><h2>在宅ワーカー活用</h2><span class="tagline">何を出せるか／出したあと組織はどうなるか</span></div>
+  <p class="lede">2名体制の会社で「社員でなくてもできる業務」を洗い出すと、<b>月140時間分</b>が出てきます。うち<b>約70時間が代表自身が抱えている分</b>——正社員1名分近い時間が、代表の手から戻ってくる計算です。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">移管できる業務量</span><span class="v" id="rw-total">140<small>h/月</small></span><span class="n">正社員1名分に近い稼働</span></div>
+    <div class="stat hot"><span class="k">うち代表が抱えている分</span><span class="v">70<small>h/月</small></span><span class="n">リスト作成・SNS・問い合わせ・法令対応</span></div>
+    <div class="stat"><span class="k">対象業務の数</span><span class="v">20<small>種</small></span><span class="n">5カテゴリに分類</span></div>
+    <div class="stat pos"><span class="k">在宅ワーカー体制</span><span class="v">4〜5<small>名相当</small></span><span class="n">1人1日2〜4時間の分業</span></div>
+  </div>
+
+  <div class="block">
+    <h3>在宅ワーカーに依頼できる業務</h3>
+    <p class="sub">● 印は、現在おもに代表が抱えている業務。時間は月間の想定工数です。</p>
+    <div class="grid g2" id="task-groups"></div>
+    <div class="callout"><b>過去のコンサルでのご経験を踏まえて。</b>在宅ワーカー活用は「任せて終わり」ではなく、<b>どの業務を・どの手順で・誰が・いつまでに</b>をワークフローとして固定するところまでが支援範囲です。最初の1ヶ月は受発注と請求という<b>手順が完全に固定された業務だけ</b>に絞り、成果が見えてから範囲を広げます。合わなければそこで止められる形にしてあります。</div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：現状</h3>
+    <p class="sub">商品開発からSNS運用、受発注、経理まで、すべてが代表を経由している状態</p>
+    <div class="chartbox"><div id="ch-org-before"></div></div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：在宅ワーカー活用後</h3>
+    <p class="sub">代表は「顔」と意思決定だけに立ち、会う前と決めたあとを外部チームが回す</p>
+    <div class="chartbox"><div id="ch-org-after"></div></div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card"><span class="chip d">ポイント①</span><h4 style="font-size:14.5px;margin:9px 0 6px">代表にしかできないことだけ残す</h4><p style="font-size:13px;color:var(--ink-2)">試食会での説明、講座、メディア出演、商品開発、最終的な価格判断。ここは代替できません。逆に言えば、<b>それ以外は全部出せます</b>。</p></div>
+      <div class="card"><span class="chip d">ポイント②</span><h4 style="font-size:14.5px;margin:9px 0 6px">法令対応を人ではなく仕組みに置く</h4><p style="font-size:13px;color:var(--ink-2)">薬機法・景表法・ステマ規制の表記チェックは、感覚ではなくチェックリストで回す業務です。在宅ワーカーの定型業務にすることで、<b>属人的な判断ミスのリスクが下がります</b>。</p></div>
+      <div class="card"><span class="chip d">ポイント③</span><h4 style="font-size:14.5px;margin:9px 0 6px">採用・教育まで外部が担う</h4><p style="font-size:13px;color:var(--ink-2)">生産性向上支援ユニットは、ワークフロー設計・求人掲載による採用・マニュアル作成・教育・定例ミーティングまでを含みます。<b>2名体制のまま、管理者を増やさずに始められます</b>。</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>代表の時間配分</h3>
+    <p class="sub">月160時間の稼働を、どこに使っているか／どこに使えるようになるか</p>
+    <div class="chartbox">
+      <div class="legend">
+        <span><i style="background:var(--s1)"></i>法人商談・試食会</span>
+        <span><i style="background:var(--s3)"></i>講座・メディア・発信</span>
+        <span><i style="background:var(--s4)"></i>商品開発・製造委託の管理</span>
+        <span><i style="background:var(--s2)"></i>受発注・経理・事務</span>
+        <span><i style="background:var(--s5)"></i>問い合わせ・個別対応</span>
+      </div>
+      <div id="ch-time"></div>
+      <p class="note">現状、法人商談に使えているのは月10時間。事務と問い合わせに70時間が消えています。移管後は法人商談に<b>月50時間</b>——5倍です。この40時間の増分が、次のタブで「代表のトップ営業」として計算されます。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="panel" id="p-roi" role="tabpanel" hidden>
+  <div class="sec-head"><h2>ROIシミュレーション</h2><span class="tagline">営業支援ユニット ＋ 生産性向上支援ユニット</span></div>
+  <p class="lede">左のつまみを動かすと、右の数字とグラフがその場で再計算されます。初期値は<b>標準シナリオ</b>。売上は「1年目に実際に立つ金額」で計算しており、契約期間分をまとめて計上する方式ではありません。</p>
+
+  <div class="roi-layout">
+    <aside class="knobs">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h4 style="margin:0;font-size:14px">前提条件</h4>
+        <button class="resetbtn" id="roi-reset" type="button">標準に戻す</button>
+      </div>
+      <div class="seg" id="preset-seg" style="margin-bottom:18px">
+        <button aria-pressed="false" data-preset="cons" style="flex:1">保守</button>
+        <button aria-pressed="true" data-preset="base" style="flex:1">標準</button>
+        <button aria-pressed="false" data-preset="bull" style="flex:1">強気</button>
+      </div>
+
+      <div class="gh"><span>◆</span> 営業支援ユニット</div>
+      <div class="knob"><label for="k-app">月間アプローチ数 <b><span id="v-app"></span>件</b></label><input type="range" id="k-app" min="500" max="8000" step="100"></div>
+      <div class="knob"><label for="k-appo">アポイント率 <b><span id="v-appo"></span>%</b></label><input type="range" id="k-appo" min="0.2" max="3" step="0.1"></div>
+      <div class="knob"><label for="k-meet">商談実施率 <b><span id="v-meet"></span>%</b></label><input type="range" id="k-meet" min="50" max="100" step="5"></div>
+      <div class="knob"><label for="k-win">商談→導入決定率 <b><span id="v-win"></span>%</b></label><input type="range" id="k-win" min="2" max="30" step="1"></div>
+      <div class="knob"><label for="k-sfee">ユニット月額費用 <b><span id="v-sfee"></span>万円</b></label><input type="range" id="k-sfee" min="15" max="80" step="1"></div>
+      <div class="knob"><label for="k-init">初期費用 <b><span id="v-init"></span>万円</b></label><input type="range" id="k-init" min="0" max="150" step="5"></div>
+
+      <div class="knob-group"><div class="gh"><span>◆</span> 生産性向上支援ユニット</div>
+        <div class="knob"><label for="k-hours">移管する業務量 <b><span id="v-hours"></span>h/月</b></label><input type="range" id="k-hours" min="40" max="280" step="10"></div>
+        <div class="knob"><label for="k-ofee">ユニット月額費用（在宅ワーカー費用込） <b><span id="v-ofee"></span>万円</b></label><input type="range" id="k-ofee" min="10" max="60" step="1"></div>
+        <div class="knob"><label for="k-ceoh">代表が商談に回せる時間 <b><span id="v-ceoh"></span>h/月</b></label><input type="range" id="k-ceoh" min="0" max="80" step="5"></div>
+        <div class="knob"><label for="k-permeet">1商談あたり所要時間 <b><span id="v-permeet"></span>h</b></label><input type="range" id="k-permeet" min="2" max="8" step="1"></div>
+        <div class="knob"><label for="k-ceowin">代表の導入決定率 <b><span id="v-ceowin"></span>%</b></label><input type="range" id="k-ceowin" min="5" max="60" step="1"></div>
+      </div>
+
+      <div class="knob-group"><div class="gh"><span>◆</span> 共通</div>
+        <div class="knob"><label for="k-rev">導入1件あたり月商（卸ベース） <b><span id="v-rev"></span>万円</b></label><input type="range" id="k-rev" min="1" max="40" step="1"></div>
+        <div class="knob"><label for="k-gm">粗利率 <b><span id="v-gm"></span>%</b></label><input type="range" id="k-gm" min="30" max="80" step="5"></div>
+      </div>
+      <p class="note" style="margin-top:4px">※ 費用は一般的なレンジを置いた試算用の初期値です。正式なお見積りは要件確定後にご提示します。</p>
+    </aside>
+
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div>
+        <h3 style="font-size:17px">12ヶ月後の着地</h3>
+        <p class="sub" style="font-size:12.5px;color:var(--ink-3);margin:3px 0 14px">1年目に実際に計上される売上・粗利ベース</p>
+        <div class="grid g4">
+          <div class="stat pos"><span class="k">年間ROI</span><span class="v" id="o-roi">—</span><span class="n">（粗利増−投資）÷投資</span></div>
+          <div class="stat info"><span class="k">12ヶ月後の月商ランレート</span><span class="v" id="o-runrate">—</span><span class="n" id="o-runnote">—</span></div>
+          <div class="stat"><span class="k">年間 導入件数</span><span class="v" id="o-closes">—</span><span class="n" id="o-closesplit">—</span></div>
+          <div class="stat hot"><span class="k">投資回収</span><span class="v" id="o-payback">—</span><span class="n" id="o-investnote">—</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="eyebrow" style="margin-bottom:10px">営業支援ユニットのファネル（月間）</div>
+        <div class="funnel">
+          <div class="fstep"><div class="fl">アプローチ</div><div class="fv" id="f-app">—</div><div class="fr">電話・メール・手紙・FAX</div></div>
+          <div class="fstep"><div class="fl">アポイント</div><div class="fv" id="f-appo">—</div><div class="fr" id="f-appo-r">—</div></div>
+          <div class="fstep"><div class="fl">商談・試食</div><div class="fv" id="f-meet">—</div><div class="fr" id="f-meet-r">—</div></div>
+          <div class="fstep end"><div class="fl">導入決定</div><div class="fv" id="f-win">—</div><div class="fr" id="f-win-r">—</div></div>
+        </div>
+      </div>
+
+      <div class="chartbox">
+        <h4>月商の積み上がり</h4>
+        <p class="csub">2つのユニットから毎月積み上がる卸売上（12ヶ月の推移）</p>
+        <div class="legend"><span><i style="background:var(--s1)"></i>営業支援ユニット由来</span><span><i style="background:var(--s3)"></i>代表のトップ営業由来</span></div>
+        <div id="ch-runrate"></div>
+      </div>
+
+      <div class="chartbox">
+        <h4>累積の粗利と投資</h4>
+        <p class="csub">累積粗利が累積投資を上回る月が投資回収のタイミングです</p>
+        <div class="legend"><span><i style="background:var(--s1)"></i>累積 粗利</span><span><i style="background:var(--s5)"></i>累積 投資</span></div>
+        <div id="ch-payback"></div>
+      </div>
+
+      <div class="chartbox">
+        <h4>1件あたり月商の感度分析</h4>
+        <p class="csub">どのチャネルを狙うかで、同じ営業量でも結果が桁で変わります</p>
+        <div id="ch-sens"></div>
+      </div>
+
+      <div class="verdict" id="o-verdict"></div>
+
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:10px">この試算の読み方</div>
+        <ul style="margin:0;padding-left:1.2em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">
+          <li><b>生産性向上支援ユニットの効果は、事務コストの削減ではありません。</b>2名体制では削減できる人件費がそもそも存在しないため、この試算では削減額をゼロとして扱っています。価値は<b>代表の時間が商談に回ること</b>だけで計上しており、その分だけ保守的です。</li>
+          <li>最大の変数は<b>「導入1件あたり月商」</b>です。カフェ1店舗（約1.5万円）と高級老人ホーム1施設（約29万円）では20倍近く違います。感度分析のとおり、<b>どこを狙うかが営業量よりも効きます</b>。</li>
+          <li>解約・休止は織り込んでいません。定期購買が続く前提のため、実際は継続率で目減りします。3ヶ月の実績が出た段階で、継続率を反映したモデルに更新します。</li>
+          <li>講座（デトックスランチ会・33,000円）による売上は含めていません。法人ルートの土台だけで見た数字です。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="panel" id="p-road" role="tabpanel" hidden>
+  <div class="sec-head"><h2>明日からの90日</h2><span class="tagline">9月14日（月）9:00の商談を起点に</span></div>
+  <p class="lede"><span class="owner mm">MatsuMaNna</span>と<span class="owner ai">アイドマ</span>の役割を分けて記載しています。代表の稼働は「試食会と商談に出る」ことに集中していただく設計です。</p>
+
+  <div class="card" style="border-left:4px solid var(--accent);border-radius:12px;margin-bottom:24px">
+    <div class="eyebrow" style="margin-bottom:8px">次回商談（9月14日 9:00 Zoom）でお出しするもの</div>
+    <ul style="margin:0;padding-left:1.2em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:5px">
+      <li><b style="color:var(--ink)">本ボード</b>——B2B営業ターゲットの切り口とシミュレーション（お約束の提案物）</li>
+      <li><b style="color:var(--ink)">ターゲット30業種</b>と、それぞれの初回トークの切り口</li>
+      <li><b style="color:var(--ink)">チャネル別の1件あたり月商</b>——どこから当たるべきかの根拠</li>
+      <li><b style="color:var(--ink)">経営者交流会（目黒）へのご案内</b>——杉本より別途</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 1–30</div><div class="pt">施設ルートの<br>テストマーケティング</div></div>
+    <ul>
+      <li><span class="owner ai">アイドマ</span>Tier A（高級老人ホーム・サ高住・社員食堂運営）を中心にリストを抽出し、<b>小ロットのテストマーケティング</b>を実施。業種別の反応率を測定する。</li>
+      <li><span class="owner mm">MatsuMaNna</span>サンプル送付用のセットと、施設向け1枚資料（表示に踏み込まない表現で）を確定。</li>
+      <li><span class="owner ai">アイドマ</span>受発注・請求・サンプル送付手配のワークフローを設計し、在宅ワーカーを募集・選定する。</li>
+      <li><span class="owner mm">MatsuMaNna</span>卸条件の整理——施設・社食・代理店それぞれの掛け率と最低ロットを明文化する。</li>
+      <li><span class="owner ai">アイドマ</span>SNS・LP・体験談投稿の<b>PR表記とステマ規制対応の棚卸し</b>を実施し、優先度をつける。</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 31–60</div><div class="pt">勝ちパターンの特定と<br>代表の時間の解放</div></div>
+    <ul>
+      <li><span class="owner ai">アイドマ</span>反応率の高い業種・文面・時間帯を特定し、配信をそこへ寄せる。代表へアポイントの供給を開始。</li>
+      <li><span class="owner mm">MatsuMaNna</span>代表は<b>試食会と商談だけ</b>に出る。会う前の工程には手を出さない。</li>
+      <li><span class="owner ai">アイドマ</span>在宅ワーカー2名で受発注・請求の運用を開始し、<b>代表の事務時間を週次で計測</b>する。</li>
+      <li><span class="owner mm">MatsuMaNna</span>最初の導入事例1件を、掲載可否の許諾込みで事例化する（法人商談で最も効く材料）。</li>
+      <li><span class="owner ai">アイドマ</span>健康経営優良法人の認定企業リストへのアプローチを開始。<b>2027年認定の施策検討時期</b>に合わせる。</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 61–90</div><div class="pt">法令対応の内製化と<br>チャネル拡張</div></div>
+    <ul>
+      <li><span class="owner ai">アイドマ</span>広告表現チェックリストの運用を在宅ワーカーの定型業務に組み込み、既存コンテンツの表記整備を完了させる。</li>
+      <li><span class="owner mm">MatsuMaNna</span>施設・法人での型が固まった段階で、カフェ・パーソナルジムなど<b>Tier Cの売り場</b>へ横展開する。</li>
+      <li><span class="owner ai">アイドマ</span>問い合わせ一次対応と講座の申込受付・リマインドを移管し、代表の個別対応時間をさらに削る。</li>
+      <li><span class="owner ai">アイドマ</span>3ヶ月の実績値（アポ率・導入率・1件あたり月商・継続率）でROIモデルを更新し、次の投資判断の材料にする。</li>
+      <li><span class="owner mm">MatsuMaNna</span>代表の法人商談時間が月40時間を超えているかを確認。超えていなければ移管業務を追加する。</li>
+    </ul>
+  </div>
+
+  <hr class="needles" style="margin:34px 0">
+
+  <div class="block" style="margin-top:0">
+    <h3>次回商談で確認したい6つ</h3>
+    <p class="sub">試算の精度を上げるために、社長にしか答えられない数字</p>
+    <div class="grid g2">
+      <div class="card"><b>1. 製造原価と、卸価格での粗利率</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">ROIの分子を決める最重要変数。4掛けでも利益が残る水準かを確認します。</p></div>
+      <div class="card"><b>2. 月間の製造キャパシティ</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">代理店1社（月120箱）が決まった時に供給できるかどうか。営業量の上限を決めます。</p></div>
+      <div class="card"><b>3. 既存の卸・代理店先の継続率</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">定期購買が何ヶ月続くかで、同じ導入件数でも結果が大きく変わります。</p></div>
+      <div class="card"><b>4. 丸の内カフェ導入の実数と経緯</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">既にある導入事例は、法人商談で最も効く材料です。掲載可否も含めて確認します。</p></div>
+      <div class="card"><b>5. 月々に投じられる金額の上限</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">資金繰りの制約があるため、無理のない開始規模を一緒に決めます。</p></div>
+      <div class="card"><b>6. 現在のSNS・アフィリエイトの運用実態</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">ステマ規制の表記整備がどれだけ必要か、優先度を判断します。</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>出典</h3>
+    <ul class="srcs">
+      <li>健康食品・機能性表示食品・サプリメント市場規模（2025年度9,147億円／2026年度予測9,079億円） — <a href="https://netshop.impress.co.jp/n/2026/02/10/15575" target="_blank" rel="noopener">ネットショップ担当者フォーラム</a>／<a href="https://www.yano.co.jp/market_reports/C67118800" target="_blank" rel="noopener">矢野経済研究所</a></li>
+      <li>健康志向食品（明らか食品・飲料）2025年 1兆8,390億円 — <a href="https://www.fkg-report.jp/market-trends/2026/2509.html" target="_blank" rel="noopener">富士経済グループ</a></li>
+      <li>ステルスマーケティング規制（2023年10月施行） — <a href="https://www.businesslawyers.jp/articles/1310" target="_blank" rel="noopener">BUSINESS LAWYERS</a>／<a href="https://www.ushijima-law.gr.jp/client-alert_seminar/client-alert/20240617stealth/" target="_blank" rel="noopener">牛島総合法律事務所</a></li>
+      <li>改正景品表示法（2024年10月1日施行・確約手続／直罰／課徴金4.5%） — <a href="https://www.tokio-dr.jp/publication/column/129.html" target="_blank" rel="noopener">東京海上ディーアール</a>／<a href="https://www.89ji.com/keihyou-guide/kaisei2410.html" target="_blank" rel="noopener">薬事法広告研究所</a></li>
+      <li>機能性表示食品のGMP義務化（2026年9月1日 完全施行） — <a href="https://bhn.co.jp/2026/02/18/ebfmg_260218/" target="_blank" rel="noopener">ビーエイチエヌ</a>／<a href="https://www.link-j.org/member_event/article-53026.html" target="_blank" rel="noopener">LINK-J</a></li>
+      <li>健康経営優良法人2026 認定法人数 — <a href="https://www.meti.go.jp/press/2025/03/20260309002/20260309002.html" target="_blank" rel="noopener">経済産業省</a>／<a href="https://kenko-keiei.jp/6266/" target="_blank" rel="noopener">ACTION!健康経営</a></li>
+      <li>フィットネス施設数（2025年調査） — <a href="https://www.yano.co.jp/press-release/show/press_id/3992" target="_blank" rel="noopener">矢野経済研究所</a></li>
+      <li>サービス付き高齢者向け住宅の登録状況 — <a href="https://www.satsuki-jutaku.mlit.go.jp/doc/system_registration_01.pdf" target="_blank" rel="noopener">国土交通省</a></li>
+      <li>アイドマ・ホールディングス クラウドユニット — <a href="https://www.aidma-hd.jp/crowdunit_category/" target="_blank" rel="noopener">aidma-hd.jp</a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<hr class="needles">
+<footer style="background:var(--surface);border-top:1px solid var(--rule)">
+  <div class="wrap" style="padding:20px 24px 28px;font-size:12px;color:var(--ink-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <span>株式会社MatsuMaNna 様向け 事前リサーチ・成長戦略・ROI分析／株式会社アイドマ・ホールディングス</span>
+    <span class="mono">2026-09-13</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+var tabs=Array.prototype.slice.call(document.querySelectorAll(".tab"));
+tabs.forEach(function(t){
+  t.addEventListener("click",function(){
+    tabs.forEach(function(x){
+      x.setAttribute("aria-selected",x===t?"true":"false");
+      document.getElementById("p-"+x.dataset.p).hidden=(x!==t);
+    });
+    window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  });
+});
+
+var NF=new Intl.NumberFormat("ja-JP");
+function n(v){return NF.format(Math.round(v));}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function svg(w,h,inner){
+  return '<svg viewBox="0 0 '+w+' '+h+'" role="img" preserveAspectRatio="xMidYMid meet" '+
+    'style="max-width:'+Math.round(w*1.18)+'px;margin:0 auto">'+inner+'</svg>';
+}
+function txt(x,y,s,o){
+  o=o||{};
+  return '<text x="'+x+'" y="'+y+'" fill="'+(o.fill||"var(--ink-2)")+'" font-size="'+(o.size||11)+'" '+
+   'font-family="'+(o.mono?"DM Mono, monospace":(o.disp?"Zen Maru Gothic, sans-serif":"Murecho, sans-serif"))+'" '+
+   'font-weight="'+(o.weight||400)+'" text-anchor="'+(o.anchor||"start")+'"'+
+   (o.baseline?' dominant-baseline="'+o.baseline+'"':'')+'>'+esc(s)+'</text>';
+}
+function rrect(x,y,w,h,r,fill){
+  if(h<=0||w<=0) return "";
+  r=Math.min(r,h/2,w/2);
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+r+'" fill="'+fill+'"></rect>';
+}
+function niceMax(v,div){
+  if(!(v>0)) return div;
+  var unit=v/div, step=Math.pow(10,Math.floor(Math.log10(unit))), r=unit/step;
+  var mult=r<=1?1:r<=2?2:r<=2.5?2.5:r<=5?5:10;
+  return step*mult*div;
+}
+
+/* ---- チャネル別 1件あたり月商 ---- */
+(function(){
+  var rows=[
+    {l:"カフェ・喫茶店",s:"1日2本提供＝月2箱／5掛け",v:14580,c:"var(--s3)"},
+    {l:"エステ・美容サロン",s:"店販 月3箱／5掛け",v:21870,c:"var(--s3)"},
+    {l:"パーソナルジム",s:"店販 月5箱／5掛け",v:36450,c:"var(--s3)"},
+    {l:"企業の福利厚生",s:"50名規模・希望者20名／5掛け",v:145800,c:"var(--s4)"},
+    {l:"高級老人ホーム",s:"入居50名に毎朝1本＝月50箱／4掛け",v:291600,c:"var(--s1)"},
+    {l:"代理店（10ケース）",s:"月120箱／4掛け",v:699840,c:"var(--s1)"}
+  ];
+  var W=760,H=330,padL=190,padR=110,plotW=W-padL-padR,max=700000,top=42,rowH=46,s="";
+  [0,200000,400000,600000].forEach(function(g){
+    var x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-14)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-14)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-22,n(g/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  });
+  s+=txt(W-padR+10,top-22,"万円/月",{fill:"var(--ink-3)",size:10});
+  rows.forEach(function(r,i){
+    var y=top+i*rowH;
+    s+=txt(0,y+6,r.l,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(0,y+23,r.s,{fill:"var(--ink-3)",size:10});
+    var w=(r.v/max)*plotW;
+    s+=rrect(padL,y-6,Math.max(w,2),22,4,r.c);
+    s+=txt(padL+Math.max(w,2)+8,y+6,n(r.v)+"円",{fill:"var(--ink-2)",size:11.5,mono:true,baseline:"middle"});
+  });
+  s+=txt(0,H-12,"※ 松ンナ1箱＝30本・税込14,580円。卸5掛け＝7,290円／4掛け＝5,832円で試算。",{fill:"var(--ink-3)",size:11});
+  document.getElementById("ch-channel").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 市場の二極化 ---- */
+(function(){
+  var W=520,H=270,padT=44,padB=58,plotH=H-padT-padB,max=20000,s="";
+  var data=[
+    {l:"サプリ・機能性表示食品",v:9147,d:"−0.8%",c:"var(--s5)"},
+    {l:"健康志向の「明らか食品」",v:18390,d:"+1.4%",c:"var(--s1)"}
+  ];
+  [0,5000,10000,15000,20000].forEach(function(g){
+    var y=padT+plotH-(g/max)*plotH;
+    s+='<line x1="8" y1="'+y+'" x2="'+(W-40)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(W-36,y,n(g),{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+  });
+  s+=txt(8,18,"億円",{fill:"var(--ink-3)",size:10});
+  data.forEach(function(d,i){
+    var bw=120,x=72+i*(bw+128),h=(d.v/max)*plotH,y=padT+plotH-h;
+    s+=rrect(x,y,bw,h,5,d.c);
+    s+=txt(x+bw/2,y-10,n(d.v),{fill:"var(--ink)",size:15,weight:700,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+20,d.l,{fill:"var(--ink-2)",size:11.5,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+38,d.d,{fill:d.c,size:12,weight:700,mono:true,anchor:"middle"});
+  });
+  s+=txt(8,H-6,"左＝2025年度／右＝2025年見込み。どちらも国内市場。",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("ch-split").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 健康経営優良法人 ---- */
+(function(){
+  var W=520,H=270,padT=44,padB=58,plotH=H-padT-padB,max=25000,s="";
+  var data=[
+    {l:"2025年 認定",mid:19796,big:3400},
+    {l:"2026年 認定",mid:23085,big:3765}
+  ];
+  [0,5000,10000,15000,20000,25000].forEach(function(g){
+    var y=padT+plotH-(g/max)*plotH;
+    s+='<line x1="8" y1="'+y+'" x2="'+(W-46)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(W-42,y,n(g),{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+  });
+  s+=txt(8,18,"法人",{fill:"var(--ink-3)",size:10});
+  data.forEach(function(d,i){
+    var bw=110,x=76+i*(bw+140);
+    var hm=(d.mid/max)*plotH, hb=(d.big/max)*plotH;
+    var ym=padT+plotH-hm;
+    s+=rrect(x,ym,bw,hm,5,"var(--s1)");
+    s+=rrect(x,ym-hb-3,bw,hb,5,"var(--s4)");
+    s+=txt(x+bw/2,ym+22,n(d.mid),{fill:"#FFFFFF",size:12,weight:700,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,ym-hb-10,n(d.big),{fill:"var(--s4)",size:11.5,weight:700,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+20,d.l,{fill:"var(--ink-2)",size:11.5,anchor:"middle"});
+  });
+  s+=txt(76+110+40,padT+40,"＋3,289法人",{fill:"var(--accent)",size:13,weight:700,mono:true,anchor:"middle"});
+  s+=txt(8,H-24,"■ 中小規模法人部門",{fill:"var(--s1)",size:11,weight:700});
+  s+=txt(160,H-24,"■ 大規模法人部門",{fill:"var(--s4)",size:11,weight:700});
+  document.getElementById("ch-kenko").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 導入までの型 ---- */
+(function(){
+  var W=880,H=220,s="";
+  var steps=[
+    {n:"1",t:"リスト作成",o:"在宅",c:"var(--s2)"},
+    {n:"2",t:"アプローチ",o:"営業支援",c:"var(--s4)"},
+    {n:"3",t:"サンプル送付",o:"在宅",c:"var(--s2)"},
+    {n:"4",t:"アポイント獲得",o:"営業支援",c:"var(--s4)"},
+    {n:"5",t:"試食・説明",o:"代表",c:"var(--s1)"},
+    {n:"6",t:"受注・発送・請求",o:"在宅",c:"var(--s2)"}
+  ];
+  var bw=128,gap=22,x0=8,y=56;
+  steps.forEach(function(st,i){
+    var x=x0+i*(bw+gap);
+    var isCeo=st.o==="代表";
+    s+='<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="76" rx="12" fill="'+(isCeo?"var(--brand-soft)":"var(--surface-2)")+'" stroke="'+st.c+'" stroke-width="'+(isCeo?2.5:1.25)+'"></rect>';
+    s+=txt(x+14,y+22,st.n,{fill:st.c,size:12,weight:700,mono:true});
+    s+=txt(x+14,y+44,st.t,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(x+14,y+62,st.o,{fill:st.c,size:10.5,weight:700});
+    if(i<steps.length-1){
+      var ax=x+bw+4;
+      s+='<path d="M '+ax+' '+(y+38)+' L '+(ax+gap-8)+' '+(y+38)+'" stroke="var(--rule-2)" stroke-width="1.5"></path>';
+      s+='<path d="M '+(ax+gap-13)+' '+(y+34)+' L '+(ax+gap-8)+' '+(y+38)+' L '+(ax+gap-13)+' '+(y+42)+' Z" fill="var(--rule-2)"></path>';
+    }
+  });
+  var cx=x0+4*(bw+gap);
+  s+='<path d="M '+(cx+bw/2)+' '+(y-12)+' L '+(cx+bw/2)+' '+(y-2)+'" stroke="var(--brand)" stroke-width="2"></path>';
+  s+=txt(cx+bw/2,y-20,"代表が出るのはここだけ",{fill:"var(--brand)",size:12,weight:700,anchor:"middle"});
+  s+=txt(8,y+110,"工程1〜4で、代表が一度も動かずに商談まで到達します。決めたあとの工程6も在宅ワーカーが処理。",{fill:"var(--ink-2)",size:12});
+  s+=txt(8,y+132,"代表の熱量は、いちばん効く「試食・説明」の場だけに集中させます。",{fill:"var(--accent)",size:12,weight:700});
+  document.getElementById("ch-flow").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- targets ---------------- */
+var TARGETS=[
+ {t:"A",name:"高級有料老人ホーム・介護付きホーム",c:18000,
+  why:"入居者に毎朝1本が出れば1施設で月50箱規模。食事と健康が施設選びの決め手になる高価格帯ほど、差別化のための導入判断が速い。",
+  hook:"入居者様の朝の一杯に、松葉の発酵ペーストを。まず3名様分のサンプルで、施設の朝の食卓がどう変わるか見ていただけませんか。"},
+ {t:"A",name:"サービス付き高齢者向け住宅（サ高住）",c:8019,
+  why:"全国8,019棟。食事提供のあるサ高住は入居者獲得競争が激しく、「ここでしか受けられないケア」を常に探している。",
+  hook:"入居のご検討者様に説明できる「朝の習慣」を一つ。他棟にない食のプログラムとして、ご提案させてください。"},
+ {t:"A",name:"デイサービス・通所介護事業所",c:43000,
+  why:"母数が大きく、利用者への物販・サービス加算の工夫を常に模索している。1日利用者20名なら月20箱規模。",
+  hook:"通所の朝、利用者様に1本。加算ではなく満足度で選ばれる事業所になるための、小さな一手です。"},
+ {t:"A",name:"企業の社員食堂・カフェテリア運営会社",c:5000,
+  why:"1契約で複数事業所に展開でき、健康経営のメニュー提案は運営会社の提案力そのもの。導入が決まれば量がまとまる。",
+  hook:"健康経営のメニュー提案、いま何を足していますか。朝メニューに置ける発酵ペーストをご紹介します。"},
+ {t:"A",name:"個人経営のカフェ・喫茶店",c:67000,
+  why:"「全国のカフェへ」というビジョンの本丸。1店舗あたりは小さいが、導入店が増えるほど一般消費者の接点が面で増える。",
+  hook:"朝の1杯に混ぜるだけ。お店の看板メニューをもう一つ増やしませんか。まず1箱お試しください。"},
+ {t:"A",name:"コーヒーチェーン・カフェFC本部",c:300,
+  why:"1社決まれば数十〜数百店舗に一気に展開。丸の内の大手カフェ導入という実績が、本部商談での最大の信用材料になる。",
+  hook:"丸の内の店舗でご採用いただいています。全店展開を前提にしたご提案をさせてください。"},
+ {t:"A",name:"ホテル・旅館の朝食",c:44000,
+  why:"朝食の差別化は宿泊施設の評価に直結する。ウェルネスを打ち出す施設ほど、独自性のある食材を高い単価で採用する。",
+  hook:"朝食のビュッフェに一品、松葉の発酵ペーストを。宿泊者の口コミに残る朝食になります。"},
+ {t:"A",name:"産婦人科・妊活クリニック",c:4000,
+  why:"体づくりと腸内環境の文脈が最も自然に通る領域。院内販売の実績が、他院への横展開の材料になる。",
+  hook:"体づくりの土台は腸から、という話を患者様にどう伝えていますか。院内でお渡しできる形をご用意します。"},
+ {t:"A",name:"歯科医院（口腔と腸内環境）",c:67000,
+  why:"母数が非常に大きく、予防歯科の文脈で口腔と腸内フローラをつなぐ説明が成立する。院内物販の実績がある医院が多い。",
+  hook:"口の中の健康は、腸から。予防歯科の説明に使える一本として、院内でお取り扱いいただけませんか。"},
+ {t:"A",name:"ファスティング・ウェルネス宿泊施設",c:800,
+  why:"デトックスというキーワードが完全一致し、施設のプログラムに組み込めば滞在中の全員が飲む。代表の講座との親和性も高い。",
+  hook:"ファスティング明けの回復食に。プログラムに組み込む形で、まず1クール分をお試しください。"},
+
+ {t:"B",name:"健康経営優良法人 認定企業（中小規模法人部門）",c:23085,
+  why:"23,085法人。翌年の認定を維持するため、毎年ひとつ施策を足す必要がある。予算も稟議ルートも既に存在する。",
+  hook:"来年の認定要件、あと何を足すか決まっていますか。社員の朝の習慣を変える施策をご提案します。"},
+ {t:"B",name:"健康経営優良法人 認定企業（大規模法人部門）",c:3765,
+  why:"1社あたりの従業員数が多く、導入が決まれば量がまとまる。ホワイト500など上位認定を狙う企業ほど新規施策に積極的。",
+  hook:"上位認定に向けて、他社がまだやっていない施策を。従業員の食習慣に直接届く福利厚生です。"},
+ {t:"B",name:"従業員50名以上の中小企業（総務・人事）",c:60000,
+  why:"人手不足で採用・定着が最大の経営課題。福利厚生の充実は採用広報の材料として即効性がある。決裁者との距離も近い。",
+  hook:"求人票に書ける福利厚生、増やしませんか。健康に本気の会社だと伝わる、実感のある一つです。"},
+ {t:"B",name:"健康保険組合",c:1380,
+  why:"加入者の健康増進が組織の存在目的そのもの。保健事業の予算が毎年確保されており、加入企業へ一括で展開できる。",
+  hook:"保健事業のメニューに、加入者が続けられるものを。まず1事業所での実証からご相談させてください。"},
+ {t:"B",name:"福利厚生アウトソーシング事業者",c:50,
+  why:"1社と組めば数千社の会員企業に一気に露出する。自社で営業する必要がなく、2名体制でも扱える最短のレバレッジ。",
+  hook:"会員企業向けメニューに、他にない健康商材を。掲載と取次の形でご一緒できませんか。"},
+ {t:"B",name:"社会保険労務士事務所",c:23000,
+  why:"顧問先企業の健康経営認定取得を支援している事務所が多く、施策の引き出しを探している。紹介者として機能する。",
+  hook:"顧問先の健康経営、施策の提案までされていますか。先生から出せるメニューとしてご用意します。"},
+ {t:"B",name:"産業医・産業保健サービス事業者",c:1500,
+  why:"企業の健康施策の設計に直接関与する立場。専門家の推奨という形が、企業側の導入判断を圧倒的に速くする。",
+  hook:"面談で「何を食べるか」まで踏み込めていますか。具体的に手渡せる選択肢をご提供します。"},
+ {t:"B",name:"人材紹介・採用支援会社",c:30000,
+  why:"クライアント企業の採用競争力を高める提案材料を常に探している。福利厚生の差別化はそのまま求人の訴求力になる。",
+  hook:"求人の魅力づけに使える福利厚生、いくつ持っていますか。差がつく一つを追加しませんか。"},
+ {t:"B",name:"企業内保育・企業主導型保育施設",c:4500,
+  why:"働く母親の健康というテーマが刺さり、運営企業の福利厚生とセットで提案できる。代表自身の物語との親和性が高い。",
+  hook:"働くお母さんの体を、朝の1本から。施設と企業の両方に効く福利厚生としてご提案します。"},
+ {t:"B",name:"自治体・商工会議所の健康推進事業",c:1800,
+  why:"健康寿命延伸の予算が毎年組まれ、地域企業への横展開の入口になる。公的な採用実績は民間商談での信用に直結する。",
+  hook:"健康寿命の取り組み、住民が続けられる形になっていますか。実証事業としてご一緒できませんか。"},
+
+ {t:"C",name:"パーソナルトレーニングジム",c:2368,
+  why:"食事指導とセットの業態で、トレーナーの推奨が会員に強く効く。店販の粗利を求めており、取扱いの意思決定が速い。",
+  hook:"食事指導で「これを飲んでください」と渡せるものはありますか。店販として置いていただけませんか。"},
+ {t:"C",name:"24時間型・小規模フィットネスクラブ",c:7190,
+  why:"全国7,000施設超。スタッフ常駐が少ない分、物販は棚に置くだけで回る。会員の継続率向上という共通の課題に効く。",
+  hook:"会員様の継続率、食事まで踏み込めば変わります。受付に置ける一箱からお試しください。"},
+ {t:"C",name:"ヨガ・ピラティススタジオ",c:1877,
+  why:"客層とブランドの世界観が完全に重なる。インストラクターが実際に体感すれば、そのまま熱量のある紹介者になる。",
+  hook:"まずインストラクターの方に飲んでいただきたいです。体感があれば、説明は要りません。"},
+ {t:"C",name:"エステサロン・美容サロン",c:90000,
+  why:"母数が圧倒的に大きく、施術効果を高める内側からのケアという提案が通る。オーナー1人で決裁できる小規模店が多い。",
+  hook:"外側からのケアに、内側からの一本を。施術の効果の持ちが変わったというお声をいただいています。"},
+ {t:"C",name:"整骨院・接骨院・鍼灸院",c:50000,
+  why:"院内物販が定着している業態で、体質改善の文脈が自然に通る。地域密着で、患者との関係が長く継続購買になりやすい。",
+  hook:"体質から変えたい患者様に、院からお渡しできるものを。物販として置いていただけませんか。"},
+ {t:"C",name:"自然食品店・オーガニックショップ",c:3000,
+  why:"20年実績のマクロビオティック酵素ペーストという出自が、この棚では最強の説得材料になる。客層が完全に一致する。",
+  hook:"20年続くマクロビオティックの酵素ペーストに、松葉を加えました。棚に置いていただけませんか。"},
+ {t:"C",name:"ゴルフ場・ゴルフ練習場",c:2200,
+  why:"既にコンペ協賛での接点実績があり、経営者層との出会いの場としても機能する。プレー前後の体調管理という文脈が通る。",
+  hook:"コンペの記念品に、話題になる健康商材を。すでに複数のコンペでご採用いただいています。"},
+ {t:"C",name:"温浴施設・サウナ・スパ",c:3500,
+  why:"ととのう文化と発酵・デトックスの相性が良く、館内物販の回転が速い。若年層への新しい接点として機能する。",
+  hook:"サウナのあとの一本として。館内の物販棚に、他にない発酵ペーストを置きませんか。"},
+ {t:"C",name:"保険代理店・ファイナンシャルプランナー",c:15000,
+  why:"顧客の健康は保険会社にとっても利害が一致するテーマ。訪問時の手土産・話題づくりとして継続的に動く。",
+  hook:"ご契約者様への訪問、手ぶらで行かれていますか。話題になって喜ばれる健康の一本をご用意します。"},
+ {t:"C",name:"経営者コミュニティ・異業種交流団体",c:1200,
+  why:"守一クラブでの実績がそのまま横展開できる。経営者は自分で飲んで自社にも導入する、二段の購買が起きる層。",
+  hook:"経営者の方はご自身で試して、会社にも入れてくださいます。まず例会での試食の場をいただけませんか。"}
+];
+var TIER_META={
+  A:{label:"毎日出る場所",note:"習慣化して定期購買になる",cls:"c"},
+  B:{label:"健康予算",note:"予算と稟議ルートが既にある",cls:"b"},
+  C:{label:"売り場と紹介",note:"棚を持つ、紹介者になる",cls:"d"}
+};
+
+(function(){
+  var total=TARGETS.reduce(function(a,b){return a+b.c;},0);
+  var a=TARGETS.filter(function(d){return d.t==="A";}).reduce(function(x,y){return x+y.c;},0);
+  document.getElementById("t-total").innerHTML=n(total)+'<small>件</small>';
+  document.getElementById("t-a").innerHTML=n(a)+'<small>件</small>';
+})();
+
+(function(){
+  var rows=["A","B","C"].map(function(t){
+    var sum=TARGETS.filter(function(d){return d.t===t;}).reduce(function(a,b){return a+b.c;},0);
+    return {t:t,sum:sum,cnt:TARGETS.filter(function(d){return d.t===t;}).length};
+  });
+  var max=niceMax(Math.max.apply(null,rows.map(function(r){return r.sum;}))*1.05,4);
+  var W=620,H=230,padL=222,padR=86,plotW=W-padL-padR,rowH=56,top=40,s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-12)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-18)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-20,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+8,top-20,"件",{fill:"var(--ink-3)",size:10});
+  var colors={A:"var(--s1)",B:"var(--s4)",C:"var(--s2)"};
+  rows.forEach(function(r,i){
+    var y=top+i*rowH,m=TIER_META[r.t];
+    s+=txt(0,y+8,"Tier "+r.t+"・"+m.label+"（"+r.cnt+"業種）",{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(0,y+26,m.note,{fill:"var(--ink-3)",size:10.5});
+    s+=rrect(padL,y-6,(r.sum/max)*plotW,24,4,colors[r.t]);
+    s+=txt(padL+(r.sum/max)*plotW+8,y+6,n(r.sum),{fill:"var(--ink-2)",size:11.5,mono:true,baseline:"middle"});
+  });
+  document.getElementById("ch-tiers").innerHTML=svg(W,H,s);
+})();
+
+var state={tier:"all",q:"",sort:"rank"};
+function renderTargets(){
+  var list=TARGETS.map(function(d,i){d._rank=i+1;return d;});
+  if(state.tier!=="all") list=list.filter(function(d){return d.t===state.tier;});
+  if(state.q){
+    var q=state.q.toLowerCase();
+    list=list.filter(function(d){return (d.name+d.why+d.hook).toLowerCase().indexOf(q)>=0;});
+  }
+  if(state.sort==="count") list=list.slice().sort(function(a,b){return b.c-a.c;});
+  if(state.sort==="countAsc") list=list.slice().sort(function(a,b){return a.c-b.c;});
+  document.getElementById("t-shown").textContent=list.length;
+  document.getElementById("t-sum").textContent=n(list.reduce(function(a,b){return a+b.c;},0))+"件";
+  document.getElementById("t-list").innerHTML=list.map(function(d){
+    var m=TIER_META[d.t];
+    return '<article class="trow t'+d.t+'">'+
+      '<div class="rank">'+String(d._rank).padStart(2,"0")+'</div>'+
+      '<div class="head"><div class="name">'+esc(d.name)+'</div>'+
+      '<div class="meta"><span class="chip '+m.cls+'">Tier '+d.t+'・'+m.label+'</span>'+
+      '<span class="cnt">'+n(d.c)+'<span>件</span></span></div></div>'+
+      '<div class="why"><span class="fieldlabel">なぜ狙うか</span><p class="fieldbody">'+esc(d.why)+'</p></div>'+
+      '<div class="hook"><span class="fieldlabel">初回の切り口</span><p class="fieldbody">'+esc(d.hook)+'</p></div>'+
+    '</article>';
+  }).join("");
+}
+document.querySelectorAll("#tier-seg button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll("#tier-seg button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    state.tier=b.dataset.t;renderTargets();
+  });
+});
+document.getElementById("t-search").addEventListener("input",function(e){state.q=e.target.value.trim();renderTargets();});
+document.getElementById("t-sort").addEventListener("change",function(e){state.sort=e.target.value;renderTargets();});
+renderTargets();
+
+/* ---------------- 在宅ワーカー業務 ---------------- */
+var TASKS=[
+ {g:"受発注・経理",h:30,items:[
+   {n:"受注処理・発送手配・納品書の発行",h:10},
+   {n:"請求書の発行・入金消込・売掛管理",h:6},
+   {n:"在庫管理と製造委託先への発注調整",h:6},
+   {n:"経費精算と仕訳入力（会計ソフト）",h:8}]},
+ {g:"B2B営業事務",h:34,items:[
+   {n:"見込み法人リストの作成・企業情報の収集",h:10,key:true},
+   {n:"サンプル送付の手配とフォロー連絡",h:8,key:true},
+   {n:"商談日程の調整・議事録作成・CRM入力",h:8,key:true},
+   {n:"卸・代理店の契約書と価格表の作成・管理",h:8}]},
+ {g:"販促・コンテンツ",h:32,items:[
+   {n:"LP／HPの更新・商品ページの改修",h:8,key:true},
+   {n:"SNS投稿の素材作成・予約投稿・コメント対応",h:10,key:true},
+   {n:"動画・ライブ配信のアーカイブ編集と切り抜き",h:8,key:true},
+   {n:"導入事例・お客様の声の記事化",h:6}]},
+ {g:"顧客対応・講座運営",h:24,items:[
+   {n:"問い合わせ一次対応（メール・DM・電話）",h:8,key:true},
+   {n:"デトックスランチ会の申込受付・決済・リマインド",h:8},
+   {n:"受講者アンケートの回収・集計",h:4},
+   {n:"定期購入者へのフォローメール配信",h:4}]},
+ {g:"法令・品質まわり",h:20,items:[
+   {n:"広告表現の薬機法・景表法チェックリスト運用",h:8,key:true},
+   {n:"体験談・口コミ投稿のPR表記管理（ステマ規制対応）",h:4,key:true},
+   {n:"製造委託先との規格書・原材料表示の管理",h:4},
+   {n:"特許・商標まわりの書類管理",h:4}]}
+];
+(function(){
+  var total=TASKS.reduce(function(a,b){return a+b.h;},0);
+  document.getElementById("rw-total").innerHTML=total+'<small>h/月</small>';
+  document.getElementById("task-groups").innerHTML=TASKS.map(function(g){
+    return '<section class="taskgroup"><header><h4>'+esc(g.g)+'</h4><span class="hh">'+g.h+' h/月</span></header><ul>'+
+      g.items.map(function(it){
+        return '<li'+(it.key?' class="key"':'')+'><span>'+esc(it.n)+'</span><b>'+it.h+'h</b></li>';
+      }).join("")+'</ul></section>';
+  }).join("");
+})();
+
+/* ---------------- 組織図 ---------------- */
+function orgBox(x,y,w,h,title,sub,opt){
+  opt=opt||{};
+  var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="10" fill="'+(opt.fill||"var(--surface-2)")+'" stroke="'+(opt.color||"var(--rule-2)")+'" stroke-width="'+(opt.bold?2.5:1.25)+'"'+(opt.dash?' stroke-dasharray="5 4"':'')+'></rect>';
+  s+=txt(x+13,y+(sub?20:h/2+4),title,{fill:opt.tc||"var(--ink)",size:opt.size||12.5,weight:700,disp:true});
+  if(sub) s+=txt(x+13,y+35,sub,{fill:"var(--ink-3)",size:10.5});
+  return s;
+}
+function elbow(x1,y1,x2,y2,my){
+  return '<path d="M '+x1+' '+y1+' L '+x1+' '+my+' L '+x2+' '+my+' L '+x2+' '+y2+'" fill="none" stroke="var(--rule-2)" stroke-width="1.25"></path>';
+}
+(function(){
+  var W=880,H=250,s="";
+  s+=orgBox(320,6,240,48,"山崎 マナ 代表","すべての業務が代表を経由している",{color:"var(--alert)",fill:"var(--alert-soft)",bold:true});
+  var cols=[
+    {x:8,t:"商品開発・製造委託",u:"代表にしかできない"},
+    {x:228,t:"PR・SNS・動画・講座",u:"代表にしかできない"},
+    {x:448,t:"法人営業・試食会",u:"時間が取れない"},
+    {x:668,t:"受発注・経理・問合せ",u:"社員でなくてもできる"}
+  ];
+  cols.forEach(function(c,i){
+    s+=elbow(440,54,c.x+98,86,70);
+    s+=orgBox(c.x,86,196,54,c.t,c.u,{color:i>=2?"var(--alert)":"var(--rule-2)"});
+  });
+  s+=orgBox(8,168,420,48,"スタッフ 1名（時短勤務）","対応できる範囲に限りがある");
+  s+=txt(452,196,"※ 右の2つが代表の時間を奪い、法人営業に手が回らない構造",{fill:"var(--alert)",size:11.5,weight:700});
+  document.getElementById("ch-org-before").innerHTML=svg(W,H,s);
+})();
+(function(){
+  var W=880,H=400,s="";
+  s+=orgBox(320,6,240,48,"山崎 マナ 代表","試食会・講座・メディア・商品開発",{color:"var(--brand)",fill:"var(--brand-soft)",bold:true});
+  var colX=[8,304,600],colW=272;
+  var heads=[
+    {t:"代表が担う領域",u:"代替できない仕事だけ",c:"var(--s1)"},
+    {t:"スタッフ 1名",u:"発送・講座運営の現場",c:"var(--s4)"},
+    {t:"在宅ワーカーチーム",u:"4〜5名相当／月140時間",c:"var(--s2)"}
+  ];
+  heads.forEach(function(hd,i){
+    s+=elbow(440,54,colX[i]+colW/2,84,70);
+    s+=orgBox(colX[i],84,colW,48,hd.t,hd.u,{color:hd.c,bold:true});
+  });
+  function sub(x,y,w,t,h){
+    var r='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="30" rx="8" fill="var(--surface)" stroke="var(--rule)" stroke-width="1"></rect>';
+    r+=txt(x+12,y+19,t,{fill:"var(--ink-2)",size:11.5});
+    if(h) r+=txt(x+w-12,y+19,h,{fill:"var(--ink-3)",size:10.5,mono:true,anchor:"end"});
+    return r;
+  }
+  ["試食会・法人商談での説明","講座・メディア出演","商品開発と価格の決定"].forEach(function(t,i){ s+=sub(colX[0],144+i*36,colW,t); });
+  ["発送作業・在庫の実物管理","デトックスランチ会の現場運営"].forEach(function(t,i){ s+=sub(colX[1],144+i*36,colW,t); });
+  [["受発注・経理","30h"],["B2B営業事務","34h"],["販促・コンテンツ","32h"],["顧客対応・講座運営","24h"],["法令・品質まわり","20h"]].forEach(function(t,i){
+    s+=sub(colX[2],144+i*36,colW,t[0],t[1]);
+  });
+  s+='<path d="M 144 336 L 144 312" fill="none" stroke="var(--s4)" stroke-width="1.5" stroke-dasharray="4 3"></path>';
+  s+='<path d="M 736 336 L 736 324" fill="none" stroke="var(--s4)" stroke-width="1.5" stroke-dasharray="4 3"></path>';
+  s+=orgBox(8,336,colW,52,"アイドマ 営業支援ユニット","法人アポイントを代表へ供給する",{color:"var(--s4)",fill:"var(--info-soft)",dash:true,size:12});
+  s+=orgBox(600,336,colW,52,"アイドマ 生産性向上支援ユニット","設計・採用・マニュアル・教育・定例MTG",{color:"var(--s4)",fill:"var(--info-soft)",dash:true,size:12});
+  s+=txt(304,358,"管理者を新たに",{fill:"var(--ink-3)",size:11});
+  s+=txt(304,374,"置く必要はありません",{fill:"var(--ink-3)",size:11});
+  document.getElementById("ch-org-after").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- 代表の時間配分 ---------------- */
+(function(){
+  var cats=[
+    {l:"法人商談・試食会",c:"var(--s1)",before:10,after:50},
+    {l:"講座・メディア・発信",c:"var(--s3)",before:40,after:50},
+    {l:"商品開発・製造委託管理",c:"var(--s4)",before:40,after:44},
+    {l:"受発注・経理・事務",c:"var(--s2)",before:40,after:8},
+    {l:"問い合わせ・個別対応",c:"var(--s5)",before:30,after:8}
+  ];
+  var W=740,H=250,padL=76,padR=56,plotW=W-padL-padR,total=160,s="";
+  [["現状",40,"before"],["移管後",132,"after"]].forEach(function(row){
+    var y=row[1],k=row[2],x=padL;
+    s+=txt(0,y+23,row[0],{fill:"var(--ink)",size:13,weight:700,disp:true});
+    cats.forEach(function(c){
+      var w=(c[k]/total)*plotW;
+      if(w<=0) return;
+      s+=rrect(x,y,w-2,38,4,c.c);
+      if(w>40) s+=txt(x+w/2-1,y+24,String(c[k])+"h",{fill:"#FFFFFF",size:11.5,weight:700,mono:true,anchor:"middle"});
+      x+=w;
+    });
+    s+=txt(padL+plotW+8,y+24,"計160h",{fill:"var(--ink-3)",size:10.5,mono:true});
+  });
+  var ax=padL+(10/total)*plotW, bx=padL+(50/total)*plotW;
+  s+='<path d="M '+ax+' 96 L '+ax+' 112 M '+bx+' 96 L '+bx+' 112" stroke="var(--rule-2)" stroke-width="1" stroke-dasharray="3 3"></path>';
+  s+='<path d="M '+(ax+4)+' 104 L '+(bx-8)+' 104" stroke="var(--accent)" stroke-width="2"></path>';
+  s+='<path d="M '+(bx-8)+' 100 L '+bx+' 104 L '+(bx-8)+' 108 Z" fill="var(--accent)"></path>';
+  s+=txt(bx+8,108,"法人商談に使える時間が ＋40h／月",{fill:"var(--accent)",size:12,weight:700});
+  s+=txt(0,214,"※ 稼働を月160時間として配分。商品開発と発信は代表にしかできないため、削らない前提で試算しています。",{fill:"var(--ink-3)",size:11});
+  document.getElementById("ch-time").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- ROI ---------------- */
+var PRESETS={
+  cons:{app:2000,appo:0.7,meet:80,win:7,sfee:30,init:30,hours:100,ofee:22,ceoh:24,permeet:4,ceowin:20,rev:3,gm:55},
+  base:{app:3000,appo:1.0,meet:85,win:10,sfee:35,init:30,hours:140,ofee:28,ceoh:40,permeet:4,ceowin:25,rev:5,gm:60},
+  bull:{app:4000,appo:1.4,meet:90,win:14,sfee:45,init:30,hours:180,ofee:34,ceoh:50,permeet:4,ceowin:32,rev:9,gm:62}
+};
+var KEYS=["app","appo","meet","win","sfee","init","hours","ofee","ceoh","permeet","ceowin","rev","gm"];
+var DEC={appo:1};
+
+function readInputs(){var o={};KEYS.forEach(function(k){o[k]=parseFloat(document.getElementById("k-"+k).value);});return o;}
+function setInputs(p){KEYS.forEach(function(k){document.getElementById("k-"+k).value=p[k];});}
+
+function calc(p){
+  var appo=p.app*(p.appo/100);
+  var meet=appo*(p.meet/100);
+  var salesClose=meet*(p.win/100);
+  var ceoMeet=p.permeet>0?p.ceoh/p.permeet:0;
+  var ceoClose=ceoMeet*(p.ceowin/100);
+  var closes=salesClose+ceoClose;
+  var revPer=p.rev*10000;
+  var monthCost=p.sfee*10000+p.ofee*10000;
+  var custMonths=0,cumProfit=[],cumCost=[],monthly=[];
+  for(var m=1;m<=12;m++){
+    custMonths=closes*m*(m+1)/2;
+    monthly.push({sales:salesClose*m*revPer,ceo:ceoClose*m*revPer});
+    cumProfit.push(custMonths*revPer*(p.gm/100));
+    cumCost.push(p.init*10000+monthCost*m);
+  }
+  var yearRev=custMonths*revPer;
+  var yearProfit=yearRev*(p.gm/100);
+  var invest=p.init*10000+monthCost*12;
+  var roi=invest>0?(yearProfit-invest)/invest*100:0;
+  var runrate=closes*12*revPer;
+  var payback=null;
+  for(var i=0;i<12;i++){ if(payback===null&&cumProfit[i]>=cumCost[i]) payback=i+1; }
+  return {appo:appo,meet:meet,salesClose:salesClose,ceoMeet:ceoMeet,ceoClose:ceoClose,closes:closes,
+          yearRev:yearRev,yearProfit:yearProfit,invest:invest,roi:roi,runrate:runrate,
+          monthly:monthly,cumProfit:cumProfit,cumCost:cumCost,payback:payback};
+}
+function man(v){return n(v/10000);}
+
+function update(){
+  var p=readInputs();
+  KEYS.forEach(function(k){ document.getElementById("v-"+k).textContent=DEC[k]?p[k].toFixed(1):n(p[k]); });
+  var r=calc(p);
+
+  document.getElementById("o-roi").innerHTML=(r.roi>=0?"+":"")+Math.round(r.roi)+'<small>%</small>';
+  document.getElementById("o-roi").parentElement.className="stat "+(r.roi>=0?"pos":"warn");
+  document.getElementById("o-runrate").innerHTML="+"+man(r.runrate)+'<small>万円</small>';
+  document.getElementById("o-runnote").textContent="年換算 "+man(r.runrate*12)+"万円ペース（卸ベース）";
+  document.getElementById("o-closes").innerHTML=(r.closes*12).toFixed(1)+'<small>件</small>';
+  document.getElementById("o-closesplit").textContent="営業支援 "+(r.salesClose*12).toFixed(1)+"件 ／ 代表 "+(r.ceoClose*12).toFixed(1)+"件";
+  document.getElementById("o-payback").innerHTML=r.payback?r.payback+'<small>ヶ月目</small>':'<span style="font-size:17px">12ヶ月内に未達</span>';
+  document.getElementById("o-investnote").textContent="年間投資 "+man(r.invest)+"万円";
+
+  document.getElementById("f-app").textContent=n(p.app);
+  document.getElementById("f-appo").textContent=r.appo.toFixed(0);
+  document.getElementById("f-meet").textContent=r.meet.toFixed(1);
+  document.getElementById("f-win").textContent=r.salesClose.toFixed(1);
+  document.getElementById("f-appo-r").textContent="アポ率 "+p.appo.toFixed(1)+"%";
+  document.getElementById("f-meet-r").textContent="実施率 "+p.meet+"%";
+  document.getElementById("f-win-r").textContent="導入決定 "+p.win+"%";
+
+  drawRunrate(r);
+  drawPayback(r);
+  drawSens(p);
+
+  var v=document.getElementById("o-verdict");
+  if(r.roi>=0&&r.payback){
+    v.style.borderLeftColor="var(--brand)";
+    v.innerHTML='<b>判定：</b> 年間 <b>'+(r.closes*12).toFixed(1)+'件</b> の導入で、1年目の卸売上は <b>'+man(r.yearRev)+
+      '万円</b>、粗利は <b>'+man(r.yearProfit)+'万円</b>。投資 <b>'+man(r.invest)+'万円</b> に対してROIは <b>'+Math.round(r.roi)+
+      '%</b>、投資回収は <b>'+r.payback+'ヶ月目</b>です。12ヶ月後の月商ランレートは <b>+'+man(r.runrate)+'万円</b>——翌期はこれが丸ごと乗ります。';
+  } else {
+    v.style.borderLeftColor="var(--alert)";
+    v.innerHTML='<b style="color:var(--alert)">判定：</b> この前提では1年以内に投資を回収できません。粗利 <b style="color:var(--alert)">'+man(r.yearProfit)+
+      '万円</b> に対して投資は <b style="color:var(--alert)">'+man(r.invest)+
+      '万円</b>。打ち手は3つ——<b style="color:var(--alert)">1件あたり月商の大きいチャネルに絞る</b>、導入決定率を上げる、開始規模を小さくする。資金繰りを考えると、まず1つ目です。';
+  }
+}
+
+function drawRunrate(r){
+  var W=700,H=280,padL=66,padR=58,padT=26,padB=42;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var last=r.monthly[11];
+  var max=niceMax(Math.max((last.sales+last.ceo)*1.15,10000),4);
+  var s="";
+  for(var i=0;i<=4;i++){
+    var val=max*i/4,y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-12,"万円/月",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+((m-1)/11)*plotW;}
+  function py(v){return padT+plotH-(v/max)*plotH;}
+  var bw=plotW/12*0.58;
+  for(var m=1;m<=12;m++){
+    var d=r.monthly[m-1],x=px(m)-bw/2;
+    var h1=(d.sales/max)*plotH, h2=(d.ceo/max)*plotH;
+    var yb=padT+plotH;
+    s+=rrect(x,yb-h1,bw,h1,3,"var(--s1)");
+    s+=rrect(x,yb-h1-h2-2,bw,h2,3,"var(--s3)");
+    if(m%3===0||m===1) s+=txt(px(m),yb+18,m+"ヶ月",{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  var ty=py(last.sales+last.ceo);
+  s+='<circle cx="'+px(12)+'" cy="'+ty+'" r="4" fill="var(--accent)"></circle>';
+  s+=txt(px(12)+9,ty,n((last.sales+last.ceo)/10000)+"万円",{fill:"var(--ink)",size:11.5,weight:700,mono:true,baseline:"middle"});
+  document.getElementById("ch-runrate").innerHTML=svg(W,H,s);
+}
+
+function drawPayback(r){
+  var W=700,H=270,padL=66,padR=58,padT=24,padB=40;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var max=niceMax(Math.max(r.cumProfit[11],r.cumCost[11],1)*1.06,4),s="";
+  for(var i=0;i<=4;i++){
+    var val=max*i/4,y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-10,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+((m-1)/11)*plotW;}
+  function py(v){return padT+plotH-(v/max)*plotH;}
+  [1,3,6,9,12].forEach(function(m){ s+=txt(px(m),padT+plotH+18,m+"ヶ月",{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"}); });
+  function line(arr,color){
+    return '<path d="'+arr.map(function(v,i){return (i?"L":"M")+" "+px(i+1)+" "+py(v);}).join(" ")+
+      '" fill="none" stroke="'+color+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>';
+  }
+  s+=line(r.cumCost,"var(--s5)");
+  s+=line(r.cumProfit,"var(--s1)");
+  if(r.payback){
+    var x=px(r.payback);
+    s+='<line x1="'+x+'" y1="'+padT+'" x2="'+x+'" y2="'+(padT+plotH)+'" stroke="var(--s1)" stroke-width="1.5" stroke-dasharray="4 4"></line>';
+    s+='<circle cx="'+x+'" cy="'+py(r.cumProfit[r.payback-1])+'" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"></circle>';
+    s+=txt(x+8,padT+12,"投資回収 "+r.payback+"ヶ月目",{fill:"var(--s1)",size:11,weight:700});
+  }
+  s+='<circle cx="'+px(12)+'" cy="'+py(r.cumProfit[11])+'" r="4" fill="var(--s1)"></circle>';
+  s+=txt(px(12)+8,py(r.cumProfit[11]),n(r.cumProfit[11]/10000),{fill:"var(--s1)",size:11,weight:700,mono:true,baseline:"middle"});
+  s+='<circle cx="'+px(12)+'" cy="'+py(r.cumCost[11])+'" r="4" fill="var(--s5)"></circle>';
+  s+=txt(px(12)+8,py(r.cumCost[11]),n(r.cumCost[11]/10000),{fill:"var(--s5)",size:11,weight:700,mono:true,baseline:"middle"});
+  document.getElementById("ch-payback").innerHTML=svg(W,H,s);
+}
+
+function drawSens(p){
+  var cases=[
+    {r:1.5,l:"カフェ"},{r:3,l:"サロン"},{r:5,l:"ジム・混合"},
+    {r:9,l:"複合"},{r:15,l:"福利厚生"},{r:29,l:"高齢者施設"}
+  ];
+  var curIdx=0,curD=Infinity;
+  cases.forEach(function(c,i){var d=Math.abs(c.r-p.rev);if(d<curD){curD=d;curIdx=i;}});
+  var vals=cases.map(function(c){
+    var q=calc(Object.assign({},p,{rev:c.r}));
+    return {r:c.r,l:c.l,profit:q.yearProfit,invest:q.invest};
+  });
+  var invest=vals[0].invest;
+  var max=niceMax(Math.max(Math.max.apply(null,vals.map(function(v){return v.profit;})),invest*1.2),4);
+  var W=700,H=282,padL=66,padR=20,padT=26,padB=70;
+  var plotW=W-padL-padR,plotH=H-padT-padB,slot=plotW/cases.length,bw=slot*0.56,s="";
+  for(var i=0;i<=4;i++){
+    var val=max*i/4,y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-10,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  vals.forEach(function(v,i){
+    var x=padL+i*slot+(slot-bw)/2,h=(v.profit/max)*plotH,y=padT+plotH-h,cur=(i===curIdx);
+    s+=rrect(x,y,bw,h,4,cur?"var(--accent)":"var(--s1)");
+    s+=txt(x+bw/2,y-7,n(v.profit/10000),{fill:cur?"var(--accent)":"var(--ink-2)",size:10.5,weight:700,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+18,v.r+"万円",{fill:cur?"var(--accent)":"var(--ink-3)",size:10.5,weight:cur?700:400,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+34,v.l,{fill:cur?"var(--accent)":"var(--ink-3)",size:10.5,anchor:"middle"});
+    if(cur) s+=txt(x+bw/2,padT+plotH+50,"現在の設定",{fill:"var(--accent)",size:10,weight:700,anchor:"middle"});
+  });
+  var iy=padT+plotH-(invest/max)*plotH;
+  s+='<line x1="'+padL+'" y1="'+iy+'" x2="'+(padL+plotW)+'" y2="'+iy+'" stroke="var(--s5)" stroke-width="2" stroke-dasharray="6 4"></line>';
+  s+=txt(padL+6,iy-8,"年間投資額 "+n(invest/10000)+"万円（この線を超えれば黒字）",{fill:"var(--s5)",size:10.5,weight:700});
+  s+=txt(padL,H-8,"横軸：導入1件あたりの月商（卸ベース）と、それに相当するチャネル",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("ch-sens").innerHTML=svg(W,H,s);
+}
+
+KEYS.forEach(function(k){
+  document.getElementById("k-"+k).addEventListener("input",function(){
+    document.querySelectorAll("#preset-seg button").forEach(function(x){x.setAttribute("aria-pressed","false");});
+    update();
+  });
+});
+document.querySelectorAll("#preset-seg button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll("#preset-seg button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    setInputs(PRESETS[b.dataset.preset]);update();
+  });
+});
+document.getElementById("roi-reset").addEventListener("click",function(){
+  document.querySelectorAll("#preset-seg button").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.preset==="base"?"true":"false");});
+  setInputs(PRESETS.base);update();
+});
+setInputs(PRESETS.base);
+update();
+
+})();
+</script>
