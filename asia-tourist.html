@@ -1,0 +1,1590 @@
+<title>アジアツーリスト 送客元の再設計</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPMincho:wght@400;700&family=BIZ+UDGothic:wght@400;700&family=Azeret+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#EDEDEA;
+  --surface:#FCFCFB;
+  --surface-2:#E4E4DF;
+  --surface-3:#D6D6D0;
+  --ink:#17181A;
+  --ink-2:#4B4D51;
+  --ink-3:#7A7C81;
+  --rule:#DCDCD6;
+  --rule-2:#C1C1BA;
+  --s1:#1F5FA8;
+  --s2:#B8402A;
+  --s3:#00806A;
+  --s4:#A06E00;
+  --s5:#96559E;
+  --brand:#1F5FA8;
+  --brand-soft:#DFE8F4;
+  --accent:#B8402A;
+  --accent-soft:#F6E3DE;
+  --good:#00806A;
+  --good-soft:#D9EDE8;
+  --warn:#A06E00;
+  --warn-soft:#F4EAD2;
+  --info-soft:#EEE2F1;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#131413;
+    --surface:#1D1E1D;
+    --surface-2:#282927;
+    --surface-3:#343533;
+    --ink:#ECECE8;
+    --ink-2:#B0B1AC;
+    --ink-3:#83847F;
+    --rule:#2D2E2C;
+    --rule-2:#3C3D3A;
+    --s1:#4E8FD6;
+    --s2:#E2603D;
+    --s3:#1CA88C;
+    --s4:#B4871A;
+    --s5:#AF7AC2;
+    --brand:#4E8FD6;
+    --brand-soft:#16243A;
+    --accent:#E2603D;
+    --accent-soft:#331A13;
+    --good:#1CA88C;
+    --good-soft:#0F2A25;
+    --warn:#B4871A;
+    --warn-soft:#2C2411;
+    --info-soft:#2A1F31;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#131413;
+  --surface:#1D1E1D;
+  --surface-2:#282927;
+  --surface-3:#343533;
+  --ink:#ECECE8;
+  --ink-2:#B0B1AC;
+  --ink-3:#83847F;
+  --rule:#2D2E2C;
+  --rule-2:#3C3D3A;
+  --s1:#4E8FD6;
+  --s2:#E2603D;
+  --s3:#1CA88C;
+  --s4:#B4871A;
+  --s5:#AF7AC2;
+  --brand:#4E8FD6;
+  --brand-soft:#16243A;
+  --accent:#E2603D;
+  --accent-soft:#331A13;
+  --good:#1CA88C;
+  --good-soft:#0F2A25;
+  --warn:#B4871A;
+  --warn-soft:#2C2411;
+  --info-soft:#2A1F31;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);
+  font-family:"BIZ UDGothic","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  font-size:15px;line-height:1.85;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"BIZ UDPMincho","Hiragino Mincho ProN",serif;font-weight:700;margin:0;line-height:1.48;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:3px}
+.mono{font-family:"Azeret Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.wave{height:3px;background:linear-gradient(90deg,var(--brand) 0 26%,var(--rule-2) 26% 74%,var(--accent) 74% 100%);border:0;margin:0;opacity:.8}
+
+.masthead{background:var(--surface);border-bottom:1px solid var(--rule)}
+.mast-inner{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-end;padding:26px 0 20px}
+.eyebrow{font-family:"Azeret Mono",monospace;font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.mast-title{font-size:clamp(23px,3.2vw,36px);font-weight:700;margin-top:8px;letter-spacing:.01em}
+.mast-title em{font-style:normal;color:var(--accent)}
+.mast-sub{color:var(--ink-2);font-size:13.5px;margin-top:9px;max-width:66ch}
+.mast-meta{font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-align:right}
+.mast-meta b{color:var(--ink-2);font-weight:700}
+.flash{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);color:var(--accent);
+  font-size:12px;font-weight:700;padding:5px 13px;border-radius:4px;margin-top:12px}
+
+.tabbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:none;border:0;border-bottom:3px solid transparent;font:inherit;font-size:13px;font-weight:700;
+  color:var(--ink-3);padding:13px 14px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .num{font-family:"Azeret Mono",monospace;font-size:10px;color:var(--ink-3);margin-right:6px;font-weight:700}
+.tab[aria-selected="true"] .num{color:var(--accent)}
+
+.panel{padding:34px 0 76px}
+.panel[hidden]{display:none!important}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.sec-head h2{font-size:24px}
+.sec-head .tagline{font-size:12.5px;color:var(--ink-3)}
+.lede{color:var(--ink-2);font-size:14px;max-width:78ch;margin:10px 0 26px}
+.block{margin-top:40px}
+.block > h3{font-size:17.5px}
+.block > .sub{font-size:12.5px;color:var(--ink-3);margin:3px 0 16px}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(186px,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.card.flat{background:transparent;border-style:dashed}
+
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:15px 17px;display:flex;flex-direction:column;gap:1px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;top:0;left:0;width:36px;height:3px;background:var(--rule-2)}
+.stat.hot::before{background:var(--accent);width:100%}
+.stat.pos::before{background:var(--good);width:100%}
+.stat.info::before{background:var(--brand);width:100%}
+.stat.warn::before{background:var(--warn);width:100%}
+.stat .k{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.stat .v{font-family:"Azeret Mono",monospace;font-size:25px;font-weight:700;letter-spacing:-.03em;line-height:1.35;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:13px;margin-left:2px;color:var(--ink-2);font-family:"BIZ UDGothic",sans-serif;font-weight:400}
+.stat .n{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:2px}
+.stat.hot .v{color:var(--accent)}
+.stat.pos .v{color:var(--good)}
+.stat.info .v{color:var(--brand)}
+.stat.warn .v{color:var(--warn)}
+
+.chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.chip.a{background:var(--accent-soft);color:var(--accent)}
+.chip.b{background:var(--brand-soft);color:var(--brand)}
+.chip.c{background:var(--good-soft);color:var(--good)}
+.chip.d{background:var(--warn-soft);color:var(--warn)}
+.chip.e{background:var(--info-soft);color:var(--s5)}
+
+.deflist{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;font-size:13.5px;align-items:baseline}
+.deflist dt{color:var(--ink-3);font-size:12px;font-weight:700;white-space:nowrap}
+.deflist dd{margin:0}
+.note{font-size:12px;color:var(--ink-3);line-height:1.78;margin-top:12px}
+.callout{background:var(--warn-soft);border-radius:10px;padding:14px 17px;font-size:12.5px;color:var(--ink-2);margin-top:14px}
+.callout b{color:var(--ink)}
+.callout.blue{background:var(--brand-soft)}
+
+.swot{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:14px}
+.swot section{border:1px solid var(--rule);border-radius:10px;padding:16px 18px;background:var(--surface)}
+.swot h4{font-size:14px;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.swot h4::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--rule-2)}
+.swot .s h4::before{background:var(--s3)}
+.swot .w h4::before{background:var(--s2)}
+.swot .o h4::before{background:var(--s1)}
+.swot .t h4::before{background:var(--s4)}
+.swot ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+
+.reason{background:var(--surface);border:1px solid var(--rule);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.reason .rhead{display:flex;gap:16px;align-items:flex-start;padding:20px 24px 0}
+.reason .idx{font-family:"BIZ UDPMincho",serif;font-size:32px;font-weight:700;color:var(--accent);line-height:1;flex:0 0 auto}
+.reason .kicker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.reason h4{font-size:18px}
+.reason .rbody{padding:12px 24px 20px}
+.reason p{font-size:13.5px;color:var(--ink-2)}
+.reason .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(188px,1fr));gap:10px;margin:15px 0 4px}
+.reason .fact{background:var(--surface-2);border-radius:8px;padding:10px 13px}
+.reason .fact .fv{font-family:"Azeret Mono",monospace;font-size:19px;font-weight:700}
+.reason .fact .fk{font-size:11px;color:var(--ink-3);line-height:1.5}
+.reason .sowhat{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:13.5px}
+.reason .sowhat b{color:var(--accent)}
+
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch}
+@media(max-width:800px){.vs{grid-template-columns:1fr}}
+.vs-col{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.vs-col.bad{border-top:4px solid var(--accent)}
+.vs-col.good{border-top:4px solid var(--brand)}
+.vs-col .vt{font-family:"Azeret Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--ink-3)}
+.vs-col h4{font-size:17px;margin:5px 0 12px}
+.vs-col ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:8px}
+.vs-col ul b{color:var(--ink)}
+.vs-mid{display:flex;align-items:center;justify-content:center;font-family:"BIZ UDPMincho",serif;font-size:20px;color:var(--rule-2)}
+@media(max-width:800px){.vs-mid{padding:4px 0}}
+
+.timeline{overflow-x:auto;padding:24px 0 4px}
+.timeline-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(156px,1fr);min-width:880px;position:relative}
+.timeline-track::before{content:"";position:absolute;left:0;right:0;top:9px;height:2px;background:var(--rule-2)}
+.tl-item{position:relative;padding:26px 12px 0 0}
+.tl-item::before{content:"";position:absolute;left:0;top:2px;width:15px;height:15px;border-radius:50%;background:var(--surface);border:3px solid var(--rule-2)}
+.tl-item.on::before{background:var(--accent);border-color:var(--accent)}
+.tl-item.now::before{background:var(--brand);border-color:var(--brand);width:19px;height:19px;top:0}
+.tl-item .y{font-family:"Azeret Mono",monospace;font-size:11.5px;font-weight:700;color:var(--ink-3)}
+.tl-item.on .y{color:var(--accent)}
+.tl-item.now .y{color:var(--brand)}
+.tl-item .t{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+
+.pillar{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.pillar .pk{font-family:"Azeret Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.09em;color:var(--ink-3)}
+.pillar h4{font-size:16.5px}
+.pillar p{font-size:13px;color:var(--ink-2)}
+.pillar .kpi{margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:4px}
+.pillar .kpi b{font-family:"Azeret Mono",monospace;color:var(--ink);font-weight:700}
+
+.scroller{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+table.matrix{width:100%;border-collapse:collapse;font-size:13px;min-width:700px}
+table.matrix th,table.matrix td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.matrix th{font-size:11.5px;color:var(--ink-3);font-weight:700;background:var(--surface-2)}
+table.matrix tr:last-child td{border-bottom:0}
+table.matrix td:first-child{font-weight:700}
+table.matrix td.num{font-family:"Azeret Mono",monospace;text-align:right;white-space:nowrap;font-weight:700}
+table.matrix td.mk{text-align:center;font-family:"Azeret Mono",monospace;font-weight:700;font-size:15px}
+.mk.ok{color:var(--good)}
+.mk.part{color:var(--warn)}
+.mk.no{color:var(--accent)}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:1px solid var(--rule);border-radius:10px}
+.seg{display:flex;background:var(--surface-2);border-radius:8px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:12px;font-weight:700;border:0;background:none;color:var(--ink-3);padding:6px 12px;border-radius:6px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.controls input[type="search"],.controls select{font:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--rule-2);border-radius:8px;background:var(--surface);color:var(--ink)}
+.controls input[type="search"]{min-width:190px;flex:1}
+.controls .count{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.controls .count b{font-family:"Azeret Mono",monospace;color:var(--ink);font-weight:700}
+
+.tlist{display:flex;flex-direction:column;gap:9px}
+.trow{display:grid;grid-template-columns:38px minmax(206px,1.02fr) minmax(238px,1.5fr) minmax(238px,1.5fr);gap:0 18px;
+  background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--rule-2);border-radius:0 10px 10px 0;padding:15px 18px;align-items:start}
+.trow.tA{border-left-color:var(--s1)}
+.trow.tB{border-left-color:var(--s2)}
+.trow.tC{border-left-color:var(--s3)}
+.trow .rank{font-family:"Azeret Mono",monospace;font-size:13px;color:var(--ink-3);font-weight:700;padding-top:2px}
+.trow .head{display:flex;flex-direction:column;gap:6px}
+.trow .name{font-family:"BIZ UDPMincho",serif;font-size:14.5px;font-weight:700;line-height:1.45}
+.trow .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.trow .cnt{font-family:"Azeret Mono",monospace;font-size:13px;font-weight:700}
+.trow .cnt span{font-size:11px;color:var(--ink-3);font-weight:400;margin-left:3px;font-family:"BIZ UDGothic",sans-serif}
+.trow .fieldlabel{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);display:block;margin-bottom:3px}
+.trow .fieldbody{font-size:13px;color:var(--ink-2);line-height:1.7}
+.trow .hook .fieldbody{color:var(--ink);border-left:3px solid var(--rule-2);padding-left:11px}
+@media(max-width:900px){
+  .trow{grid-template-columns:34px 1fr;gap:10px 14px}
+  .trow .head,.trow .why,.trow .hook{grid-column:2}
+}
+
+.taskgroup{background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.taskgroup header{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:13px 16px;background:var(--surface-2)}
+.taskgroup header h4{font-size:14px}
+.taskgroup header .hh{font-family:"Azeret Mono",monospace;font-size:12px;color:var(--ink-2);font-weight:700}
+.taskgroup ul{list-style:none;margin:0;padding:6px 0}
+.taskgroup li{display:flex;justify-content:space-between;gap:12px;padding:7px 16px;font-size:13px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.taskgroup li:last-child{border-bottom:0}
+.taskgroup li b{font-family:"Azeret Mono",monospace;font-size:12px;color:var(--ink-3);font-weight:400;white-space:nowrap}
+.taskgroup li.key{color:var(--ink)}
+.taskgroup li.key > span:first-child::before{content:"◆";color:var(--accent);font-size:8px;margin-right:7px;vertical-align:2px}
+
+.chartbox{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px}
+.chartbox h4{font-size:14px}
+.chartbox .csub{font-size:12px;color:var(--ink-3);margin:2px 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);margin-bottom:10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+
+.roi-layout{display:grid;grid-template-columns:minmax(280px,336px) 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.roi-layout{grid-template-columns:1fr}}
+.knobs{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px;position:sticky;top:58px;max-height:calc(100vh - 74px);overflow-y:auto}
+.knob{margin-bottom:14px}
+.knob label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink-2);margin-bottom:5px;gap:10px}
+.knob label b{font-family:"Azeret Mono",monospace;font-size:13px;color:var(--ink);font-weight:700}
+.knob input[type="range"]{width:100%;accent-color:var(--brand);height:20px;cursor:pointer}
+.knob-group{border-top:1px solid var(--rule);padding-top:14px;margin-top:16px}
+.gh{font-family:"Azeret Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);margin-bottom:12px}
+.gh span{color:var(--brand)}
+.resetbtn{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--rule-2);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:6px 12px;cursor:pointer}
+.resetbtn:hover{border-color:var(--ink-3);color:var(--ink)}
+.verdict{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--good);border-radius:0 10px 10px 0;padding:16px 20px;font-size:13.5px}
+.verdict b{font-family:"Azeret Mono",monospace;color:var(--good);font-weight:700}
+
+.funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(136px,1fr));gap:10px}
+.fstep{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:13px 14px}
+.fstep .fl{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.fstep .fv{font-family:"Azeret Mono",monospace;font-size:22px;font-weight:700}
+.fstep .fr{font-size:11px;color:var(--ink-3)}
+.fstep.end{background:var(--brand-soft);border-color:transparent}
+.fstep.end .fv,.fstep.end .fl,.fstep.end .fr{color:var(--brand)}
+
+.phase{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule)}
+.phase:first-of-type{border-top:0}
+.phase .pd{font-family:"Azeret Mono",monospace;font-size:12px;color:var(--accent);font-weight:700}
+.phase .pt{font-family:"BIZ UDPMincho",serif;font-size:16px;font-weight:700;line-height:1.4;margin-top:2px}
+.phase ul{margin:0;padding-left:1.15em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px}
+.phase ul b{color:var(--ink)}
+.owner{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:4px;margin-right:7px;vertical-align:1px}
+.owner.ai{background:var(--brand-soft);color:var(--brand)}
+.owner.kl{background:var(--accent-soft);color:var(--accent)}
+.srcs{font-size:12px;color:var(--ink-3);line-height:1.9}
+@media(max-width:640px){
+  .wrap{padding:0 16px}
+  .phase{grid-template-columns:1fr;gap:10px}
+  .reason .rhead{flex-direction:column;gap:6px}
+}
+</style>
+
+<hr class="wave">
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <div>
+      <div class="eyebrow">事前リサーチ ／ 成長戦略 ／ 2ユニット ROIシミュレーション</div>
+      <h1 class="mast-title">アジアツーリスト <em>送客元</em> の再設計</h1>
+      <p class="mast-sub">中国からの送客が半減しました。しかし訪日市場そのものは縮んでいません。韓国・台湾・インド・米国は過去最高を更新しています。<b>顔ぶれが入れ替わっただけ</b>です。待つのではなく、送客元を入れ替えにいくための設計図です。</p>
+      <div class="flash">◆ 本ボードの主題：中国が戻るのを待つか、送客元を入れ替えるか</div>
+    </div>
+    <div class="mast-meta">
+      <div><b>作成</b> 株式会社アイドマ・ホールディングス</div>
+      <div><b>宛先</b> 株式会社アジアツーリスト 御中</div>
+      <div><b>次回商談</b> 2026年9月14日 19:00</div>
+      <div><b>更新</b> 2026年9月13日</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="セクション">
+  <div class="wrap tabs" role="tablist">
+    <button class="tab" data-p="research" role="tab" aria-selected="true"><span class="num">01</span>事前リサーチ</button>
+    <button class="tab" data-p="market" role="tab" aria-selected="false"><span class="num">02</span>市場の地殻変動</button>
+    <button class="tab" data-p="lang" role="tab" aria-selected="false"><span class="num">03</span>多言語の壁と動画</button>
+    <button class="tab" data-p="why" role="tab" aria-selected="false"><span class="num">04</span>今すぐやる3つの理由</button>
+    <button class="tab" data-p="strategy" role="tab" aria-selected="false"><span class="num">05</span>成長戦略</button>
+    <button class="tab" data-p="targets" role="tab" aria-selected="false"><span class="num">06</span>営業ターゲット30</button>
+    <button class="tab" data-p="remote" role="tab" aria-selected="false"><span class="num">07</span>在宅ワーカー活用</button>
+    <button class="tab" data-p="roi" role="tab" aria-selected="false"><span class="num">08</span>ROIシミュレーション</button>
+    <button class="tab" data-p="road" role="tab" aria-selected="false"><span class="num">09</span>90日ロードマップ</button>
+  </div>
+</nav>
+
+<!-- ===== 01 事前リサーチ ===== -->
+<section class="panel wrap" id="p-research" role="tabpanel">
+  <div class="sec-head"><h2>事前リサーチ</h2><span class="tagline">公開情報と前回商談メモの突き合わせ</span></div>
+  <p class="lede">前回商談のメモでは社名が「Tourist Asia」、社長名は未聴取となっていました。公開情報で確認したところ、<b>株式会社アジアツーリスト</b>（代表：王 保中 様）です。ここで最も見落とされやすいのが、旅行業に加えて<b>一般貸切バス運輸事業</b>を自社で持っている点です。本ボードでは、この一点を戦略の中心に置いています。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">設立</span><span class="v">2015<small>年</small></span><span class="n">10月15日設立／創業11年目</span></div>
+    <div class="stat"><span class="k">拠点</span><span class="v">上野</span><span class="n">東京都台東区上野3-3-8</span></div>
+    <div class="stat hot"><span class="k">事業の柱</span><span class="v">3<small>本</small></span><span class="n">旅行業／訪日インバウンド／一般貸切バス</span></div>
+    <div class="stat"><span class="k">従業員</span><span class="v">&lt;50<small>名</small></span><span class="n">公開情報では50名未満</span></div>
+  </div>
+
+  <div class="block">
+    <h3>会社概要</h3>
+    <p class="sub">公開情報（法人番号公表サイト／プレスリリース）より</p>
+    <div class="grid g2">
+      <div class="card">
+        <dl class="deflist">
+          <dt>商号</dt><dd>株式会社アジアツーリスト（ASIATOURIST）</dd>
+          <dt>代表者</dt><dd>王 保中（オウ ホチュウ）様</dd>
+          <dt>設立</dt><dd>2015年10月15日</dd>
+          <dt>所在地</dt><dd>東京都台東区上野3-3-8 ワイゼムビル6F</dd>
+          <dt>電話</dt><dd class="mono">03-5646-8569</dd>
+          <dt>事業</dt><dd>トラベル事業／訪日インバウンド旅行事業／<b>一般貸切バス運輸事業</b></dd>
+          <dt>自社媒体</dt><dd>訪日旅行相互予約サイト「Tourist Japan」</dd>
+        </dl>
+      </div>
+      <div class="card">
+        <h4 style="font-size:15px;margin-bottom:10px">すでに打っている手</h4>
+        <p style="font-size:13.5px;color:var(--ink-2)">プレスリリースによれば、Tourist Japan は<b>「欧米客のリピーター率を高め、持続可能なインバウンド経済を実現するため」</b>に開設されています。つまり御社は、中国依存から欧米・その他市場へ舵を切る必要性を、すでにご自身で認識して手を打っておられます。</p>
+        <p style="font-size:13.5px;color:var(--ink-2);margin-top:12px">前回商談で「動画の音声を英語・中国語にしたい」というご要望が出たのも、この延長線上にあります。<b>方向は正しい。足りないのは、その方向に向けた接触の量です。</b></p>
+        <div class="callout blue">本ボードは「新しい方向を提案する」ものではありません。<b>すでに決めておられる方向に、どうやって件数を付けるか</b>だけを書いています。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>前回商談で分かったこと</h3>
+    <p class="sub">メモの内容を、事実・課題・宿題に分けて整理</p>
+    <div class="grid g3">
+      <div class="card">
+        <span class="chip b">事実</span>
+        <ul style="margin:10px 0 0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px">
+          <li>海外出張・海外展示会への出展が頻繁で、<b>常に移動中</b></li>
+          <li>直近も9/8〜9/12に海外出張と出展準備</li>
+          <li>自社サービスへのこだわりが強く、訴求したい内容が明確にある</li>
+          <li>アイドマとは過去に商談歴あり（内容は記憶にない、とのこと）</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="chip a">課題</span>
+        <ul style="margin:10px 0 0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px">
+          <li>日本語のみのPR・集客ツールでは<b>インバウンドに使えない</b></li>
+          <li>字幕ではなく<b>音声自体</b>の英語・中国語化が必要</li>
+          <li>訴求内容が整理されないと、動画を作っても実用化に至らない</li>
+          <li>出張・出展準備で<b>日程が極めて過密</b></li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="chip d">宿題（9/14）</span>
+        <ul style="margin:10px 0 0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px">
+          <li>英語・中国語のAI音声動画は可能か</li>
+          <li>完成動画の二次利用範囲（HP／ブログ／SNS／広告）</li>
+          <li>事前に準備すべき訴求情報の確認</li>
+          <li>旅行会社・インバウンド業種の制作事例</li>
+          <li>アイドマの会社紹介とサービス説明</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout">この5つの宿題のうち、<b>最初の3つは「動画の話」ですが、実質は営業の話</b>です。「誰に見せる動画か」が決まらないと訴求は整理できず、訴求が整理されないと音声を何語にするかも決まりません。本ボードの02〜06は、その「誰に」を決めるための材料です。</div>
+  </div>
+
+  <div class="block">
+    <h3>強み・弱み・機会・脅威</h3>
+    <p class="sub">公開情報と商談メモから読み取れる範囲で</p>
+    <div class="swot">
+      <section class="s"><h4>強み（S）</h4><ul>
+        <li><b>自社で貸切バスを保有</b>。いま全国の旅行会社が最も手配に困っている資源</li>
+        <li>上野という立地。浅草・秋葉原・成田/羽田アクセスの結節点</li>
+        <li>自社予約媒体 Tourist Japan を持ち、B2C接点がある</li>
+        <li>代表自ら海外展示会に出向く行動力と、海外との人的ネットワーク</li>
+      </ul></section>
+      <section class="w"><h4>弱み（W）</h4><ul>
+        <li>代表が移動中は、国内の問い合わせ・見積・手配が止まりやすい</li>
+        <li>日本語中心のツール。多言語で継続発信する体制がない</li>
+        <li>国内法人へのアウトバウンド営業の仕組みが未確認（前回未聴取）</li>
+        <li>従業員50名未満。少人数で多言語・多市場を回す負荷</li>
+      </ul></section>
+      <section class="o"><h4>機会（O）</h4><ul>
+        <li>韓国・台湾・インド・米国・メキシコが過去最高を更新中</li>
+        <li>出国税の増収分が<b>地方誘客・需要分散</b>の財源に充てられる</li>
+        <li>貸切バス不足で、バスを持つ会社に引き合いが集中する構造</li>
+        <li>2030年 訪日6,000万人・消費15兆円という政府目標</li>
+      </ul></section>
+      <section class="t"><h4>脅威（T）</h4><ul>
+        <li>中国市場の回復時期が読めない（政治要因で自社では動かせない）</li>
+        <li>2026年11月1日の免税リファンド方式移行（経過措置なし）</li>
+        <li>バス運転者の高齢化。現有ドライバーの確保が今後の制約に</li>
+        <li>他社もバス車両・人員の確保に動けば、いまの優位は数年で消える</li>
+      </ul></section>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>データの取り扱いについて。</b>御社ホームページ（asia-tourist.co.jp）へは本ボード作成環境のネットワーク制限により直接アクセスできませんでした。会社概要は法人番号公表サイトおよびプレスリリース配信サービスの公開情報に基づいています。<b>従業員数・年商・保有バス台数・現在の送客元構成は未確認</b>です。9月14日の商談で、とくに<b>保有バス台数と現在の稼働日数</b>をご確認ください。ROIシミュレーション（08）の前提が大きく変わります。
+  </div>
+</section>
+
+<!-- ===== 02 市場の地殻変動 ===== -->
+<section class="panel wrap" id="p-market" role="tabpanel" hidden>
+  <div class="sec-head"><h2>市場の地殻変動</h2><span class="tagline">縮んだのではない、入れ替わった</span></div>
+  <p class="lede">2026年上半期の訪日外客数は<b>5年ぶりにマイナス</b>になりました。ただし中身を見ると、減ったのは中国だけです。韓国・台湾・インド・米国をはじめ幅広い市場が過去最高を更新しています。<b>市場は縮んでいません。送客元の顔ぶれが入れ替わりました。</b></p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">2025年 訪日外客数</span><span class="v">4,268<small>万人</small></span><span class="n">前年比＋15.8％・初の4,000万人超</span></div>
+    <div class="stat pos"><span class="k">2025年 旅行消費額</span><span class="v">9.5<small>兆円</small></span><span class="n">1人あたり22.9万円・過去最高</span></div>
+    <div class="stat warn"><span class="k">2026年 上半期</span><span class="v">-2.0<small>%</small></span><span class="n">2,108万人・5年ぶりのマイナス</span></div>
+    <div class="stat hot"><span class="k">うち中国</span><span class="v">-56.4<small>%</small></span><span class="n">渡航自粛要請の影響が継続</span></div>
+  </div>
+
+  <div class="block">
+    <h3>2026年上半期・市場別の増減</h3>
+    <p class="sub">前年同期比。マイナスは1本だけで、あとはすべて伸びている</p>
+    <div class="chartbox" id="c-shift"></div>
+    <div class="callout">
+      <b>読み方。</b>中国は1本で56.4％減っています。渡航自粛要請が出た2025年11月以降、12月は45.3％減、2026年1月は60.7％減。訪日予約の約3割がキャンセルされたと報じられました。一方で韓国は567万人（＋18.6％）、台湾は397万人（＋20.9％）、米国も約12万人増えて過去最高です。<b>中国の穴は、他の市場がすでに埋めはじめています。問題は、その市場と御社がつながっているかどうかだけです。</b>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>「戻るのを待つ」ことのコスト</h3>
+    <p class="sub">回復時期は自社で動かせない変数です</p>
+    <div class="vs">
+      <div class="vs-col bad">
+        <div class="vt">MODEL A</div>
+        <h4>中国が戻るのを待つ</h4>
+        <ul>
+          <li><b>コストはゼロに見えます。</b>何もしないので、目に見える支出は発生しません。</li>
+          <li>ただし待っている間、<b>バスは動かず、社員の手は空き、固定費だけが出ていきます</b>。これが本当のコストです。</li>
+          <li>回復時期は政治要因に左右され、<b>自社では一切コントロールできません</b>。</li>
+          <li>仮に回復しても、その頃には他社が新しい送客元を押さえ終わっています。</li>
+          <li>2026年上半期の実績は、待っていた会社の実績です。</li>
+        </ul>
+      </div>
+      <div class="vs-mid">対</div>
+      <div class="vs-col good">
+        <div class="vt">MODEL B</div>
+        <h4>送客元を入れ替えにいく</h4>
+        <ul>
+          <li><b>月額の費用が発生します。</b>ここは正直に申し上げます。</li>
+          <li>その代わり、接触する件数を<b>自社で決められます</b>。伸びている市場に、こちらから当たれます。</li>
+          <li>国内法人（バスの受注先）は電話・メールで届きます。<b>いますぐ着手できる領域です。</b></li>
+          <li>海外の送客元は、多言語メールと展示会で開けます。ここは在宅ワーカーが下支えします。</li>
+          <li>一度つくった提携は、中国が戻ったあとも残ります。<b>戻ったときに二重に効きます。</b></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>市場の流れ</h3>
+    <p class="sub">いま御社が立っている位置</p>
+    <div class="timeline"><div class="timeline-track">
+      <div class="tl-item on"><div class="y">2015</div><div class="t">アジアツーリスト設立。訪日市場の拡大期に参入</div></div>
+      <div class="tl-item on"><div class="y">2020-2022</div><div class="t">コロナ禍。貸切バス事業者の廃業・統合が進む</div></div>
+      <div class="tl-item on"><div class="y">2024</div><div class="t">バス運転者に改善基準告示が適用。1台あたりの稼働が構造的に低下</div></div>
+      <div class="tl-item on"><div class="y">2025.11</div><div class="t">中国政府が訪日渡航の自粛を要請。予約の約3割がキャンセル</div></div>
+      <div class="tl-item on"><div class="y">2026.07</div><div class="t">国際観光旅客税が1,000円→3,000円に。財源は地方誘客・需要分散へ</div></div>
+      <div class="tl-item now"><div class="y">2026.09</div><div class="t"><b>いまここ。</b>次回商談9/14。免税制度の切替まで残り49日</div></div>
+      <div class="tl-item"><div class="y">2026.11.01</div><div class="t">免税リファンド方式に全面切替（経過措置なし）</div></div>
+      <div class="tl-item"><div class="y">2030</div><div class="t">政府目標：訪日6,000万人・消費額15兆円</div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ===== 03 多言語の壁と動画 ===== -->
+<section class="panel wrap" id="p-lang" role="tabpanel" hidden>
+  <div class="sec-head"><h2>多言語の壁と動画</h2><span class="tagline">動画は目的ではなく、営業の部品</span></div>
+  <p class="lede">前回「字幕ではなく音声自体を英語・中国語にしたい」というご要望をいただきました。技術的には可能です。ただし本当の論点はそこではありません。<b>1本の動画を、どこに置いて、誰に何をしてもらうか</b>が決まっていないと、3言語つくっても使い道がないまま終わります。ここを先に決めます。</p>
+
+  <div class="block">
+    <h3>接点ごとの言語対応</h3>
+    <p class="sub">◯＝対応済み想定／△＝部分的・要確認／×＝未対応想定。現状は推定です、9/14に答え合わせをさせてください</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>接点</th><th style="text-align:center">日本語</th><th style="text-align:center">英語</th><th style="text-align:center">中国語</th><th>いまの状態と、外に出したときの姿</th></tr></thead>
+        <tbody>
+          <tr><td>自社ホームページ</td><td class="mk ok">◯</td><td class="mk part">△</td><td class="mk part">△</td><td>更新が代表に依存。移管後は在宅ワーカーが3言語を並行更新</td></tr>
+          <tr><td>Tourist Japan</td><td class="mk ok">◯</td><td class="mk ok">◯</td><td class="mk part">△</td><td>欧米向けに開設済み。祭り・イベントのカレンダー更新が継続の鍵</td></tr>
+          <tr><td>MiTok動画</td><td class="mk part">△</td><td class="mk no">×</td><td class="mk no">×</td><td>これから制作。<b>最初から3言語版を前提に台本を書く</b></td></tr>
+          <tr><td>SNS（YouTube／Instagram／Facebook／小紅書）</td><td class="mk part">△</td><td class="mk no">×</td><td class="mk no">×</td><td>動画の切り出しを在宅ワーカーが各SNSへ定期投稿</td></tr>
+          <tr><td>海外への営業メール</td><td class="mk ok">◯</td><td class="mk part">△</td><td class="mk part">△</td><td>代表が手打ちしている想定。テンプレ化して在宅ワーカーが送付・追客</td></tr>
+          <tr><td>問い合わせの一次対応</td><td class="mk ok">◯</td><td class="mk part">△</td><td class="mk ok">◯</td><td>代表が移動中は止まる。在宅ワーカーが一次返信を担当</td></tr>
+          <tr><td>旅程表・見積書</td><td class="mk ok">◯</td><td class="mk part">△</td><td class="mk part">△</td><td>都度作成。雛形化すれば在宅ワーカーで量産できる</td></tr>
+          <tr><td>海外展示会の配布資料</td><td class="mk ok">◯</td><td class="mk part">△</td><td class="mk part">△</td><td>出展のたびに突貫。事前準備を在宅ワーカーに寄せる</td></tr>
+          <tr><td>口コミ返信（TripAdvisor／Google）</td><td class="mk part">△</td><td class="mk no">×</td><td class="mk no">×</td><td>放置されがち。返信率は欧米客の予約率に直結する</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">◯が並ぶ列を増やすことが目的ではありません。<b>×が付いている行のうち、送客に直結する行から順に埋める</b>のが目的です。優先順は「海外への営業メール」→「MiTok動画」→「口コミ返信」です。</p>
+  </div>
+
+  <div class="block">
+    <h3>3分の動画に、何を入れるか</h3>
+    <p class="sub">「訴求を整理する」とは、この3つを決めることです</p>
+    <div class="grid g3">
+      <div class="card">
+        <span class="chip b">決めること①</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">誰に見せるのか</h4>
+        <p style="font-size:13px;color:var(--ink-2)">候補は3つあります。<b>(a) 海外の旅行会社・OTAの仕入担当</b>、<b>(b) 国内でバスが取れずに困っている旅行会社</b>、<b>(c) 訪日客本人</b>。この3者は知りたいことが全く違います。1本で全員を狙うと、誰にも刺さらない動画になります。</p>
+        <p style="font-size:13px;color:var(--ink-2);margin-top:10px"><b>推奨は(a)と(b)の2本立て</b>です。(c)向けはTourist Japan側のコンテンツとして後から作れます。</p>
+      </div>
+      <div class="card">
+        <span class="chip b">決めること②</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">何を伝えるのか</h4>
+        <p style="font-size:13px;color:var(--ink-2)">(a)海外の仕入担当に対しては<b>「日本でバスと宿と通訳を、自社で一気通貫で押さえられる会社」</b>。いま海外の旅行会社が最も困っているのが、日本側の手配です。</p>
+        <p style="font-size:13px;color:var(--ink-2);margin-top:10px">(b)国内の旅行会社に対しては<b>「バスが取れる」</b>。この一言で足ります。運転者不足でバスが押さえられず、団体を断っている会社が実在します。</p>
+      </div>
+      <div class="card">
+        <span class="chip b">決めること③</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">次に何をしてほしいのか</h4>
+        <p style="font-size:13px;color:var(--ink-2)">動画の最後で何を求めるかです。<b>「見積依頼フォームへ」</b>なのか、<b>「展示会ブースに来てほしい」</b>なのか、<b>「まず1台だけ試しに使ってほしい」</b>なのか。</p>
+        <p style="font-size:13px;color:var(--ink-2);margin-top:10px"><b>推奨は「空車日の照会」</b>です。相手のハードルが最も低く、こちらは稼働の穴を埋められます。動画の着地点を、営業の入口に揃えます。</p>
+      </div>
+    </div>
+    <div class="callout">
+      <b>この3つが決まると、音声を何語にするかは自動的に決まります。</b>(a)海外仕入担当向けなら英語＋中国語、(b)国内旅行会社向けなら日本語のみで足ります。「英語・中国語の音声を付けたい」というご要望は正しいのですが、<b>順番としては「誰に」が先</b>です。9/14はここから始めさせてください。
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>できた動画の置き場所</h3>
+    <p class="sub">1本つくって1か所に置くと、費用対効果は出ません</p>
+    <div class="chartbox" id="c-reuse"></div>
+  </div>
+</section>
+
+<!-- ===== 04 今すぐやる3つの理由 ===== -->
+<section class="panel wrap" id="p-why" role="tabpanel" hidden>
+  <div class="sec-head"><h2>今すぐやらないといけない3つの理由</h2><span class="tagline">法律・制度・世の中の流れ</span></div>
+  <p class="lede">3つとも、<b>御社の意思とは関係なく、外側で日付が決まっている</b>ものです。とくに2つ目は、あと49日で切り替わります。</p>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">1</div>
+      <div>
+        <div class="kicker"><span class="chip e">世の中の流れ</span><span class="chip a">2026年上半期・確定値</span></div>
+        <h4>送客元の顔ぶれが入れ替わった。待っていても元には戻らない</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p>2026年上半期の訪日外客数は2,108万4,800人、前年同期比2.0％減。<b>5年ぶりのマイナス</b>です。原因は明確で、中国が56.4％減ったこと。2025年11月に中国政府が訪日渡航の自粛を呼びかけ、12月は45.3％減、2026年1月は60.7％減、訪日予約の約3割がキャンセルされました。一方で同じ期間、韓国は567万5,100人（＋18.6％）、台湾は397万2,200人（＋20.9％）、メキシコ＋29.2％、ロシア＋24.7％、インド＋22.9％、米国も約12万人増で過去最高。<b>幅広い市場が最高記録を更新しています。</b></p>
+      <div class="facts">
+        <div class="fact"><div class="fv">-56.4<small>%</small></div><div class="fk">2026年上半期の中国からの訪日客</div></div>
+        <div class="fact"><div class="fv">+20.9<small>%</small></div><div class="fk">同期間の台湾（397万人）</div></div>
+        <div class="fact"><div class="fv">+18.6<small>%</small></div><div class="fk">同期間の韓国（568万人）</div></div>
+      </div>
+      <div class="sowhat"><b>アジアツーリストにとって：</b>中国の回復は政治要因で、御社が努力しても1日も早まりません。一方、韓国・台湾・インド・米国の送客元は<b>いま新しい日本側パートナーを探しています</b>。彼らも中国系の日本受入会社に偏っていた構造から、供給先を広げたがっています。この入れ替えの時期に接触した会社が、次の5年の取引先になります。<b>待っている間に埋まる椅子です。</b></div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">2</div>
+      <div>
+        <div class="kicker"><span class="chip d">税制</span><span class="chip a">2026年11月1日 切替・残り49日</span></div>
+        <h4>免税が「その場で引く」から「あとで返す」に変わる。旅程の作り方が変わる</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p>2026年11月1日購入分から、外国人旅行者向けの消費税免税は<b>リファンド方式</b>に全面移行します。<b>経過措置はありません</b>。これまでは店頭で税抜価格で買えましたが、今後は<b>いったん税込で購入</b>し、出国時に空港・港の税関で持ち出し確認を受けてから消費税相当額が返金されます。購入日から90日以内に、出国時の端末でパスポートを提示して確認を受ける必要があります。あわせて2026年7月1日出国分から、国際観光旅客税（出国税）が1,000円から3,000円に引き上げられました。この増収分は<b>オーバーツーリズム対策・地方誘客・需要分散</b>の財源に充てられます。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">11/01</div><div class="fk">リファンド方式へ全面切替（経過措置なし）</div></div>
+        <div class="fact"><div class="fv">90<small>日</small></div><div class="fk">購入から税関確認までの期限</div></div>
+        <div class="fact"><div class="fv">3,000<small>円</small></div><div class="fk">出国税（2026年7月1日出国分から）</div></div>
+      </div>
+      <div class="sowhat"><b>アジアツーリストにとって：</b>これは2つの意味で追い風です。第一に、<b>出国時の免税手続に時間がかかるようになります</b>。空港到着から搭乗までの余裕を旅程に織り込める会社が選ばれます。バスの時間を自社で握っている御社は、ここを最も正確に設計できます。第二に、出国税の増収分は<b>地方への誘客と需要分散に使われます</b>。つまり「東京だけを回る旅程」ではなく「地方へバスで運ぶ旅程」に、公的な予算と追い風が付きます。<b>バスを持っていることが、制度の側から評価される時期に入りました。</b></div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">3</div>
+      <div>
+        <div class="kicker"><span class="chip c">構造・人手</span><span class="chip a">いまだけ開いている窓</span></div>
+        <h4>貸切バスが取れない。バスを持っていること自体が、いま売り物になる</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p>バス運転者の有効求人倍率は<b>2.07倍</b>。全職業平均の2倍を超えています。バス会社の<b>76.4％</b>が運転者不足を深刻な問題と認識しています。背景は構造的です。コロナ禍の2年以上にわたる需要蒸発で廃業・統合が進み、大型二種免許の取得者は増えず、現役運転者の多くが50代以上。さらに2024年4月から自動車運転者の改善基準告示が適用され、拘束時間が短縮されたため、<b>同じ人数でも1台あたりの稼働可能日数が構造的に下がりました</b>。結果として、訪日団体を受けたくてもバスが押さえられず、受注を断っている旅行会社が実在します。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">2.07<small>倍</small></div><div class="fk">バス運転者の有効求人倍率</div></div>
+        <div class="fact"><div class="fv">76.4<small>%</small></div><div class="fk">運転者不足を深刻と回答したバス会社</div></div>
+        <div class="fact"><div class="fv">2024.04</div><div class="fk">改善基準告示の適用で稼働日数が低下</div></div>
+      </div>
+      <div class="sowhat"><b>アジアツーリストにとって：</b>御社は<b>一般貸切バス運輸事業を自社で持っています</b>。これは前回商談では話題にすら上がっていませんが、いまの市場では最も価値のある資産です。「インバウンドの旅行会社です」と名乗るより、<b>「バスを持っている旅行会社です」と名乗ったほうが、電話は確実につながります</b>。ただしこの窓は永久には開きません。他社が車両と人員を確保し直せば、優位は数年で薄れます。<b>バスが希少なうちに、バスを入口にして取引先を作っておく</b>——それが今年やるべきことです。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 05 成長戦略 ===== -->
+<section class="panel wrap" id="p-strategy" role="tabpanel" hidden>
+  <div class="sec-head"><h2>業績向上のための成長戦略</h2><span class="tagline">3本柱と、そのつなげ方</span></div>
+  <p class="lede">柱は3本です。順番が重要で、<b>まず柱1で足元の現金と稼働を作り</b>、その利益で柱2の海外開拓を回し、柱3がその両方を下支えします。いきなり海外から始めると、成果が出るまでの期間に耐えられません。</p>
+
+  <div class="grid g3">
+    <div class="pillar">
+      <div class="pk">PILLAR 01 ／ すぐ効く</div>
+      <h4>バスの稼働を商品にする</h4>
+      <p>「訪日旅行の会社」ではなく<b>「バスを持っている会社」</b>として国内法人に売ります。相手は、バスが取れずに困っている旅行会社・ホテル・学校・施設。訪日でも国内でも、空いている日を埋めればそのまま粗利になります。<b>アイドマの営業支援ユニットが直接稼働できるのはこの領域です。</b></p>
+      <div class="kpi"><span>主指標：<b>1台あたり月間稼働日数</b></span><span>副指標：<b>年間取引社数</b></span><span>着手：<b>即日</b></span></div>
+    </div>
+    <div class="pillar">
+      <div class="pk">PILLAR 02 ／ 本命</div>
+      <h4>送客元ポートフォリオの入替</h4>
+      <p>中国一極から、<b>韓国・台湾・東南アジア・欧米・インド</b>へ。海外の旅行会社・OTA・MICE主催者に、多言語メールと展示会で当たります。代表が出張で築いた人脈を、<b>属人から台帳へ</b>移します。ここは時間がかかりますが、一度できれば中国が戻ったあとも残る資産です。</p>
+      <div class="kpi"><span>主指標：<b>提携送客元の数</b></span><span>副指標：<b>国別の送客人数構成比</b></span><span>着手：<b>1ヶ月目から</b></span></div>
+    </div>
+    <div class="pillar">
+      <div class="pk">PILLAR 03 ／ 下支え</div>
+      <h4>多言語の内製化</h4>
+      <p>英語・中国語での一次対応、旅程表、営業メール、SNS投稿、動画の3言語化。<b>これを代表個人から在宅ワーカーチームへ移します。</b>柱1も柱2も、多言語で止まらない体制がなければ回りません。MiTok動画は、この柱の中の1つの部品です。</p>
+      <div class="kpi"><span>主指標：<b>代表が営業に使える時間</b></span><span>副指標：<b>問い合わせの一次返信までの時間</b></span><span>着手：<b>即日</b></span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>3本の柱が、どうつながるか</h3>
+    <p class="sub">柱1の現金が柱2を支え、柱3が両方の詰まりを取る</p>
+    <div class="chartbox" id="c-pillars"></div>
+  </div>
+
+  <div class="block">
+    <h3>現状と、3年後の姿</h3>
+    <p class="sub">数値は本ボードの標準前提に基づく想定です</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>項目</th><th>いま（推定）</th><th>1年後</th><th>3年後</th></tr></thead>
+        <tbody>
+          <tr><td>送客元の構成</td><td>中国中心・属人的</td><td>国内法人＋韓台の送客元が加わる</td><td>5市場以上に分散。1市場依存が3割以下</td></tr>
+          <tr><td>バスの稼働</td><td>訪日需要に連動。空車日が読めない</td><td>国内法人の定期案件で下支え</td><td>稼働の半分を定期取引で確保</td></tr>
+          <tr><td>問い合わせ対応</td><td>代表が移動中は停滞</td><td>在宅ワーカーが当日中に一次返信</td><td>3言語で24時間以内の返信が標準</td></tr>
+          <tr><td>営業の仕組み</td><td>展示会と人脈が中心</td><td>アウトバウンド営業が常時稼働</td><td>提携先からの継続発注が主力</td></tr>
+          <tr><td>コンテンツ</td><td>日本語中心・更新が不定期</td><td>動画3言語版＋SNS定期投稿</td><td>Tourist Japanが自走する集客導線に</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>この戦略の弱点</h3>
+    <p class="sub">先に申し上げておきます</p>
+    <div class="grid g2">
+      <div class="card flat">
+        <h4 style="font-size:14.5px;margin-bottom:8px">弱点①　バスの台数が上限になる</h4>
+        <p style="font-size:13px;color:var(--ink-2)">柱1は、保有台数と運転者数で天井が決まります。稼働が埋まりきったあとは、他社バスの手配（ランドオペレーター業務）に切り替えるか、増車するかの判断が必要になります。<b>まず現在の台数と稼働日数を確認させてください。</b>そこが分かれば、いつ天井に当たるかを逆算できます。</p>
+      </div>
+      <div class="card flat">
+        <h4 style="font-size:14.5px;margin-bottom:8px">弱点②　海外開拓はすぐには売上にならない</h4>
+        <p style="font-size:13px;color:var(--ink-2)">柱2は、接触から実際の送客まで半年から1年かかります。ここだけを見ると1年目の費用対効果は必ず低く出ます。だからこそ<b>柱1を先に立てて、柱2が実る前の期間を支える</b>設計にしています。ROI（08）でも、2つのエンジンを分けて表示しています。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 06 営業ターゲット30 ===== -->
+<section class="panel wrap" id="p-targets" role="tabpanel" hidden>
+  <div class="sec-head"><h2>営業ターゲット30</h2><span class="tagline">母数・狙う理由・最初の一言</span></div>
+  <p class="lede">関東1都3県（東京・埼玉・千葉・神奈川）の法人を、<b>バスの稼働を埋める先／訪日客を連れてくる先／訪日客を受け入れる先</b>の3層で30セグメントに分けました。母数は業界統計と推計に基づく<b>概算</b>です。バス送迎は関東中心ですが、送客提携は全国・海外に広げられます。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">総母数（30セグメント計）</span><span class="v" id="t-all">—</span><span class="n">関東1都3県の法人・施設数の合算</span></div>
+    <div class="stat hot"><span class="k">Tier A・バスの稼働を埋める</span><span class="v" id="t-a">—</span><span class="n">電話とFAXで今日から届く層</span></div>
+    <div class="stat pos"><span class="k">目標の取引社数</span><span class="v">60<small>社</small></span><span class="n">母数の0.15％で足りる</span></div>
+    <div class="stat"><span class="k">1年で接触できる件数</span><span class="v">24,000<small>件</small></span><span class="n">月2,000件×12ヶ月</span></div>
+  </div>
+
+  <div class="block">
+    <h3>3層別の母数</h3>
+    <p class="sub">母数は十分にあります。問題は当たる順番だけです</p>
+    <div class="chartbox" id="c-tiers"></div>
+  </div>
+
+  <div class="block">
+    <h3>ターゲット一覧</h3>
+    <p class="sub">Tierで絞る／母数で並べ替える／キーワードで検索する</p>
+    <div class="controls">
+      <div class="seg" id="t-seg">
+        <button data-t="all" aria-pressed="true">すべて（30）</button>
+        <button data-t="A" aria-pressed="false">A・バス稼働（10）</button>
+        <button data-t="B" aria-pressed="false">B・送客元（10）</button>
+        <button data-t="C" aria-pressed="false">C・受入提携（10）</button>
+      </div>
+      <input type="search" id="t-q" placeholder="業種・理由・切り口を検索" aria-label="ターゲットを検索">
+      <select id="t-sort" aria-label="並べ替え">
+        <option value="pri">優先度順</option>
+        <option value="cnt">母数が多い順</option>
+        <option value="cntA">母数が少ない順</option>
+      </select>
+      <div class="count">表示 <b id="t-n">30</b> 件 ／ 母数計 <b id="t-sum">—</b></div>
+    </div>
+    <div class="tlist" id="t-list"></div>
+  </div>
+</section>
+
+<!-- ===== 07 在宅ワーカー活用 ===== -->
+<section class="panel wrap" id="p-remote" role="tabpanel" hidden>
+  <div class="sec-head"><h2>在宅ワーカー活用</h2><span class="tagline">代表が移動していても、会社が止まらない状態へ</span></div>
+  <p class="lede">前回商談で最も印象的だったのは、<b>日程調整が極めて過密だという点</b>でした。海外出張と展示会出展が続き、その間も国内の問い合わせ・見積・手配は発生し続けます。移動中の代表に集まる業務を外に出すのが、生産性向上支援ユニットの役割です。<b>英語・中国語の対応も、ここで同時に解決します。</b></p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">移管できる業務量</span><span class="v">160<small>h/月</small></span><span class="n">正社員1名分を超える稼働</span></div>
+    <div class="stat hot"><span class="k">うち代表が抱えている分</span><span class="v">95<small>h/月</small></span><span class="n">多言語対応・見積・手配・広報</span></div>
+    <div class="stat"><span class="k">対象業務の数</span><span class="v">20<small>種</small></span><span class="n">5カテゴリに分類</span></div>
+    <div class="stat pos"><span class="k">在宅ワーカー体制</span><span class="v">4〜5<small>名相当</small></span><span class="n">1人1日2〜4時間の分業</span></div>
+  </div>
+
+  <div class="block">
+    <h3>在宅ワーカーに依頼できる業務</h3>
+    <p class="sub">◆印は、いま代表の時間をとくに奪っている業務です。時間は月間の想定工数</p>
+    <div class="grid g3" id="tasks"></div>
+    <div class="callout">
+      <b>この業種ならではの注意点。</b>外に出せるのは<b>手順が決まっている作業</b>だけです。旅程の最終判断、料金の決定、海外パートナーとの条件交渉、クレームの最終対応は社内に残します。とくに<b>多言語の一次返信は「返す」ところまでを在宅ワーカー、「決める」ところは代表</b>という切り分けが安全です。最初の1ヶ月は、旅程表の作成と配車日程の調整から始めるのが確実です。
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：現状</h3>
+    <p class="sub">問い合わせも見積も手配も広報も、すべて代表を通っている</p>
+    <div class="chartbox" id="c-org-now"></div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：在宅ワーカー活用後</h3>
+    <p class="sub">代表は「決める」「交渉する」だけに残り、あとは外に出す</p>
+    <div class="chartbox" id="c-org-next"></div>
+  </div>
+
+  <div class="block">
+    <h3>代表の時間配分は、どう変わるか</h3>
+    <p class="sub">月160時間を基準にした想定</p>
+    <div class="chartbox" id="c-time"></div>
+  </div>
+</section>
+
+<!-- ===== 08 ROI ===== -->
+<section class="panel wrap" id="p-roi" role="tabpanel" hidden>
+  <div class="sec-head"><h2>ROIシミュレーション</h2><span class="tagline">2つのエンジンを分けて計算する</span></div>
+  <p class="lede">左のつまみを動かすと、右の数字とグラフがその場で再計算されます。<b>エンジン1（国内法人＝バスの稼働）は数ヶ月で立ち上がり、エンジン2（海外送客元）は半年以降に効いてきます。</b>合算だけを見ると立ち上がりの遅さが見えなくなるので、両方を分けて表示しています。</p>
+
+  <div class="roi-layout">
+    <div class="knobs">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h4 style="font-size:15px">前提条件</h4>
+        <button class="resetbtn" id="r-reset">標準に戻す</button>
+      </div>
+      <div class="seg" style="margin-bottom:16px">
+        <button data-preset="cons" aria-pressed="false">保守</button>
+        <button data-preset="base" aria-pressed="true">標準</button>
+        <button data-preset="bull" aria-pressed="false">強気</button>
+      </div>
+
+      <div class="gh">◆ エンジン1 ／ <span>国内法人の開拓（営業支援ユニット）</span></div>
+      <div class="knob"><label for="k-app">月間アプローチ数<b><span id="v-app"></span>件</b></label><input type="range" id="k-app" min="500" max="5000" step="100"></div>
+      <div class="knob"><label for="k-appo">アポイント率<b><span id="v-appo"></span>%</b></label><input type="range" id="k-appo" min="0.2" max="3" step="0.1"></div>
+      <div class="knob"><label for="k-close">商談→受注率<b><span id="v-close"></span>%</b></label><input type="range" id="k-close" min="5" max="40" step="1"></div>
+      <div class="knob"><label for="k-freq">1社あたり 年間発注回数<b><span id="v-freq"></span>回</b></label><input type="range" id="k-freq" min="1" max="12" step="0.5"></div>
+      <div class="knob"><label for="k-price">1回あたり受注額<b><span id="v-price"></span>万円</b></label><input type="range" id="k-price" min="8" max="80" step="1"></div>
+      <div class="knob"><label for="k-gm">粗利率<b><span id="v-gm"></span>%</b></label><input type="range" id="k-gm" min="15" max="55" step="1"></div>
+      <div class="knob"><label for="k-sfee">ユニット月額費用<b><span id="v-sfee"></span>万円</b></label><input type="range" id="k-sfee" min="15" max="60" step="1"></div>
+
+      <div class="knob-group">
+        <div class="gh">◆ エンジン2 ／ <span>海外送客元の開拓（在宅ワーカーが創出した時間）</span></div>
+        <div class="knob"><label for="k-ownerh">代表から外れる時間<b><span id="v-ownerh"></span>h/月</b></label><input type="range" id="k-ownerh" min="20" max="140" step="5"></div>
+        <div class="knob"><label for="k-permeet">送客元1社の開拓に要する時間<b><span id="v-permeet"></span>h</b></label><input type="range" id="k-permeet" min="3" max="25" step="1"></div>
+        <div class="knob"><label for="k-tie">提携成立率<b><span id="v-tie"></span>%</b></label><input type="range" id="k-tie" min="5" max="45" step="1"></div>
+        <div class="knob"><label for="k-pax">1提携あたり 年間送客人数<b><span id="v-pax"></span>人</b></label><input type="range" id="k-pax" min="10" max="300" step="10"></div>
+        <div class="knob"><label for="k-gpp">送客1人あたり粗利<b><span id="v-gpp"></span>千円</b></label><input type="range" id="k-gpp" min="2" max="30" step="1"></div>
+        <div class="knob"><label for="k-ofee">ユニット月額費用<b><span id="v-ofee"></span>万円</b></label><input type="range" id="k-ofee" min="3" max="20" step="1"></div>
+      </div>
+
+      <div class="knob-group">
+        <div class="gh">◆ <span>参考：バスの稼働</span></div>
+        <div class="knob"><label for="k-bus">保有バス台数（要確認）<b><span id="v-bus"></span>台</b></label><input type="range" id="k-bus" min="1" max="15" step="1"></div>
+        <p class="note" style="margin-top:-4px">※ 台数は前回商談で未聴取のため仮置きです。稼働の上限判定にのみ使用しています。</p>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div>
+        <h4 style="font-size:15px;margin-bottom:3px">1年目の着地</h4>
+        <p class="sub" style="margin-bottom:12px">エンジン1は数ヶ月で立ち上がり、エンジン2は年後半から効きはじめます</p>
+        <div class="grid g4">
+          <div class="stat pos"><span class="k">1年目 ROI（合算）</span><span class="v" id="o-roi">—</span><span class="n">（粗利−投資）÷投資</span></div>
+          <div class="stat info"><span class="k">エンジン1 年間粗利</span><span class="v" id="o-gp1">—</span><span class="n" id="o-gp1n">—</span></div>
+          <div class="stat hot"><span class="k">エンジン2 年間粗利</span><span class="v" id="o-gp2">—</span><span class="n" id="o-gp2n">—</span></div>
+          <div class="stat"><span class="k">12ヶ月後の取引基盤</span><span class="v" id="o-base">—</span><span class="n" id="o-basen">—</span></div>
+        </div>
+      </div>
+
+      <div>
+        <p class="sub" style="margin-bottom:10px">月間のファネル（エンジン1・国内法人）</p>
+        <div class="funnel">
+          <div class="fstep"><div class="fl">アプローチ</div><div class="fv" id="f-app">—</div><div class="fr">電話・メール・FAX</div></div>
+          <div class="fstep"><div class="fl">アポイント</div><div class="fv" id="f-appo">—</div><div class="fr" id="f-appo-r">—</div></div>
+          <div class="fstep"><div class="fl">商談</div><div class="fv" id="f-meet">—</div><div class="fr">実施率 85%（固定）</div></div>
+          <div class="fstep end"><div class="fl">受注</div><div class="fv" id="f-close">—</div><div class="fr" id="f-close-r">—</div></div>
+        </div>
+      </div>
+
+      <div class="chartbox" id="c-engines"></div>
+      <div class="chartbox" id="c-payback"></div>
+      <div class="chartbox" id="c-bus"></div>
+
+      <div class="verdict" id="o-verdict"></div>
+
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:10px">この試算の読み方</div>
+        <ul style="margin:0;padding-left:1.2em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">
+          <li><b>エンジン1が先、エンジン2が後です。</b>国内法人は電話が届くので数ヶ月で受注が出ます。海外送客元は接触から実送客まで半年から1年かかるため、本シミュレーションでは<b>7ヶ月目から送客が始まる</b>前提にしています。1年目のROIはこの遅れの分だけ低く出ます。</li>
+          <li><b>最大の不確実要素は「1回あたり受注額」と「年間発注回数」です。</b>貸切バス1日あたりの相場は行程と車格で大きく変わります。初期値は保守的な水準を置いています。<b>実際の単価を9/14にお聞かせください</b>。この2つを実績値に置き換えるだけで、試算の精度は大きく上がります。</li>
+          <li><b>保有バス台数は未確認です。</b>下段の「バスの稼働」グラフは仮置きの台数で上限を判定しています。台数が分かれば、いつ稼働が天井に当たるか、いつ他社バスの手配に切り替えるべきかを逆算できます。</li>
+          <li>エンジン2の「代表から外れる時間」は、在宅ワーカーに移管した160時間のうち<b>代表本人が抱えていた分</b>です。ここが丸ごと海外開拓に回るとは限りません。つまみを下げて、確実に回せる水準でご確認ください。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 09 ロードマップ ===== -->
+<section class="panel wrap" id="p-road" role="tabpanel" hidden>
+  <div class="sec-head"><h2>90日ロードマップ</h2><span class="tagline">9月14日の商談から逆算して</span></div>
+  <p class="lede">最初の30日でバスの稼働を埋めにいき、そこで出た現金と実績を持って海外の送客元に当たります。<b>免税制度が切り替わる11月1日を、ひとつの区切りに置いています。</b></p>
+
+  <div class="card">
+    <div class="phase">
+      <div><div class="pd">DAY 0</div><div class="pt">9月14日<br>次回商談</div></div>
+      <ul>
+        <li><span class="owner ai">アイドマ</span>旅行会社・インバウンド業種のMiTok動画制作事例をご提示</li>
+        <li><span class="owner ai">アイドマ</span>英語・中国語のAI音声動画の可否と、二次利用範囲を明示</li>
+        <li><span class="owner ai">アイドマ</span>会社紹介と、営業支援・生産性向上支援の2ユニットのご説明</li>
+        <li><span class="owner kl">アジアツーリスト</span><b>保有バス台数と現在の月間稼働日数</b>をお聞かせください（本ボードの前提が確定します）</li>
+        <li><span class="owner kl">アジアツーリスト</span>現在の送客元の構成（国別・法人別のおおまかな比率）</li>
+        <li>この場で決めること：<b>動画を「誰に見せるか」</b>（03タブの3択）</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 1-30</div><div class="pt">バスの稼働を<br>埋めにいく</div></div>
+      <ul>
+        <li><span class="owner ai">アイドマ</span>Tier A（バス稼働）10セグメントからリスト2,000件を作成し、架電開始</li>
+        <li><span class="owner ai">アイドマ</span>切り口は一本化：<b>「バス、押さえられますか」</b>。旅行業の説明は後回し</li>
+        <li><span class="owner kl">アジアツーリスト</span>空車日カレンダーの整備。翌月・翌々月の空きが即答できる状態に</li>
+        <li><span class="owner kl">アジアツーリスト</span>在宅ワーカーに<b>旅程表作成と配車日程調整</b>から移管開始</li>
+        <li><span class="owner ai">アイドマ</span>MiTok動画の台本確定（国内旅行会社向け／海外仕入担当向けの2本）</li>
+        <li>30日目の到達点：<b>初回受注1〜3社、空車日の照会が週次で入る状態</b></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 31-60</div><div class="pt">多言語を<br>外に出す</div></div>
+      <ul>
+        <li><span class="owner kl">アジアツーリスト</span>在宅ワーカーの移管範囲を拡大（多言語の一次返信・SNS投稿・口コミ返信）</li>
+        <li><span class="owner ai">アイドマ</span>MiTok動画の日本語版完成→英語・中国語音声版を制作</li>
+        <li><span class="owner ai">アイドマ</span>Tier B（送客元）へ着手。まず<b>在日の海外旅行会社日本支社とランドオペレーター</b></li>
+        <li><span class="owner kl">アジアツーリスト</span>代表が出張中も一次返信が当日中に返る運用を確立</li>
+        <li><span class="owner ai">アイドマ</span>海外送客元向けの多言語メール文面を作成し、リスト送付を開始</li>
+        <li>60日目の到達点：<b>取引社数5〜10社、動画3言語版が各媒体に掲載済み</b></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 61-90</div><div class="pt">11月1日の<br>制度切替に乗る</div></div>
+      <ul>
+        <li><span class="owner kl">アジアツーリスト</span>免税リファンド方式を織り込んだ<b>出国日の旅程テンプレート</b>を用意</li>
+        <li><span class="owner ai">アイドマ</span>Tier C（受入提携）へ着手。免税店・商業施設・体験事業者と共同商品化の打診</li>
+        <li><span class="owner ai">アイドマ</span>Tier Aの受注データから、発注頻度の高い業種へリストを寄せる</li>
+        <li><span class="owner kl">アジアツーリスト</span>地方誘客の旅程を1本商品化（出国税の増収分が向かう方向に合わせる）</li>
+        <li>90日目の到達点：<b>取引社数15社前後、海外送客元との商談が月3〜5件走っている状態</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>出典</h3>
+    <p class="sub">本ボードで用いた公開データ</p>
+    <div class="card flat">
+      <div class="srcs">
+        ・訪日外客数（2025年実績・2026年上半期）：日本政府観光局（JNTO）／観光庁 発表に基づく報道<br>
+        ・インバウンド消費動向調査（2025年暦年 9兆4,559億円・1人あたり22.9万円）：観光庁<br>
+        ・中国からの訪日動向（渡航自粛要請・2025年12月／2026年1月の減少率）：各種報道<br>
+        ・国際観光旅客税の引き上げ（1,000円→3,000円・2026年7月1日出国分から）：2026年度税制改正大綱<br>
+        ・消費税免税制度のリファンド方式移行（2026年11月1日・経過措置なし・90日以内の税関確認）：国税庁／観光庁<br>
+        ・バス運転者の有効求人倍率2.07倍／76.4％が不足を深刻と認識：業界調査<br>
+        ・自動車運転者の改善基準告示（バス運転者へ2024年4月1日適用）：厚生労働省<br>
+        ・旅行サービス手配業（ランドオペレーター）登録制度（2018年1月4日〜）：旅行業法<br>
+        ・株式会社アジアツーリストの会社概要：法人番号公表サイト、プレスリリース配信サービス掲載情報<br>
+        <br>
+        ターゲット30の母数は、業界統計・各種名簿・推計に基づく<b>概算</b>です。実際のリスト作成時に精査します。
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+"use strict";
+
+var tabs=Array.prototype.slice.call(document.querySelectorAll(".tab"));
+tabs.forEach(function(t){
+  t.addEventListener("click",function(){
+    tabs.forEach(function(x){
+      x.setAttribute("aria-selected",x===t?"true":"false");
+      document.getElementById("p-"+x.dataset.p).hidden=(x!==t);
+    });
+    window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  });
+});
+
+var NF=new Intl.NumberFormat("ja-JP");
+function n(v){return NF.format(Math.round(v));}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function svg(w,h,inner){
+  return '<svg viewBox="0 0 '+w+' '+h+'" role="img" preserveAspectRatio="xMidYMid meet" '+
+    'style="max-width:'+Math.round(w*1.18)+'px;margin:0 auto">'+inner+'</svg>';
+}
+function txt(x,y,s,o){
+  o=o||{};
+  return '<text x="'+x+'" y="'+y+'" fill="'+(o.fill||"var(--ink-2)")+'" font-size="'+(o.size||11)+'" '+
+   'font-family="'+(o.mono?"Azeret Mono, monospace":(o.disp?"BIZ UDPMincho, serif":"BIZ UDGothic, sans-serif"))+'" '+
+   'font-weight="'+(o.weight||400)+'" text-anchor="'+(o.anchor||"start")+'"'+
+   (o.baseline?' dominant-baseline="'+o.baseline+'"':'')+'>'+esc(s)+'</text>';
+}
+function rrect(x,y,w,h,r,fill){
+  if(h<=0||w<=0) return "";
+  r=Math.min(r,h/2,w/2);
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+r+'" fill="'+fill+'"></rect>';
+}
+function box(x,y,w,h,title,sub,color,dashed){
+  var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="var(--surface-2)" stroke="'+(color||"var(--rule-2)")+'" stroke-width="1.6"'+(dashed?' stroke-dasharray="5 4"':'')+'></rect>';
+  s+=txt(x+13,y+(sub?23:h/2+5),title,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+  if(sub) s+=txt(x+13,y+40,sub,{fill:"var(--ink-3)",size:10.5});
+  return s;
+}
+function niceMax(v,div){
+  if(!(v>0)) return div;
+  var unit=v/div, step=Math.pow(10,Math.floor(Math.log10(unit))), r=unit/step;
+  var mult=r<=1?1:r<=2?2:r<=2.5?2.5:r<=5?5:10;
+  return step*mult*div;
+}
+
+/* ================= 02 市場別の増減 ================= */
+(function(){
+  var rows=[
+    {k:"メキシコ",v:29.2,note:"伸び率トップ"},
+    {k:"ロシア",v:24.7,note:""},
+    {k:"インド",v:22.9,note:"人口動態からも中期で拡大"},
+    {k:"台湾",v:20.9,note:"397万人・過去最高"},
+    {k:"韓国",v:18.6,note:"568万人・最大の送客元"},
+    {k:"中国",v:-56.4,note:"渡航自粛要請の影響"}
+  ];
+  var W=760,H=300,padL=92,padR=118,padT=34,padB=42;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var maxAbs=60, zero=padL+(maxAbs/(maxAbs*2))*plotW;
+  var rowH=plotH/rows.length;
+  var s="";
+  for(var g=-60;g<=60;g+=20){
+    var x=padL+((g+maxAbs)/(maxAbs*2))*plotW;
+    s+='<line x1="'+x+'" y1="'+(padT-8)+'" x2="'+x+'" y2="'+(padT+plotH)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,padT-14,(g>0?"+":"")+g+"%",{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+='<line x1="'+zero+'" y1="'+(padT-8)+'" x2="'+zero+'" y2="'+(padT+plotH)+'" stroke="var(--rule-2)" stroke-width="1.6"></line>';
+  rows.forEach(function(r,i){
+    var y=padT+i*rowH+rowH*0.22, bh=rowH*0.5;
+    var w=Math.abs(r.v)/(maxAbs*2)*plotW;
+    var pos=r.v>=0;
+    s+=rrect(pos?zero:zero-w,y,w,bh,4,pos?"var(--s3)":"var(--s2)");
+    s+=txt(padL-12,y+bh/2,r.k,{fill:"var(--ink)",size:13,weight:700,anchor:"end",baseline:"middle",disp:true});
+    if(pos){
+      s+=txt(zero+w+9,y+bh/2,"+"+r.v.toFixed(1)+"%",{fill:"var(--s3)",size:12.5,weight:700,mono:true,baseline:"middle"});
+    }else{
+      s+=txt(zero-w+10,y+bh/2,r.v.toFixed(1)+"%",{fill:"var(--surface)",size:12.5,weight:700,mono:true,baseline:"middle"});
+    }
+    if(r.note) s+=txt(pos?zero+w+70:zero+10,y+bh/2,r.note,{fill:"var(--ink-3)",size:10,baseline:"middle"});
+  });
+  s+=txt(padL-12,H-10,"2026年1〜6月 前年同期比",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  s+=txt(zero+10,H-10,"全体は -2.0%（2,108万人）。減ったのは中国だけ。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-shift").innerHTML=
+    '<h4>2026年上半期・市場別の増減</h4><p class="csub">前年同期比。プラス5市場、マイナス1市場</p>'+svg(W,H,s);
+})();
+
+/* ================= 03 動画の再利用先 ================= */
+(function(){
+  var W=760,H=250,s="";
+  s+=txt(8,18,"1本の3分動画を、3言語 × 7か所で使う",{fill:"var(--ink-3)",size:11,weight:700});
+  s+=box(8,32,166,56,"MiTok 3分動画","日本語版（原版）","var(--s1)");
+  var langs=[["英語音声版","var(--s3)"],["中国語音声版","var(--s4)"]];
+  langs.forEach(function(l,i){
+    s+='<path d="M 174 60 L 196 '+(46+i*28)+'" stroke="var(--rule-2)" stroke-width="1.4" fill="none"></path>';
+    s+=box(200,(22+i*56),150,44,l[0],"",l[1]);
+  });
+  var places=[
+    "自社ホームページ","Tourist Japan","YouTube・SNS",
+    "海外展示会のブース","営業メールの署名","広告クリエイティブ","商談時の冒頭3分"
+  ];
+  s+='<path d="M 352 70 L 380 70" stroke="var(--rule-2)" stroke-width="1.4"></path>';
+  places.forEach(function(p,i){
+    var col=i<4?0:1, row=i<4?i:i-4;
+    var x=386+col*190, y=18+row*54;
+    s+='<rect x="'+x+'" y="'+y+'" width="176" height="42" rx="7" fill="var(--surface)" stroke="var(--rule-2)" stroke-width="1.2"></rect>';
+    s+=txt(x+12,y+26,p,{fill:"var(--ink-2)",size:11.5});
+  });
+  s+=txt(8,120,"1か所にしか置かないと、",{fill:"var(--ink-3)",size:11});
+  s+=txt(8,138,"制作費は回収できません。",{fill:"var(--ink-3)",size:11});
+  s+=txt(8,168,"置き場所を増やす作業こそ",{fill:"var(--accent)",size:11,weight:700});
+  s+=txt(8,186,"在宅ワーカーの仕事です。",{fill:"var(--accent)",size:11,weight:700});
+  s+=txt(8,H-8,"※ 各SNSへの切り出し・字幕・投稿は、07タブの「広報・コンテンツ」に計上しています。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-reuse").innerHTML=
+    '<h4>動画の再利用マップ</h4><p class="csub">制作するのは1本。使う場所は21通り（3言語×7か所）</p>'+svg(W,H,s);
+})();
+
+/* ================= 05 3本柱のつながり ================= */
+(function(){
+  var W=760,H=290,s="";
+  s+=box(8,24,228,96,"柱1：バスの稼働を商品にする","国内法人へ電話が届く領域","var(--s1)");
+  s+=txt(21,88,"→ 数ヶ月で現金が出る",{fill:"var(--s1)",size:11,weight:700});
+  s+=txt(21,106,"→ 実績が海外交渉の材料になる",{fill:"var(--ink-3)",size:10.5});
+
+  s+=box(266,24,228,96,"柱2：送客元ポートフォリオの入替","韓台・東南アジア・欧米・インド","var(--s2)");
+  s+=txt(279,88,"→ 半年〜1年で効く",{fill:"var(--s2)",size:11,weight:700});
+  s+=txt(279,106,"→ 中国が戻った後も残る",{fill:"var(--ink-3)",size:10.5});
+
+  s+=box(524,24,228,96,"柱3：多言語の内製化","在宅ワーカー＋MiTok動画","var(--s3)");
+  s+=txt(537,88,"→ 即日から効く",{fill:"var(--s3)",size:11,weight:700});
+  s+=txt(537,106,"→ 柱1・柱2の詰まりを取る",{fill:"var(--ink-3)",size:10.5});
+
+  s+='<path d="M 236 60 L 266 60" stroke="var(--s1)" stroke-width="2" marker-end="url(#ar1)"></path>';
+  s+='<path d="M 122 120 L 122 168 L 380 168" stroke="var(--s3)" stroke-width="1.6" fill="none" stroke-dasharray="5 4"></path>';
+  s+='<path d="M 638 120 L 638 168 L 380 168" stroke="var(--s3)" stroke-width="1.6" fill="none" stroke-dasharray="5 4"></path>';
+  s+='<path d="M 380 168 L 380 190" stroke="var(--s3)" stroke-width="1.6" fill="none"></path>';
+  s+='<defs><marker id="ar1" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="var(--s1)"></path></marker></defs>';
+  s+=txt(251,14,"柱1の粗利が柱2を支える",{fill:"var(--ink-3)",size:9.5,anchor:"middle"});
+
+  s+='<rect x="150" y="192" width="460" height="62" rx="9" fill="var(--surface)" stroke="var(--s3)" stroke-width="1.6"></rect>';
+  s+=txt(380,216,"代表が「決める」「交渉する」ことに集中できる状態",{fill:"var(--ink)",size:13,weight:700,anchor:"middle",disp:true});
+  s+=txt(380,238,"移動中でも会社が止まらない——これが3本すべての前提条件です",{fill:"var(--ink-3)",size:10.5,anchor:"middle"});
+  s+=txt(8,H-6,"※ 柱3を後回しにすると、柱1で受注しても手配が回らず、柱2で接触しても返信が遅れます。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-pillars").innerHTML=
+    '<h4>3本柱の関係</h4><p class="csub">同時に走らせますが、効きはじめる時期が違います</p>'+svg(W,H,s);
+})();
+
+/* ================= 06 ターゲット ================= */
+var TIER_META={
+  A:{label:"バスの稼働を埋める",note:"電話・FAXで今日から届く"},
+  B:{label:"訪日客を連れてくる",note:"国内にある送客チャネル"},
+  C:{label:"訪日客を受け入れる",note:"共同商品化・相互送客"}
+};
+var TARGETS=[
+  {t:"A",n:"国内旅行会社・旅行代理店",c:5800,w:"バス手配ができず団体の受注を断っている会社が実在する。旅行業同士なので手配の言語が通じ、話が早い。",h:"「来月以降の貸切バス、いま押さえられますか。うちは自社車両を持っているので空車日を即答できます」"},
+  {t:"A",n:"ホテル・旅館（100室以上）",c:1450,w:"送迎バスと宿泊者向けの半日ツアーの両方に需要がある。訪日客の受入実績も持っており、送客の相互関係に発展しやすい。",h:"「団体のお客様の空港送迎、いまどちらに出されていますか。自社車両なので直前の変更にも動けます」"},
+  {t:"A",n:"結婚式場・ブライダル運営",c:680,w:"ゲスト送迎は日程が確定しやすく、土日に集中する。バスの稼働が空きやすい曜日と噛み合う。",h:"「披露宴のゲスト送迎、当日のバスは確保済みですか。土日の空車をお出しできます」"},
+  {t:"A",n:"私立中学・高校",c:1120,w:"校外学習・部活動の遠征・修学旅行と、年間を通じて発注が繰り返される。一度入れば継続率が高い。",h:"「校外学習のバス、毎年同じところですか。運転者不足で断られるケースが増えているとお聞きします」"},
+  {t:"A",n:"大学・専門学校",c:980,w:"オープンキャンパスの送迎、研修、ゼミ合宿。加えて国際交流部門は訪日受入とも接点がある。",h:"「オープンキャンパスの送迎バス、今年は確保できていますか。学内の国際交流のお話も伺えれば」"},
+  {t:"A",n:"スポーツクラブ・少年団運営法人",c:2400,w:"遠征は週末に集中し、日程が早期に確定する。単価は低いが回数が多く、稼働の穴を埋めるのに向く。",h:"「遠征のバス、毎回どちらに頼まれていますか。年間でまとめてお受けすると単価を抑えられます」"},
+  {t:"A",n:"建設・土木会社（50名以上）",c:3200,w:"作業員の現場送迎は平日朝夕の固定需要。訪日需要が薄い平日をそのまま埋められる。",h:"「現場までの作業員送迎、いま何でされていますか。平日の定期便でお受けできます」"},
+  {t:"A",n:"人材派遣・製造請負",c:2900,w:"工場への通勤送迎は契約が年単位になりやすく、稼働の土台をつくれる。外国人材の送迎では多言語対応も効く。",h:"「工場までの通勤送迎、外国人スタッフの方もいらっしゃいますか。中国語・英語でご案内できます」"},
+  {t:"A",n:"介護施設・特別養護老人ホーム",c:4600,w:"通所送迎と行事の外出。自社で運転者を抱えきれず外注化が進んでいる分野。平日日中の需要。",h:"「行事の外出、バスの手配で困られたことはありませんか。平日の日中でしたらお出しできます」"},
+  {t:"A",n:"イベント制作・展示会運営会社",c:1150,w:"会場シャトルは短期集中で台数が要る。バスを持っている会社が直接受けられれば中間マージンが省ける。",h:"「会場シャトル、いつも何社に分けて手配されていますか。自社車両でまとめてお受けできます」"},
+
+  {t:"B",n:"在日の海外旅行会社 日本支社・駐在事務所",c:420,w:"本国の送客を日本側で受ける窓口。日本語が通じ、意思決定は本国だが推薦はここから上がる。最短ルート。",h:"「本国からのお客様の地上手配、いまどちらで受けておられますか。バスまで自社で持っています」"},
+  {t:"B",n:"ランドオペレーター（旅行サービス手配業登録）",c:1380,w:"同業だが競合ではなく仕入先。彼らもバスが取れずに困っている。自社バスの供給者として組める。",h:"「バスの手配で困られる日はありませんか。押さえられない日だけ、うちに振っていただければ」"},
+  {t:"B",n:"国内OTA・旅行予約サイト運営",c:260,w:"着地型ツアーの仕入先を常に探している。Tourist Japanとの相互送客も設計できる。",h:"「着地型の商品、バス付きで組めるところをお探しではありませんか。企画から一緒に作れます」"},
+  {t:"B",n:"日本語学校・留学生受入校",c:690,w:"留学生の家族が訪日する。入学・卒業の時期に集中し、人数も読める。学校行事のバス需要も同時に取れる。",h:"「ご家族が来日される時期、受入のご案内はどうされていますか。中国語・英語で対応できます」"},
+  {t:"B",n:"外資系企業の日本法人（100名以上）",c:3100,w:"本国からの来日視察、社員旅行、インセンティブ旅行。予算があり、手配の質を重視する層。",h:"「本国から役員の方が来日される際の手配、いまどちらに出されていますか」"},
+  {t:"B",n:"国際会議運営会社（PCO）・MICE事業者",c:310,w:"会議参加者の移動は台数がまとまり、単価も高い。一度実績を作れば次の案件も来る。",h:"「会議の参加者輸送、バスの確保で苦労されたことはありませんか。自社車両で台数を出せます」"},
+  {t:"B",n:"展示会主催者・見本市運営",c:240,w:"海外からの出展者・来場者が発生する。代表が海外展示会に出ている経験がそのまま会話の材料になる。",h:"「海外からの出展者の方の受入、送迎や周辺手配はどうされていますか」"},
+  {t:"B",n:"大学の国際交流部門・受入プログラム",c:380,w:"海外協定校からの受入は年間計画で動き、予算も確保済み。継続性が高い。",h:"「協定校からの受入プログラム、移動と体験の手配はどちらでされていますか」"},
+  {t:"B",n:"在日外国人コミュニティ団体・華僑団体",c:520,w:"本国の家族・知人の訪日が継続的に発生する。口コミが効き、代表の言語対応がそのまま強みになる。",h:"「ご家族が来日される方が多いと伺いました。団体でのご案内もお受けできます」"},
+  {t:"B",n:"国際スポーツ団体・大会運営",c:290,w:"選手団の移動は台数・日程ともにまとまる。大会は毎年あるため継続受注になりやすい。",h:"「大会期間中の選手団の移動、バスは何台くらい必要になりますか」"},
+
+  {t:"C",n:"免税店・ドラッグストアチェーン本部",c:380,w:"2026年11月1日のリファンド方式移行で、旅行会社との連携の必要性が跳ね上がる。いま話が通りやすい。",h:"「11月からの免税の切替、団体のお客様のご案内はどうされますか。旅程側で時間を確保できます」"},
+  {t:"C",n:"百貨店・大型商業施設",c:210,w:"団体バスの発着枠と送客を交換できる。免税手続の導線見直しが必要な時期で、話題性がある。",h:"「団体のお客様の送客、いま旅行会社とどう組まれていますか。バス発着とセットでご提案できます」"},
+  {t:"C",n:"体験・アクティビティ事業者（着物・茶道・和菓子など）",c:1900,w:"欧米客の単価が高い分野。Tourist Japanの商品ラインを厚くする素材になり、共同で商品化できる。",h:"「海外のお客様の送客、いまどこから来ていますか。予約サイトに載せて一緒に売れます」"},
+  {t:"C",n:"団体受入可能な飲食店グループ",c:2700,w:"団体の食事は旅程に必ず入る。バス発着ができる店は限られ、こちらが情報を持っていると強い。",h:"「団体のお客様、バスで乗り付けられますか。旅程に組み込めるお店を探しています」"},
+  {t:"C",n:"酒蔵・醤油蔵・工場見学の受入先",c:430,w:"地方誘客の目的地になる。出国税の増収分が向かう「需要分散」の方向と一致し、行政の後押しも得やすい。",h:"「海外のお客様の受入、いま何組くらい来られていますか。バス付きでお連れできます」"},
+  {t:"C",n:"温泉旅館組合・観光協会",c:340,w:"地方誘客の窓口。組合単位で話が通れば、加盟旅館へ一斉に広がる。バスを持っていることが決定的に効く。",h:"「都心から直接バスでお連れする形、組合としてご興味はありませんか」"},
+  {t:"C",n:"テーマパーク・観光施設",c:520,w:"団体送客の相互関係をつくれる。繁閑差が大きいため、閑散日の送客は歓迎されやすい。",h:"「平日の団体送客、いま受け入れられる余地はありますか」"},
+  {t:"C",n:"農泊・グリーンツーリズム協議会",c:180,w:"体験型の高付加価値商品。欧米客のリピーター化という御社の狙いと最も相性が良い分野。",h:"「欧米のお客様向けに、宿泊付きの体験を探しています。受入可能な人数はどのくらいですか」"},
+  {t:"C",n:"医療機関（健診・メディカルツーリズム受入）",c:260,w:"単価が極めて高く、同行通訳と送迎がセットで必要。多言語対応とバスの両方を持つ会社は少ない。",h:"「海外からの健診のお客様、送迎と通訳はどうされていますか。両方まとめてお受けできます」"},
+  {t:"C",n:"通訳ガイド・多言語人材派遣会社",c:470,w:"仕入先であると同時に、彼らの顧客からの送客も期待できる。繁忙期のガイド確保が安定する副次効果も大きい。",h:"「繁忙期のガイド、確保に苦労されていませんか。年間でまとめてお願いできる先を探しています」"}
+];
+TARGETS.forEach(function(d,i){d.i=i;});
+
+(function(){
+  var a=TARGETS.filter(function(d){return d.t==="A";}).reduce(function(x,y){return x+y.c;},0);
+  var all=TARGETS.reduce(function(x,y){return x+y.c;},0);
+  document.getElementById("t-all").innerHTML=n(all)+'<small>件</small>';
+  document.getElementById("t-a").innerHTML=n(a)+'<small>件</small>';
+})();
+
+(function(){
+  var rows=["A","B","C"].map(function(t){
+    var sum=TARGETS.filter(function(d){return d.t===t;}).reduce(function(a,b){return a+b.c;},0);
+    return {t:t,sum:sum,cnt:TARGETS.filter(function(d){return d.t===t;}).length};
+  });
+  var max=niceMax(Math.max.apply(null,rows.map(function(r){return r.sum;}))*1.05,4);
+  var W=640,H=230,padL=236,padR=94,plotW=W-padL-padR,rowH=56,top=40,s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-12)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-18)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-20,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+34,top-20,"件",{fill:"var(--ink-3)",size:10});
+  var colors={A:"var(--s1)",B:"var(--s2)",C:"var(--s3)"};
+  rows.forEach(function(r,i){
+    var y=top+i*rowH,m=TIER_META[r.t];
+    s+=txt(0,y+8,"Tier "+r.t+"・"+m.label+"（"+r.cnt+"業種）",{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(0,y+26,m.note,{fill:"var(--ink-3)",size:10.5});
+    s+=rrect(padL,y-6,(r.sum/max)*plotW,24,4,colors[r.t]);
+    s+=txt(padL+(r.sum/max)*plotW+8,y+6,n(r.sum),{fill:"var(--ink-2)",size:11.5,mono:true,baseline:"middle"});
+  });
+  document.getElementById("c-tiers").innerHTML=
+    '<h4>3層別の母数（関東1都3県・概算）</h4><p class="csub">必要なのは60社。母数の0.15%で足ります</p>'+svg(W,H,s)+
+    '<p class="csub" style="margin:12px 0 0">Tier Aは今日から電話が届く層、Tier Bは訪日客を連れてくる層、Tier Cは受け入れて一緒に売る層です。<b>まずTier Aで現金と実績をつくり、その実績を持ってTier Bへ向かいます。</b></p>';
+})();
+
+(function(){
+  var seg=document.getElementById("t-seg"), q=document.getElementById("t-q"), sort=document.getElementById("t-sort");
+  var list=document.getElementById("t-list"), cn=document.getElementById("t-n"), cs=document.getElementById("t-sum");
+  var cur="all";
+  function render(){
+    var kw=q.value.trim().toLowerCase();
+    var arr=TARGETS.filter(function(d){
+      if(cur!=="all"&&d.t!==cur) return false;
+      if(!kw) return true;
+      return (d.n+d.w+d.h).toLowerCase().indexOf(kw)>=0;
+    });
+    var mode=sort.value;
+    arr=arr.slice().sort(function(a,b){
+      if(mode==="cnt") return b.c-a.c;
+      if(mode==="cntA") return a.c-b.c;
+      return a.i-b.i;
+    });
+    list.innerHTML=arr.map(function(d,idx){
+      var m=TIER_META[d.t];
+      return '<article class="trow t'+d.t+'">'+
+        '<div class="rank">'+String(idx+1).padStart(2,"0")+'</div>'+
+        '<div class="head"><div class="name">'+esc(d.n)+'</div>'+
+        '<div class="meta"><span class="chip '+(d.t==="A"?"b":d.t==="B"?"a":"c")+'">Tier '+d.t+'・'+m.label+'</span>'+
+        '<span class="cnt">'+n(d.c)+'<span>件</span></span></div></div>'+
+        '<div class="why"><span class="fieldlabel">なぜ狙うか</span><div class="fieldbody">'+esc(d.w)+'</div></div>'+
+        '<div class="hook"><span class="fieldlabel">最初の一言</span><div class="fieldbody">「'+esc(d.h.replace(/^「|」$/g,""))+'」</div></div>'+
+        '</article>';
+    }).join("");
+    cn.textContent=arr.length;
+    cs.textContent=n(arr.reduce(function(a,b){return a+b.c;},0))+"件";
+  }
+  seg.addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    cur=b.dataset.t;
+    Array.prototype.forEach.call(seg.children,function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    render();
+  });
+  q.addEventListener("input",render);
+  sort.addEventListener("change",render);
+  render();
+})();
+
+/* ================= 07 在宅ワーカー ================= */
+var TASKS=[
+  {g:"多言語の一次対応",h:40,items:[
+    {n:"英語・中国語での問い合わせメール一次返信",h:14,k:1},
+    {n:"Tourist Japan の予約問い合わせ対応",h:10,k:1},
+    {n:"海外旅行会社からのメール整理・優先度付け",h:8,k:1},
+    {n:"口コミ返信（TripAdvisor・Google・多言語）",h:8,k:0}
+  ]},
+  {g:"手配・オペレーション",h:42,items:[
+    {n:"旅程表（行程表）の作成・多言語版",h:12,k:1},
+    {n:"ホテル・施設・レストランの予約手配と確認",h:12,k:0},
+    {n:"貸切バスの配車日程調整・運行指示書の作成",h:10,k:1},
+    {n:"見積書・請求書の作成と送付",h:8,k:0}
+  ]},
+  {g:"送客元の開拓・維持",h:34,items:[
+    {n:"海外旅行会社・OTAのリスト作成（国別・都市別）",h:10,k:1},
+    {n:"多言語の営業メール作成・一斉送付・追客",h:12,k:1},
+    {n:"国内法人のリスト整備・アイドマへの連携",h:6,k:0},
+    {n:"提携先の管理台帳・送客実績の記録",h:6,k:0}
+  ]},
+  {g:"広報・コンテンツ",h:30,items:[
+    {n:"MiTok動画の3言語版の字幕・テロップ確認",h:8,k:1},
+    {n:"動画の切り出し・各SNSへの投稿",h:10,k:1},
+    {n:"Tourist Japan の更新（祭り・イベントカレンダー）",h:8,k:0},
+    {n:"ブログ記事の作成（多言語）",h:4,k:0}
+  ]},
+  {g:"展示会・バックオフィス",h:14,items:[
+    {n:"海外展示会の出展準備（資料翻訳・アポ調整・名刺データ化）",h:8,k:1},
+    {n:"経費精算・仕訳入力",h:3,k:0},
+    {n:"車両・保険・許認可の期限管理",h:3,k:0}
+  ]}
+];
+(function(){
+  document.getElementById("tasks").innerHTML=TASKS.map(function(g){
+    return '<div class="taskgroup"><header><h4>'+esc(g.g)+'</h4><span class="hh">'+g.h+' h/月</span></header><ul>'+
+      g.items.map(function(it){
+        return '<li'+(it.k?' class="key"':'')+'><span>'+esc(it.n)+'</span><b>'+it.h+'h</b></li>';
+      }).join("")+'</ul></div>';
+  }).join("");
+})();
+
+(function(){
+  var W=760,H=250,s="";
+  s+=box(268,16,224,52,"代表（王 様）","すべての判断と窓口がここを通る","var(--s2)");
+  var now=[
+    ["問い合わせ・多言語対応","移動中は止まる"],
+    ["見積・旅程表の作成","都度ゼロから"],
+    ["配車・宿泊の手配","電話とメールで往復"],
+    ["広報・SNS・展示会準備","後回しになりがち"]
+  ];
+  now.forEach(function(c,i){
+    var x=8+i*188;
+    s+='<path d="M 380 68 L 380 92 L '+(x+82)+' 92 L '+(x+82)+' 112" stroke="var(--rule-2)" stroke-width="1.3" fill="none"></path>';
+    s+='<rect x="'+x+'" y="112" width="166" height="54" rx="8" fill="var(--surface)" stroke="var(--rule-2)" stroke-width="1.3"></rect>';
+    s+=txt(x+12,134,c[0],{fill:"var(--ink)",size:11.5,weight:700,disp:true});
+    s+=txt(x+12,152,c[1],{fill:"var(--ink-3)",size:10});
+  });
+  s+='<rect x="8" y="186" width="354" height="46" rx="8" fill="var(--surface-2)" stroke="var(--rule-2)" stroke-width="1.3"></rect>';
+  s+=txt(20,206,"運行部門・ドライバー",{fill:"var(--ink)",size:12,weight:700,disp:true});
+  s+=txt(20,224,"安全と品質の中核。ここは触りません",{fill:"var(--ink-3)",size:10});
+  s+=txt(378,212,"※ 海外出張・展示会出展が入ると、上の4列がまとめて滞留します。",{fill:"var(--accent)",size:10.5,weight:700});
+  s+=txt(378,230,"　 商談メモの「日程が極めて過密」は、この構造から来ています。",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("c-org-now").innerHTML='<h4>いまの体制</h4><p class="csub">代表が動けない時間が、そのまま会社の停止時間になる</p>'+svg(W,H,s);
+})();
+
+(function(){
+  var W=760,H=276,s="";
+  s+=box(268,14,224,52,"代表（王 様）","決める・交渉する・海外に出る","var(--s3)");
+  var cols=[
+    {t:"在宅ワーカーチーム",u:"4〜5名相当／月160時間",c:"var(--s1)"},
+    {t:"アイドマ 営業支援ユニット",u:"国内法人の開拓（外付け）",c:"var(--s4)"},
+    {t:"運行部門・ドライバー",u:"安全と品質（従来どおり）",c:"var(--rule-2)"}
+  ];
+  cols.forEach(function(c,i){
+    var x=8+i*252;
+    s+='<path d="M 380 66 L 380 88 L '+(x+114)+' 88 L '+(x+114)+' 106" stroke="'+c.c+'" stroke-width="1.5" fill="none"></path>';
+    s+='<rect x="'+x+'" y="106" width="228" height="52" rx="8" fill="var(--surface-2)" stroke="'+c.c+'" stroke-width="1.6"></rect>';
+    s+=txt(x+13,128,c.t,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(x+13,146,c.u,{fill:"var(--ink-3)",size:10.5});
+  });
+  var subs=[
+    ["多言語一次対応 40h","手配・旅程 42h","開拓支援 34h","広報 30h","展示会・事務 14h"],
+    ["リスト作成","架電・アポ獲得","商談化まで"],
+    ["配車","運行","車両整備"]
+  ];
+  subs.forEach(function(list,i){
+    var x=8+i*252;
+    list.forEach(function(t,j){
+      var y=170+j*20;
+      s+=txt(x+13,y,"・"+t,{fill:"var(--ink-2)",size:10.5});
+    });
+  });
+  s+='<rect x="8" y="242" width="744" height="28" rx="7" fill="var(--good-soft)"></rect>';
+  s+=txt(20,260,"到達点：代表が海外出張中でも、問い合わせは当日中に3言語で返り、見積と配車は翌営業日に出る。",{fill:"var(--good)",size:11.5,weight:700});
+  document.getElementById("c-org-next").innerHTML='<h4>在宅ワーカー活用後の体制</h4><p class="csub">代表の下に、動き続ける3つの機能を置く</p>'+svg(W,H,s);
+})();
+
+(function(){
+  var rows=[
+    {k:"海外送客元との商談・交渉",a:18,b:56},
+    {k:"国内法人との商談・条件詰め",a:10,b:30},
+    {k:"問い合わせ・多言語対応",a:34,b:8},
+    {k:"見積・旅程表の作成",a:26,b:6},
+    {k:"配車・宿泊の手配",a:22,b:6},
+    {k:"広報・SNS・展示会準備",a:26,b:10},
+    {k:"経理・その他事務",a:24,b:4},
+    {k:"移動中の待ち時間の活用",a:0,b:40}
+  ];
+  var W=760,H=330,padL=214,padR=104,padT=38,padB=44;
+  var plotW=W-padL-padR,plotH=H-padT-padB,rowH=plotH/rows.length;
+  var max=niceMax(60,4),s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(padT-10)+'" x2="'+x+'" y2="'+(padT+plotH)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,padT-18,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+30,padT-18,"h/月",{fill:"var(--ink-3)",size:10});
+  rows.forEach(function(r,i){
+    var y=padT+i*rowH+3, bh=(rowH-10)/2;
+    s+=txt(padL-12,y+bh,r.k,{fill:"var(--ink)",size:11.5,anchor:"end",baseline:"middle"});
+    s+=rrect(padL,y,(r.a/max)*plotW,bh,3,"var(--rule-2)");
+    s+=rrect(padL,y+bh+3,(r.b/max)*plotW,bh,3,r.b>=r.a?"var(--s3)":"var(--s2)");
+    s+=txt(padL+(r.b/max)*plotW+7,y+bh+3+bh/2,r.b+"h",{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+  });
+  s+=txt(padL,H-10,"上＝いま（推定）／下＝移管後。合計は月160時間で揃えています。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-time").innerHTML=
+    '<h4>代表の時間配分</h4><p class="csub">総量は変えず、中身を入れ替える</p>'+
+    '<div class="legend"><span><i style="background:var(--rule-2)"></i>いま</span><span><i style="background:var(--s3)"></i>移管後</span></div>'+svg(W,H,s);
+})();
+
+/* ================= 08 ROI ================= */
+var PRESETS={
+  cons:{app:1200,appo:0.5,close:10,freq:2,price:15,gm:22,sfee:30,ownerh:40,permeet:16,tie:10,pax:30,gpp:5,ofee:7,bus:3},
+  base:{app:2000,appo:0.9,close:18,freq:4,price:22,gm:30,sfee:30,ownerh:70,permeet:10,tie:20,pax:60,gpp:8,ofee:9,bus:3},
+  bull:{app:2800,appo:1.3,close:24,freq:5,price:30,gm:33,sfee:40,ownerh:90,permeet:8,tie:24,pax:70,gpp:10,ofee:12,bus:5}
+};
+var KEYS=["app","appo","close","freq","price","gm","sfee","ownerh","permeet","tie","pax","gpp","ofee","bus"];
+var DEC={appo:1,freq:1};
+var MEETRATE=0.85;
+var LEAD=6; /* 海外送客は7ヶ月目から */
+
+function readInputs(){
+  var p={};
+  KEYS.forEach(function(k){ p[k]=parseFloat(document.getElementById("k-"+k).value); });
+  return p;
+}
+function setInputs(o){
+  KEYS.forEach(function(k){ document.getElementById("k-"+k).value=o[k]; });
+}
+
+function calc(p){
+  /* --- エンジン1：国内法人 --- */
+  var appo=p.app*(p.appo/100), meet=appo*MEETRATE, close=meet*(p.close/100);
+  var revPerOrder=p.price*10000;
+  var clients=[],gp1=[],cumGp1=[],acc=0,cum1=0;
+  for(var m=1;m<=12;m++){
+    acc+=close;
+    clients.push(acc);
+    /* 既存取引社が月次で発注する回数 */
+    var orders=acc*(p.freq/12);
+    var g=orders*revPerOrder*(p.gm/100);
+    gp1.push(g); cum1+=g; cumGp1.push(cum1);
+  }
+  var yearGp1=cum1, activeClients=acc;
+
+  /* --- エンジン2：海外送客元 --- */
+  var meetsPerMonth=p.permeet>0?p.ownerh/p.permeet:0;
+  var tiePerMonth=meetsPerMonth*(p.tie/100);
+  var partners=[],gp2=[],cumGp2=[],pacc=0,cum2=0;
+  for(var m2=1;m2<=12;m2++){
+    pacc+=tiePerMonth;
+    partners.push(pacc);
+    var g2=0;
+    if(m2>LEAD){
+      /* LEAD ヶ月前までに成立した提携から送客が始まる */
+      var effective=partners[m2-LEAD-1];
+      g2=effective*(p.pax/12)*(p.gpp*1000);
+    }
+    gp2.push(g2); cum2+=g2; cumGp2.push(cum2);
+  }
+  var yearGp2=cum2, activePartners=pacc;
+
+  var monthCost=(p.sfee+p.ofee)*10000;
+  var invest=monthCost*12;
+  var yearGp=yearGp1+yearGp2;
+  var roi=invest>0?(yearGp-invest)/invest*100:0;
+
+  var cumCost=[],cumAll=[],payback=null;
+  for(var i=0;i<12;i++){
+    cumCost.push(monthCost*(i+1));
+    cumAll.push(cumGp1[i]+cumGp2[i]);
+    if(payback===null&&cumAll[i]>=cumCost[i]) payback=i+1;
+  }
+
+  /* --- 2年目（既存基盤がフル稼働・開拓は継続） --- */
+  var y2Gp1=activeClients*p.freq*revPerOrder*(p.gm/100);
+  var y2Gp2=activePartners*p.pax*(p.gpp*1000);
+  var y2Gp=y2Gp1+y2Gp2;
+  var y2Roi=invest>0?(y2Gp-invest)/invest*100:0;
+
+  /* --- バスの稼働 --- */
+  var capacity=p.bus*22*12;              /* 台数 × 月22日 × 12ヶ月 */
+  var busDays1=activeClients*p.freq;     /* 1発注=1日と仮定 */
+  var busDays2=activePartners*(p.pax/40); /* 送客40名=バス1日 と仮定 */
+  var busUsed=busDays1+busDays2;
+
+  return {appo:appo,meet:meet,close:close,clients:clients,gp1:gp1,cumGp1:cumGp1,
+    partners:partners,gp2:gp2,cumGp2:cumGp2,
+    yearGp1:yearGp1,yearGp2:yearGp2,yearGp:yearGp,invest:invest,roi:roi,
+    activeClients:activeClients,activePartners:activePartners,
+    cumCost:cumCost,cumAll:cumAll,payback:payback,
+    y2Gp:y2Gp,y2Roi:y2Roi,capacity:capacity,busUsed:busUsed,
+    meetsPerMonth:meetsPerMonth,tiePerMonth:tiePerMonth};
+}
+function man(v){return n(v/10000);}
+
+function update(){
+  var p=readInputs();
+  KEYS.forEach(function(k){ document.getElementById("v-"+k).textContent=DEC[k]?p[k].toFixed(1):n(p[k]); });
+  var r=calc(p);
+
+  document.getElementById("o-roi").innerHTML=(r.roi>=0?"+":"")+Math.round(r.roi)+'<small>%</small>';
+  document.getElementById("o-roi").parentElement.className="stat "+(r.roi>=0?"pos":"hot");
+  document.getElementById("o-gp1").innerHTML=man(r.yearGp1)+'<small>万円</small>';
+  document.getElementById("o-gp1n").textContent="取引"+r.activeClients.toFixed(1)+"社／年"+(r.activeClients*p.freq).toFixed(0)+"回の発注";
+  document.getElementById("o-gp2").innerHTML=man(r.yearGp2)+'<small>万円</small>';
+  document.getElementById("o-gp2n").textContent="提携"+r.activePartners.toFixed(1)+"社／7ヶ月目から送客開始";
+  document.getElementById("o-base").innerHTML=(r.activeClients+r.activePartners).toFixed(0)+'<small>社</small>';
+  document.getElementById("o-basen").textContent="国内"+r.activeClients.toFixed(0)+"社＋海外"+r.activePartners.toFixed(0)+"社";
+
+  document.getElementById("f-app").textContent=n(p.app);
+  document.getElementById("f-appo").textContent=r.appo.toFixed(0);
+  document.getElementById("f-appo-r").textContent="アポ率 "+p.appo.toFixed(1)+"%";
+  document.getElementById("f-meet").textContent=r.meet.toFixed(1);
+  document.getElementById("f-close").textContent=r.close.toFixed(1);
+  document.getElementById("f-close-r").textContent="受注率 "+p.close+"%";
+
+  drawEngines(r);
+  drawPayback(r);
+  drawBus(r,p);
+
+  var v=document.getElementById("o-verdict");
+  var over=r.busUsed>r.capacity;
+  if(r.roi>=0){
+    v.style.borderLeftColor="var(--good)";
+    v.innerHTML='<b>判定：</b> 1年目の粗利は合計 <b>'+man(r.yearGp)+'万円</b>（国内 '+man(r.yearGp1)+'万円 ＋ 海外 '+man(r.yearGp2)+
+      '万円）、投資は <b>'+man(r.invest)+'万円</b>、ROIは <b>'+Math.round(r.roi)+'%</b>。'+
+      (r.payback?'累積粗利が累積投資を上回るのは <b>'+r.payback+'ヶ月目</b>です。':'1年以内には投資を回収できません。')+
+      ' 12ヶ月後には国内'+r.activeClients.toFixed(0)+'社・海外'+r.activePartners.toFixed(0)+
+      '社の取引基盤が残り、<b>2年目はこれがフル稼働して粗利 '+man(r.y2Gp)+'万円（ROI '+Math.round(r.y2Roi)+'%）</b>になります。';
+  } else {
+    v.style.borderLeftColor="var(--accent)";
+    v.innerHTML='<b style="color:var(--accent)">判定：</b> この前提では1年目に投資を回収できません（ROI '+Math.round(r.roi)+
+      '%）。ただし12ヶ月後には国内'+r.activeClients.toFixed(0)+'社・海外'+r.activePartners.toFixed(0)+
+      '社の基盤が残り、<b style="color:var(--accent)">2年目の粗利は '+man(r.y2Gp)+'万円（ROI '+Math.round(r.y2Roi)+
+      '%）</b>になります。1年目で判断せず、<b style="color:var(--accent)">1回あたり受注額と年間発注回数</b>を実績値に置き換えてご確認ください。';
+  }
+  if(over){
+    v.innerHTML+='<br><span style="color:var(--warn)">※ この前提だと必要なバス稼働は年'+Math.round(r.busUsed)+
+      '日で、保有'+p.bus+'台の上限（年'+Math.round(r.capacity)+'日）を超えます。増車、または他社バスの手配への切り替えが前提になります。</span>';
+  }
+}
+
+function drawEngines(r){
+  var W=700,H=290,padL=62,padR=74,padT=30,padB=44;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var tot=r.gp1.map(function(v,i){return v+r.gp2[i];});
+  var maxV=niceMax(Math.max.apply(null,tot)*1.18/10000,4);
+  var s="";
+  for(var i=0;i<=4;i++){
+    var g=maxV*i/4,y=padT+plotH-(g/maxV)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-14,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  var bw=plotW/12*0.6;
+  for(var m=0;m<12;m++){
+    var cx=padL+(m+0.5)*(plotW/12);
+    var h1=(r.gp1[m]/10000/maxV)*plotH, h2=(r.gp2[m]/10000/maxV)*plotH;
+    s+=rrect(cx-bw/2,padT+plotH-h1,bw,h1,2,"var(--s1)");
+    s+=rrect(cx-bw/2,padT+plotH-h1-h2,bw,h2,2,"var(--s2)");
+    if(m%2===1||m===0) s+=txt(cx,padT+plotH+17,(m+1)+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  }
+  var lx=padL+11.5*(plotW/12);
+  s+='<line x1="'+(padL+LEAD*(plotW/12))+'" y1="'+padT+'" x2="'+(padL+LEAD*(plotW/12))+'" y2="'+(padT+plotH)+'" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"></line>';
+  s+=txt(padL+LEAD*(plotW/12)+7,padT+13,"海外送客はここから",{fill:"var(--s2)",size:10,weight:700});
+  s+=txt(lx+bw/2+8,padT+plotH-(tot[11]/10000/maxV)*plotH,"月"+man(tot[11])+"万円",{fill:"var(--ink)",size:11,weight:700,mono:true,baseline:"middle"});
+  s+=txt(padL,H-6,"※ エンジン1は受注した社が毎月一定の頻度で発注し続ける前提。エンジン2は提携から6ヶ月後に送客が始まる前提。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-engines").innerHTML=
+    '<h4>月別の粗利（2つのエンジンの内訳）</h4><p class="csub">国内は早く立ち上がり、海外は年後半から乗ってくる</p>'+
+    '<div class="legend"><span><i style="background:var(--s1)"></i>エンジン1・国内法人（バスの稼働）</span><span><i style="background:var(--s2)"></i>エンジン2・海外送客元</span></div>'+svg(W,H,s);
+}
+
+function drawPayback(r){
+  var W=700,H=270,padL=64,padR=70,padT=28,padB=42;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var maxV=niceMax(Math.max(r.cumAll[11],r.cumCost[11])*1.15/10000,4);
+  var s="";
+  for(var i=0;i<=4;i++){
+    var g=maxV*i/4,y=padT+plotH-(g/maxV)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-12,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+(m/11)*plotW;}
+  function py(v){return padT+plotH-(v/10000/maxV)*plotH;}
+  ["cumAll","cumCost"].forEach(function(key,idx){
+    var d=r[key].map(function(v,i){return (i===0?"M ":"L ")+px(i)+" "+py(v);}).join(" ");
+    s+='<path d="'+d+'" fill="none" stroke="'+(idx===0?"var(--s3)":"var(--s2)")+'" stroke-width="2.4"></path>';
+    s+='<circle cx="'+px(11)+'" cy="'+py(r[key][11])+'" r="3.6" fill="'+(idx===0?"var(--s3)":"var(--s2)")+'"></circle>';
+    s+=txt(px(11)+8,py(r[key][11]),n(r[key][11]/10000),{fill:idx===0?"var(--s3)":"var(--s2)",size:11,weight:700,mono:true,baseline:"middle"});
+  });
+  if(r.payback){
+    var bx=px(r.payback-1);
+    s+='<line x1="'+bx+'" y1="'+padT+'" x2="'+bx+'" y2="'+(padT+plotH)+'" stroke="var(--s3)" stroke-width="1.4" stroke-dasharray="5 4"></line>';
+    s+=txt(bx+7,padT+13,"投資回収 "+r.payback+"ヶ月目",{fill:"var(--s3)",size:11,weight:700});
+  }
+  for(var m=0;m<12;m+=2) s+=txt(px(m),padT+plotH+17,(m+1)+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  document.getElementById("c-payback").innerHTML=
+    '<h4>累積の粗利と投資</h4><p class="csub">累積粗利が累積投資を上回る月が、投資回収のタイミングです</p>'+
+    '<div class="legend"><span><i style="background:var(--s3)"></i>累積 粗利（2エンジン合計）</span><span><i style="background:var(--s2)"></i>累積 投資</span></div>'+svg(W,H,s);
+}
+
+function drawBus(r,p){
+  var W=700,H=190,padL=150,padR=104,padT=40,padB=48;
+  var plotW=W-padL-padR;
+  var max=niceMax(Math.max(r.capacity,r.busUsed)*1.1,4);
+  var s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(padT-12)+'" x2="'+x+'" y2="'+(padT+64)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,padT-20,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+30,padT-20,"日/年",{fill:"var(--ink-3)",size:10});
+  var over=r.busUsed>r.capacity;
+  s+=txt(padL-12,padT+12,"必要な稼働日数",{fill:"var(--ink)",size:12,weight:700,anchor:"end",baseline:"middle"});
+  s+=rrect(padL,padT,(Math.min(r.busUsed,max)/max)*plotW,24,4,over?"var(--s2)":"var(--s3)");
+  s+=txt(padL+(Math.min(r.busUsed,max)/max)*plotW+8,padT+12,n(r.busUsed),{fill:over?"var(--s2)":"var(--s3)",size:11.5,weight:700,mono:true,baseline:"middle"});
+  s+=txt(padL-12,padT+54,"保有"+p.bus+"台の上限",{fill:"var(--ink)",size:12,weight:700,anchor:"end",baseline:"middle"});
+  s+=rrect(padL,padT+42,(r.capacity/max)*plotW,24,4,"var(--rule-2)");
+  s+=txt(padL+(r.capacity/max)*plotW+8,padT+54,n(r.capacity),{fill:"var(--ink-3)",size:11.5,weight:700,mono:true,baseline:"middle"});
+  s+=txt(padL-12,H-16,"前提：1発注＝バス1日／送客40名＝バス1日／1台あたり月22日稼働",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  s+=txt(padL,H-16,over?"　上限を超えています。増車または他社バス手配への切替が必要です。":"　まだ余力があります。稼働を埋めにいく余地が残っています。",
+    {fill:over?"var(--s2)":"var(--ink-3)",size:10,weight:over?700:400});
+  document.getElementById("c-bus").innerHTML=
+    '<h4>バスの稼働は足りるか（台数は仮置き・要確認）</h4><p class="csub">受注が増えたとき、先に詰まるのは営業ではなく車両です</p>'+svg(W,H,s);
+}
+
+(function(){
+  KEYS.forEach(function(k){
+    document.getElementById("k-"+k).addEventListener("input",function(){
+      Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(b){b.setAttribute("aria-pressed","false");});
+      update();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(b){
+    b.addEventListener("click",function(){
+      Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+      setInputs(PRESETS[b.dataset.preset]); update();
+    });
+  });
+  document.getElementById("r-reset").addEventListener("click",function(){
+    Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(x){x.setAttribute("aria-pressed",x.dataset.preset==="base"?"true":"false");});
+    setInputs(PRESETS.base); update();
+  });
+  setInputs(PRESETS.base);
+  update();
+})();
+
+})();
+</script>
