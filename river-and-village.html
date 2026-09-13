@@ -1,0 +1,1496 @@
+<title>River&amp;Village 月10社への到達設計</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@600;700;900&family=M+PLUS+2:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#EBEEEF;
+  --surface:#FBFCFC;
+  --surface-2:#E2E8E9;
+  --surface-3:#D3DBDD;
+  --ink:#141A1B;
+  --ink-2:#485153;
+  --ink-3:#767F81;
+  --rule:#D9E0E1;
+  --rule-2:#BEC7C9;
+  --s1:#7A6A12;
+  --s2:#0A7A9B;
+  --s3:#B3452C;
+  --s4:#5B5BA6;
+  --s5:#2E7D4F;
+  --brand:#0A7A9B;
+  --brand-soft:#DCEDF2;
+  --accent:#B3452C;
+  --accent-soft:#F6E4DF;
+  --good:#2E7D4F;
+  --good-soft:#DFEDE5;
+  --warn:#7A6A12;
+  --warn-soft:#F0EDD8;
+  --plum-soft:#E6E6F3;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#0E1214;
+    --surface:#181D1F;
+    --surface-2:#222A2C;
+    --surface-3:#2C3437;
+    --ink:#E9EEEF;
+    --ink-2:#AEB6B8;
+    --ink-3:#828B8D;
+    --rule:#293133;
+    --rule-2:#384245;
+    --s1:#A08420;
+    --s2:#2E9BBE;
+    --s3:#D4674A;
+    --s4:#8780D4;
+    --s5:#41A068;
+    --brand:#2E9BBE;
+    --brand-soft:#132A33;
+    --accent:#D4674A;
+    --accent-soft:#33201B;
+    --good:#41A068;
+    --good-soft:#16291D;
+    --warn:#A08420;
+    --warn-soft:#2A2513;
+    --plum-soft:#211F33;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#0E1214;
+  --surface:#181D1F;
+  --surface-2:#222A2C;
+  --surface-3:#2C3437;
+  --ink:#E9EEEF;
+  --ink-2:#AEB6B8;
+  --ink-3:#828B8D;
+  --rule:#293133;
+  --rule-2:#384245;
+  --s1:#A08420;
+  --s2:#2E9BBE;
+  --s3:#D4674A;
+  --s4:#8780D4;
+  --s5:#41A068;
+  --brand:#2E9BBE;
+  --brand-soft:#132A33;
+  --accent:#D4674A;
+  --accent-soft:#33201B;
+  --good:#41A068;
+  --good-soft:#16291D;
+  --warn:#A08420;
+  --warn-soft:#2A2513;
+  --plum-soft:#211F33;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);
+  font-family:"M PLUS 2","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"Noto Serif JP","Hiragino Mincho ProN",serif;font-weight:700;margin:0;line-height:1.45;text-wrap:balance}
+p{margin:0}
+a{color:var(--brand)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.stream{height:2px;background:linear-gradient(90deg,var(--brand),var(--rule-2) 45%,var(--rule-2) 55%,var(--accent));border:0;margin:0;opacity:.55}
+
+.masthead{background:var(--surface);border-bottom:1px solid var(--rule)}
+.mast-inner{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-end;padding:26px 0 20px}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.mast-title{font-size:clamp(24px,3.3vw,37px);font-weight:900;margin-top:8px;letter-spacing:.005em}
+.mast-title em{font-style:normal;color:var(--brand)}
+.mast-sub{color:var(--ink-2);font-size:13.5px;margin-top:9px;max-width:64ch}
+.mast-meta{font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-align:right}
+.mast-meta b{color:var(--ink-2);font-weight:700}
+.flash{display:inline-flex;align-items:center;gap:8px;background:var(--brand-soft);color:var(--brand);
+  font-size:12px;font-weight:700;padding:5px 13px;border-radius:4px;margin-top:12px}
+
+.tabbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:none;border:0;border-bottom:3px solid transparent;font:inherit;font-size:13px;font-weight:700;
+  color:var(--ink-3);padding:13px 15px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brand)}
+.tab .num{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink-3);margin-right:6px}
+.tab[aria-selected="true"] .num{color:var(--brand)}
+
+.panel{padding:34px 0 76px}
+.panel[hidden]{display:none!important}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.sec-head h2{font-size:24px;font-weight:900}
+.sec-head .tagline{font-size:12.5px;color:var(--ink-3)}
+.lede{color:var(--ink-2);font-size:14px;max-width:76ch;margin:10px 0 26px}
+.block{margin-top:40px}
+.block > h3{font-size:17.5px}
+.block > .sub{font-size:12.5px;color:var(--ink-3);margin:3px 0 16px}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(186px,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:20px}
+.card.flat{background:transparent;border-style:dashed}
+
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:15px 17px;display:flex;flex-direction:column;gap:1px;position:relative;overflow:hidden}
+.stat::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--rule-2)}
+.stat.hot::after{background:var(--accent)}
+.stat.pos::after{background:var(--good)}
+.stat.info::after{background:var(--brand)}
+.stat.warn::after{background:var(--warn)}
+.stat .k{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.stat .v{font-family:"JetBrains Mono",monospace;font-size:25px;font-weight:600;letter-spacing:-.03em;line-height:1.35;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:13px;margin-left:2px;color:var(--ink-2);font-family:"M PLUS 2",sans-serif;font-weight:400}
+.stat .n{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:2px}
+.stat.hot .v{color:var(--accent)}
+.stat.pos .v{color:var(--good)}
+.stat.info .v{color:var(--brand)}
+.stat.warn .v{color:var(--warn)}
+
+.chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.chip.a{background:var(--accent-soft);color:var(--accent)}
+.chip.b{background:var(--brand-soft);color:var(--brand)}
+.chip.c{background:var(--good-soft);color:var(--good)}
+.chip.d{background:var(--warn-soft);color:var(--warn)}
+.chip.e{background:var(--plum-soft);color:var(--s4)}
+
+.deflist{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;font-size:13.5px;align-items:baseline}
+.deflist dt{color:var(--ink-3);font-size:12px;font-weight:700;white-space:nowrap}
+.deflist dd{margin:0}
+.note{font-size:12px;color:var(--ink-3);line-height:1.75;margin-top:12px}
+.callout{background:var(--warn-soft);border-radius:8px;padding:13px 16px;font-size:12.5px;color:var(--ink-2);margin-top:14px}
+.callout b{color:var(--ink)}
+
+.swot{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:14px}
+.swot section{border:1px solid var(--rule);border-radius:8px;padding:16px 18px;background:var(--surface)}
+.swot h4{font-size:14px;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.swot h4::before{content:"";width:10px;height:10px;border-radius:2px;background:var(--rule-2)}
+.swot .s h4::before{background:var(--s5)}
+.swot .w h4::before{background:var(--s3)}
+.swot .o h4::before{background:var(--s2)}
+.swot .t h4::before{background:var(--s1)}
+.swot ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+
+.reason{background:var(--surface);border:1px solid var(--rule);border-radius:8px;margin-bottom:16px;overflow:hidden}
+.reason .rhead{display:flex;gap:16px;align-items:flex-start;padding:20px 24px 0}
+.reason .idx{font-family:"Noto Serif JP",serif;font-size:34px;font-weight:900;color:var(--accent);line-height:1;flex:0 0 auto}
+.reason .kicker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.reason h4{font-size:18px;font-weight:900}
+.reason .rbody{padding:12px 24px 20px}
+.reason p{font-size:13.5px;color:var(--ink-2)}
+.reason .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(188px,1fr));gap:10px;margin:15px 0 4px}
+.reason .fact{background:var(--surface-2);border-radius:6px;padding:10px 13px}
+.reason .fact .fv{font-family:"JetBrains Mono",monospace;font-size:19px;font-weight:600}
+.reason .fact .fk{font-size:11px;color:var(--ink-3);line-height:1.5}
+.reason .sowhat{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:13.5px}
+.reason .sowhat b{color:var(--accent)}
+
+.timeline{overflow-x:auto;padding:24px 0 4px}
+.timeline-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(152px,1fr);min-width:820px;position:relative}
+.timeline-track::before{content:"";position:absolute;left:0;right:0;top:9px;height:2px;background:var(--rule-2)}
+.tl-item{position:relative;padding:26px 12px 0 0}
+.tl-item::before{content:"";position:absolute;left:0;top:2px;width:15px;height:15px;border-radius:50%;background:var(--surface);border:3px solid var(--rule-2)}
+.tl-item.on::before{background:var(--accent);border-color:var(--accent)}
+.tl-item.now::before{background:var(--brand);border-color:var(--brand);width:19px;height:19px;top:0}
+.tl-item .y{font-family:"JetBrains Mono",monospace;font-size:11.5px;font-weight:600;color:var(--ink-3)}
+.tl-item.on .y{color:var(--accent)}
+.tl-item.now .y{color:var(--brand)}
+.tl-item .t{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+
+.pillar{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.pillar .pk{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.09em;color:var(--ink-3)}
+.pillar h4{font-size:16.5px}
+.pillar p{font-size:13px;color:var(--ink-2)}
+.pillar .kpi{margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:4px}
+.pillar .kpi b{font-family:"JetBrains Mono",monospace;color:var(--ink);font-weight:600}
+
+.scroller{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--surface)}
+table.matrix{width:100%;border-collapse:collapse;font-size:13px;min-width:660px}
+table.matrix th,table.matrix td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.matrix th{font-size:11.5px;color:var(--ink-3);font-weight:700;background:var(--surface-2)}
+table.matrix tr:last-child td{border-bottom:0}
+table.matrix td:first-child{font-weight:700}
+table.matrix td.num{font-family:"JetBrains Mono",monospace;text-align:right;white-space:nowrap}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:1px solid var(--rule);border-radius:8px}
+.seg{display:flex;background:var(--surface-2);border-radius:6px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:12px;font-weight:700;border:0;background:none;color:var(--ink-3);padding:6px 12px;border-radius:4px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.controls input[type="search"],.controls select{font:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--rule-2);border-radius:6px;background:var(--surface);color:var(--ink)}
+.controls input[type="search"]{min-width:190px;flex:1}
+.controls .count{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.controls .count b{font-family:"JetBrains Mono",monospace;color:var(--ink);font-weight:600}
+
+.tlist{display:flex;flex-direction:column;gap:9px}
+.trow{display:grid;grid-template-columns:38px minmax(206px,1.02fr) minmax(238px,1.5fr) minmax(238px,1.5fr);gap:0 18px;
+  background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--rule-2);border-radius:0 8px 8px 0;padding:15px 18px;align-items:start}
+.trow.tA{border-left-color:var(--s2)}
+.trow.tB{border-left-color:var(--s3)}
+.trow.tC{border-left-color:var(--s4)}
+.trow .rank{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink-3);font-weight:600;padding-top:2px}
+.trow .head{display:flex;flex-direction:column;gap:6px}
+.trow .name{font-family:"Noto Serif JP",serif;font-size:14.5px;font-weight:700;line-height:1.45}
+.trow .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.trow .cnt{font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:600}
+.trow .cnt span{font-size:11px;color:var(--ink-3);font-weight:400;margin-left:3px;font-family:"M PLUS 2",sans-serif}
+.trow .fieldlabel{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);display:block;margin-bottom:3px}
+.trow .fieldbody{font-size:13px;color:var(--ink-2);line-height:1.7}
+.trow .hook .fieldbody{color:var(--ink);border-left:3px solid var(--rule-2);padding-left:11px}
+@media(max-width:900px){
+  .trow{grid-template-columns:34px 1fr;gap:10px 14px}
+  .trow .head,.trow .why,.trow .hook{grid-column:2}
+}
+
+.taskgroup{background:var(--surface);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.taskgroup header{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:13px 16px;background:var(--surface-2)}
+.taskgroup header h4{font-size:14px}
+.taskgroup header .hh{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-2)}
+.taskgroup ul{list-style:none;margin:0;padding:6px 0}
+.taskgroup li{display:flex;justify-content:space-between;gap:12px;padding:7px 16px;font-size:13px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.taskgroup li:last-child{border-bottom:0}
+.taskgroup li b{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);font-weight:400;white-space:nowrap}
+.taskgroup li.key{color:var(--ink)}
+.taskgroup li.key > span:first-child::before{content:"◆";color:var(--accent);font-size:8px;margin-right:7px;vertical-align:2px}
+
+.chartbox{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:18px}
+.chartbox h4{font-size:14px}
+.chartbox .csub{font-size:12px;color:var(--ink-3);margin:2px 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);margin-bottom:10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+
+.roi-layout{display:grid;grid-template-columns:minmax(280px,336px) 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.roi-layout{grid-template-columns:1fr}}
+.knobs{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:18px;position:sticky;top:58px;max-height:calc(100vh - 74px);overflow-y:auto}
+.knob{margin-bottom:14px}
+.knob label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink-2);margin-bottom:5px;gap:10px}
+.knob label b{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink);font-weight:600}
+.knob input[type="range"]{width:100%;accent-color:var(--brand);height:20px;cursor:pointer}
+.knob-group{border-top:1px solid var(--rule);padding-top:14px;margin-top:16px}
+.gh{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.08em;color:var(--ink-3);margin-bottom:12px}
+.gh span{color:var(--brand)}
+.resetbtn{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--rule-2);background:var(--surface);color:var(--ink-2);border-radius:6px;padding:6px 12px;cursor:pointer}
+.resetbtn:hover{border-color:var(--ink-3);color:var(--ink)}
+.plancard{border:1px solid var(--rule);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:var(--ink-2);background:var(--surface-2)}
+.plancard b{font-family:"JetBrains Mono",monospace;color:var(--ink);font-weight:600}
+.verdict{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--good);border-radius:0 8px 8px 0;padding:16px 20px;font-size:13.5px}
+.verdict b{font-family:"JetBrains Mono",monospace;color:var(--good);font-weight:600}
+
+.funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(136px,1fr));gap:10px}
+.fstep{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:13px 14px}
+.fstep .fl{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.fstep .fv{font-family:"JetBrains Mono",monospace;font-size:22px;font-weight:600}
+.fstep .fr{font-size:11px;color:var(--ink-3)}
+.fstep.end{background:var(--brand-soft);border-color:transparent}
+.fstep.end .fv,.fstep.end .fl,.fstep.end .fr{color:var(--brand)}
+
+.phase{display:grid;grid-template-columns:140px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule)}
+.phase:first-of-type{border-top:0}
+.phase .pd{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);font-weight:600}
+.phase .pt{font-family:"Noto Serif JP",serif;font-size:16px;font-weight:700;line-height:1.4;margin-top:2px}
+.phase ul{margin:0;padding-left:1.15em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px}
+.phase ul b{color:var(--ink)}
+.owner{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:4px;margin-right:7px;vertical-align:1px}
+.owner.ai{background:var(--brand-soft);color:var(--brand)}
+.owner.rv{background:var(--good-soft);color:var(--good)}
+.srcs{font-size:12px;color:var(--ink-3);line-height:1.9}
+@media(max-width:640px){
+  .wrap{padding:0 16px}
+  .phase{grid-template-columns:1fr;gap:10px}
+  .reason .rhead{flex-direction:column;gap:6px}
+}
+</style>
+
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <div>
+      <div class="eyebrow">事前リサーチ / 成長戦略 / 2ユニット ROIシミュレーション</div>
+      <h1 class="mast-title">株式会社River&amp;Village <em>月10社</em> への到達設計</h1>
+      <p class="mast-sub">社長ひとりで、営業も経理も講座も回している。そこに「もう1人分の時間」と「外付けの営業チーム」を足したとき、月10社の目標にどこまで届くのか。事業計画書にそのまま載せられる形で数字を置きました。</p>
+      <div class="flash">◆ 次回商談：9月14日（月）11:00 ／ 融資の結果を踏まえたプラン選択の材料です</div>
+    </div>
+    <div class="mast-meta">
+      <div><b>作成</b> 株式会社アイドマ・ホールディングス</div>
+      <div><b>宛先</b> 神村 社長</div>
+      <div><b>更新</b> 2026年9月13日</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="セクション">
+  <div class="wrap">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-p="research"><span class="num">01</span>事前リサーチ</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="market"><span class="num">02</span>市場環境</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="why"><span class="num">03</span>今すぐやる3つの理由</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="strategy"><span class="num">04</span>成長戦略</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="targets"><span class="num">05</span>営業ターゲット30</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="remote"><span class="num">06</span>在宅ワーカー活用</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="roi"><span class="num">07</span>ROIシミュレーション</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="road"><span class="num">08</span>明日からの90日</button>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- 01 -->
+<section class="panel" id="p-research" role="tabpanel">
+  <div class="sec-head"><h2>事前リサーチ</h2><span class="tagline">前回商談の構造化</span></div>
+  <p class="lede">商品は揃っています。講座も顧問も、価格も決まっている。足りないのは<b>「社長が営業だけに使える時間」</b>と<b>「その時間に届く商談の数」</b>——この2つだけです。前回の商談で社長が言われた「1人でできるだろうと思ったのが根本的な間違いだった」という言葉が、そのまま打ち手の答えになっています。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">顧問ライト（年額・税込）</span><span class="v">33<small>万円</small></span><span class="n">1年契約／月払いも可</span></div>
+    <div class="stat info"><span class="k">顧問スタンダード（年額・税込）</span><span class="v">55<small>万円</small></span><span class="n">月額なら33,000円</span></div>
+    <div class="stat hot"><span class="k">目標</span><span class="v">10<small>社/月</small></span><span class="n">年120社の純増</span></div>
+    <div class="stat warn"><span class="k">実務体制</span><span class="v">1<small>名</small></span><span class="n">営業・講座・顧問・経理すべて社長</span></div>
+  </div>
+
+  <div class="grid g2 block">
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:10px">企業プロフィール</div>
+      <dl class="deflist">
+        <dt>企業名</dt><dd>株式会社River&amp;Village</dd>
+        <dt>Webサイト</dt><dd><a href="https://riverandvillage.com/" target="_blank" rel="noopener">riverandvillage.com</a></dd>
+        <dt>代表</dt><dd>神村 社長（創業3年目・コロナ明けに起業）</dd>
+        <dt>事業</dt><dd>ネットリテラシー教育（小学校・企業向け講座）／ネットリスク対策顧問／SNS・AI利用ルールの策定支援</dd>
+        <dt>講座</dt><dd>ネット詐欺・SNSトラブル防止のセミナー。学校向けと企業の社員向け。単発でも受注あり</dd>
+        <dt>顧問</dt><dd>2026年7月開始。ライト年33万円／スタンダード年55万円（税込）、1年契約</dd>
+        <dt>実績</dt><dd>顧問はまだ契約ゼロ。講座単発の受注は発生している</dd>
+        <dt>提供形態</dt><dd>オンライン中心のため全国対応が可能</dd>
+      </dl>
+      <p class="note">※ 本ボード作成環境からは同社サイトへ直接アクセスできなかったため、企業情報は商談内容に基づく整理です。<b>サイトに残っている飲食事業の記載は、すでに実施していないため削除が必要</b>とのことでした（後述の在宅ワーカー業務に含めています）。</p>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:12px">いま起きていること</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div><span class="chip c">できている</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">商品設計・価格設計は完了。Webからの問い合わせもあり、<b style="color:var(--ink)">顧問ではなく講座で受注が入るケース</b>も出ている。需要そのものは確認済みです。</p></div>
+        <div><span class="chip a">詰まっている</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">営業に注力したいのに、経理も資料作成もすべて社長。<b style="color:var(--ink)">月160時間しかない1人分の時間を、営業以外が食っている</b>——これが唯一かつ最大のボトルネックです。</p></div>
+        <div><span class="chip d">判断待ち</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">投資の原資は融資。9月10日に金融機関との面談があり、<b style="color:var(--ink)">その結果でプランの規模が決まります</b>。本ボードは3プランすべてを比較できる形にしてあります。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>目標との距離を、数字で置く</h3>
+    <p class="sub">月10社を達成するために、月に何件の商談が必要か</p>
+    <div class="chartbox">
+      <div id="ch-gap"></div>
+      <p class="note">受注率30%・商談実施率85%と仮定すると、<b>月10社には月39件のアポイントが必要</b>です。Bプラン想定の月12件では、月3社前後。<b style="color:var(--accent)">つまり月10社は、営業支援だけでは届きません</b>。届かせるには「講座からの顧問アップセル」「紹介チャネル」「単価の引き上げ」のいずれかを組み合わせる必要があります。事業計画書には、この構造を分けて書いたほうが通りやすくなります。</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>強み・課題の整理</h3>
+    <div class="swot">
+      <section class="s"><h4>強み</h4><ul>
+        <li>ネットリテラシー教育という、法改正が追い風になる領域にいる</li>
+        <li>学校と企業の両方に出せる商材を持っている</li>
+        <li>オンライン提供のため全国どこでも売れる（商圏の制約がない）</li>
+        <li>顧問は年契約・継続課金で、積み上がる収益構造</li>
+      </ul></section>
+      <section class="w"><h4>課題</h4><ul>
+        <li>社長1人で営業・講座・顧問対応・経理をすべて兼務</li>
+        <li>顧問の受注実績がまだなく、受注率の実測値がない</li>
+        <li>営業の母集団形成が問い合わせ待ち中心で、量が読めない</li>
+        <li>投資原資が融資に依存しており、規模の判断が外部要因に左右される</li>
+      </ul></section>
+      <section class="o"><h4>機会</h4><ul>
+        <li>AI新法が2025年9月に全面施行され、AI利用ルールの整備が論点化</li>
+        <li>中小企業の情報セキュリティは「教育」だけが7割方の空白</li>
+        <li>詐欺被害額3,241億円・フィッシング245万件と、どちらも過去最悪</li>
+        <li>上場企業はネットリスク顧問を持つが、AIは未整備という空白がある</li>
+      </ul></section>
+      <section class="t"><h4>脅威</h4><ul>
+        <li>1人体制のまま受注が増えると、提供が追いつかず品質が落ちる</li>
+        <li>法律事務所・セキュリティベンダーが同じ領域に降りてくる</li>
+        <li>融資が下りない場合、営業投資そのものが止まる</li>
+        <li>時間を投資して自力で回す選択は、成長速度を大きく落とす</li>
+      </ul></section>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="panel" id="p-market" role="tabpanel" hidden>
+  <div class="sec-head"><h2>市場環境</h2><span class="tagline">ツールは入った。空いているのは「教育」だけ</span></div>
+  <p class="lede">中小企業のセキュリティ対策は、ウイルス対策ソフトやOS更新といった<b>「モノ」は7割超が導入済み</b>です。ところが<b>教育・脅威インテリジェンスは7割近くが不十分か未実施</b>。River&amp;Villageが売っているのは、まさにその空白そのものです。</p>
+
+  <div class="grid g4">
+    <div class="stat pos"><span class="k">OS・ソフトを常に最新にしている</span><span class="v">73.0<small>%</small></span><span class="n">中小企業4,191社・IPA調査</span></div>
+    <div class="stat pos"><span class="k">ウイルス対策ソフトを導入・更新</span><span class="v">71.4<small>%</small></span><span class="n">「モノ」の対策は浸透済み</span></div>
+    <div class="stat hot"><span class="k">教育・脅威インテリジェンス</span><span class="v">約7<small>割</small></span><span class="n">が不十分または未実施＝市場の空白</span></div>
+    <div class="stat warn"><span class="k">セキュリティ投資の必要性を感じていない等</span><span class="v">62.6<small>%</small></span><span class="n">「気づかせる」ことが営業の仕事</span></div>
+  </div>
+
+  <div class="grid g2 block">
+    <div class="chartbox">
+      <h4>中小企業のセキュリティ対策の実施状況</h4>
+      <p class="csub">IPA「2024年度 中小企業における情報セキュリティ対策に関する実態調査」（2025年5月公表）</p>
+      <div id="ch-ipa"></div>
+      <p class="note">この図が、営業トークの設計図そのものです。<b>「ウイルス対策ソフトは入っていますよね。では、社員の方への教育は？」</b>——ほとんどの企業で答えは「していない」になります。否定から入らずに空白を指摘できるため、断られにくい入り方です。</p>
+    </div>
+    <div class="chartbox">
+      <h4>被害の推移</h4>
+      <p class="csub">特殊詐欺＋SNS型投資・ロマンス詐欺の被害総額と、フィッシング報告件数（いずれも2025年）</p>
+      <div id="ch-damage"></div>
+      <p class="note">被害総額は<b>3,241億円で前年比62.8%増</b>、認知件数43,000件（+37.5%）、フィッシング報告は<b>245万4,297件で過去最多</b>。ネットバンキングの不正送金約103億9,700万円のうち、約9割の手口がフィッシングでした。「他人事ではない」を数字で示せる状態です。</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>この市場での勝ち方</h3>
+    <div class="grid g3">
+      <div class="card"><span class="chip b">1</span><h4 style="font-size:15px;margin:10px 0 6px">「モノ」ではなく「人」を売る</h4><p style="font-size:13px;color:var(--ink-2)">セキュリティベンダーはツールを売り、法律事務所は事後対応を売ります。<b>従業員教育と社内ルールという領域は、両者のあいだに空いている</b>——ここに専業でいることが最大の差別化です。</p></div>
+      <div class="card"><span class="chip b">2</span><h4 style="font-size:15px;margin:10px 0 6px">講座で入り、顧問で積む</h4><p style="font-size:13px;color:var(--ink-2)">すでに「顧問は不要だが講座はやってほしい」という受注が発生しています。<b>単発講座は最も断られにくい入口</b>。ここから年契約の顧問へつなぐ二段構えが、実績ゼロからの最短ルートです。</p></div>
+      <div class="card"><span class="chip b">3</span><h4 style="font-size:15px;margin:10px 0 6px">AIという空白を先に取る</h4><p style="font-size:13px;color:var(--ink-2)">上場企業はネットリスクの顧問を既に置いていますが、<b>AI利用ルールは未整備のところが多い</b>。ここは既存顧問との競合になりません。追加テーマとして入れる提案が通りやすい領域です。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="panel" id="p-why" role="tabpanel" hidden>
+  <div class="sec-head"><h2>今すぐやらないといけない3つの理由</h2><span class="tagline">法律・制度・世の中の流れ</span></div>
+  <p class="lede">3つとも、すでに施行済みか、数字が確定しているものです。<b>River&amp;Villageにとっては、どれも追い風</b>——問題は、追い風が吹いているあいだに営業量を出せるかどうかだけです。</p>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">1</div><div>
+      <div class="kicker"><span class="chip a">法律</span><span class="chip">2025年9月 全面施行</span></div>
+      <h4>AI新法が全面施行され、「AIを使う事業者の責務」が法律に書かれた</h4>
+    </div></div>
+    <div class="rbody">
+      <p>人工知能関連技術の研究開発及び活用の推進に関する法律（AI新法）が2025年6月4日に公布され、<b>2025年9月に全面施行</b>されました。EUのAI法のような規制法ではなく推進法ですが、<b>第7条でAI活用事業者の責務が定められています</b>。あわせて2024年4月には「AI事業者ガイドライン」が公表されており、AIを業務で使う企業は、国が示した指針に沿った運用を求められる立場になりました。対象は生成AIに限らず、機械学習や推論システムを含む幅広いAI関連技術です。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">2025/9</div><div class="fk">AI新法の全面施行</div></div>
+        <div class="fact"><div class="fv">第7条</div><div class="fk">AI活用事業者の責務を規定</div></div>
+        <div class="fact"><div class="fv">2024/4</div><div class="fk">AI事業者ガイドラインの公表</div></div>
+      </div>
+      <div class="sowhat"><b>River&amp;Villageにとって：</b>前回の商談で「上場企業はネットリスクの顧問を入れているが、<b>AIに関してはまだ入っていけていない</b>」という話が出ました。その空白に、いま法律の裏づけがつきました。<b>既存の顧問先と競合せずに、追加テーマとして入れる</b>——これがAI利用ルール策定の営業の形です。全面施行から1年の今期が、各社がルールを整える時期にあたります。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">2</div><div>
+      <div class="kicker"><span class="chip a">制度</span><span class="chip">2025年4月 施行／被害は過去最悪</span></div>
+      <h4>SNSトラブルが「個人の問題」から「企業の管理責任」に移った</h4>
+    </div></div>
+    <div class="rbody">
+      <p>2025年4月1日、プロバイダ責任制限法を改正した<b>情報流通プラットフォーム対処法（情プラ法）</b>が施行され、大規模プラットフォーム事業者には削除申出への<b>7日以内の対応判断と通知</b>、削除基準や運用状況の公表が義務づけられました。同時に、2025年の特殊詐欺＋SNS型投資・ロマンス詐欺の被害総額は<b>3,241億円（前年比62.8%増）で過去最悪</b>、フィッシング報告件数は<b>245万件超で過去最多</b>を記録しています。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">7<span style="font-size:12px">日以内</span></div><div class="fk">削除申出への対応判断の義務</div></div>
+        <div class="fact"><div class="fv">3,241<span style="font-size:12px">億円</span></div><div class="fk">2025年の被害総額・前年比+62.8%</div></div>
+        <div class="fact"><div class="fv">245<span style="font-size:12px">万件</span></div><div class="fk">フィッシング報告件数・過去最多</div></div>
+      </div>
+      <div class="sowhat"><b>River&amp;Villageにとって：</b>削除の迅速化が制度化されたことで、<b>従業員のSNS投稿が権利侵害になったとき、企業が矢面に立つ速度も上がりました</b>。「投稿した本人の問題」では済まなくなっています。前回の商談で挙がったホテル・旅館業界のように、現場スタッフにSNS運用を任せている業種ほど、この論点が刺さります。被害額の数字は、講座の冒頭でそのまま使える材料です。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">3</div><div>
+      <div class="kicker"><span class="chip a">世の中の流れ</span><span class="chip">IPA調査 2025年5月公表</span></div>
+      <h4>ツールは7割に入った。教育だけが7割空いている</h4>
+    </div></div>
+    <div class="rbody">
+      <p>IPAが中小企業4,191社を対象に実施した「2024年度 中小企業における情報セキュリティ対策に関する実態調査」（2025年5月公表）では、OS・ソフトウェアを常に最新にしている企業が<b>73.0%</b>、ウイルス対策ソフトを導入し定義ファイルを更新している企業が<b>71.4%</b>と、基本的な対策は一定程度浸透しています。一方で<b>教育・脅威インテリジェンスは7割近くが不十分または未実施</b>。さらにセキュリティ投資について「必要性を感じていない」等の回答が<b>62.6%</b>を占めました。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">73.0<span style="font-size:12px">%</span></div><div class="fk">OS・ソフトを常に最新化</div></div>
+        <div class="fact"><div class="fv">約7<span style="font-size:12px">割</span></div><div class="fk">教育が不十分または未実施</div></div>
+        <div class="fact"><div class="fv">62.6<span style="font-size:12px">%</span></div><div class="fk">投資の必要性を感じていない等</div></div>
+      </div>
+      <div class="sowhat"><b>River&amp;Villageにとって：</b>これは市場規模の話ではなく、<b>営業の切り口の話</b>です。ツールが入っている＝予算はセキュリティに出している企業が、教育だけは手をつけていない。<b>「入れていないもの」を指摘するのではなく、「入れているのに片方だけ空いている」を指摘する</b>——これが最も断られにくい入り方です。同時に62.6%が必要性を感じていない以上、待っていても問い合わせは来ません。<b>こちらから接触する以外に方法がない市場</b>だということでもあります。</div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>制度カレンダー</h3>
+    <div class="timeline">
+      <div class="timeline-track">
+        <div class="tl-item on"><div class="y">2024年4月</div><div class="t">AI事業者ガイドライン<br>公表</div></div>
+        <div class="tl-item on"><div class="y">2025年4月1日</div><div class="t">情プラ法 施行<br>削除対応の7日ルール</div></div>
+        <div class="tl-item on"><div class="y">2025年6月4日</div><div class="t">AI新法 公布</div></div>
+        <div class="tl-item on"><div class="y">2025年9月</div><div class="t">AI新法 全面施行<br>AI活用事業者の責務</div></div>
+        <div class="tl-item on"><div class="y">2025年5月</div><div class="t">IPA調査 公表<br>教育は7割が空白</div></div>
+        <div class="tl-item on"><div class="y">2026年 年初</div><div class="t">2025年の被害額 確定<br>3,241億円で過去最悪</div></div>
+        <div class="tl-item now"><div class="y">2026年9月</div><div class="t">AI新法 全面施行から1年<br>各社がルールを整える時期（現在地）</div></div>
+      </div>
+    </div>
+    <div class="verdict" style="margin-top:18px;border-left-color:var(--accent)">
+      <b style="color:var(--accent)">結論：</b>制度も数字も、すべてRiver&amp;Villageに有利に動いています。ただし<b style="color:var(--accent)">62.6%が必要性を感じていない市場では、待っていても問い合わせは来ません</b>。追い風が吹いているあいだにこちらから接触した数だけが、来期の契約数になります。社長の時間を営業に戻すことが、そのまま最優先の経営判断です。
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="panel" id="p-strategy" role="tabpanel" hidden>
+  <div class="sec-head"><h2>成長戦略</h2><span class="tagline">1人の会社が、1人のまま倍の仕事をする</span></div>
+  <p class="lede">社長ひとり＝月160時間。そこに在宅ワーカーで<b>もう160時間</b>を足し、外付けの営業チームで<b>接触の量</b>を足す。人を雇わずに実質2人体制をつくるのが、いちばん速くて戻しやすい打ち手です。</p>
+
+  <div class="grid g3">
+    <div class="pillar">
+      <span class="pk">PILLAR 01</span>
+      <h4>社長の時間を、登壇と商談だけに寄せる</h4>
+      <p>経理・請求・資料作成・問い合わせ対応・HP更新を在宅ワーカーへ。社長が残すのは講座の登壇、顧問面談、そしてクロージングだけ。<b>人を雇わずに時間を買う</b>のがこのユニットの本質です。</p>
+      <div class="kpi"><span>目標：<b>社長の営業時間 月80時間</b>を確保</span><span>手段：生産性向上支援ユニット</span></div>
+    </div>
+    <div class="pillar">
+      <span class="pk">PILLAR 02</span>
+      <h4>接触の量を、待ちから攻めに変える</h4>
+      <p>Webからの問い合わせ待ちでは月10社に届きません。電話・フォーム・メール・手紙のマルチチャネルで、教育が空白の企業へこちらから接触する。<b>62.6%が必要性を感じていない市場では、これ以外に方法がありません</b>。</p>
+      <div class="kpi"><span>目標：<b>月12件のアポイント</b>（Bプラン想定）</span><span>手段：営業支援ユニット</span></div>
+    </div>
+    <div class="pillar">
+      <span class="pk">PILLAR 03</span>
+      <h4>講座で入り、顧問に積み替える</h4>
+      <p>顧問は実績ゼロでも、単発講座なら受注が出ています。<b>まず講座で1回入り、そこから年契約の顧問へ</b>。この二段構えなら、受注率の低さを入口の数でカバーできます。実績が溜まれば顧問の直販も通り始めます。</p>
+      <div class="kpi"><span>目標：<b>講座受注の30%を顧問へ転換</b></span><span>手段：提案の型化＋在宅ワーカー</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>営業の切り口：どう入って、どこに着地させるか</h3>
+    <p class="sub">前回の商談で挙がったターゲット候補を、入り方の型に整理したもの</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>入り口のテーマ</th><th>刺さる相手</th><th>最初の一言</th><th>着地</th></tr></thead>
+        <tbody>
+          <tr><td>AI利用ルールの未整備</td><td>上場企業・IPO準備企業・AI活用を始めた企業</td><td>「ネットリスクの顧問は入っていると思いますが、AIの利用ルールはどなたが作られていますか」</td><td>AIルール策定＋顧問</td></tr>
+          <tr><td>教育だけが空白</td><td>従業員20〜100名の中小企業全般</td><td>「ウイルス対策ソフトは入っていますよね。社員の方への教育は、どうされていますか」</td><td>単発講座 → 顧問</td></tr>
+          <tr><td>従業員のSNS投稿リスク</td><td>ホテル・旅館、飲食チェーン、美容、小売</td><td>「現場のスタッフさんにSNSを任せていませんか。投稿のルールは決まっていますか」</td><td>SNSルール策定＋講座</td></tr>
+          <tr><td>取引先・加盟店への責任</td><td>フランチャイズ本部、元請企業、3PL</td><td>「加盟店さん側のネットリスク、本部として把握できていますか」</td><td>本部一括の顧問</td></tr>
+          <tr><td>顧問先へのサービス拡充</td><td>税理士・社労士・保険代理店・地銀</td><td>「顧問先から情報漏洩やAIの相談、来ていませんか。先生の名前で出せる形にできます」</td><td>紹介チャネル化</td></tr>
+          <tr><td>子どもと保護者のリテラシー</td><td>小中学校、教育委員会、学習塾、保育園運営法人</td><td>「保護者会でネット詐欺やSNSの話をされたことはありますか」</td><td>講座（年間複数回）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">無形商材だからこそ、<b>「何を売るか」ではなく「相手の何が困っているか」から入る</b>と話が通ります。上の表はそのまま、営業支援ユニットが作るトークスクリプトの骨格になります。</p>
+  </div>
+
+  <div class="block">
+    <h3>月10社への内訳</h3>
+    <p class="sub">営業支援だけでは届かない。3経路に分けて積む</p>
+    <div class="chartbox"><div id="ch-route"></div></div>
+    <p class="note">事業計画書に書くときは、<b>この3経路を分けて記載する</b>ことをおすすめします。「営業代行で月10社」より「営業支援で3社、講座からの転換で3社、紹介で2社、Web問い合わせで1社」のほうが、根拠として明確で、金融機関にも通りやすくなります。</p>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="panel" id="p-targets" role="tabpanel" hidden>
+  <div class="sec-head"><h2>営業ターゲット30</h2><span class="tagline">母数・狙う理由・初回の切り口</span></div>
+  <p class="lede">オンライン提供のため商圏の制約がありません。全国の法人を<b>「教育が空白の中小企業」「SNSリスクが高い業種」「AIが空白の企業と紹介チャネル」</b>の3層で30セグメントに分解しました。母数は公的統計と業界推計に基づく概算です。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">総母数（30セグメント計）</span><span class="v" id="t-total">—</span><span class="n">全国・法人および施設数の合算</span></div>
+    <div class="stat"><span class="k">Tier A・教育が空白の中小企業</span><span class="v" id="t-a">—</span><span class="n">顧問のメインターゲット</span></div>
+    <div class="stat hot"><span class="k">1年で接触できる件数</span><span class="v">126,000<small>件</small></span><span class="n">Bプラン想定・電話500＋フォーム10,000/月</span></div>
+    <div class="stat pos"><span class="k">必要な母数（年120社・受注率1%想定）</span><span class="v">12,000<small>件</small></span><span class="n">母数は十分。問題は接触量だけ</span></div>
+  </div>
+
+  <div class="chartbox block">
+    <h4>3層別の母数</h4>
+    <p class="csub">母数の大きさは制約になりません。制約は「月に何件接触できるか」だけです。</p>
+    <div id="ch-tiers"></div>
+    <p class="note">Tier Aは顧問の本命、Tier Bは講座から入りやすい層、Tier Cは1件決まると横に広がる層です。実績がない今は<b>Tier B（講座で入る）から始め、事例ができたらTier Aの顧問直販へ</b>という順番が現実的です。</p>
+  </div>
+
+  <div class="block">
+    <h3>ターゲット一覧</h3>
+    <p class="sub">Tierで絞る／母数で並べ替える／キーワードで検索する</p>
+    <div class="controls">
+      <div class="seg" id="tier-seg">
+        <button aria-pressed="true" data-t="all">すべて（30）</button>
+        <button aria-pressed="false" data-t="A">A・教育が空白（10）</button>
+        <button aria-pressed="false" data-t="B">B・SNSリスク（10）</button>
+        <button aria-pressed="false" data-t="C">C・AIと紹介（10）</button>
+      </div>
+      <input type="search" id="t-search" placeholder="業種・理由・切り口を検索" aria-label="ターゲット検索">
+      <select id="t-sort" aria-label="並べ替え">
+        <option value="rank">優先度順</option>
+        <option value="count">母数の多い順</option>
+        <option value="countAsc">母数の少ない順</option>
+      </select>
+      <span class="count">表示 <b id="t-shown">30</b> 件 ／ 母数計 <b id="t-sum">—</b></span>
+    </div>
+    <div class="tlist" id="t-list"></div>
+    <p class="note">母数の出所：宅建業者・建設業許可業者・診療所・薬局数などは各省庁の公表統計、上場企業数は各取引所、学校数は文部科学省「学校基本調査」に基づく概算です。その他は業界推計。<b>実リストはデータベース抽出後の実数で確定させてください。</b></p>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="panel" id="p-remote" role="tabpanel" hidden>
+  <div class="sec-head"><h2>在宅ワーカー活用</h2><span class="tagline">人を雇わずに、もう1人分の時間を足す</span></div>
+  <p class="lede">社長ひとり＝<b>月160時間</b>。いまその160時間のうち、営業に使えているのは30時間ほどです。「社員でなくてもできる業務」を洗い出すと<b>ちょうど160時間分</b>——つまり<b>もう1人分</b>が出てきます。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">移管できる業務量</span><span class="v" id="rw-total">160<small>h/月</small></span><span class="n">社長の稼働と同じ量＝実質2人体制</span></div>
+    <div class="stat hot"><span class="k">うち社長が抱えている分</span><span class="v">160<small>h/月</small></span><span class="n">1人会社なので、全部が社長の時間</span></div>
+    <div class="stat"><span class="k">対象業務の数</span><span class="v">20<small>種</small></span><span class="n">5カテゴリに分類</span></div>
+    <div class="stat pos"><span class="k">正社員採用との比較</span><span class="v">564<small>万円</small></span><span class="n">営業社員1名の年間コスト（採用・給与・間接費）</span></div>
+  </div>
+
+  <div class="block">
+    <h3>在宅ワーカーに依頼できる業務</h3>
+    <p class="sub">◆ 印は、いま社長の時間をとくに大きく奪っている業務です。時間は月間の想定工数。</p>
+    <div class="grid g2" id="task-groups"></div>
+    <div class="callout"><b>1人会社での移管のコツは「全部出さない」ことです。</b>最初の1ヶ月は<b>請求書の発行と入金消込、経費精算</b>という手順が完全に固定された業務だけに絞ります。ここでワークフローとマニュアルができてから、判断を伴う業務（提案資料、講座スライド）へ広げる。合わなければそこで止められる形にしてあります。</div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：現状</h3>
+    <p class="sub">すべての業務が社長1人を通っている。営業に使えるのは月30時間だけ。</p>
+    <div class="chartbox"><div id="ch-org-before"></div></div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：2ユニット導入後</h3>
+    <p class="sub">社長は登壇と商談だけ。会う前と決めたあとを外部チームが回す。</p>
+    <div class="chartbox"><div id="ch-org-after"></div></div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card"><span class="chip b">ポイント①</span><h4 style="font-size:14.5px;margin:9px 0 6px">雇用ではないので、止められる</h4><p style="font-size:13px;color:var(--ink-2)">正社員1名の年間コストは採用費・給与・間接費込みで約564万円、3年以内の離職率は50%超。<b>在宅ワーカーはそのリスクを負わずに、同じ時間を確保できます</b>。</p></div>
+      <div class="card"><span class="chip b">ポイント②</span><h4 style="font-size:14.5px;margin:9px 0 6px">社長にしかできないことだけ残す</h4><p style="font-size:13px;color:var(--ink-2)">講座の登壇、顧問面談、価格の決定、コンテンツの監修。ここは代替できません。<b>逆に言えば、それ以外は全部出せます</b>——1人会社ほど、この線引きが効きます。</p></div>
+      <div class="card"><span class="chip b">ポイント③</span><h4 style="font-size:14.5px;margin:9px 0 6px">最終的には自社チームにできる</h4><p style="font-size:13px;color:var(--ink-2)">営業支援ユニットのメンバーは、契約終了後に<b>そのまま自社へ引き継ぐことが可能</b>です。営業システムも無料で残ります。「チームが大事」という気づきを、雇用リスクなしで形にできます。</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>社長の時間配分</h3>
+    <p class="sub">月160時間を、どこに使っているか／どこに使えるようになるか</p>
+    <div class="chartbox">
+      <div class="legend">
+        <span><i style="background:var(--s2)"></i>営業・商談</span>
+        <span><i style="background:var(--s5)"></i>講座の登壇・顧問対応</span>
+        <span><i style="background:var(--s1)"></i>資料・スライド作成</span>
+        <span><i style="background:var(--s3)"></i>経理・請求・事務</span>
+        <span><i style="background:var(--s4)"></i>問い合わせ・調整</span>
+      </div>
+      <div id="ch-time"></div>
+      <p class="note">現状、営業に使えているのは月30時間。資料作成・経理・調整に90時間が消えています。移管後は営業に<b>月80時間</b>——2.7倍です。この50時間の増分が、次のタブで「社長の商談枠」として計算されます。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="panel" id="p-roi" role="tabpanel" hidden>
+  <div class="sec-head"><h2>ROIシミュレーション</h2><span class="tagline">A／B／Cプランの比較と、事業計画書に載せる数字</span></div>
+  <p class="lede">上のプランボタンで<b>A・B・Cの3プランを切り替えて比較</b>できます。売上は1年目に実際に立つ金額で計算しており、初月は準備期間として売上ゼロで置いています。融資の結果がどちらに転んでも、その場で数字を出し直せる形です。</p>
+
+  <div class="roi-layout">
+    <aside class="knobs">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h4 style="margin:0;font-size:14px">前提条件</h4>
+        <button class="resetbtn" id="roi-reset" type="button">標準に戻す</button>
+      </div>
+      <div class="seg" id="plan-seg" style="margin-bottom:12px">
+        <button aria-pressed="false" data-plan="C" style="flex:1">Cプラン</button>
+        <button aria-pressed="true" data-plan="B" style="flex:1">Bプラン</button>
+        <button aria-pressed="false" data-plan="A" style="flex:1">Aプラン</button>
+      </div>
+      <div class="plancard" id="plan-desc"></div>
+
+      <div class="gh"><span>◆</span> 営業支援ユニット</div>
+      <div class="knob"><label for="k-appo">月間アポイント数 <b><span id="v-appo"></span>件</b></label><input type="range" id="k-appo" min="2" max="40" step="1"></div>
+      <div class="knob"><label for="k-meet">商談実施率 <b><span id="v-meet"></span>%</b></label><input type="range" id="k-meet" min="50" max="100" step="5"></div>
+      <div class="knob"><label for="k-win">商談→顧問契約 受注率 <b><span id="v-win"></span>%</b></label><input type="range" id="k-win" min="3" max="50" step="1"></div>
+      <div class="knob"><label for="k-sfee">プラン月額費用（税抜） <b><span id="v-sfee"></span>万円</b></label><input type="range" id="k-sfee" min="10" max="60" step="0.5"></div>
+
+      <div class="knob-group"><div class="gh"><span>◆</span> 生産性向上支援ユニット</div>
+        <div class="knob"><label for="k-hours">移管する業務量 <b><span id="v-hours"></span>h/月</b></label><input type="range" id="k-hours" min="0" max="240" step="10"></div>
+        <div class="knob"><label for="k-ofee">ユニット月額費用（在宅ワーカー費用込） <b><span id="v-ofee"></span>万円</b></label><input type="range" id="k-ofee" min="0" max="50" step="1"></div>
+        <div class="knob"><label for="k-ceoh">社長が商談に回せる時間 <b><span id="v-ceoh"></span>h/月</b></label><input type="range" id="k-ceoh" min="0" max="80" step="5"></div>
+        <div class="knob"><label for="k-permeet">1商談あたり所要時間（準備・フォロー込み） <b><span id="v-permeet"></span>h</b></label><input type="range" id="k-permeet" min="1" max="10" step="1"></div>
+        <div class="knob"><label for="k-ceowin">社長の受注率 <b><span id="v-ceowin"></span>%</b></label><input type="range" id="k-ceowin" min="5" max="60" step="1"></div>
+      </div>
+
+      <div class="knob-group"><div class="gh"><span>◆</span> 契約1件あたりの収益</div>
+        <div class="knob"><label for="k-rev">顧問の平均年間契約額（税抜） <b><span id="v-rev"></span>万円</b></label><input type="range" id="k-rev" min="10" max="120" step="5"></div>
+        <div class="knob"><label for="k-course">講座の付随受注（1契約あたり年間） <b><span id="v-course"></span>万円</b></label><input type="range" id="k-course" min="0" max="60" step="5"></div>
+        <div class="knob"><label for="k-yearly">年払いの比率 <b><span id="v-yearly"></span>%</b></label><input type="range" id="k-yearly" min="0" max="100" step="10"></div>
+        <div class="knob"><label for="k-gm">粗利率 <b><span id="v-gm"></span>%</b></label><input type="range" id="k-gm" min="40" max="95" step="5"></div>
+        <div class="knob"><label for="k-prep">準備期間（売上ゼロの月数） <b><span id="v-prep"></span>ヶ月</b></label><input type="range" id="k-prep" min="0" max="3" step="1"></div>
+      </div>
+      <p class="note" style="margin-top:4px">※ プラン月額は前回ご提示の金額（税抜）です。一括払いの場合は別途割引があります。契約期間は13ヶ月。</p>
+    </aside>
+
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div>
+        <h3 style="font-size:17px">12ヶ月後の着地</h3>
+        <p class="sub" style="font-size:12.5px;color:var(--ink-3);margin:3px 0 14px">1年目に実際に計上される売上・粗利ベース</p>
+        <div class="grid g4">
+          <div class="stat pos"><span class="k">年間ROI</span><span class="v" id="o-roi">—</span><span class="n">（粗利−投資）÷投資</span></div>
+          <div class="stat info"><span class="k">年間 新規契約数</span><span class="v" id="o-closes">—</span><span class="n" id="o-closesplit">—</span></div>
+          <div class="stat"><span class="k">年間 売上</span><span class="v" id="o-rev">—</span><span class="n" id="o-revnote">—</span></div>
+          <div class="stat hot"><span class="k">月10社 目標への到達度</span><span class="v" id="o-gap">—</span><span class="n">営業支援＋社長の商談枠のみで</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="eyebrow" style="margin-bottom:10px">月間のファネル</div>
+        <div class="funnel">
+          <div class="fstep"><div class="fl">アポイント</div><div class="fv" id="f-appo">—</div><div class="fr">営業支援ユニットが供給</div></div>
+          <div class="fstep"><div class="fl">商談</div><div class="fv" id="f-meet">—</div><div class="fr" id="f-meet-r">—</div></div>
+          <div class="fstep"><div class="fl">社長の追加商談</div><div class="fv" id="f-ceo">—</div><div class="fr" id="f-ceo-r">—</div></div>
+          <div class="fstep end"><div class="fl">契約</div><div class="fv" id="f-win">—</div><div class="fr" id="f-win-r">—</div></div>
+        </div>
+      </div>
+
+      <div class="chartbox">
+        <h4>3プランの比較</h4>
+        <p class="csub">現在の前提条件（受注率・契約額）のまま、プランだけを切り替えたときの年間粗利と投資額</p>
+        <div class="legend"><span><i style="background:var(--s5)"></i>年間粗利</span><span><i style="background:var(--s3)"></i>年間投資</span></div>
+        <div id="ch-plans"></div>
+      </div>
+
+      <div class="chartbox">
+        <h4>累積の粗利と投資</h4>
+        <p class="csub">累積粗利が累積投資を上回る月が投資回収のタイミングです</p>
+        <div class="legend"><span><i style="background:var(--s5)"></i>累積 粗利</span><span><i style="background:var(--s3)"></i>累積 投資</span></div>
+        <div id="ch-payback"></div>
+      </div>
+
+      <div class="chartbox">
+        <h4>受注率の感度分析</h4>
+        <p class="csub">顧問の受注実績がまだないため、ここが最大の不確実要素です</p>
+        <div id="ch-sens"></div>
+      </div>
+
+      <div class="verdict" id="o-verdict"></div>
+
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:10px">この試算の読み方（事業計画書に書くときの注意）</div>
+        <ul style="margin:0;padding-left:1.2em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">
+          <li><b>最大の不確実要素は受注率です。</b>顧問は2026年7月開始でまだ契約実績がないため、初期値は保守的に15%を置いています。感度分析のとおりここが数ポイント動くだけで結果が大きく変わるので、<b>計画書には根拠として「講座受注はすでにある」ことを添える</b>のが有効です。</li>
+          <li>初月は準備期間として売上ゼロで計算しています（リスト作成・トークスクリプト作成・すり合わせに約1ヶ月）。<b>10月に準備・11月から実行なら、初回の売上計上は11月</b>です。</li>
+          <li>顧問は年契約のため、<b>2年目は更新分がそのまま上に積み上がります</b>。1年目のROIだけで判断すると過小評価になります。計画書では2年目・3年目も並べてください。</li>
+          <li><b>年払いか月払いかで、1年目に立つ売上が変わります。</b>年払いは受注月に全額、月払いは毎月1/12ずつの計上として計算しています。初期値は半々。資金繰りを優先するなら年払いを勧める設計に、契約数を優先するなら月払いを選べる設計にしてください。</li>
+          <li>生産性向上支援ユニットの効果は、事務コストの削減ではなく<b>社長の商談枠が増えること</b>で計上しています。1人会社では削減できる人件費が存在しないため、その分だけ保守的な数字です。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="panel" id="p-road" role="tabpanel" hidden>
+  <div class="sec-head"><h2>明日からの90日</h2><span class="tagline">9月14日（月）11:00の商談を起点に</span></div>
+  <p class="lede"><span class="owner rv">River&amp;Village</span>と<span class="owner ai">アイドマ</span>の役割を分けて記載しています。社長の稼働は「登壇と商談に出る」ことに集中していただく設計です。</p>
+
+  <div class="card" style="border-left:4px solid var(--brand);border-radius:8px;margin-bottom:24px">
+    <div class="eyebrow" style="margin-bottom:8px">次回商談（9月14日 11:00）でお出しするもの</div>
+    <ul style="margin:0;padding-left:1.2em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:5px">
+      <li><b style="color:var(--ink)">本ボード</b>——ターゲット30業種、切り口、ROIシミュレーション</li>
+      <li><b style="color:var(--ink)">お見積書とサービス内容の資料</b>——事業計画書に添付いただける形で（お約束の提出物）</li>
+      <li><b style="color:var(--ink)">融資の結果に応じた3プランの比較</b>——下りた場合はB、規模を絞る場合はC、加速する場合はA</li>
+      <li><b style="color:var(--ink)">月10社の内訳の置き方</b>——営業支援だけに寄せない計画の書き方</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 1–30</div><div class="pt">準備期間<br>（売上はまだ立たない）</div></div>
+    <ul>
+      <li><span class="owner ai">アイドマ</span>3回のミーティング（各1時間）で取材・営業戦略の立案・リストとトークスクリプトの確定まで行う。</li>
+      <li><span class="owner ai">アイドマ</span>営業戦略を<b>20〜30パターン</b>提示し、一緒に優先順位を決める。Tier B（講座で入る層）から着手する前提で設計。</li>
+      <li><span class="owner rv">R&amp;V</span>顧問ライト／スタンダードの違いを1枚にまとめる。商談で最初に聞かれる論点です。</li>
+      <li><span class="owner ai">アイドマ</span>自社サイトへの解析タグを設置し、<b>閲覧企業の特定</b>を開始。問い合わせに至らなかった企業を追いかけられる状態にする。</li>
+      <li><span class="owner ai">アイドマ</span>在宅ワーカーへの移管を、請求・入金消込・経費精算から開始する。</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 31–60</div><div class="pt">実行開始と<br>勝ちパターンの特定</div></div>
+    <ul>
+      <li><span class="owner ai">アイドマ</span>電話・フォーム・メールでのアプローチを開始。業種別・文面別の反応率を毎週分析し、スクリプトを修正する。</li>
+      <li><span class="owner rv">R&amp;V</span>社長は<b>商談と登壇だけ</b>を担当。資料作成には手を出さない。</li>
+      <li><span class="owner ai">アイドマ</span>反応の良かった業種へ配信を寄せる。インテントデータ（検索行動）からホットリストを抽出。</li>
+      <li><span class="owner rv">R&amp;V</span>最初の顧問契約1件を、掲載可否の許諾込みで<b>事例化</b>する。実績ゼロという最大の弱点が、ここで消えます。</li>
+      <li><span class="owner ai">アイドマ</span>講座スライドと顧問提案資料の作成を在宅ワーカーへ移管する。</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 61–90</div><div class="pt">数字の確定と<br>内製化の設計</div></div>
+    <ul>
+      <li><span class="owner ai">アイドマ</span>3ヶ月の実績値（アポ率・受注率・平均契約額）でROIモデルを更新し、金融機関への報告資料にする。</li>
+      <li><span class="owner rv">R&amp;V</span>講座から顧問への転換率を測定。転換率が読めれば、月10社の内訳が確定します。</li>
+      <li><span class="owner ai">アイドマ</span>紹介チャネル（税理士・社労士・保険代理店）へのアプローチを開始し、3経路目を立ち上げる。</li>
+      <li><span class="owner rv">R&amp;V</span>在宅ワーカーへの移管範囲を拡大し、社長の営業時間が月80時間を超えているか確認する。</li>
+      <li><span class="owner ai">アイドマ</span>契約終了後の<b>内製化</b>（メンバーの引き継ぎ・営業システムの無償譲渡）の進め方を設計する。</li>
+    </ul>
+  </div>
+
+  <hr class="stream" style="margin:34px 0">
+
+  <div class="block" style="margin-top:0">
+    <h3>次回商談で確認したい6つ</h3>
+    <p class="sub">試算の精度を上げるために、社長にしか答えられない数字</p>
+    <div class="grid g2">
+      <div class="card"><b>1. 融資の結果と、月々に充てられる上限</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">プランの規模がここで決まります。下りなかった場合の代替案も用意しています。</p></div>
+      <div class="card"><b>2. 講座（単発）の単価</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">入口商材の単価。顧問への転換前に立つ売上として、計画に組み込めます。</p></div>
+      <div class="card"><b>3. ライトとスタンダードの想定構成比</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">平均年間契約額が決まり、ROIの分子が固まります。</p></div>
+      <div class="card"><b>4. 講座1回あたりの準備・実施時間</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">受注が増えたときに社長の時間が足りるか、供給側の上限を確認します。</p></div>
+      <div class="card"><b>5. これまでの商談件数と受注件数</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">少数でも構いません。受注率の初期値を実測に置き換えられます。</p></div>
+      <div class="card"><b>6. 学校向けと企業向けの売上比率</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">どちらに営業リソースを寄せるかの判断材料になります。</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>出典</h3>
+    <ul class="srcs">
+      <li>AI新法（人工知能関連技術の研究開発及び活用の推進に関する法律／2025年6月4日公布・9月全面施行） — <a href="https://www.gov-online.go.jp/hlj/ja/november_2025/november_2025-08.html" target="_blank" rel="noopener">政府広報オンライン</a>／<a href="https://www.businesslawyers.jp/articles/1475" target="_blank" rel="noopener">BUSINESS LAWYERS</a></li>
+      <li>情報流通プラットフォーム対処法（2025年4月1日施行） — <a href="https://www.soumu.go.jp/main_sosiki/joho_tsusin/d_syohi/ihoyugai.html" target="_blank" rel="noopener">総務省</a>／<a href="https://www.sompo-rc.co.jp/columns/view/127" target="_blank" rel="noopener">SOMPOリスクマネジメント</a></li>
+      <li>特殊詐欺・SNS型投資／ロマンス詐欺の被害総額3,241億円（2025年・前年比62.8%増） — <a href="https://txbiz.tv-tokyo.co.jp/hiru/news/post_335090" target="_blank" rel="noopener">テレ東BIZ</a></li>
+      <li>フィッシング報告件数245万4,297件（2025年・過去最多） — <a href="https://www.antiphishing.jp/report/phishing_report_2025.pdf" target="_blank" rel="noopener">フィッシング対策協議会「フィッシングレポート2025」</a>／<a href="https://cybersecurity-info.com/news/phishing-reports-surge-to-a-record-high-of-over-2-45-million-raising-concerns-about-sophisticated-voice-phishing-and-new-methods-of-detection-evasion/" target="_blank" rel="noopener">サイバーセキュリティ総研</a></li>
+      <li>中小企業における情報セキュリティ対策の実態（2024年度調査・2025年5月公表） — <a href="https://www.ipa.go.jp/security/reports/sme/sme-survey2024.html" target="_blank" rel="noopener">IPA 独立行政法人情報処理推進機構</a></li>
+      <li>サイバー犯罪の検挙件数15,108件（2025年・過去最高） — <a href="https://scan.netsecurity.ne.jp/article/2026/03/24/54888.html" target="_blank" rel="noopener">ScanNetSecurity（警察庁「令和7年 サイバー空間の脅威情勢」）</a></li>
+      <li>アイドマ・ホールディングス クラウドユニット — <a href="https://www.aidma-hd.jp/crowdunit_category/" target="_blank" rel="noopener">aidma-hd.jp</a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<hr class="stream">
+<footer style="background:var(--surface);border-top:1px solid var(--rule)">
+  <div class="wrap" style="padding:20px 24px 28px;font-size:12px;color:var(--ink-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <span>株式会社River&amp;Village 様向け 事前リサーチ・成長戦略・ROI分析／株式会社アイドマ・ホールディングス</span>
+    <span class="mono">2026-09-13</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+var tabs=Array.prototype.slice.call(document.querySelectorAll(".tab"));
+tabs.forEach(function(t){
+  t.addEventListener("click",function(){
+    tabs.forEach(function(x){
+      x.setAttribute("aria-selected",x===t?"true":"false");
+      document.getElementById("p-"+x.dataset.p).hidden=(x!==t);
+    });
+    window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  });
+});
+
+var NF=new Intl.NumberFormat("ja-JP");
+function n(v){return NF.format(Math.round(v));}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function svg(w,h,inner){
+  return '<svg viewBox="0 0 '+w+' '+h+'" role="img" preserveAspectRatio="xMidYMid meet" '+
+    'style="max-width:'+Math.round(w*1.18)+'px;margin:0 auto">'+inner+'</svg>';
+}
+function txt(x,y,s,o){
+  o=o||{};
+  return '<text x="'+x+'" y="'+y+'" fill="'+(o.fill||"var(--ink-2)")+'" font-size="'+(o.size||11)+'" '+
+   'font-family="'+(o.mono?"JetBrains Mono, monospace":(o.disp?"Noto Serif JP, serif":"M PLUS 2, sans-serif"))+'" '+
+   'font-weight="'+(o.weight||400)+'" text-anchor="'+(o.anchor||"start")+'"'+
+   (o.baseline?' dominant-baseline="'+o.baseline+'"':'')+'>'+esc(s)+'</text>';
+}
+function rrect(x,y,w,h,r,fill){
+  if(h<=0||w<=0) return "";
+  r=Math.min(r,h/2,w/2);
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+r+'" fill="'+fill+'"></rect>';
+}
+function niceMax(v,div){
+  if(!(v>0)) return div;
+  var unit=v/div, step=Math.pow(10,Math.floor(Math.log10(unit))), r=unit/step;
+  var mult=r<=1?1:r<=2?2:r<=2.5?2.5:r<=5?5:10;
+  return step*mult*div;
+}
+
+/* ---- 目標とのギャップ ---- */
+(function(){
+  var W=700,H=230,padL=210,padR=96,plotW=W-padL-padR,top=44,rowH=54,max=44,s="";
+  var rows=[
+    {l:"月10社に必要なアポイント",s:"受注率30%・商談実施率85%の場合",v:39,c:"var(--s3)"},
+    {l:"Bプランで得られるアポイント",s:"電話500件＋フォーム1万件/月の想定",v:12,c:"var(--s2)"},
+    {l:"社長の商談枠で追加できる分",s:"月50時間の増分／1商談2時間",v:8,c:"var(--s5)"}
+  ];
+  [0,10,20,30,40].forEach(function(g){
+    var x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-14)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-18)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-22,String(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  });
+  s+=txt(W-padR+8,top-22,"件/月",{fill:"var(--ink-3)",size:10});
+  rows.forEach(function(r,i){
+    var y=top+i*rowH;
+    s+=txt(0,y+7,r.l,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(0,y+25,r.s,{fill:"var(--ink-3)",size:10.5});
+    s+=rrect(padL,y-5,(r.v/max)*plotW,22,4,r.c);
+    s+=txt(padL+(r.v/max)*plotW+8,y+7,r.v+"件",{fill:"var(--ink-2)",size:11.5,mono:true,weight:600,baseline:"middle"});
+  });
+  var gx=padL+(39/max)*plotW;
+  s+='<line x1="'+gx+'" y1="'+(top-16)+'" x2="'+gx+'" y2="'+(top+rows.length*rowH-10)+'" stroke="var(--s3)" stroke-width="2" stroke-dasharray="5 4"></line>';
+  s+=txt(padL,H-12,"不足 19件/月 ＝ 講座からの転換・紹介・Web問い合わせで埋める",{fill:"var(--s3)",size:11.5,weight:700});
+  document.getElementById("ch-gap").innerHTML=svg(W,H,s);
+})();
+
+/* ---- IPA 対策実施状況 ---- */
+(function(){
+  var W=520,H=270,padL=8,padT=40,padB=54,plotH=H-padT-padB,max=100,s="";
+  var data=[
+    {l:"OS・ソフト更新",v:73.0,c:"var(--s5)"},
+    {l:"ウイルス対策",v:71.4,c:"var(--s5)"},
+    {l:"教育・脅威情報",v:30,c:"var(--s3)",note:"※ 約7割が不十分／未実施"}
+  ];
+  [0,25,50,75,100].forEach(function(g){
+    var y=padT+plotH-(g/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(W-34)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(W-30,y,String(g),{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+  });
+  s+=txt(padL,16,"実施できている企業の割合（%）",{fill:"var(--ink-3)",size:10});
+  data.forEach(function(d,i){
+    var bw=104,x=44+i*(bw+52),h=(d.v/max)*plotH,y=padT+plotH-h;
+    s+=rrect(x,y,bw,h,4,d.c);
+    s+=txt(x+bw/2,y-9,(i===2?"約":"")+d.v+"%",{fill:"var(--ink)",size:14,weight:600,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+20,d.l,{fill:"var(--ink-2)",size:11.5,anchor:"middle"});
+    if(d.note) s+=txt(x+bw/2,padT+plotH+37,d.note,{fill:"var(--s3)",size:10,weight:700,anchor:"middle"});
+  });
+  s+=txt(padL,H-6,"※ 教育の値は「7割近くが不十分または未実施」からの逆算による目安です。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("ch-ipa").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 被害の規模 ---- */
+(function(){
+  var W=520,H=270,s="";
+  var cards=[
+    {t:"特殊詐欺＋SNS型投資・ロマンス詐欺",v:"3,241",u:"億円",d:"前年比 +62.8%（過去最悪）",c:"var(--s3)",y:16},
+    {t:"認知件数",v:"43,000",u:"件",d:"前年比 +37.5%",c:"var(--s1)",y:100},
+    {t:"フィッシング報告件数",v:"2,454,297",u:"件",d:"過去最多・ネットバンキング不正送金の約9割",c:"var(--s2)",y:184}
+  ];
+  cards.forEach(function(c){
+    s+='<rect x="8" y="'+c.y+'" width="504" height="72" rx="8" fill="var(--surface-2)"></rect>';
+    s+='<rect x="8" y="'+c.y+'" width="5" height="72" rx="2.5" fill="'+c.c+'"></rect>';
+    s+=txt(26,c.y+22,c.t,{fill:"var(--ink-3)",size:11.5,weight:700});
+    s+=txt(26,c.y+52,c.v,{fill:c.c,size:26,weight:600,mono:true});
+    s+=txt(26+String(c.v).length*16+6,c.y+52,c.u,{fill:"var(--ink-2)",size:12});
+    s+=txt(504,c.y+52,c.d,{fill:"var(--ink-2)",size:11,anchor:"end"});
+  });
+  document.getElementById("ch-damage").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 月10社の内訳 ---- */
+(function(){
+  var W=700,H=210,padL=196,padR=96,plotW=W-padL-padR,max=11,top=42,rowH=40,s="";
+  var rows=[
+    {l:"営業支援ユニット",s:"アポイントからの直接受注",v:3,c:"var(--s2)"},
+    {l:"講座からの転換",s:"単発講座 → 年契約の顧問へ",v:3,c:"var(--s5)"},
+    {l:"紹介チャネル",s:"税理士・社労士・保険代理店・地銀",v:2,c:"var(--s4)"},
+    {l:"Web問い合わせ",s:"現状すでに発生している分",v:1,c:"var(--s1)"}
+  ];
+  [0,2,4,6,8,10].forEach(function(g){
+    var x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-12)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-12)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-20,String(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  });
+  s+=txt(W-padR+8,top-20,"社/月",{fill:"var(--ink-3)",size:10});
+  rows.forEach(function(r,i){
+    var y=top+i*rowH;
+    s+=txt(0,y+6,r.l,{fill:"var(--ink)",size:12,weight:700,disp:true});
+    s+=txt(0,y+22,r.s,{fill:"var(--ink-3)",size:10});
+    s+=rrect(padL,y-6,(r.v/max)*plotW,20,4,r.c);
+    s+=txt(padL+(r.v/max)*plotW+8,y+5,r.v+"社",{fill:"var(--ink-2)",size:11,mono:true,weight:600,baseline:"middle"});
+  });
+  var gx=padL+(10/max)*plotW;
+  s+='<line x1="'+gx+'" y1="'+(top-14)+'" x2="'+gx+'" y2="'+(top+rows.length*rowH-6)+'" stroke="var(--s3)" stroke-width="2" stroke-dasharray="5 4"></line>';
+  s+=txt(padL,H-10,"合計 9社/月。残り1社は単価の引き上げか、接触量の増加で埋める。",{fill:"var(--ink-3)",size:11});
+  document.getElementById("ch-route").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- targets ---------------- */
+var TARGETS=[
+ {t:"A",name:"従業員20〜100名の中小製造業",c:50000,
+  why:"ウイルス対策は入れているが教育は未実施という典型層。取引先の大企業からサプライチェーン対策を求められ始めており、外圧が効く。",
+  hook:"取引先からセキュリティのチェックシートを求められたこと、ありませんか。ソフトは入っていても、社員教育の欄で止まる会社が多いんです。"},
+ {t:"A",name:"建設・工事業（協力会社を多く抱える）",c:30000,
+  why:"協力会社を含めた現場の情報管理が曖昧になりやすい。元請の立場でリスクを負うため、管理責任の文脈が刺さる。",
+  hook:"現場の職人さんとのやり取り、個人のLINEやSNSでされていませんか。そこが一番抜けやすいところです。"},
+ {t:"A",name:"医療法人・クリニック",c:58000,
+  why:"患者情報という最も重い個人情報を扱うのに、IT担当が不在の施設が多い。院長の一存で決まるため意思決定が速い。",
+  hook:"患者さんの情報を扱われている以上、スタッフの方への教育は必須です。年1回の研修という形でご提供できます。"},
+ {t:"A",name:"調剤薬局・薬局チェーン",c:62000,
+  why:"母数が大きく、電子処方箋の普及で情報の取り扱いが増えている。チェーン本部が決まれば全店に展開できる。",
+  hook:"電子処方箋の導入で、扱う情報が増えていませんか。スタッフの方向けの教育を年間でお引き受けできます。"},
+ {t:"A",name:"介護事業者・福祉法人",c:80000,
+  why:"利用者情報と職員のSNS利用の両方にリスクがある。人材の入れ替わりが激しく、教育を定期的に回す必要がある。",
+  hook:"職員さんの入れ替わりが多いと、教育が追いつかないですよね。年間の研修として仕組みに組み込めます。"},
+ {t:"A",name:"税理士・会計事務所",c:30000,
+  why:"顧客の財務データを大量に扱うのにセキュリティは手薄という指摘が多い。自らが顧客になり、かつ紹介チャネルにもなる二重の価値。",
+  hook:"先生の事務所自体のセキュリティ、いかがですか。顧問先に説明する前に、まずご自身の体制からご一緒させてください。"},
+ {t:"A",name:"不動産仲介・管理会社（宅建業者）",c:130000,
+  why:"全国13万社と母数が圧倒的。顧客の個人情報を扱い、営業担当が個人端末でやり取りする慣習が残っている。",
+  hook:"営業の方が個人のスマホでお客様とやり取りされていませんか。退職時に情報がそのまま出ていく形になります。"},
+ {t:"A",name:"人材派遣・人材紹介会社",c:50000,
+  why:"求職者の個人情報が事業の中核。個人情報保護の観点で監査を受ける機会も多く、教育の必要性が説明しやすい。",
+  hook:"求職者情報の取り扱い、スタッフの方まで徹底できていますか。監査で必ず聞かれるのが教育記録です。"},
+ {t:"A",name:"EC事業者（年商1億円以上）",c:20000,
+  why:"顧客のカード情報・住所を扱い、フィッシングの標的にもなる。被害が売上に直結するため危機感が高い。",
+  hook:"御社を名乗るフィッシングメール、確認されたことはありますか。対応の手順は決まっていますか。"},
+ {t:"A",name:"地方の中堅企業（従業員50〜300名）",c:60000,
+  why:"「地方だから狙われない」という思い込みが残っており、対策が最も遅れている層。だからこそ入りやすい。",
+  hook:"地方だから大丈夫、と思われていませんか。攻撃側は地域を選びません。むしろ対策の薄いところから入られます。"},
+
+ {t:"B",name:"ホテル・旅館",c:44000,
+  why:"優秀な支配人が採用できず現場のレベルが下がるなか、従業員にSNS運用を任せている施設が多い。炎上が予約に直結する。",
+  hook:"スタッフの方にSNS投稿をお任せされていませんか。投稿のルール、決まっていますか。"},
+ {t:"B",name:"飲食チェーン本部（10店舗以上）",c:3000,
+  why:"いわゆるバイトテロのリスクが構造的に高い。1件の投稿で全店の売上が落ちるため、本部の危機感が強い。",
+  hook:"アルバイトさんの動画投稿、店舗ごとにルールは統一されていますか。本部一括での研修をご提案できます。"},
+ {t:"B",name:"美容室・エステ・美容クリニック",c:30000,
+  why:"SNSでの集客が事業の中核で、スタッフ個人のアカウント運用も多い。顧客の写真掲載に許諾の問題が潜む。",
+  hook:"お客様のお写真をSNSに掲載されることはありますか。許諾の取り方、決まった形がありますか。"},
+ {t:"B",name:"アパレル・小売チェーン本部",c:5000,
+  why:"店舗スタッフのSNS発信を推奨している企業が多く、リスクと表裏一体。本部決裁で全店展開できる。",
+  hook:"店舗スタッフさんの発信を推奨されていますね。推奨するほど、ルールが要ります。"},
+ {t:"B",name:"フランチャイズ本部",c:1300,
+  why:"加盟店の投稿が本部ブランドを毀損する構造。1本部決まれば加盟店へ横展開でき、1件あたりの価値が最も大きい。",
+  hook:"加盟店さん側のネットリスク、本部として把握できていますか。加盟店研修のメニューに加えませんか。"},
+ {t:"B",name:"学習塾・スクール運営法人",c:20000,
+  why:"生徒の個人情報と講師のSNS利用という二重のリスク。保護者向けのリテラシー講座としても展開でき、商材が二本立てになる。",
+  hook:"講師の方と生徒さんのSNSでのつながり、ルールはありますか。保護者会向けの講座もご用意できます。"},
+ {t:"B",name:"保育園・幼稚園の運営法人",c:20000,
+  why:"園児の写真の取り扱いが最も繊細な領域。保護者からの信頼が事業の基盤で、一度の事故が致命傷になる。",
+  hook:"園児さんのお写真、保護者間での共有ルールはお決まりですか。職員さんと保護者の両方に講座ができます。"},
+ {t:"B",name:"フィットネスクラブ・スポーツクラブ",c:14000,
+  why:"会員の身体情報を扱い、施設内撮影のトラブルも起きやすい。若いスタッフが多くSNS利用が活発。",
+  hook:"館内での撮影、会員様同士のトラブルになったことはありませんか。ルールの整備からお手伝いできます。"},
+ {t:"B",name:"地方自治体・外郭団体",c:4800,
+  why:"住民情報を扱い、公的機関としての説明責任が重い。予算が年度単位で確保されており、実績は民間商談での信用に直結する。",
+  hook:"職員の方向けの情報セキュリティ研修、年間の計画に入っていますか。住民向けの講座もご提供できます。"},
+ {t:"B",name:"病院・大規模医療機関",c:8100,
+  why:"ランサムウェア被害の報道が続き、危機感が最も高まっている業種。職員数が多く研修の規模が大きい。",
+  hook:"他院でのランサムウェア被害の報道、ご覧になっていますか。入口はほとんどが人の操作ミスです。"},
+
+ {t:"C",name:"ITスタートアップ・SaaS企業",c:10000,
+  why:"AIを業務に深く組み込んでいる一方、利用ルールは未整備。エンジニアの生成AI利用による情報漏洩リスクが具体的に想像できる。",
+  hook:"生成AIに社内のコードや顧客情報を入力していませんか。ルールがないまま使っている会社がほとんどです。"},
+ {t:"C",name:"IPO準備企業（急成長企業）",c:1500,
+  why:"上場審査でガバナンス体制を問われるため、必要性の説明が不要。今のうちに整えたいという動機が明確で、予算も付きやすい。",
+  hook:"上場準備で、情報管理の体制整備は進んでいますか。審査で必ず見られる部分から整えませんか。"},
+ {t:"C",name:"上場企業（AI利用ルールが未整備）",c:3900,
+  why:"ネットリスクの顧問は既にいるがAIは空白。既存顧問と競合せず、追加テーマとして提案できる数少ない切り口。",
+  hook:"ネットリスクの顧問は入っていらっしゃると思いますが、AIの利用ルールはどなたが作られていますか。"},
+ {t:"C",name:"広告代理店・制作会社",c:40000,
+  why:"クライアントの機密情報を預かり、かつ生成AIを制作に使い始めている。二重の意味でルールが要る。",
+  hook:"制作に生成AIを使われていますか。クライアントの情報を入れていないか、確認の手順はありますか。"},
+ {t:"C",name:"コンサルティングファーム",c:30000,
+  why:"顧客の経営情報を扱い、提案書作成にAIを使う流れが強い。自社のルール整備がそのまま信用になる。",
+  hook:"提案書の作成にAIを使われていますか。クライアントに聞かれたとき、説明できる形になっていますか。"},
+ {t:"C",name:"DX支援・AIツール提供会社",c:8000,
+  why:"導入先に「安全な使い方」を説明する必要があるが自社では手が回らない。タイアップして提供先を紹介してもらえる関係が作れる。",
+  hook:"ツールの導入先に、使い方のリスク説明までされていますか。そこだけ私どもが引き受ける形はいかがでしょう。"},
+ {t:"C",name:"地方銀行・信用金庫の法人営業部",c:500,
+  why:"取引先の事業継続に直結するテーマで、本業支援として紹介が成立する。1行決まれば取引先数百社にリーチできる。",
+  hook:"お取引先向けのセミナー、テーマにお困りではありませんか。ネット詐欺の最新事例でご提供できます。"},
+ {t:"C",name:"商工会議所・商工会",c:2200,
+  why:"会員企業向けのセミナー予算が毎年あり、1回の登壇で数十社に接点ができる。公的な場での実績が信用になる。",
+  hook:"会員企業様向けのセミナー、今年のテーマは決まっていますか。詐欺被害が過去最悪という話は必ず刺さります。"},
+ {t:"C",name:"保険代理店（法人向け）",c:30000,
+  why:"サイバー保険とセットで提案でき、代理店にとっても付加価値になる。訪問のきっかけとしても機能するため継続的に紹介が出る。",
+  hook:"サイバー保険をお勧めするとき、対策の話までできていますか。教育の部分を私どもが担当できます。"},
+ {t:"C",name:"小中学校・教育委員会",c:30200,
+  why:"事業の原点であり、次期学習指導要領で情報活用能力が学習の基盤として位置づけられる流れも追い風。1つの教育委員会で複数校に展開できる。",
+  hook:"児童生徒向けだけでなく、保護者会でのネット詐欺の講座もご要望が増えています。両方でお引き受けできます。"}
+];
+var TIER_META={
+  A:{label:"教育が空白",note:"ツールは入っているが教育は未実施",cls:"b"},
+  B:{label:"SNSリスク",note:"従業員の投稿が事業リスクになる業種",cls:"a"},
+  C:{label:"AIと紹介",note:"AIが空白／1件で横に広がる層",cls:"e"}
+};
+
+(function(){
+  var total=TARGETS.reduce(function(a,b){return a+b.c;},0);
+  var a=TARGETS.filter(function(d){return d.t==="A";}).reduce(function(x,y){return x+y.c;},0);
+  document.getElementById("t-total").innerHTML=n(total)+'<small>件</small>';
+  document.getElementById("t-a").innerHTML=n(a)+'<small>件</small>';
+})();
+
+(function(){
+  var rows=["A","B","C"].map(function(t){
+    var sum=TARGETS.filter(function(d){return d.t===t;}).reduce(function(a,b){return a+b.c;},0);
+    return {t:t,sum:sum,cnt:TARGETS.filter(function(d){return d.t===t;}).length};
+  });
+  var max=niceMax(Math.max.apply(null,rows.map(function(r){return r.sum;}))*1.05,4);
+  var W=620,H=230,padL=238,padR=86,plotW=W-padL-padR,rowH=56,top=40,s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-12)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-18)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-20,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+8,top-20,"件",{fill:"var(--ink-3)",size:10});
+  var colors={A:"var(--s2)",B:"var(--s3)",C:"var(--s4)"};
+  rows.forEach(function(r,i){
+    var y=top+i*rowH,m=TIER_META[r.t];
+    s+=txt(0,y+8,"Tier "+r.t+"・"+m.label+"（"+r.cnt+"業種）",{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(0,y+26,m.note,{fill:"var(--ink-3)",size:10.5});
+    s+=rrect(padL,y-6,(r.sum/max)*plotW,24,4,colors[r.t]);
+    s+=txt(padL+(r.sum/max)*plotW+8,y+6,n(r.sum),{fill:"var(--ink-2)",size:11.5,mono:true,baseline:"middle"});
+  });
+  document.getElementById("ch-tiers").innerHTML=svg(W,H,s);
+})();
+
+var state={tier:"all",q:"",sort:"rank"};
+function renderTargets(){
+  var list=TARGETS.map(function(d,i){d._rank=i+1;return d;});
+  if(state.tier!=="all") list=list.filter(function(d){return d.t===state.tier;});
+  if(state.q){
+    var q=state.q.toLowerCase();
+    list=list.filter(function(d){return (d.name+d.why+d.hook).toLowerCase().indexOf(q)>=0;});
+  }
+  if(state.sort==="count") list=list.slice().sort(function(a,b){return b.c-a.c;});
+  if(state.sort==="countAsc") list=list.slice().sort(function(a,b){return a.c-b.c;});
+  document.getElementById("t-shown").textContent=list.length;
+  document.getElementById("t-sum").textContent=n(list.reduce(function(a,b){return a+b.c;},0))+"件";
+  document.getElementById("t-list").innerHTML=list.map(function(d){
+    var m=TIER_META[d.t];
+    return '<article class="trow t'+d.t+'">'+
+      '<div class="rank">'+String(d._rank).padStart(2,"0")+'</div>'+
+      '<div class="head"><div class="name">'+esc(d.name)+'</div>'+
+      '<div class="meta"><span class="chip '+m.cls+'">Tier '+d.t+'・'+m.label+'</span>'+
+      '<span class="cnt">'+n(d.c)+'<span>件</span></span></div></div>'+
+      '<div class="why"><span class="fieldlabel">なぜ狙うか</span><p class="fieldbody">'+esc(d.why)+'</p></div>'+
+      '<div class="hook"><span class="fieldlabel">初回の切り口</span><p class="fieldbody">'+esc(d.hook)+'</p></div>'+
+    '</article>';
+  }).join("");
+}
+document.querySelectorAll("#tier-seg button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll("#tier-seg button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    state.tier=b.dataset.t;renderTargets();
+  });
+});
+document.getElementById("t-search").addEventListener("input",function(e){state.q=e.target.value.trim();renderTargets();});
+document.getElementById("t-sort").addEventListener("change",function(e){state.sort=e.target.value;renderTargets();});
+renderTargets();
+
+/* ---------------- 在宅ワーカー業務 ---------------- */
+var TASKS=[
+ {g:"経理・バックオフィス",h:32,items:[
+   {n:"請求書の発行・送付・入金消込・売掛管理",h:8,key:true},
+   {n:"経費精算・仕訳入力・月次資料の作成",h:10,key:true},
+   {n:"契約書の作成・送付・保管",h:6},
+   {n:"融資・補助金の書類準備と期限管理",h:8,key:true}]},
+ {g:"営業事務",h:36,items:[
+   {n:"見込み法人リストの作成・企業情報の収集",h:10,key:true},
+   {n:"フォーム送信・メール・DMの文面作成と送付",h:8},
+   {n:"商談日程の調整・議事録作成・CRM入力",h:10,key:true},
+   {n:"提案書・見積書の作成",h:8,key:true}]},
+ {g:"講座・顧問の運営",h:40,items:[
+   {n:"講座スライドの作成・更新（学校向け／企業向け）",h:12,key:true},
+   {n:"受講者アンケートの回収・集計・報告書化",h:8},
+   {n:"顧問先への月次レポート作成",h:10},
+   {n:"SNS・AI利用ルールのひな形作成とカスタマイズ",h:10,key:true}]},
+ {g:"コンテンツ・情報収集",h:28,items:[
+   {n:"ネット詐欺・SNSトラブルの最新事例の収集と整理",h:10,key:true},
+   {n:"法改正・ガイドライン更新の追跡（AI新法・情プラ法ほか）",h:8,key:true},
+   {n:"HP・LPの更新（飲食事業の記載削除を含む）",h:4,key:true},
+   {n:"ブログ・SNS投稿の作成と配信",h:6}]},
+ {g:"問い合わせ・調整",h:24,items:[
+   {n:"問い合わせの一次対応（メール・フォーム）",h:8},
+   {n:"学校・自治体向けの申請書類・押印書類の準備",h:8},
+   {n:"講座の日程調整と会場・オンライン設定",h:8}]}
+];
+(function(){
+  var total=TASKS.reduce(function(a,b){return a+b.h;},0);
+  document.getElementById("rw-total").innerHTML=total+'<small>h/月</small>';
+  document.getElementById("task-groups").innerHTML=TASKS.map(function(g){
+    return '<section class="taskgroup"><header><h4>'+esc(g.g)+'</h4><span class="hh">'+g.h+' h/月</span></header><ul>'+
+      g.items.map(function(it){
+        return '<li'+(it.key?' class="key"':'')+'><span>'+esc(it.n)+'</span><b>'+it.h+'h</b></li>';
+      }).join("")+'</ul></section>';
+  }).join("");
+})();
+
+/* ---------------- 組織図 ---------------- */
+function orgBox(x,y,w,h,title,sub,opt){
+  opt=opt||{};
+  var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="'+(opt.fill||"var(--surface-2)")+'" stroke="'+(opt.color||"var(--rule-2)")+'" stroke-width="'+(opt.bold?2.5:1.25)+'"'+(opt.dash?' stroke-dasharray="5 4"':'')+'></rect>';
+  s+=txt(x+13,y+(sub?20:h/2+4),title,{fill:opt.tc||"var(--ink)",size:opt.size||12.5,weight:700,disp:true});
+  if(sub) s+=txt(x+13,y+35,sub,{fill:"var(--ink-3)",size:10.5});
+  return s;
+}
+function elbow(x1,y1,x2,y2,my){
+  return '<path d="M '+x1+' '+y1+' L '+x1+' '+my+' L '+x2+' '+my+' L '+x2+' '+y2+'" fill="none" stroke="var(--rule-2)" stroke-width="1.25"></path>';
+}
+(function(){
+  var W=880,H=250,s="";
+  s+=orgBox(320,6,240,48,"神村 社長（1名）","すべての業務がここを通っている",{color:"var(--s3)",fill:"var(--accent-soft)",bold:true});
+  var cols=[
+    {x:8,t:"営業・商談",u:"月30時間しか取れない",c:"var(--s3)"},
+    {x:228,t:"講座の登壇・顧問対応",u:"社長にしかできない"},
+    {x:448,t:"資料・スライド作成",u:"社員でなくてもできる",c:"var(--s3)"},
+    {x:668,t:"経理・請求・問い合わせ",u:"社員でなくてもできる",c:"var(--s3)"}
+  ];
+  cols.forEach(function(c){
+    s+=elbow(440,54,c.x+98,86,70);
+    s+=orgBox(c.x,86,196,52,c.t,c.u,{color:c.c||"var(--rule-2)"});
+  });
+  s+='<rect x="8" y="168" width="864" height="48" rx="8" fill="var(--accent-soft)"></rect>';
+  s+=txt(24,190,"月160時間という上限は動かせない。営業を増やすには、他の何かを手放すしかない。",{fill:"var(--s3)",size:13,weight:700,disp:true});
+  s+=txt(24,208,"雇用すれば年間約564万円のコストと、3年以内に5割が辞めるリスクを負うことになる。",{fill:"var(--ink-2)",size:11.5});
+  document.getElementById("ch-org-before").innerHTML=svg(W,H,s);
+})();
+(function(){
+  var W=880,H=396,s="";
+  s+=orgBox(320,6,240,48,"神村 社長（1名）","登壇・顧問面談・クロージング",{color:"var(--s5)",fill:"var(--good-soft)",bold:true});
+  var colX=[8,304,600],colW=272;
+  var heads=[
+    {t:"社長が担う領域",u:"代替できない仕事だけ",c:"var(--s5)"},
+    {t:"外付けの営業チーム",u:"アイドマ／8名体制",c:"var(--s2)"},
+    {t:"在宅ワーカーチーム",u:"4〜5名相当／月160時間",c:"var(--s1)"}
+  ];
+  heads.forEach(function(hd,i){
+    s+=elbow(440,54,colX[i]+colW/2,84,70);
+    s+=orgBox(colX[i],84,colW,48,hd.t,hd.u,{color:hd.c,bold:true});
+  });
+  function sub(x,y,w,t,h,color){
+    var r='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="30" rx="6" fill="var(--surface)" stroke="'+(color||"var(--rule)")+'" stroke-width="1"></rect>';
+    r+=txt(x+12,y+19,t,{fill:"var(--ink-2)",size:11.5});
+    if(h) r+=txt(x+w-12,y+19,h,{fill:"var(--ink-3)",size:10.5,mono:true,anchor:"end"});
+    return r;
+  }
+  ["講座の登壇・顧問面談","商談のクロージング","価格とコンテンツの決定"].forEach(function(t,i){ s+=sub(colX[0],144+i*36,colW,t); });
+  ["コンサルタント 2名","実行部隊 6名（電話・フォーム）","オンライン一次相談の代行"].forEach(function(t,i){ s+=sub(colX[1],144+i*36,colW,t,null,"var(--s2)"); });
+  [["経理・バックオフィス","32h"],["営業事務","36h"],["講座・顧問の運営","40h"],["コンテンツ・情報収集","28h"],["問い合わせ・調整","24h"]].forEach(function(t,i){
+    s+=sub(colX[2],144+i*36,colW,t[0],t[1]);
+  });
+  s+='<path d="M 440 334 L 440 300" fill="none" stroke="var(--s4)" stroke-width="1.5" stroke-dasharray="4 3"></path>';
+  s+=orgBox(160,334,560,52,"契約終了後：メンバーを自社へ引き継ぎ、営業システムも無償で残る","雇用リスクを負わずに「自社のチーム」へ移行できる",{color:"var(--s4)",fill:"var(--plum-soft)",dash:true,size:12});
+  document.getElementById("ch-org-after").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- 社長の時間配分 ---------------- */
+(function(){
+  var cats=[
+    {l:"営業・商談",c:"var(--s2)",before:30,after:80},
+    {l:"講座の登壇・顧問対応",c:"var(--s5)",before:40,after:56},
+    {l:"資料・スライド作成",c:"var(--s1)",before:35,after:10},
+    {l:"経理・請求・事務",c:"var(--s3)",before:30,after:6},
+    {l:"問い合わせ・調整",c:"var(--s4)",before:25,after:8}
+  ];
+  var W=740,H=250,padL=76,padR=56,plotW=W-padL-padR,total=160,s="";
+  [["現状",40,"before"],["移管後",132,"after"]].forEach(function(row){
+    var y=row[1],k=row[2],x=padL;
+    s+=txt(0,y+23,row[0],{fill:"var(--ink)",size:13,weight:700,disp:true});
+    cats.forEach(function(c){
+      var w=(c[k]/total)*plotW;
+      if(w<=0) return;
+      s+=rrect(x,y,Math.max(w-2,1),38,4,c.c);
+      if(w>44) s+=txt(x+w/2-1,y+24,String(c[k])+"h",{fill:"#FFFFFF",size:11.5,weight:600,mono:true,anchor:"middle"});
+      x+=w;
+    });
+    s+=txt(padL+plotW+8,y+24,"計160h",{fill:"var(--ink-3)",size:10.5,mono:true});
+  });
+  var ax=padL+(30/total)*plotW, bx=padL+(80/total)*plotW;
+  s+='<path d="M '+ax+' 96 L '+ax+' 112 M '+bx+' 96 L '+bx+' 112" stroke="var(--rule-2)" stroke-width="1" stroke-dasharray="3 3"></path>';
+  s+='<path d="M '+(ax+4)+' 104 L '+(bx-8)+' 104" stroke="var(--accent)" stroke-width="2"></path>';
+  s+='<path d="M '+(bx-8)+' 100 L '+bx+' 104 L '+(bx-8)+' 108 Z" fill="var(--accent)"></path>';
+  s+=txt(bx+8,108,"営業に使える時間が ＋50h／月（2.7倍）",{fill:"var(--accent)",size:12,weight:700});
+  s+=txt(0,214,"※ 稼働を月160時間として配分。受注が増えるぶん講座の登壇・顧問対応も増える前提で試算しています。",{fill:"var(--ink-3)",size:11});
+  document.getElementById("ch-time").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- ROI ---------------- */
+var PLANS={
+  A:{fee:45,appo:18,desc:"電話500件＋フォーム1万件／オンライン相談代行／フィールドワーク（現地訪問）まで。3サービスのセット。"},
+  B:{fee:30,appo:12,desc:"電話・フォームでのアプローチ＋オンライン一次相談の代行。現地訪問は含みません。2サービスのセット。"},
+  C:{fee:17.5,appo:8,desc:"アポイント獲得に特化。トークスクリプトの作成は含みます。商談はすべて社長が対応する前提です。"}
+};
+var BASE={meet:85,win:15,hours:160,ofee:25,ceoh:50,permeet:6,ceowin:20,rev:40,course:8,yearly:50,gm:80,prep:1};
+var KEYS=["appo","meet","win","sfee","hours","ofee","ceoh","permeet","ceowin","rev","course","yearly","gm","prep"];
+var DEC={sfee:1};
+var currentPlan="B";
+
+function readInputs(){var o={};KEYS.forEach(function(k){o[k]=parseFloat(document.getElementById("k-"+k).value);});return o;}
+function setPlan(p){
+  currentPlan=p;
+  var pl=PLANS[p];
+  var o=Object.assign({},BASE,{appo:pl.appo,sfee:pl.fee});
+  KEYS.forEach(function(k){ document.getElementById("k-"+k).value=o[k]; });
+  document.getElementById("plan-desc").innerHTML='<b>'+p+'プラン</b>：月額 <b>'+pl.fee+'万円</b>（税抜）／13ヶ月契約<br>'+esc(pl.desc);
+  document.querySelectorAll("#plan-seg button").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.plan===p?"true":"false");});
+}
+
+function calc(p){
+  var meet=p.appo*(p.meet/100);
+  var unitCloses=meet*(p.win/100);
+  var ceoMeet=p.permeet>0?p.ceoh/p.permeet:0;
+  var ceoCloses=ceoMeet*(p.ceowin/100);
+  var closes=unitCloses+ceoCloses;
+  var revPer=(p.rev+p.course)*10000;
+  var yshare=p.yearly/100;
+  var monthCost=p.sfee*10000 + p.ofee*10000;
+
+  var active=0,monthly=[],cumProfit=[],cumCost=[],cumRev=0;
+  for(var m=1;m<=12;m++){
+    var isLive = m>p.prep;
+    var mClose = isLive?closes:0;
+    active+=mClose;
+    /* 年払いは受注月に全額、月払いは稼働中の契約から毎月1/12ずつ */
+    var mRev = mClose*yshare*revPer + active*(1-yshare)*revPer/12;
+    cumRev+=mRev;
+    monthly.push({rev:mRev,closes:mClose});
+    cumProfit.push(cumRev*(p.gm/100));
+    cumCost.push(monthCost*m);
+  }
+  var yearCloses=active;
+  var yearRev=cumRev;
+  var yearProfit=yearRev*(p.gm/100);
+  var invest=monthCost*12;
+  var roi=invest>0?(yearProfit-invest)/invest*100:0;
+  var payback=null;
+  for(var i=0;i<12;i++){ if(payback===null&&cumProfit[i]>=cumCost[i]) payback=i+1; }
+  return {meet:meet,unitCloses:unitCloses,ceoMeet:ceoMeet,ceoCloses:ceoCloses,closes:closes,
+          yearCloses:yearCloses,yearRev:yearRev,yearProfit:yearProfit,invest:invest,roi:roi,
+          monthly:monthly,cumProfit:cumProfit,cumCost:cumCost,payback:payback};
+}
+function man(v){return n(v/10000);}
+
+function update(){
+  var p=readInputs();
+  KEYS.forEach(function(k){ document.getElementById("v-"+k).textContent=DEC[k]?p[k].toFixed(1):n(p[k]); });
+  var r=calc(p);
+
+  document.getElementById("o-roi").innerHTML=(r.roi>=0?"+":"")+Math.round(r.roi)+'<small>%</small>';
+  document.getElementById("o-roi").parentElement.className="stat "+(r.roi>=0?"pos":"hot");
+  document.getElementById("o-closes").innerHTML=r.yearCloses.toFixed(1)+'<small>社</small>';
+  document.getElementById("o-closesplit").textContent="営業支援 "+(r.unitCloses*(12-p.prep)).toFixed(1)+"社 ／ 社長の商談枠 "+(r.ceoCloses*(12-p.prep)).toFixed(1)+"社";
+  document.getElementById("o-rev").innerHTML=man(r.yearRev)+'<small>万円</small>';
+  document.getElementById("o-revnote").textContent="粗利 "+man(r.yearProfit)+"万円／投資 "+man(r.invest)+"万円";
+  var gapPct=r.closes/10*100;
+  document.getElementById("o-gap").innerHTML=Math.round(gapPct)+'<small>%</small>';
+
+  document.getElementById("f-appo").textContent=n(p.appo);
+  document.getElementById("f-meet").textContent=r.meet.toFixed(1);
+  document.getElementById("f-meet-r").textContent="実施率 "+p.meet+"%";
+  document.getElementById("f-ceo").textContent=r.ceoMeet.toFixed(1);
+  document.getElementById("f-ceo-r").textContent=p.ceoh+"h ÷ "+p.permeet+"h";
+  document.getElementById("f-win").textContent=r.closes.toFixed(2);
+  document.getElementById("f-win-r").textContent="受注率 "+p.win+"% / 社長 "+p.ceowin+"%";
+
+  drawPlans(p);
+  drawPayback(r);
+  drawSens(p);
+
+  var v=document.getElementById("o-verdict");
+  if(r.roi>=0&&r.payback){
+    v.style.borderLeftColor="var(--good)";
+    v.innerHTML='<b>判定（'+currentPlan+'プラン）：</b> 年間 <b>'+r.yearCloses.toFixed(1)+'社</b> の新規契約で、1年目の売上は <b>'+man(r.yearRev)+
+      '万円</b>、粗利 <b>'+man(r.yearProfit)+'万円</b>。投資 <b>'+man(r.invest)+'万円</b> に対してROIは <b>'+Math.round(r.roi)+
+      '%</b>、投資回収は <b>'+r.payback+'ヶ月目</b>です。月10社の目標に対しては <b>'+Math.round(gapPct)+
+      '%</b>——残りは講座からの転換と紹介チャネルで埋める前提で計画してください。';
+  } else {
+    v.style.borderLeftColor="var(--accent)";
+    v.innerHTML='<b style="color:var(--accent)">判定（'+currentPlan+'プラン）：</b> この前提では1年以内に投資を回収できません。粗利 <b style="color:var(--accent)">'+man(r.yearProfit)+
+      '万円</b> に対して投資は <b style="color:var(--accent)">'+man(r.invest)+'万円</b>。ただし顧問は年契約のため、<b style="color:var(--accent)">2年目は更新分が丸ごと上に積み上がります</b>。1年目単体で判断せず、受注率か平均契約額のどちらを動かせるかをご検討ください。';
+  }
+}
+
+function drawPlans(p){
+  var W=700,H=270,padL=64,padR=20,padT=30,padB=64;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var keys=["C","B","A"];
+  var vals=keys.map(function(k){
+    var q=Object.assign({},p,{appo:PLANS[k].appo,sfee:PLANS[k].fee});
+    var rr=calc(q);
+    return {k:k,profit:rr.yearProfit,invest:rr.invest,roi:rr.roi,closes:rr.yearCloses};
+  });
+  var max=niceMax(Math.max.apply(null,vals.map(function(v){return Math.max(v.profit,v.invest);}))*1.12,4);
+  var slot=plotW/keys.length,bw=slot*0.24,s="";
+  for(var i=0;i<=4;i++){
+    var val=max*i/4,y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-12,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  vals.forEach(function(v,i){
+    var cx=padL+i*slot+slot/2, cur=(v.k===currentPlan);
+    var h1=(v.profit/max)*plotH, h2=(v.invest/max)*plotH;
+    s+=rrect(cx-bw-3,padT+plotH-h1,bw,h1,4,"var(--s5)");
+    s+=rrect(cx+3,padT+plotH-h2,bw,h2,4,"var(--s3)");
+    s+=txt(cx-bw/2-3,padT+plotH-h1-7,n(v.profit/10000),{fill:"var(--s5)",size:10.5,weight:600,mono:true,anchor:"middle"});
+    s+=txt(cx+bw/2+3,padT+plotH-h2-7,n(v.invest/10000),{fill:"var(--s3)",size:10.5,weight:600,mono:true,anchor:"middle"});
+    s+=txt(cx,padT+plotH+20,v.k+"プラン（月"+PLANS[v.k].fee+"万円）",{fill:cur?"var(--brand)":"var(--ink-2)",size:11.5,weight:cur?700:400,anchor:"middle"});
+    s+=txt(cx,padT+plotH+38,"ROI "+(v.roi>=0?"+":"")+Math.round(v.roi)+"% ／ 年"+v.closes.toFixed(1)+"社",
+      {fill:cur?"var(--brand)":"var(--ink-3)",size:10.5,mono:true,anchor:"middle"});
+    if(cur) s+=txt(cx,padT+plotH+56,"◆ 選択中",{fill:"var(--brand)",size:10,weight:700,anchor:"middle"});
+  });
+  document.getElementById("ch-plans").innerHTML=svg(W,H,s);
+}
+
+function drawPayback(r){
+  var W=700,H=270,padL=68,padR=58,padT=24,padB=40;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var max=niceMax(Math.max(r.cumProfit[11],r.cumCost[11],1)*1.06,4),s="";
+  for(var i=0;i<=4;i++){
+    var val=max*i/4,y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-10,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+((m-1)/11)*plotW;}
+  function py(v){return padT+plotH-(v/max)*plotH;}
+  [1,3,6,9,12].forEach(function(m){ s+=txt(px(m),padT+plotH+18,m+"ヶ月",{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"}); });
+  function line(arr,color){
+    return '<path d="'+arr.map(function(v,i){return (i?"L":"M")+" "+px(i+1)+" "+py(v);}).join(" ")+
+      '" fill="none" stroke="'+color+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>';
+  }
+  s+=line(r.cumCost,"var(--s3)");
+  s+=line(r.cumProfit,"var(--s5)");
+  if(r.payback){
+    var x=px(r.payback);
+    s+='<line x1="'+x+'" y1="'+padT+'" x2="'+x+'" y2="'+(padT+plotH)+'" stroke="var(--s5)" stroke-width="1.5" stroke-dasharray="4 4"></line>';
+    s+='<circle cx="'+x+'" cy="'+py(r.cumProfit[r.payback-1])+'" r="5" fill="var(--s5)" stroke="var(--surface)" stroke-width="2"></circle>';
+    s+=txt(x+8,padT+12,"投資回収 "+r.payback+"ヶ月目",{fill:"var(--s5)",size:11,weight:700});
+  }
+  s+='<circle cx="'+px(12)+'" cy="'+py(r.cumProfit[11])+'" r="4" fill="var(--s5)"></circle>';
+  s+=txt(px(12)+8,py(r.cumProfit[11]),n(r.cumProfit[11]/10000),{fill:"var(--s5)",size:11,weight:600,mono:true,baseline:"middle"});
+  s+='<circle cx="'+px(12)+'" cy="'+py(r.cumCost[11])+'" r="4" fill="var(--s3)"></circle>';
+  s+=txt(px(12)+8,py(r.cumCost[11]),n(r.cumCost[11]/10000),{fill:"var(--s3)",size:11,weight:600,mono:true,baseline:"middle"});
+  document.getElementById("ch-payback").innerHTML=svg(W,H,s);
+}
+
+function drawSens(p){
+  var rates=[5,10,15,20,25,30];
+  var curIdx=0,curD=Infinity;
+  rates.forEach(function(v,i){var d=Math.abs(v-p.win);if(d<curD){curD=d;curIdx=i;}});
+  var vals=rates.map(function(w){ var q=calc(Object.assign({},p,{win:w})); return {r:w,profit:q.yearProfit,invest:q.invest}; });
+  var invest=vals[0].invest;
+  var max=niceMax(Math.max(Math.max.apply(null,vals.map(function(v){return v.profit;})),invest*1.25),4);
+  var W=700,H=276,padL=64,padR=20,padT=26,padB=64;
+  var plotW=W-padL-padR,plotH=H-padT-padB,slot=plotW/rates.length,bw=slot*0.56,s="";
+  for(var i=0;i<=4;i++){
+    var val=max*i/4,y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-10,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  vals.forEach(function(v,i){
+    var x=padL+i*slot+(slot-bw)/2,h=(v.profit/max)*plotH,y=padT+plotH-h,cur=(i===curIdx);
+    s+=rrect(x,y,bw,h,4,cur?"var(--brand)":"var(--s5)");
+    s+=txt(x+bw/2,y-7,n(v.profit/10000),{fill:cur?"var(--brand)":"var(--ink-2)",size:10.5,weight:600,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+20,v.r+"%",{fill:cur?"var(--brand)":"var(--ink-3)",size:11,weight:cur?700:400,mono:true,anchor:"middle"});
+    if(cur) s+=txt(x+bw/2,padT+plotH+36,"現在の設定",{fill:"var(--brand)",size:10,weight:700,anchor:"middle"});
+  });
+  var iy=padT+plotH-(invest/max)*plotH;
+  s+='<line x1="'+padL+'" y1="'+iy+'" x2="'+(padL+plotW)+'" y2="'+iy+'" stroke="var(--s3)" stroke-width="2" stroke-dasharray="6 4"></line>';
+  s+=txt(padL+6,iy-8,"年間投資額 "+n(invest/10000)+"万円（この線を超えれば黒字）",{fill:"var(--s3)",size:10.5,weight:700});
+  s+=txt(padL,H-8,"横軸：商談から顧問契約に至る受注率。顧問の実績がまだないため、ここが最大の不確実要素です。",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("ch-sens").innerHTML=svg(W,H,s);
+}
+
+KEYS.forEach(function(k){
+  document.getElementById("k-"+k).addEventListener("input",update);
+});
+document.querySelectorAll("#plan-seg button").forEach(function(b){
+  b.addEventListener("click",function(){ setPlan(b.dataset.plan); update(); });
+});
+document.getElementById("roi-reset").addEventListener("click",function(){ setPlan("B"); update(); });
+setPlan("B");
+update();
+
+})();
+</script>
