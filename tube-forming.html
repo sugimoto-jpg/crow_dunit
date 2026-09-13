@@ -1,0 +1,1579 @@
+<title>チューブフォーミング 伝わる化の設計</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+HarunoUmi:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#EBEDEE;
+  --surface:#FBFCFC;
+  --surface-2:#E2E5E7;
+  --surface-3:#D3D7DA;
+  --ink:#16191B;
+  --ink-2:#494D51;
+  --ink-3:#787D82;
+  --rule:#DADDDF;
+  --rule-2:#BFC3C7;
+  --s1:#00779B;
+  --s2:#AF3268;
+  --s3:#568418;
+  --s4:#4E5CBD;
+  --s5:#AA5F0A;
+  --brand:#00779B;
+  --brand-soft:#D8EAF0;
+  --accent:#AF3268;
+  --accent-soft:#F5E1E9;
+  --good:#568418;
+  --good-soft:#E5EFD8;
+  --warn:#AA5F0A;
+  --warn-soft:#F6E8D4;
+  --info-soft:#E3E5F6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#121415;
+    --surface:#1C1F20;
+    --surface-2:#272A2C;
+    --surface-3:#333638;
+    --ink:#EAEDEE;
+    --ink-2:#AEB2B5;
+    --ink-3:#82868A;
+    --rule:#2C2F31;
+    --rule-2:#3B3F41;
+    --s1:#2B9EC0;
+    --s2:#D45986;
+    --s3:#6FA02E;
+    --s4:#7A84DA;
+    --s5:#C87B2C;
+    --brand:#2B9EC0;
+    --brand-soft:#0F2831;
+    --accent:#D45986;
+    --accent-soft:#331520;
+    --good:#6FA02E;
+    --good-soft:#1B2810;
+    --warn:#C87B2C;
+    --warn-soft:#2F2110;
+    --info-soft:#1D1F33;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#121415;
+  --surface:#1C1F20;
+  --surface-2:#272A2C;
+  --surface-3:#333638;
+  --ink:#EAEDEE;
+  --ink-2:#AEB2B5;
+  --ink-3:#82868A;
+  --rule:#2C2F31;
+  --rule-2:#3B3F41;
+  --s1:#2B9EC0;
+  --s2:#D45986;
+  --s3:#6FA02E;
+  --s4:#7A84DA;
+  --s5:#C87B2C;
+  --brand:#2B9EC0;
+  --brand-soft:#0F2831;
+  --accent:#D45986;
+  --accent-soft:#331520;
+  --good:#6FA02E;
+  --good-soft:#1B2810;
+  --warn:#C87B2C;
+  --warn-soft:#2F2110;
+  --info-soft:#1D1F33;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  font-size:15px;line-height:1.85;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"Kaisei HarunoUmi","Hiragino Mincho ProN",serif;font-weight:700;margin:0;line-height:1.48;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:3px}
+.mono{font-family:"Fira Code",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.wave{height:3px;background:linear-gradient(90deg,var(--brand) 0 30%,var(--rule-2) 30% 70%,var(--accent) 70% 100%);border:0;margin:0;opacity:.8}
+
+.masthead{background:var(--surface);border-bottom:1px solid var(--rule)}
+.mast-inner{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-end;padding:26px 0 20px}
+.eyebrow{font-family:"Fira Code",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.mast-title{font-size:clamp(22px,3.1vw,35px);font-weight:700;margin-top:8px;letter-spacing:.01em}
+.mast-title em{font-style:normal;color:var(--accent)}
+.mast-sub{color:var(--ink-2);font-size:13.5px;margin-top:9px;max-width:66ch}
+.mast-meta{font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-align:right}
+.mast-meta b{color:var(--ink-2);font-weight:700}
+.flash{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);color:var(--accent);
+  font-size:12px;font-weight:700;padding:5px 13px;border-radius:4px;margin-top:12px}
+
+.tabbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:none;border:0;border-bottom:3px solid transparent;font:inherit;font-size:13px;font-weight:700;
+  color:var(--ink-3);padding:13px 13px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .num{font-family:"Fira Code",monospace;font-size:10px;color:var(--ink-3);margin-right:6px;font-weight:600}
+.tab[aria-selected="true"] .num{color:var(--accent)}
+
+.panel{padding:34px 0 76px}
+.panel[hidden]{display:none!important}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.sec-head h2{font-size:24px}
+.sec-head .tagline{font-size:12.5px;color:var(--ink-3)}
+.lede{color:var(--ink-2);font-size:14px;max-width:78ch;margin:10px 0 26px}
+.block{margin-top:40px}
+.block > h3{font-size:17.5px}
+.block > .sub{font-size:12.5px;color:var(--ink-3);margin:3px 0 16px}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(186px,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.card.flat{background:transparent;border-style:dashed}
+
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:15px 17px;display:flex;flex-direction:column;gap:1px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;top:0;left:0;width:36px;height:3px;background:var(--rule-2)}
+.stat.hot::before{background:var(--accent);width:100%}
+.stat.pos::before{background:var(--good);width:100%}
+.stat.info::before{background:var(--brand);width:100%}
+.stat.warn::before{background:var(--warn);width:100%}
+.stat .k{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.stat .v{font-family:"Fira Code",monospace;font-size:25px;font-weight:600;letter-spacing:-.03em;line-height:1.35;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:13px;margin-left:2px;color:var(--ink-2);font-family:"Zen Kaku Gothic New",sans-serif;font-weight:400}
+.stat .n{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:2px}
+.stat.hot .v{color:var(--accent)}
+.stat.pos .v{color:var(--good)}
+.stat.info .v{color:var(--brand)}
+.stat.warn .v{color:var(--warn)}
+
+.chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.chip.a{background:var(--accent-soft);color:var(--accent)}
+.chip.b{background:var(--brand-soft);color:var(--brand)}
+.chip.c{background:var(--good-soft);color:var(--good)}
+.chip.d{background:var(--warn-soft);color:var(--warn)}
+.chip.e{background:var(--info-soft);color:var(--s4)}
+
+.deflist{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;font-size:13.5px;align-items:baseline}
+.deflist dt{color:var(--ink-3);font-size:12px;font-weight:700;white-space:nowrap}
+.deflist dd{margin:0}
+.note{font-size:12px;color:var(--ink-3);line-height:1.78;margin-top:12px}
+.callout{background:var(--warn-soft);border-radius:10px;padding:14px 17px;font-size:12.5px;color:var(--ink-2);margin-top:14px}
+.callout b{color:var(--ink)}
+.callout.blue{background:var(--brand-soft)}
+.callout.rose{background:var(--accent-soft)}
+
+.swot{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:14px}
+.swot section{border:1px solid var(--rule);border-radius:10px;padding:16px 18px;background:var(--surface)}
+.swot h4{font-size:14px;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.swot h4::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--rule-2)}
+.swot .s h4::before{background:var(--s3)}
+.swot .w h4::before{background:var(--s2)}
+.swot .o h4::before{background:var(--s1)}
+.swot .t h4::before{background:var(--s5)}
+.swot ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+
+.reason{background:var(--surface);border:1px solid var(--rule);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.reason .rhead{display:flex;gap:16px;align-items:flex-start;padding:20px 24px 0}
+.reason .idx{font-family:"Kaisei HarunoUmi",serif;font-size:32px;font-weight:700;color:var(--accent);line-height:1;flex:0 0 auto}
+.reason .kicker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.reason h4{font-size:18px}
+.reason .rbody{padding:12px 24px 20px}
+.reason p{font-size:13.5px;color:var(--ink-2)}
+.reason .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(188px,1fr));gap:10px;margin:15px 0 4px}
+.reason .fact{background:var(--surface-2);border-radius:8px;padding:10px 13px}
+.reason .fact .fv{font-family:"Fira Code",monospace;font-size:19px;font-weight:600}
+.reason .fact .fk{font-size:11px;color:var(--ink-3);line-height:1.5}
+.reason .sowhat{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:13.5px}
+.reason .sowhat b{color:var(--accent)}
+
+.fix{display:grid;grid-template-columns:34px 1fr 1fr;gap:0 18px;background:var(--surface);border:1px solid var(--rule);
+  border-left:4px solid var(--s2);border-radius:0 10px 10px 0;padding:17px 20px;margin-bottom:10px;align-items:start}
+.fix .fn{font-family:"Kaisei HarunoUmi",serif;font-size:20px;font-weight:700;color:var(--s2);line-height:1.2}
+.fix .fl{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);display:block;margin-bottom:4px}
+.fix h4{font-size:15px;margin-bottom:6px}
+.fix p{font-size:13px;color:var(--ink-2)}
+.fix .then p{color:var(--ink-2)}
+.fix .now{border-left:3px solid var(--s3);padding-left:12px}
+.fix .now p{color:var(--ink)}
+@media(max-width:820px){.fix{grid-template-columns:30px 1fr;gap:12px 14px}.fix .then,.fix .now{grid-column:2}}
+
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch}
+@media(max-width:800px){.vs{grid-template-columns:1fr}}
+.vs-col{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.vs-col.bad{border-top:4px solid var(--accent)}
+.vs-col.good{border-top:4px solid var(--brand)}
+.vs-col .vt{font-family:"Fira Code",monospace;font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--ink-3)}
+.vs-col h4{font-size:17px;margin:5px 0 12px}
+.vs-col ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:8px}
+.vs-col ul b{color:var(--ink)}
+.vs-mid{display:flex;align-items:center;justify-content:center;font-family:"Kaisei HarunoUmi",serif;font-size:20px;color:var(--rule-2)}
+@media(max-width:800px){.vs-mid{padding:4px 0}}
+
+.timeline{overflow-x:auto;padding:24px 0 4px}
+.timeline-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(152px,1fr);min-width:900px;position:relative}
+.timeline-track::before{content:"";position:absolute;left:0;right:0;top:9px;height:2px;background:var(--rule-2)}
+.tl-item{position:relative;padding:26px 12px 0 0}
+.tl-item::before{content:"";position:absolute;left:0;top:2px;width:15px;height:15px;border-radius:50%;background:var(--surface);border:3px solid var(--rule-2)}
+.tl-item.on::before{background:var(--accent);border-color:var(--accent)}
+.tl-item.now::before{background:var(--brand);border-color:var(--brand);width:19px;height:19px;top:0}
+.tl-item .y{font-family:"Fira Code",monospace;font-size:11.5px;font-weight:600;color:var(--ink-3)}
+.tl-item.on .y{color:var(--accent)}
+.tl-item.now .y{color:var(--brand)}
+.tl-item .t{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+
+.pillar{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.pillar .pk{font-family:"Fira Code",monospace;font-size:10.5px;font-weight:600;letter-spacing:.08em;color:var(--ink-3)}
+.pillar h4{font-size:16.5px}
+.pillar p{font-size:13px;color:var(--ink-2)}
+.pillar .kpi{margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:4px}
+.pillar .kpi b{font-family:"Fira Code",monospace;color:var(--ink);font-weight:600}
+
+.scroller{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+table.matrix{width:100%;border-collapse:collapse;font-size:13px;min-width:700px}
+table.matrix th,table.matrix td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.matrix th{font-size:11.5px;color:var(--ink-3);font-weight:700;background:var(--surface-2)}
+table.matrix tr:last-child td{border-bottom:0}
+table.matrix td:first-child{font-weight:700}
+table.matrix td.num{font-family:"Fira Code",monospace;text-align:right;white-space:nowrap;font-weight:600}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:1px solid var(--rule);border-radius:10px}
+.seg{display:flex;background:var(--surface-2);border-radius:8px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:12px;font-weight:700;border:0;background:none;color:var(--ink-3);padding:6px 12px;border-radius:6px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.controls input[type="search"],.controls select{font:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--rule-2);border-radius:8px;background:var(--surface);color:var(--ink)}
+.controls input[type="search"]{min-width:190px;flex:1}
+.controls .count{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.controls .count b{font-family:"Fira Code",monospace;color:var(--ink);font-weight:600}
+
+.tlist{display:flex;flex-direction:column;gap:9px}
+.trow{display:grid;grid-template-columns:38px minmax(206px,1.02fr) minmax(238px,1.5fr) minmax(238px,1.5fr);gap:0 18px;
+  background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--rule-2);border-radius:0 10px 10px 0;padding:15px 18px;align-items:start}
+.trow.tA{border-left-color:var(--s2)}
+.trow.tB{border-left-color:var(--s1)}
+.trow.tC{border-left-color:var(--s3)}
+.trow .rank{font-family:"Fira Code",monospace;font-size:13px;color:var(--ink-3);font-weight:600;padding-top:2px}
+.trow .head{display:flex;flex-direction:column;gap:6px}
+.trow .name{font-family:"Kaisei HarunoUmi",serif;font-size:14.5px;font-weight:700;line-height:1.45}
+.trow .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.trow .cnt{font-family:"Fira Code",monospace;font-size:13px;font-weight:600}
+.trow .cnt span{font-size:11px;color:var(--ink-3);font-weight:400;margin-left:3px;font-family:"Zen Kaku Gothic New",sans-serif}
+.trow .scope{font-size:10.5px;color:var(--ink-3)}
+.trow .fieldlabel{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);display:block;margin-bottom:3px}
+.trow .fieldbody{font-size:13px;color:var(--ink-2);line-height:1.7}
+.trow .hook .fieldbody{color:var(--ink);border-left:3px solid var(--rule-2);padding-left:11px}
+@media(max-width:900px){
+  .trow{grid-template-columns:34px 1fr;gap:10px 14px}
+  .trow .head,.trow .why,.trow .hook{grid-column:2}
+}
+
+.taskgroup{background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.taskgroup header{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:13px 16px;background:var(--surface-2)}
+.taskgroup header h4{font-size:14px}
+.taskgroup header .hh{font-family:"Fira Code",monospace;font-size:12px;color:var(--ink-2);font-weight:600}
+.taskgroup ul{list-style:none;margin:0;padding:6px 0}
+.taskgroup li{display:flex;justify-content:space-between;gap:12px;padding:7px 16px;font-size:13px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.taskgroup li:last-child{border-bottom:0}
+.taskgroup li b{font-family:"Fira Code",monospace;font-size:12px;color:var(--ink-3);font-weight:400;white-space:nowrap}
+.taskgroup li.key{color:var(--ink)}
+.taskgroup li.key > span:first-child::before{content:"◆";color:var(--accent);font-size:8px;margin-right:7px;vertical-align:2px}
+
+.chartbox{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px}
+.chartbox h4{font-size:14px}
+.chartbox .csub{font-size:12px;color:var(--ink-3);margin:2px 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);margin-bottom:10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+
+.roi-layout{display:grid;grid-template-columns:minmax(280px,336px) 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.roi-layout{grid-template-columns:1fr}}
+.knobs{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px;position:sticky;top:58px;max-height:calc(100vh - 74px);overflow-y:auto}
+.knob{margin-bottom:14px}
+.knob label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink-2);margin-bottom:5px;gap:10px}
+.knob label b{font-family:"Fira Code",monospace;font-size:13px;color:var(--ink);font-weight:600}
+.knob input[type="range"]{width:100%;accent-color:var(--brand);height:20px;cursor:pointer}
+.knob-group{border-top:1px solid var(--rule);padding-top:14px;margin-top:16px}
+.gh{font-family:"Fira Code",monospace;font-size:10.5px;font-weight:600;letter-spacing:.06em;color:var(--ink-3);margin-bottom:12px}
+.gh span{color:var(--brand)}
+.resetbtn{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--rule-2);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:6px 12px;cursor:pointer}
+.resetbtn:hover{border-color:var(--ink-3);color:var(--ink)}
+.verdict{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--good);border-radius:0 10px 10px 0;padding:16px 20px;font-size:13.5px}
+.verdict b{font-family:"Fira Code",monospace;color:var(--good);font-weight:600}
+
+.funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px}
+.fstep{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:13px 14px}
+.fstep .fl{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.fstep .fv{font-family:"Fira Code",monospace;font-size:22px;font-weight:600}
+.fstep .fr{font-size:11px;color:var(--ink-3)}
+.fstep.end{background:var(--brand-soft);border-color:transparent}
+.fstep.end .fv,.fstep.end .fl,.fstep.end .fr{color:var(--brand)}
+
+.phase{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule)}
+.phase:first-of-type{border-top:0}
+.phase .pd{font-family:"Fira Code",monospace;font-size:12px;color:var(--accent);font-weight:600}
+.phase .pt{font-family:"Kaisei HarunoUmi",serif;font-size:16px;font-weight:700;line-height:1.4;margin-top:2px}
+.phase ul{margin:0;padding-left:1.15em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px}
+.phase ul b{color:var(--ink)}
+.owner{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:4px;margin-right:7px;vertical-align:1px}
+.owner.ai{background:var(--brand-soft);color:var(--brand)}
+.owner.kl{background:var(--accent-soft);color:var(--accent)}
+.srcs{font-size:12px;color:var(--ink-3);line-height:1.9}
+@media(max-width:640px){
+  .wrap{padding:0 16px}
+  .phase{grid-template-columns:1fr;gap:10px}
+  .reason .rhead{flex-direction:column;gap:6px}
+}
+</style>
+
+<hr class="wave">
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <div>
+      <div class="eyebrow">事前リサーチ ／ 成長戦略 ／ 2ユニット ROIシミュレーション</div>
+      <h1 class="mast-title">チューブフォーミング <em>伝わっていない</em> を直す</h1>
+      <p class="mast-sub">若手が来ないことと、新規の引合いが来ないこと。この2つは別々の問題に見えますが、原因は同じです。<b>66年かけて磨いた技術が、社外にもAIにも正しく伝わっていない</b>——前回の商談で「変肉厚」が「偏肉」に化けた件は、その象徴です。まずそこを直し、次に誰に届けるかを設計します。</p>
+      <div class="flash">◆ 本ボードの主題：前回なぜ成果が出なかったのかを、先に分解する</div>
+    </div>
+    <div class="mast-meta">
+      <div><b>作成</b> クラウドプロダクション</div>
+      <div><b>宛先</b> 株式会社チューブフォーミング 御中</div>
+      <div><b>次回商談</b> 9月14日 16:00-17:00</div>
+      <div><b>更新</b> 2026年9月13日</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="セクション">
+  <div class="wrap tabs" role="tablist">
+    <button class="tab" data-p="research" role="tab" aria-selected="true"><span class="num">01</span>事前リサーチ</button>
+    <button class="tab" data-p="retro" role="tab" aria-selected="false"><span class="num">02</span>前回なぜ届かなかったか</button>
+    <button class="tab" data-p="crisis" role="tab" aria-selected="false"><span class="num">03</span>経営課題の構造</button>
+    <button class="tab" data-p="why" role="tab" aria-selected="false"><span class="num">04</span>今すぐやる3つの理由</button>
+    <button class="tab" data-p="strategy" role="tab" aria-selected="false"><span class="num">05</span>成長戦略</button>
+    <button class="tab" data-p="targets" role="tab" aria-selected="false"><span class="num">06</span>ターゲット30</button>
+    <button class="tab" data-p="remote" role="tab" aria-selected="false"><span class="num">07</span>在宅ワーカー活用</button>
+    <button class="tab" data-p="roi" role="tab" aria-selected="false"><span class="num">08</span>ROIシミュレーション</button>
+    <button class="tab" data-p="road" role="tab" aria-selected="false"><span class="num">09</span>90日ロードマップ</button>
+  </div>
+</nav>
+
+<!-- ===== 01 ===== -->
+<section class="panel wrap" id="p-research" role="tabpanel">
+  <div class="sec-head"><h2>事前リサーチ</h2><span class="tagline">商談メモで「記載なし」だった項目を、公開情報で埋めました</span></div>
+  <p class="lede">前回の商談メモでは、企業名・社長名・従業員数・年商のいずれも「不明／記載なし」となっていました。このうち年商を除くほぼすべては、公開情報から確認できます。<b>まず、こちらが御社を正しく理解していることをお示しします。</b>それができていなかったことが、前回の最大の失敗だったと考えているからです。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">設立</span><span class="v">1960<small>年</small></span><span class="n">創業66年・パイプ加工のパイオニア</span></div>
+    <div class="stat"><span class="k">従業員</span><span class="v">110<small>名</small></span><span class="n">横浜約50／静岡約30／長野約20</span></div>
+    <div class="stat hot"><span class="k">拠点</span><span class="v">3<small>拠点</small></span><span class="n">神奈川・静岡・長野／採用は3地域で必要</span></div>
+    <div class="stat warn"><span class="k">平均年齢</span><span class="v">50<small>歳超</small></span><span class="n">商談メモより。技能継承の期限が見えている</span></div>
+  </div>
+
+  <div class="block">
+    <h3>会社概要</h3>
+    <p class="sub">公開情報（自社サイト・業界データベース・グループ会社サイト）より</p>
+    <div class="grid g2">
+      <div class="card">
+        <dl class="deflist">
+          <dt>商号</dt><dd>株式会社チューブフォーミング</dd>
+          <dt>代表者</dt><dd>代表取締役社長 増田 篤 様</dd>
+          <dt>設立</dt><dd>1960年</dd>
+          <dt>本社</dt><dd>神奈川県横浜市金沢区福浦2-15-12</dd>
+          <dt>拠点</dt><dd>横浜（約50名）／静岡（約30名）／長野（約20名）</dd>
+          <dt>資本関係</dt><dd><b>2013年3月 テクノフレックスグループ入り</b></dd>
+          <dt>事業</dt><dd>金属パイプ2次加工。チューブハイドロフォーミング（バルジ成形）を軸とした冷間塑性加工</dd>
+          <dt>加工</dt><dd>バルジ成形／曲げ／絞り／拡管／<b>変肉厚</b>／異形／カシメ</dd>
+        </dl>
+      </div>
+      <div class="card">
+        <h4 style="font-size:15px;margin-bottom:10px">「変肉厚」という表記について</h4>
+        <p style="font-size:13.5px;color:var(--ink-2)">前回、専門用語がAIに「偏肉」と誤変換される件をご指摘いただきました。公開されている御社の加工一覧では<b>「変肉厚」</b>と表記されています。肉厚を意図的に<b>変える</b>加工であって、偏っているのではない——この一文字の違いが、御社の技術そのものを説明しています。</p>
+        <p style="font-size:13.5px;color:var(--ink-2);margin-top:12px">これは笑い話ではありません。<b>AIが間違えるということは、検索する人も、若い求職者も、初めての発注先も、同じように間違える</b>ということです。用語の表記統一は、本ボードの07タブで在宅ワーカーの業務として明示的に計上しています。</p>
+        <div class="callout blue">今回お渡しする資料・動画では、<b>変肉厚加工・チューブハイドロフォーミング</b>という表記に統一します。まずここからです。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>3つの製品、3つの時間軸</h3>
+    <p class="sub">同じ「パイプ加工」でも、置かれている状況がまったく違います</p>
+    <div class="grid g3">
+      <div class="card">
+        <span class="chip d">逓減が見えている</span>
+        <h4 style="font-size:15.5px;margin:9px 0 7px">エキゾーストマニフォールド</h4>
+        <p style="font-size:13px;color:var(--ink-2)">エンジンの排気を集めてマフラーへ送る集合管。<b>内燃機関の部品</b>です。長年の主力であり、技術の土台でもあります。ただし電動化が進む以上、中長期では数量が減る方向にあることは動かせません。</p>
+        <p style="font-size:12.5px;color:var(--ink-3);margin-top:10px">→ 守りながら、依存度を下げる</p>
+      </div>
+      <div class="card">
+        <span class="chip c">いま伸びている</span>
+        <h4 style="font-size:15.5px;margin:9px 0 7px">ロボットアーム駆動シャフト</h4>
+        <p style="font-size:13px;color:var(--ink-2)">大手工作機械メーカー向けに開発・量産。<b>人手不足と人件費高騰が続く限り需要が伸びる</b>領域です。最低賃金は2026年度に全国加重平均1,177円、政府目標は2030年代前半に1,500円。省力化投資は制度の後押しも受けています。</p>
+        <p style="font-size:12.5px;color:var(--ink-3);margin-top:10px">→ ここを今年の主戦場にする</p>
+      </div>
+      <div class="card">
+        <span class="chip b">最強の採用素材</span>
+        <h4 style="font-size:15.5px;margin:9px 0 7px">折紙工学パイプ</h4>
+        <p style="font-size:13px;color:var(--ink-2)">紙を折りたたむ原理を応用した加工。<b>宇宙ステーションの太陽光パネル</b>に使われています。売上規模の話ではありません。これは<b>「この会社に入りたい」と18歳に思わせる力</b>を持つ、極めて希少な事実です。</p>
+        <p style="font-size:12.5px;color:var(--ink-3);margin-top:10px">→ 採用の一枚看板にする</p>
+      </div>
+    </div>
+    <div class="callout rose"><b>ここが本ボードの出発点です。</b>「宇宙ステーションに使われるパイプを作っている、横浜の110人の会社」——この一行を知っている若者が、いま何人いるでしょうか。TikTokでおじさんが踊る必要はありません。<b>御社にはすでに、踊らなくても伝わる事実があります。</b>伝えていないだけです。</div>
+  </div>
+
+  <div class="block">
+    <h3>強み・弱み・機会・脅威</h3>
+    <p class="sub">公開情報と2回の商談メモから読み取れる範囲で</p>
+    <div class="swot">
+      <section class="s"><h4>強み（S）</h4><ul>
+        <li>66年の蓄積。ハイドロフォーミングを軸とした<b>一体成形による軽量化・高強度化</b></li>
+        <li>変肉厚加工など、他社が容易に真似できない独自の加工ノウハウ</li>
+        <li>宇宙・自動車・ロボットという<b>説明しやすい応用先</b>を持っている</li>
+        <li>テクノフレックスグループの一員という信用基盤</li>
+      </ul></section>
+      <section class="w"><h4>弱み（W）</h4><ul>
+        <li>技術が社外に伝わっていない。検索しても何の会社か分かりにくい</li>
+        <li>平均年齢50歳超。発信のノウハウが社内にない（ご自身の指摘）</li>
+        <li>発信が社長室主導の少人数依存で、継続しにくい</li>
+        <li>社内のAI活用が個人の無料版レベルにとどまり、標準化されていない</li>
+      </ul></section>
+      <section class="o"><h4>機会（O）</h4><ul>
+        <li>人手不足と最低賃金上昇で、<b>省力化投資（ロボット）の需要が構造的に伸びる</b></li>
+        <li>中小企業省力化投資補助金（一般型・補助上限1億円・補助率最大2/3）</li>
+        <li>技能継承に悩む同業が多く、採用競争の土俵はまだ低い</li>
+        <li>宇宙・折紙工学という、同業にはない物語を持っている</li>
+      </ul></section>
+      <section class="t"><h4>脅威（T）</h4><ul>
+        <li>内燃機関部品の中長期的な数量減</li>
+        <li>2025年4月の法改正で、65歳までの雇用確保が完全義務化（コスト増）</li>
+        <li>生産工程の有効求人倍率は全産業平均を上回り続けている</li>
+        <li>技能継承は3社に2社が課題（ものづくり白書2026）。取り合いは激化する</li>
+      </ul></section>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>データの取り扱いについて。</b>御社ホームページ（tube-forming.co.jp）へは本ボード作成環境のネットワーク制限により直接アクセスできませんでした。上記は業界データベース・グループ会社サイト等の公開情報に基づいています。<b>年商・正確な年齢構成・現在の採用実績・主要取引先の構成比は未確認</b>です。9月14日の商談で、とくに<b>直近3年の採用人数と、55歳以上の社員数</b>をご確認ください。03タブと08タブの前提が確定します。
+  </div>
+</section>
+
+<!-- ===== 02 ===== -->
+<section class="panel wrap" id="p-retro" role="tabpanel" hidden>
+  <div class="sec-head"><h2>前回、なぜ届かなかったのか</h2><span class="tagline">言い訳ではなく、構造の分解</span></div>
+  <p class="lede">前回のご利用について、いただいている事実はこうです。<b>約50件の連絡報告があったが、受注は1件もなかった。一部でクレームも発生した。契約期間中に別の担当者から営業の電話が入った。</b>——社内での評価が非常に厳しいのは当然だと考えています。ここを飛ばして次の提案をしても意味がないので、先に分解します。</p>
+
+  <div class="callout rose" style="margin-top:0">
+    <b>運用面について、先に申し上げます。</b>契約期間中に別担当から営業の連絡が入った件は、弊社の社内連携の失敗です。ここに構造的な言い分はありません。改善策として今回は<b>窓口を一本化し、他部門からの接触を止める設定</b>を、契約前の条件として明記します。この点は成果の話とは切り離してお約束します。
+  </div>
+
+  <div class="block">
+    <h3>成果が出なかった4つの構造的な理由</h3>
+    <p class="sub">左＝前回そうなっていたこと／右＝今回どう変えるか</p>
+
+    <div class="fix">
+      <div class="fn">1</div>
+      <div class="then">
+        <span class="fl">前回そうなっていたこと</span>
+        <h4>時間軸が合っていなかった</h4>
+        <p>御社のビジネスは、相談から製品立ち上げまで<b>平均2〜4年</b>。一方、営業代行のKPIは数ヶ月単位のアポ件数でした。<b>この2つは構造的に噛み合いません。</b>3ヶ月で結果が出ないのは当たり前で、それを「成果が出なかった」と評価した時点で、両者とも間違った物差しを使っていました。</p>
+      </div>
+      <div class="now">
+        <span class="fl">今回こう変える</span>
+        <p><b>成果の定義を、時間軸に合わせて3段階に分けます。</b>3ヶ月＝図面や仕様が届いた件数。1年＝試作に進んだ件数。3年＝量産に移行した件数。短期のKPIをアポ数ではなく<b>「図面が届いたか」</b>に置き換えます。技術を見ずにアポだけ取っても、御社の場合は意味がないからです。</p>
+      </div>
+    </div>
+
+    <div class="fix">
+      <div class="fn">2</div>
+      <div class="then">
+        <span class="fl">前回そうなっていたこと</span>
+        <h4>母数の取り方が粗かった</h4>
+        <p>「製造業」という括りで当たれば母数は数十万社あります。しかし<b>チューブハイドロフォーミングと変肉厚加工を必要とする設計者</b>は、そのごく一部です。広く浅く50件当たっても、話が通じる相手には当たりません。数を追った結果、精度が落ちました。</p>
+      </div>
+      <div class="now">
+        <span class="fl">今回こう変える</span>
+        <p><b>「パイプを曲げる・薄くする・一体化する」必要がある製品カテゴリから逆算します。</b>06タブの30セグメントは、業種名ではなく<b>「その製品にパイプが何本入っているか」</b>で選んでいます。母数は小さくなりますが、電話口で会話が成立する確率が上がります。</p>
+      </div>
+    </div>
+
+    <div class="fix">
+      <div class="fn">3</div>
+      <div class="then">
+        <span class="fl">前回そうなっていたこと</span>
+        <h4>一次情報がないまま架電した</h4>
+        <p>電話で「パイプ加工の会社です」と言っても、相手には何も残りません。<b>加工事例も、動画も、図面例も、比較表もない状態で、言葉だけで技術を説明しようとしました。</b>設計者が判断できる材料が何ひとつない架電だったことが、クレームの一因でもあったと考えています。</p>
+      </div>
+      <div class="now">
+        <span class="fl">今回こう変える</span>
+        <p><b>素材をつくってから当たります。</b>いま制作中の資料・動画がそれです。1分動画、加工事例（写真＋加工条件＋用途）、宇宙ステーションの事例。架電の目的は説明ではなく<b>「この資料を見てください」と渡すこと</b>に変わります。順番を逆にします。</p>
+      </div>
+    </div>
+
+    <div class="fix">
+      <div class="fn">4</div>
+      <div class="then">
+        <span class="fl">前回そうなっていたこと</span>
+        <h4>いちばん急いでいる課題に当てていなかった</h4>
+        <p>御社の目標は「若手採用の強化」と「営業の強化」の2つです。<b>前回は営業だけに当てました。</b>しかし緊急度が高いのは採用であり、しかも採用のほうがリードタイムが短く、成果が早く見えます。順番を間違えていました。</p>
+      </div>
+      <div class="now">
+        <span class="fl">今回こう変える</span>
+        <p><b>採用から始めます。</b>理由は3つ。①平均年齢50歳超で待ったがきかない、②応募は数ヶ月で出るので成果が見える、③<b>採用向けに作った素材は、そのまま営業にも使える</b>。工業高校への求人票の送付も、設計者への架電も、やることは同じアウトバウンドです。同じ仕組みで両方回します。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>「4合目」の残りを、どう埋めるか</h3>
+    <p class="sub">前回、担当者への信頼は「払拭しつつある（4合目）」とご評価いただきました</p>
+    <div class="grid g3">
+      <div class="card">
+        <span class="chip b">5合目</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">資料の赤入れが、正確に反映されること</h4>
+        <p style="font-size:13px;color:var(--ink-2)">月曜提出の赤入れを、用語の表記まで含めて正確に直します。<b>「変肉厚」を一箇所も間違えない</b>——まずこの一点です。技術の会社に対して、用語を間違える相手は信用されません。</p>
+      </div>
+      <div class="card">
+        <span class="chip b">7合目</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">最初の30日で、数字が1つ動くこと</h4>
+        <p style="font-size:13px;color:var(--ink-2)">大きな成果ではなく、<b>検証可能な小さい数字</b>を1つ出します。たとえば「工業高校10校に求人票が置かれた」。約束した数字を、約束した期日に報告する。それを3回続ければ7合目です。</p>
+      </div>
+      <div class="card">
+        <span class="chip b">10合目</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">営業部長・社長室長が、自分から使うこと</h4>
+        <p style="font-size:13px;color:var(--ink-2)">最終的なゴールは、社内の一番厳しい方が<b>作った資料を自分から商談に持っていく状態</b>です。そこまで行けば、名義の使い分けも不要になります。逆に言えば、そこまでは慎重に進めます。</p>
+      </div>
+    </div>
+    <div class="callout">
+      <b>本ボードの名義について。</b>社内共有の際は「クラウドプロダクション」名義でお使いください。これは隠すためではなく、<b>過去の記憶が判断の邪魔をしないようにするため</b>です。中身で評価いただき、そのうえで改めて社名をお伝えする順番が、御社にとっても最も無駄がないと考えています。
+    </div>
+  </div>
+</section>
+
+<!-- ===== 03 ===== -->
+<section class="panel wrap" id="p-crisis" role="tabpanel" hidden>
+  <div class="sec-head"><h2>経営課題の構造</h2><span class="tagline">2つの崖が、同じ時期に来る</span></div>
+  <p class="lede">御社には、時期の重なる2つの崖があります。ひとつは<b>人の崖</b>——平均年齢50歳超の110名が、10年で順次定年を迎えます。もうひとつは<b>製品の崖</b>——内燃機関部品が中長期で減り、ロボット向けへの入れ替えが要る。<b>この2つは同じ時期に来て、しかも解き方が同じです。</b></p>
+
+  <div class="block">
+    <h3>人の崖：いま採らないと、10年後に何が起きるか</h3>
+    <p class="sub">実際の年齢構成が未確認のため、下記は明示した仮定に基づく試算です</p>
+    <div class="chartbox" id="c-age"></div>
+    <div class="callout">
+      <b>この試算の仮定。</b>従業員110名、平均年齢51歳、年齢が30〜64歳に偏りをもって分布していると仮定し、定年を60歳（65歳まで再雇用）として10年後の在籍を推計しています。<b>実際の年齢構成表をご提示いただければ、この図は正確なものに置き換えられます。</b>9月14日にお願いしたい1つ目の資料がこれです。
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>製品の崖：3つの柱の時間軸</h3>
+    <p class="sub">いま何に人と設備を振り向けるかの判断材料</p>
+    <div class="chartbox" id="c-products"></div>
+  </div>
+
+  <div class="block">
+    <h3>2つの崖の、解き方は同じ</h3>
+    <p class="sub">「伝わっていない」という一点に集約される</p>
+    <div class="vs">
+      <div class="vs-col bad">
+        <div class="vt">いま起きていること</div>
+        <h4>技術が、外に出ていない</h4>
+        <ul>
+          <li><b>18歳の求職者</b>は「チューブフォーミング」で検索しても、何をする会社か分かりません。だから応募しません。</li>
+          <li><b>装置メーカーの設計者</b>は、パイプの一体成形で悩んでいても御社に辿り着きません。だから図面が来ません。</li>
+          <li><b>AIですら</b>「変肉厚」を「偏肉」と読み違えます。いま多くの技術者は、まずAIに聞いてから検索します。</li>
+          <li>発信は社長室の少人数に依存し、通常業務の合間になるため続きません。</li>
+        </ul>
+      </div>
+      <div class="vs-mid">↓</div>
+      <div class="vs-col good">
+        <div class="vt">やること</div>
+        <h4>同じ素材で、両方に届ける</h4>
+        <ul>
+          <li><b>加工事例を1件ずつ記事にする。</b>写真＋加工条件＋用途。これは採用にも営業にも同じものが効きます。</li>
+          <li><b>1分動画を作る。</b>踊る必要はありません。宇宙ステーションのパネルと、ロボットアームの中身を見せれば足ります。</li>
+          <li><b>用語を統一する。</b>変肉厚加工・チューブハイドロフォーミング。AIにも検索にも正しく読まれる状態にします。</li>
+          <li><b>それを続ける人を外に置く。</b>社長室の負荷を増やさずに、毎週出し続けられる体制にします。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 04 ===== -->
+<section class="panel wrap" id="p-why" role="tabpanel" hidden>
+  <div class="sec-head"><h2>今すぐやらないといけない3つの理由</h2><span class="tagline">法律・制度・世の中の流れ</span></div>
+  <p class="lede">3つとも、御社の意思とは関係なく外側で決まっているものです。1つ目はすでに施行済み、2つ目は毎年上がり続けることが確定しています。</p>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">1</div>
+      <div>
+        <div class="kicker"><span class="chip a">法律</span><span class="chip d">2025年4月1日 施行済み</span></div>
+        <h4>65歳までの雇用確保が完全義務化された。若手採用の先送りが、そのまま人件費になる</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p>高年齢者雇用安定法の経過措置が<b>2025年3月31日で終了</b>しました。それまでは労使協定で継続雇用の対象者を限定できましたが、2025年4月1日からは<b>希望者全員について65歳までの雇用確保</b>が全企業の義務です。定年廃止・65歳への定年引上げ・希望者全員の継続雇用、このいずれかを講じる必要があります。さらに同日から<b>高年齢雇用継続給付の支給率が最大15％から10％に縮小</b>されました。60歳以降の賃金を国が補填していた部分が減った分は、企業側の負担になります。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">2025.04.01</div><div class="fk">経過措置終了・65歳まで完全義務化</div></div>
+        <div class="fact"><div class="fv">15%→10%</div><div class="fk">高年齢雇用継続給付の支給率縮小</div></div>
+        <div class="fact"><div class="fv">70<small>歳</small></div><div class="fk">就業確保措置は努力義務として設定済み</div></div>
+      </div>
+      <div class="sowhat"><b>チューブフォーミングにとって：</b>平均年齢50歳超・110名という構成では、この改正は直撃します。ベテランに残っていただくのは技能継承の観点からも正しい判断ですが、<b>それは「若手を採らなくてよい理由」にはなりません</b>。むしろ逆で、再雇用でつなぐ期間は「技能を渡す相手がいる」ことが前提です。渡す相手がいないまま65歳を迎えると、<b>66年分の技術が同時に社外へ出ていきます</b>。いま採用に着手すれば、教える側がまだ現役です。5年後では間に合いません。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">2</div>
+      <div>
+        <div class="kicker"><span class="chip d">制度</span><span class="chip a">2026年10月から順次発効</span></div>
+        <h4>最低賃金が上がり続ける。向かい風と追い風が、同時に来る</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p>2026年度の最低賃金は<b>全国加重平均1,177円</b>。前年度の1,121円から56円の引き上げで、目安制度が始まった1978年度以降で2番目に大きい上げ幅です。政府は2026年6月の骨太方針で<b>「全国平均1,500円を2030年代前半のできる限り早期に」</b>と明記しました。つまり人件費は上がり続けることが確定しています。その結果、製造業各社は省力化投資に向かいます。<b>中小企業省力化投資補助金は一般型で補助上限1億円・補助率最大2/3</b>、カタログ型では協働ロボットを含む1,000以上の製品が対象です。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">1,177<small>円</small></div><div class="fk">2026年度 最低賃金 全国加重平均</div></div>
+        <div class="fact"><div class="fv">1,500<small>円</small></div><div class="fk">政府目標（2030年代前半のできる限り早期）</div></div>
+        <div class="fact"><div class="fv">1<small>億円</small></div><div class="fk">省力化投資補助金（一般型）の補助上限</div></div>
+      </div>
+      <div class="sowhat"><b>チューブフォーミングにとって：</b>これは<b>向かい風と追い風が同時に来る</b>という意味です。向かい風は自社の人件費。110名の会社にとって、賃金水準の底上げは避けられないコストです。追い風は<b>ロボットアーム駆動シャフトの需要</b>。人件費が上がるほど、顧客は自動化に投資します。しかも補助金が後押ししています。ただし——<b>向かい風は黙っていても来ますが、追い風は取りに行かないと来ません</b>。ロボットや自動化装置を作っているメーカーに、御社がパイプの一体成形をできることを知らせない限り、その需要は他社に行きます。06タブのTier Bは、そのための30セグメントのうち10です。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">3</div>
+      <div>
+        <div class="kicker"><span class="chip e">世の中の流れ</span><span class="chip a">ものづくり白書2026</span></div>
+        <h4>技能継承は3社に2社が課題。若手の取り合いは、これから毎年厳しくなる</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p>ものづくり白書2026によれば、<b>技能継承を課題と認識している製造業は6割以上</b>。熟練者の高齢化と中堅層の不足、そして若手採用難が重なり、「人がいないから育てられない」という構造が全国で同時に起きています。生産工程職の有効求人倍率は全産業平均を大きく上回り続けており、金属加工の現場では熟練工の絶対数そのものが年々減っています。暗黙知のマニュアル化・標準化が遅れていることも共通の課題です。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">3社に2社</div><div class="fk">技能継承を課題と認識する製造業</div></div>
+        <div class="fact"><div class="fv">全産業平均超</div><div class="fk">生産工程職の有効求人倍率</div></div>
+        <div class="fact"><div class="fv">66<small>年</small></div><div class="fk">御社が蓄積してきた加工ノウハウ</div></div>
+      </div>
+      <div class="sowhat"><b>チューブフォーミングにとって：</b>全国の製造業が同じ若手を奪い合っています。だから<b>「うちは製造業だから若手が来ない」は正確ではありません</b>。正確には「差がつく材料を出していない会社には来ない」です。そして御社には差がつく材料があります——<b>宇宙ステーションの太陽光パネルに、自社の折紙工学パイプが使われている</b>。これを知って心が動かない工業高校生・高専生は多くありません。問題は、その事実が学校にも生徒にも一切届いていないことです。<b>取り合いは年々厳しくなります。材料を持っているうちに、出してください。</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 05 ===== -->
+<section class="panel wrap" id="p-strategy" role="tabpanel" hidden>
+  <div class="sec-head"><h2>業績向上のための成長戦略</h2><span class="tagline">3本柱と、その順番</span></div>
+  <p class="lede">柱は3本ですが、<b>順番があります</b>。まず柱1で素材をつくり、柱2で採用の入口を開け、その同じ素材と同じ仕組みで柱3の営業に向かいます。前回は柱1と柱2を飛ばして柱3だけをやったので、届きませんでした。</p>
+
+  <div class="grid g3">
+    <div class="pillar">
+      <div class="pk">PILLAR 01 ／ 土台（0-2ヶ月）</div>
+      <h4>技術を、伝わる形にする</h4>
+      <p>加工事例の記事化、1分動画、用語の統一。<b>「変肉厚加工とは何で、それができると何が良いのか」</b>を、設計者にも18歳にも分かる形にします。制作するのは一度、使い回すのは無限回。ここを飛ばすと、あとの2本が空振りします。</p>
+      <div class="kpi"><span>主指標：<b>公開した加工事例の本数</b></span><span>副指標：<b>技術用語の表記統一率</b></span><span>着手：<b>いま制作中</b></span></div>
+    </div>
+    <div class="pillar">
+      <div class="pk">PILLAR 02 ／ 本命（1-12ヶ月）</div>
+      <h4>採用の入口をつくる</h4>
+      <p>工業高校・高専・専門学校・訓練校に、<b>こちらから求人票と会社案内を届けます</b>。待っていても学校からは来ません。進路指導の先生と関係を作れば、毎年続く入口になります。3拠点それぞれの地元校が対象です。</p>
+      <div class="kpi"><span>主指標：<b>求人票を置いてもらえた学校数</b></span><span>副指標：<b>会社見学の受入数</b></span><span>着手：<b>1ヶ月目から</b></span></div>
+    </div>
+    <div class="pillar">
+      <div class="pk">PILLAR 03 ／ 長期（3-36ヶ月）</div>
+      <h4>内燃機関以外の柱を太くする</h4>
+      <p>ロボット・省力化装置・半導体装置・医療機器。<b>パイプが多く使われ、軽量化と一体成形の価値が分かる相手</b>に、柱1の素材を持って当たります。量産まで2〜4年かかる前提で、進捗を台帳で追い続けます。</p>
+      <div class="kpi"><span>主指標：<b>図面・仕様が届いた件数</b></span><span>副指標：<b>試作に進んだ件数</b></span><span>着手：<b>3ヶ月目から</b></span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>1つの素材が、2つの出口に効く</h3>
+    <p class="sub">採用と営業を別々に投資しない、というのが本戦略の核です</p>
+    <div class="chartbox" id="c-pillars"></div>
+  </div>
+
+  <div class="block">
+    <h3>現状と、3年後の姿</h3>
+    <p class="sub">数値は本ボードの標準前提に基づく想定です</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>項目</th><th>いま（推定）</th><th>1年後</th><th>3年後</th></tr></thead>
+        <tbody>
+          <tr><td>技術の発信</td><td>HPのみ・更新は社長室依存</td><td>加工事例20本＋動画・毎週更新</td><td>検索で技術名から辿り着く状態</td></tr>
+          <tr><td>採用の入口</td><td>応募待ち・つながりのある学校のみ</td><td>3地域で30校以上に求人票</td><td>毎年定期的に新卒が来る導線</td></tr>
+          <tr><td>営業の入口</td><td>既存取引先と紹介が中心</td><td>図面が届く件数を月次で把握</td><td>内燃機関以外の量産案件が立ち上がる</td></tr>
+          <tr><td>案件の管理</td><td>担当者の記憶と個別のやりとり</td><td>2〜4年案件を台帳で追跡</td><td>引合いから量産までの歩留まりが分かる</td></tr>
+          <tr><td>社内のAI活用</td><td>個人の無料版・属人的</td><td>プロンプト集を共有・用語チェック運用</td><td>資料作成の標準工程に組み込み済み</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>この戦略の弱点</h3>
+    <p class="sub">先に申し上げておきます</p>
+    <div class="grid g2">
+      <div class="card flat">
+        <h4 style="font-size:14.5px;margin-bottom:8px">弱点①　柱3は、1年では数字にならない</h4>
+        <p style="font-size:13px;color:var(--ink-2)">量産まで2〜4年という時間軸は変えられません。したがって<b>営業支援の1年目ROIは、どう計算しても低く出ます</b>。08タブではそこを隠さず、採用エンジンと営業エンジンを分けて表示しています。前回の失敗は、ここを曖昧にしたまま短期の数字を追ったことでした。<b>同じ過ちを繰り返さないために、最初に時間軸を握っておきたいのです。</b></p>
+      </div>
+      <div class="card flat">
+        <h4 style="font-size:14.5px;margin-bottom:8px">弱点②　採用しても、受け入れ体制が要る</h4>
+        <p style="font-size:13px;color:var(--ink-2)">若手が入っても、教える時間と仕組みがなければ辞めます。平均年齢50歳超の現場に18歳が入るとき、<b>間の世代が薄いことがそのまま定着率に効きます</b>。採用と同時に、熟練者の手順を記録に残す作業（07タブの技術コンテンツ整備）を回す必要があります。採るだけでは解決しません。ここは正直に申し上げます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 06 ===== -->
+<section class="panel wrap" id="p-targets" role="tabpanel" hidden>
+  <div class="sec-head"><h2>ターゲット30</h2><span class="tagline">母数・狙う理由・最初の一言</span></div>
+  <p class="lede">前回の反省を踏まえ、<b>業種名ではなく「その製品にパイプが何本入っているか」</b>で選びました。Tier Aは採用の入口（3拠点の地元校・機関）、Tier Bはロボット・省力化の発注元、Tier Cは内燃機関以外の新領域です。母数は業界統計と推計に基づく<b>概算</b>で、各行に対象範囲を併記しています。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">総母数（30セグメント計）</span><span class="v" id="t-all">—</span><span class="n">学校・機関・法人数の合算</span></div>
+    <div class="stat hot"><span class="k">Tier A・採用の入口</span><span class="v" id="t-a">—</span><span class="n">神奈川・静岡・長野＋全国の高専</span></div>
+    <div class="stat pos"><span class="k">1年目の目標</span><span class="v">50<small>校</small></span><span class="n">求人票を置いてもらう学校数</span></div>
+    <div class="stat"><span class="k">1年で接触できる件数</span><span class="v">18,000<small>件</small></span><span class="n">月1,500件×12ヶ月</span></div>
+  </div>
+
+  <div class="block">
+    <h3>3層別の母数</h3>
+    <p class="sub">Tier Aは母数が小さい。だからこそ、1校ずつ丁寧に当たれます</p>
+    <div class="chartbox" id="c-tiers"></div>
+  </div>
+
+  <div class="block">
+    <h3>ターゲット一覧</h3>
+    <p class="sub">Tierで絞る／母数で並べ替える／キーワードで検索する</p>
+    <div class="controls">
+      <div class="seg" id="t-seg">
+        <button data-t="all" aria-pressed="true">すべて（30）</button>
+        <button data-t="A" aria-pressed="false">A・採用の入口（10）</button>
+        <button data-t="B" aria-pressed="false">B・ロボット／省力化（10）</button>
+        <button data-t="C" aria-pressed="false">C・新領域（10）</button>
+      </div>
+      <input type="search" id="t-q" placeholder="業種・理由・切り口を検索" aria-label="ターゲットを検索">
+      <select id="t-sort" aria-label="並べ替え">
+        <option value="pri">優先度順</option>
+        <option value="cnt">母数が多い順</option>
+        <option value="cntA">母数が少ない順</option>
+      </select>
+      <div class="count">表示 <b id="t-n">30</b> 件 ／ 母数計 <b id="t-sum">—</b></div>
+    </div>
+    <div class="tlist" id="t-list"></div>
+  </div>
+</section>
+
+<!-- ===== 07 ===== -->
+<section class="panel wrap" id="p-remote" role="tabpanel" hidden>
+  <div class="sec-head"><h2>在宅ワーカー活用</h2><span class="tagline">社長室の負荷を増やさずに、毎週出し続ける</span></div>
+  <p class="lede">いまの発信は社長室主導で、通常業務の合間に行われています。<b>この形では、最初の数本は出ても続きません。</b>そして技術コンテンツは、続けなければ意味がありません。加工事例が3本のサイトと30本のサイトでは、検索でもAIでも扱いが変わります。続ける部分を外に出します。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">移管できる業務量</span><span class="v">140<small>h/月</small></span><span class="n">正社員1名分に近い稼働</span></div>
+    <div class="stat hot"><span class="k">うち社長室が抱えている分</span><span class="v">82<small>h/月</small></span><span class="n">発信・資料作成・応募者対応</span></div>
+    <div class="stat"><span class="k">対象業務の数</span><span class="v">19<small>種</small></span><span class="n">5カテゴリに分類</span></div>
+    <div class="stat pos"><span class="k">在宅ワーカー体制</span><span class="v">3〜4<small>名相当</small></span><span class="n">1人1日2〜4時間の分業</span></div>
+  </div>
+
+  <div class="block">
+    <h3>在宅ワーカーに依頼できる業務</h3>
+    <p class="sub">◆印は、いま社長室の時間をとくに奪っている業務です。時間は月間の想定工数</p>
+    <div class="grid g3" id="tasks"></div>
+    <div class="callout">
+      <b>この業種ならではの注意点。</b>外に出せるのは<b>手順が決まっている作業</b>だけです。加工条件の判断、図面の技術的な回答、見積の最終金額、品質保証に関わる記載は社内に残します。とくに<b>加工事例の記事化は「素材集めと下書きを在宅ワーカー、技術的な監修を社内」</b>という切り分けが必須です。写真を撮る、数値を並べる、文章を整える——ここまでは外に出せます。「その条件で本当に成立するのか」は出せません。
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：現状</h3>
+    <p class="sub">発信も採用も資料作成も、社長室の少人数に集中している</p>
+    <div class="chartbox" id="c-org-now"></div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：在宅ワーカー活用後</h3>
+    <p class="sub">社長室は「決める」「監修する」に残り、手を動かす部分を外に出す</p>
+    <div class="chartbox" id="c-org-next"></div>
+  </div>
+
+  <div class="block">
+    <h3>社内のAI活用について</h3>
+    <p class="sub">前回「個人の無料版レベルにとどまっている」とのお話がありました</p>
+    <div class="grid g2">
+      <div class="card">
+        <h4 style="font-size:15px;margin-bottom:9px">いま起きていること</h4>
+        <p style="font-size:13px;color:var(--ink-2)">CoPilot、Gemini、ChatGPTを、個人が無料版で思い思いに使っている状態です。うまく使える人と使えない人の差が開き、<b>成功したプロンプトが社内に残りません</b>。さらに専門用語が誤変換されるため、AIが出した文章をそのまま使うと技術的に間違った資料ができます。</p>
+      </div>
+      <div class="card">
+        <h4 style="font-size:15px;margin-bottom:9px">在宅ワーカーが担える部分</h4>
+        <p style="font-size:13px;color:var(--ink-2)"><b>プロンプト集の作成と共有</b>（うまくいった指示文を蓄積して社内に配る）、<b>AI生成物の用語チェック</b>（変肉厚・チューブハイドロフォーミングなどの表記を機械的に修正）、<b>議事録や資料の下書き生成</b>。判断は社内、作業は外。この切り分けなら、社内のAIスキル差があっても成果物の品質は揃います。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 08 ===== -->
+<section class="panel wrap" id="p-roi" role="tabpanel" hidden>
+  <div class="sec-head"><h2>ROIシミュレーション</h2><span class="tagline">採用エンジンと営業エンジンを、分けて計算する</span></div>
+  <p class="lede">左のつまみを動かすと、右の数字とグラフがその場で再計算されます。<b>採用は数ヶ月で効き、営業は2〜4年かかります。</b>これを合算して1年目のROIだけを見ると、前回と同じ間違いを繰り返すことになります。だから最初から分けています。</p>
+
+  <div class="roi-layout">
+    <div class="knobs">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h4 style="font-size:15px">前提条件</h4>
+        <button class="resetbtn" id="r-reset">標準に戻す</button>
+      </div>
+      <div class="seg" style="margin-bottom:16px">
+        <button data-preset="cons" aria-pressed="false">保守</button>
+        <button data-preset="base" aria-pressed="true">標準</button>
+        <button data-preset="bull" aria-pressed="false">強気</button>
+      </div>
+
+      <div class="gh">◆ 採用エンジン ／ <span>学校・機関の開拓</span></div>
+      <div class="knob"><label for="k-sch">月間アプローチ数（学校・機関）<b><span id="v-sch"></span>件</b></label><input type="range" id="k-sch" min="40" max="500" step="10"></div>
+      <div class="knob"><label for="k-schr">求人票を置いてもらえる率<b><span id="v-schr"></span>%</b></label><input type="range" id="k-schr" min="3" max="35" step="1"></div>
+      <div class="knob"><label for="k-appPer">1校あたり 年間応募数<b><span id="v-appPer"></span>人</b></label><input type="range" id="k-appPer" min="0.1" max="3" step="0.1"></div>
+      <div class="knob"><label for="k-hire">応募→入社率<b><span id="v-hire"></span>%</b></label><input type="range" id="k-hire" min="5" max="60" step="1"></div>
+      <div class="knob"><label for="k-cpa">現在の採用単価（1名）<b><span id="v-cpa"></span>万円</b></label><input type="range" id="k-cpa" min="20" max="200" step="5"></div>
+      <div class="knob"><label for="k-loss">欠員1名の年間逸失粗利<b><span id="v-loss"></span>万円</b></label><input type="range" id="k-loss" min="0" max="800" step="20"></div>
+      <div class="knob"><label for="k-cap">年間の受け入れ上限<b><span id="v-cap"></span>名</b></label><input type="range" id="k-cap" min="1" max="15" step="1"></div>
+      <p class="note" style="margin-top:-4px">※ 教える側の人数で決まる上限です。採れても受け入れられなければ辞めます。</p>
+
+      <div class="knob-group">
+        <div class="gh">◆ 営業エンジン ／ <span>新規引合いの開拓</span></div>
+        <div class="knob"><label for="k-app">月間アプローチ数（法人）<b><span id="v-app"></span>件</b></label><input type="range" id="k-app" min="300" max="4000" step="100"></div>
+        <div class="knob"><label for="k-inq">図面・仕様が届く率<b><span id="v-inq"></span>%</b></label><input type="range" id="k-inq" min="0.1" max="2" step="0.1"></div>
+        <div class="knob"><label for="k-proto">引合い→試作率<b><span id="v-proto"></span>%</b></label><input type="range" id="k-proto" min="5" max="45" step="1"></div>
+        <div class="knob"><label for="k-mass">試作→量産率<b><span id="v-mass"></span>%</b></label><input type="range" id="k-mass" min="5" max="45" step="1"></div>
+        <div class="knob"><label for="k-gp">量産1案件の年間粗利<b><span id="v-gp"></span>万円</b></label><input type="range" id="k-gp" min="50" max="2000" step="50"></div>
+        <div class="knob"><label for="k-lead">量産までのリードタイム<b><span id="v-lead"></span>ヶ月</b></label><input type="range" id="k-lead" min="12" max="48" step="3"></div>
+      </div>
+
+      <div class="knob-group">
+        <div class="gh">◆ <span>費用</span></div>
+        <div class="knob"><label for="k-sfee">営業支援ユニット月額<b><span id="v-sfee"></span>万円</b></label><input type="range" id="k-sfee" min="15" max="60" step="1"></div>
+        <div class="knob"><label for="k-ofee">生産性向上支援ユニット月額<b><span id="v-ofee"></span>万円</b></label><input type="range" id="k-ofee" min="3" max="20" step="1"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div>
+        <h4 style="font-size:15px;margin-bottom:3px">1年目の着地</h4>
+        <p class="sub" style="margin-bottom:12px">採用は年内に効きます。営業は、この時点ではまだ数字になりません</p>
+        <div class="grid g4">
+          <div class="stat pos"><span class="k">1年目 ROI（採用エンジンのみ）</span><span class="v" id="o-roi1">—</span><span class="n">採用単価の削減＋欠員解消</span></div>
+          <div class="stat info"><span class="k">1年で入社する人数</span><span class="v" id="o-hires">—</span><span class="n" id="o-hiresn">—</span></div>
+          <div class="stat hot"><span class="k">1年目の引合い（図面）</span><span class="v" id="o-inq">—</span><span class="n" id="o-inqn">—</span></div>
+          <div class="stat warn"><span class="k">営業の粗利が立つ時期</span><span class="v" id="o-when">—</span><span class="n" id="o-whenn">—</span></div>
+        </div>
+      </div>
+
+      <div>
+        <p class="sub" style="margin-bottom:10px">月間のファネル（営業エンジン）</p>
+        <div class="funnel">
+          <div class="fstep"><div class="fl">アプローチ</div><div class="fv" id="f-app">—</div><div class="fr">電話・メール・FAX</div></div>
+          <div class="fstep"><div class="fl">引合い（図面）</div><div class="fv" id="f-inq">—</div><div class="fr" id="f-inq-r">—</div></div>
+          <div class="fstep"><div class="fl">試作</div><div class="fv" id="f-proto">—</div><div class="fr" id="f-proto-r">—</div></div>
+          <div class="fstep end"><div class="fl">量産（数年後）</div><div class="fv" id="f-mass">—</div><div class="fr" id="f-mass-r">—</div></div>
+        </div>
+      </div>
+
+      <div class="chartbox" id="c-lead"></div>
+      <div class="chartbox" id="c-hire"></div>
+      <div class="chartbox" id="c-cum"></div>
+
+      <div class="verdict" id="o-verdict"></div>
+
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:10px">この試算の読み方</div>
+        <ul style="margin:0;padding-left:1.2em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">
+          <li><b>1年目のROIは、採用エンジンだけで計算しています。</b>営業エンジンの粗利を1年目に計上するのは、御社のビジネスでは不誠実だからです。前回はここを曖昧にしたまま短期の数字を追い、両者が消耗しました。<b>同じことをしないための設計です。</b></li>
+          <li><b>採用エンジンの効果は2つの足し算です。</b>①これまで人材紹介や求人媒体に払っていた採用単価が浮く分、②欠員が埋まることで回せるようになる仕事の粗利。②はつまみをゼロにすれば①だけで評価できます。厳しく見たい場合はゼロにしてご確認ください。</li>
+          <li><b>営業エンジンは、3年目以降に一気に効きます。</b>下の累積グラフは36ヶ月分です。リードタイムのつまみを動かすと、粗利が立つ時期がそのままずれます。<b>2年後に「やっぱり出なかった」と言わないために、いま何ヶ月かかるかを合意しておきたいのです。</b></li>
+          <li><b>「量産1案件の年間粗利」が最大の不確実要素です。</b>初期値は控えめに置いています。ロボットアーム駆動シャフトのような量産品1件が年間どの程度の粗利になるのか、<b>実績値を9/14にお聞かせください</b>。この1つで試算の意味が変わります。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 09 ===== -->
+<section class="panel wrap" id="p-road" role="tabpanel" hidden>
+  <div class="sec-head"><h2>90日ロードマップ</h2><span class="tagline">9月14日の商談から逆算して</span></div>
+  <p class="lede">最初の30日は、<b>約束した小さい数字を、約束した期日に出すこと</b>だけに集中します。大きな提案は、それができてからです。</p>
+
+  <div class="card">
+    <div class="phase">
+      <div><div class="pd">DAY 0</div><div class="pt">9月14日<br>次回商談</div></div>
+      <ul>
+        <li><span class="owner ai">当方</span>赤入れを反映した資料の確認。<b>用語表記（変肉厚・チューブハイドロフォーミング）を全箇所統一済みでお持ちします</b></li>
+        <li><span class="owner ai">当方</span>1分動画の構成説明。踊らない、宇宙とロボットを見せる方針のご確認</li>
+        <li><span class="owner ai">当方</span>本ボードの02タブ（前回なぜ届かなかったか）をそのままご説明します</li>
+        <li><span class="owner kl">御社</span><b>直近3年の採用人数と、55歳以上の社員数</b>（03タブの試算が確定します）</li>
+        <li><span class="owner kl">御社</span><b>量産品1案件あたりの年間粗利の目安</b>（08タブの試算が確定します）</li>
+        <li>この場で決めること：<b>採用から始めることの合意</b>と、30日後に報告する数字の定義</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 1-30</div><div class="pt">素材を仕上げ、<br>学校に当たる</div></div>
+      <ul>
+        <li><span class="owner ai">当方</span>1分動画の完成。加工事例の記事化を3本（宇宙・ロボット・自動車から各1本）</li>
+        <li><span class="owner ai">当方</span>Tier Aの学校リストを作成。<b>神奈川・静岡・長野の工業高校と近隣高専から着手</b></li>
+        <li><span class="owner ai">当方</span>進路指導部への資料送付と電話フォロー。目的はアポではなく<b>求人票を置いてもらうこと</b></li>
+        <li><span class="owner kl">御社</span>会社見学の受入可否と、受入可能な時期の決定</li>
+        <li><span class="owner kl">御社</span>在宅ワーカーへの移管を<b>加工事例の素材集めと用語チェック</b>から開始</li>
+        <li>30日目に報告する数字：<b>資料を届けた学校数／求人票を置いてもらえた学校数</b></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 31-60</div><div class="pt">発信を回し、<br>営業の的を絞る</div></div>
+      <ul>
+        <li><span class="owner kl">御社</span>在宅ワーカーの移管範囲を拡大（記事化・SNS投稿・AI用語チェック）</li>
+        <li><span class="owner ai">当方</span>加工事例を10本まで積み上げ。技術ポータルの掲載情報も更新</li>
+        <li><span class="owner ai">当方</span>Tier Bに着手。<b>まずFA・自動化システムインテグレータと工作機械メーカー</b></li>
+        <li><span class="owner ai">当方</span>架電の目的を「資料を見ていただくこと」に統一。アポ数はKPIにしない</li>
+        <li><span class="owner kl">御社</span>問い合わせが来たときの受け答えの型を、社内で1枚に整理</li>
+        <li>60日目に報告する数字：<b>公開した加工事例の本数／資料を見た企業数／届いた図面の件数</b></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 61-90</div><div class="pt">来年度の採用計画に<br>間に合わせる</div></div>
+      <ul>
+        <li><span class="owner ai">当方</span>Tier Aを3地域15校まで拡大。会社見学・インターンの受入枠を学校へ提示</li>
+        <li><span class="owner ai">当方</span>Tier Cに着手。<b>半導体装置・医療機器・水素関連など内燃機関以外</b></li>
+        <li><span class="owner kl">御社</span>次年度の採用計画を確定（何人を、どの拠点に、いつまでに）</li>
+        <li><span class="owner ai">当方</span>引合いから量産までの案件台帳を運用開始。<b>2〜4年案件を落とさない仕組み</b></li>
+        <li>90日目に報告する数字：<b>求人票設置15校／加工事例20本／引合い件数の月次推移</b></li>
+        <li>ここまでで「4合目」がどこまで進んだかを、御社に評価いただきます</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>出典</h3>
+    <p class="sub">本ボードで用いた公開データ</p>
+    <div class="card flat">
+      <div class="srcs">
+        ・高年齢者雇用安定法：経過措置の終了と65歳までの雇用確保の完全義務化（2025年4月1日）、高年齢雇用継続給付の支給率縮小<br>
+        ・最低賃金（2026年度 全国加重平均1,177円・前年度比＋56円）：厚生労働省 中央最低賃金審議会の答申および各地方最低賃金審議会の決定<br>
+        ・最低賃金1,500円目標：経済財政運営と改革の基本方針（2026年6月21日閣議決定）<br>
+        ・中小企業省力化投資補助金（一般型・補助上限1億円・補助率最大2/3／カタログ型1,000製品以上）：中小企業庁<br>
+        ・技能継承を課題と認識する製造業が6割以上、生産工程職の有効求人倍率：ものづくり白書2026<br>
+        ・株式会社チューブフォーミングの会社概要・加工技術・製品（エキゾーストマニフォールド、ロボットアーム駆動シャフト、折紙工学パイプ）：自社サイト、業界データベース、テクノフレックス グループサイトの公開情報<br>
+        <br>
+        ターゲット30の母数は、学校基本調査・業界統計・各種名簿に基づく<b>概算</b>です。実際のリスト作成時に精査します。03タブの年齢構成試算は、公開されていない情報を仮定で補った<b>推計</b>であり、実データでの置き換えを前提としています。
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+"use strict";
+
+var tabs=Array.prototype.slice.call(document.querySelectorAll(".tab"));
+tabs.forEach(function(t){
+  t.addEventListener("click",function(){
+    tabs.forEach(function(x){
+      x.setAttribute("aria-selected",x===t?"true":"false");
+      document.getElementById("p-"+x.dataset.p).hidden=(x!==t);
+    });
+    window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  });
+});
+
+var NF=new Intl.NumberFormat("ja-JP");
+function n(v){return NF.format(Math.round(v));}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function svg(w,h,inner){
+  return '<svg viewBox="0 0 '+w+' '+h+'" role="img" preserveAspectRatio="xMidYMid meet" '+
+    'style="max-width:'+Math.round(w*1.18)+'px;margin:0 auto">'+inner+'</svg>';
+}
+function txt(x,y,s,o){
+  o=o||{};
+  return '<text x="'+x+'" y="'+y+'" fill="'+(o.fill||"var(--ink-2)")+'" font-size="'+(o.size||11)+'" '+
+   'font-family="'+(o.mono?"Fira Code, monospace":(o.disp?"Kaisei HarunoUmi, serif":"Zen Kaku Gothic New, sans-serif"))+'" '+
+   'font-weight="'+(o.weight||400)+'" text-anchor="'+(o.anchor||"start")+'"'+
+   (o.baseline?' dominant-baseline="'+o.baseline+'"':'')+'>'+esc(s)+'</text>';
+}
+function rrect(x,y,w,h,r,fill){
+  if(h<=0||w<=0) return "";
+  r=Math.min(r,h/2,w/2);
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+r+'" fill="'+fill+'"></rect>';
+}
+function box(x,y,w,h,title,sub,color,dashed){
+  var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="var(--surface-2)" stroke="'+(color||"var(--rule-2)")+'" stroke-width="1.6"'+(dashed?' stroke-dasharray="5 4"':'')+'></rect>';
+  s+=txt(x+13,y+(sub?23:h/2+5),title,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+  if(sub) s+=txt(x+13,y+40,sub,{fill:"var(--ink-3)",size:10.5});
+  return s;
+}
+function niceMax(v,div){
+  if(!(v>0)) return div;
+  var unit=v/div, step=Math.pow(10,Math.floor(Math.log10(unit))), r=unit/step;
+  var mult=r<=1?1:r<=2?2:r<=2.5?2.5:r<=5?5:10;
+  return step*mult*div;
+}
+
+/* ============ 03 年齢構成の推計 ============ */
+(function(){
+  /* 110名・平均51歳の仮定分布 */
+  var bands=[
+    {k:"20代",now:8},
+    {k:"30代",now:14},
+    {k:"40代",now:26},
+    {k:"50代",now:38},
+    {k:"60代",now:24}
+  ];
+  /* 10年後：各帯が1段上へ。60代は定年・再雇用終了で退出。新規採用ゼロの場合 */
+  var after=[0,8,14,26,38];
+  var W=760,H=300,padL=78,padR=110,padT=42,padB=54;
+  var plotW=W-padL-padR,plotH=H-padT-padB,rowH=plotH/bands.length;
+  var max=niceMax(42,4),s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(padT-12)+'" x2="'+x+'" y2="'+(padT+plotH)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,padT-20,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+30,padT-20,"名",{fill:"var(--ink-3)",size:10});
+  var totalNow=0,totalAfter=0;
+  bands.forEach(function(b,i){
+    var y=padT+i*rowH+4,bh=(rowH-14)/2;
+    totalNow+=b.now; totalAfter+=after[i];
+    s+=txt(padL-12,y+bh,b.k,{fill:"var(--ink)",size:12,weight:700,anchor:"end",baseline:"middle",disp:true});
+    s+=rrect(padL,y,(b.now/max)*plotW,bh,3,"var(--rule-2)");
+    s+=txt(padL+(b.now/max)*plotW+7,y+bh/2,b.now+"名",{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+    s+=rrect(padL,y+bh+4,(after[i]/max)*plotW,bh,3,after[i]===0?"var(--s2)":"var(--s1)");
+    if(after[i]>0) s+=txt(padL+(after[i]/max)*plotW+7,y+bh+4+bh/2,after[i]+"名",{fill:"var(--s1)",size:10,mono:true,baseline:"middle"});
+    else s+=txt(padL+6,y+bh+4+bh/2,"0名",{fill:"var(--s2)",size:10,weight:700,mono:true,baseline:"middle"});
+  });
+  s+='<rect x="'+padL+'" y="'+(padT+plotH+12)+'" width="'+plotW+'" height="30" rx="7" fill="var(--accent-soft)"></rect>';
+  s+=txt(padL+14,padT+plotH+31,"新規採用ゼロなら、10年後の在籍は "+totalNow+"名 → "+totalAfter+"名（"+(totalNow-totalAfter)+"名減）。20代は0名になります。",
+    {fill:"var(--accent)",size:11.5,weight:700});
+  document.getElementById("c-age").innerHTML=
+    '<h4>10年後の年齢構成（新規採用ゼロの場合・推計）</h4><p class="csub">上＝いま／下＝10年後。定年60歳・再雇用65歳までを仮定</p>'+
+    '<div class="legend"><span><i style="background:var(--rule-2)"></i>いま（推計）</span><span><i style="background:var(--s1)"></i>10年後・採用ゼロの場合</span></div>'+svg(W,H,s);
+})();
+
+/* ============ 03 製品の時間軸 ============ */
+(function(){
+  var W=760,H=280,padL=196,padR=168,padT=44,padB=54;
+  var plotW=W-padL-padR;
+  var rows=[
+    {k:"エキゾーストマニフォールド",sub:"内燃機関・自動車",c:"var(--s5)",from:0,to:0.55,shape:"down",note:"電動化とともに逓減"},
+    {k:"ロボットアーム駆動シャフト",sub:"工作機械・省力化",c:"var(--s3)",from:0.1,to:1,shape:"up",note:"人件費上昇が追い風"},
+    {k:"折紙工学パイプ",sub:"宇宙・研究用途",c:"var(--s1)",from:0.35,to:1,shape:"flat",note:"数量より、採用への効き目"}
+  ];
+  var s="";
+  ["いま","5年後","10年後"].forEach(function(t,i){
+    var x=padL+(i/2)*plotW;
+    s+='<line x1="'+x+'" y1="'+(padT-14)+'" x2="'+x+'" y2="'+(padT+150)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,padT-22,t,{fill:"var(--ink-3)",size:10.5,anchor:"middle"});
+  });
+  rows.forEach(function(r,i){
+    var y=padT+i*50;
+    s+=txt(padL-14,y+12,r.k,{fill:"var(--ink)",size:12.5,weight:700,anchor:"end",disp:true});
+    s+=txt(padL-14,y+28,r.sub,{fill:"var(--ink-3)",size:10,anchor:"end"});
+    var x0=padL+r.from*plotW, x1=padL+r.to*plotW;
+    var h0=r.shape==="down"?22:(r.shape==="up"?8:14);
+    var h1=r.shape==="down"?6:(r.shape==="up"?26:14);
+    s+='<path d="M '+x0+' '+(y+16-h0/2)+' L '+x1+' '+(y+16-h1/2)+' L '+x1+' '+(y+16+h1/2)+' L '+x0+' '+(y+16+h0/2)+' Z" fill="'+r.c+'" opacity="0.88"></path>';
+    s+=txt(x1+9,y+16,r.note,{fill:r.c,size:10.5,weight:700,baseline:"middle"});
+  });
+  s+='<rect x="'+padL+'" y="'+(padT+162)+'" width="'+plotW+'" height="52" rx="8" fill="var(--brand-soft)"></rect>';
+  s+=txt(padL+14,padT+182,"判断すべきこと：減る柱を守りながら、伸びる柱に人と設備をどれだけ振り向けるか。",{fill:"var(--brand)",size:11.5,weight:700});
+  s+=txt(padL+14,padT+201,"その判断より前に、伸びる柱の顧客に「うちでできます」が届いていません。",{fill:"var(--ink-2)",size:11});
+  s+=txt(8,H-8,"※ 帯の太さは相対的な量感を表す概念図です。実数値ではありません。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-products").innerHTML=
+    '<h4>3つの製品の時間軸（概念図）</h4><p class="csub">同じ会社の中に、減る柱と伸びる柱が同居している</p>'+svg(W,H,s);
+})();
+
+/* ============ 05 素材が2つの出口に効く ============ */
+(function(){
+  var W=760,H=300,s="";
+  s+=box(272,20,216,64,"柱1：技術を伝わる形にする","加工事例・1分動画・用語統一","var(--s2)");
+  s+=txt(285,72,"一度つくれば、何度でも使える",{fill:"var(--s2)",size:10.5,weight:700});
+
+  s+='<path d="M 272 52 L 232 52 L 232 128" stroke="var(--rule-2)" stroke-width="1.6" fill="none"></path>';
+  s+='<path d="M 488 52 L 528 52 L 528 128" stroke="var(--rule-2)" stroke-width="1.6" fill="none"></path>';
+
+  s+=box(24,128,416,66,"柱2：採用の入口","工業高校・高専・専門学校・訓練校へ届ける","var(--s1)");
+  s+=txt(37,180,"効きはじめ：3〜6ヶ月　／　主指標：求人票を置いてもらえた学校数",{fill:"var(--ink-3)",size:10.5});
+
+  s+=box(464,128,272,66,"柱3：新規の引合い","ロボット・省力化・新領域へ届ける","var(--s3)");
+  s+=txt(477,180,"効きはじめ：24〜48ヶ月",{fill:"var(--ink-3)",size:10.5});
+
+  var outs=[
+    {x:24,w:416,t:"若手が入り、技能が渡る",c:"var(--s1)"},
+    {x:464,w:272,t:"内燃機関以外の柱が立つ",c:"var(--s3)"}
+  ];
+  outs.forEach(function(o){
+    s+='<path d="M '+(o.x+o.w/2)+' 194 L '+(o.x+o.w/2)+' 214" stroke="'+o.c+'" stroke-width="1.6"></path>';
+    s+='<rect x="'+o.x+'" y="214" width="'+o.w+'" height="38" rx="7" fill="var(--surface)" stroke="'+o.c+'" stroke-width="1.5"></rect>';
+    s+=txt(o.x+o.w/2,238,o.t,{fill:o.c,size:12,weight:700,anchor:"middle",disp:true});
+  });
+  s+=txt(380,278,"前回は、柱1と柱2を飛ばして柱3だけをやりました。だから届きませんでした。",
+    {fill:"var(--accent)",size:11.5,weight:700,anchor:"middle"});
+  document.getElementById("c-pillars").innerHTML=
+    '<h4>1つの素材が、2つの出口に効く</h4><p class="csub">採用と営業に、別々の投資をしない</p>'+svg(W,H,s);
+})();
+
+/* ============ 06 ターゲット ============ */
+var TIER_META={
+  A:{label:"採用の入口",note:"3拠点の地元校・機関＋全国の高専"},
+  B:{label:"ロボット／省力化",note:"パイプが多く使われ、いま伸びている"},
+  C:{label:"新領域・技術が伝わる先",note:"内燃機関以外へ柱を広げる"}
+};
+var TARGETS=[
+  {t:"A",n:"工業高校（機械科・電子機械科）",c:47,s:"神奈川・静岡・長野",w:"3拠点それぞれの地元に必ずある。進路指導の先生と関係ができれば毎年続く入口になる。18歳が最も採用しやすい層。",h:"「宇宙ステーションの太陽光パネルに使われているパイプを、横浜で作っています。工場見学、受け入れられます」"},
+  {t:"A",n:"高等専門学校（高専）",c:58,s:"全国（近隣＝長野・沼津・東京・木更津）",w:"機械・材料の基礎を持ち、即戦力性が高い。ロボコン等で手を動かす経験があり、加工技術への理解が早い。",h:"「折紙工学を応用したパイプ成形をやっています。研究室のテーマと近い学生さんはいらっしゃいますか」"},
+  {t:"A",n:"高校の進路指導部（普通科含む）",c:420,s:"神奈川・静岡・長野",w:"工業科でなくても、地元就職を希望する生徒は各校にいる。母数が最も大きく、まだ誰も丁寧に当たっていない層。",h:"「地元で長く働きたいという生徒さん向けに、66年続いている製造業の資料をお送りしてよろしいですか」"},
+  {t:"A",n:"専門学校（機械・自動車・ものづくり系）",c:90,s:"神奈川・静岡・長野",w:"手に職をつける意志がすでにある層。就職支援課が企業を探しており、資料を送れば確実に見てもらえる。",h:"「金属パイプの塑性加工です。CADや加工を学ばれている学生さんの就職先としていかがでしょうか」"},
+  {t:"A",n:"職業訓練校・ポリテクセンター",c:26,s:"神奈川・静岡・長野",w:"社会人の再訓練を含むため、20代〜30代の中途採用につながる。訓練内容が製造現場と直結している。",h:"「機械加工の訓練を修了された方の受け入れ先を探しています。見学の受け入れも可能です」"},
+  {t:"A",n:"工学系大学・短大（機械・材料）",c:40,s:"神奈川・静岡・長野＋近県",w:"設計・開発の担い手として。研究室単位で接点を持てば、採用と共同研究の両方に広がる。",h:"「ハイドロフォーミングによる一体成形をやっています。研究室にご興味のあるテーマはありませんか」"},
+  {t:"A",n:"ハローワーク・地域若者サポートステーション",c:78,s:"神奈川・静岡・長野",w:"求人票を出すだけでなく、担当者に会社を理解してもらえば紹介の質が変わる。費用がかからない。",h:"「求人票だけでは伝わらない部分があるので、事業内容を直接ご説明にうかがえませんか」"},
+  {t:"A",n:"自治体の就職支援・UIターン窓口",c:95,s:"神奈川・静岡・長野",w:"地方拠点（静岡・長野）の採用では特に有効。自治体は地元製造業の担い手確保を政策課題としている。",h:"「静岡と長野に拠点があります。地元で働きたい方の受け皿として登録させていただけますか」"},
+  {t:"A",n:"外国人材の登録支援機関・監理団体",c:310,s:"神奈川・静岡・長野",w:"金属加工は特定技能の対象分野。日本人の若手だけでは埋まらない前提に立つなら、避けて通れない選択肢。",h:"「金属加工の現場です。特定技能の方の受け入れについて、条件面から相談させていただけますか」"},
+  {t:"A",n:"ロボコン参加校・ものづくり系の部活動",c:230,s:"全国",w:"手を動かすことが好きな層が集まっている。協賛や部品提供という形で接点を作れば、記憶に残る。",h:"「パイプの加工でお手伝いできることはありませんか。材料や加工のご提供もご相談できます」"},
+
+  {t:"B",n:"FA・自動化システムインテグレータ（SIer）",c:1100,s:"全国",w:"省力化投資の設計を担う中核。装置1台に構造材・配管としてパイプが多数入る。補助金案件で引き合いが増えている。",h:"「装置フレームや配管を、曲げ・変肉厚で一体化して軽くできます。図面を見せていただけますか」"},
+  {t:"B",n:"工作機械メーカー",c:320,s:"全国",w:"すでにロボットアーム駆動シャフトの実績がある領域。同じ話が通じる相手が最も多い層。",h:"「ロボットアームの駆動シャフトを量産しています。同様の軸物・パイプ部品のご相談はありませんか」"},
+  {t:"B",n:"搬送機・コンベア・マテハン機器メーカー",c:480,s:"全国",w:"構造の大半がパイプとフレーム。軽量化が搬送能力に直結するため、一体成形の価値が分かりやすい。",h:"「搬送部の軽量化、パイプの一体成形で実現できる可能性があります。現状の重量はどのくらいですか」"},
+  {t:"B",n:"食品機械・包装機械メーカー",c:620,s:"全国",w:"人手不足の影響が最も強い業界向け。衛生面からステンレスパイプの使用が多く、加工難度も高い。",h:"「ステンレスパイプの曲げと拡管をやっています。洗浄性を考えた継ぎ目の少ない形状が作れます」"},
+  {t:"B",n:"産業用ロボットメーカー",c:180,s:"全国",w:"母数は小さいが1社あたりの規模が大きい。アーム・関節部の軽量化は各社の共通課題。",h:"「アーム部の軽量化と剛性の両立、ハイドロフォーミングでの一体成形をご検討いただけませんか」"},
+  {t:"B",n:"協働ロボット・サービスロボットメーカー",c:140,s:"全国",w:"新興企業が多く、部品調達先を探している。省力化投資補助金のカタログ登録製品としても伸びている領域。",h:"「量産前の試作から一緒にできます。構造部材の軽量化でお困りの箇所はありませんか」"},
+  {t:"B",n:"半導体製造装置メーカー",c:260,s:"全国",w:"配管の塊のような装置。精度要求が厳しく、価格競争になりにくい。技術で選ばれる領域。",h:"「高精度な配管加工をやっています。現在の調達先で対応が難しい形状はありませんか」"},
+  {t:"B",n:"医療機器・分析機器メーカー",c:1450,s:"全国",w:"細径・薄肉のパイプ加工が必要で、変肉厚加工の価値が最も直接的に効く。量産ロットは小さいが単価が高い。",h:"「細径パイプの肉厚を部位ごとに変える加工ができます。試作からお受けできます」"},
+  {t:"B",n:"建設機械・農業機械メーカー",c:410,s:"全国",w:"人手不足で自動化・無人化が進む領域。油圧配管と構造材の両方でパイプの需要がある。",h:"「油圧配管と構造部材、両方の加工ができます。まとめてご相談いただける先をお探しではありませんか」"},
+  {t:"B",n:"省力化投資補助金のカタログ登録事業者",c:380,s:"全国",w:"補助金で販売を伸ばしている＝いま増産が必要な企業群。増産に追随できる加工先を探している可能性が高い。",h:"「補助金の対象製品を扱われていますよね。増産のときの加工先として、お話を伺えませんか」"},
+
+  {t:"C",n:"機械設計事務所・設計受託",c:2400,s:"全国",w:"設計段階で「この形は作れない」と諦められると、そもそも引合いが生まれない。設計者に可能性を知らせる層。",h:"「パイプでこんな形まで作れます、という事例集をお送りしています。設計のご参考にいかがですか」"},
+  {t:"C",n:"金型・治具・試作メーカー",c:3200,s:"全国",w:"競合ではなく協業先。自社でできない加工を持ち込み合う関係になれる。同業だから技術の話が通じる。",h:"「パイプの塑性加工でお困りの案件があれば、お引き受けできます。逆にお願いすることもあるかと」"},
+  {t:"C",n:"技術系商社・専門商社（配管・機械要素）",c:1900,s:"全国",w:"商社経由の引合いは継続性がある。一度加工先として登録されれば、複数のメーカーから案件が流れてくる。",h:"「パイプの2次加工先として登録いただけませんか。曲げ・絞り・拡管・変肉厚まで一貫でできます」"},
+  {t:"C",n:"大学・高専の研究室（機械・材料・構造）",c:1800,s:"全国",w:"折紙工学との相性が抜群。共同研究は将来の量産につながり、同時に採用チャネルにもなる一石二鳥の層。",h:"「折紙工学を応用したパイプ成形の実績があります。研究のテーマでご一緒できることはありませんか」"},
+  {t:"C",n:"EV・電動化部品メーカー（冷却配管等）",c:680,s:"全国",w:"内燃機関が減る一方で、電池やモーターの冷却配管は増える。同じパイプ加工技術がそのまま移せる。",h:"「エキマニで培った耐熱・耐圧の加工技術があります。冷却配管のご相談はありませんか」"},
+  {t:"C",n:"熱交換器・空調機器メーカー",c:380,s:"全国",w:"パイプそのものが製品の中核。拡管・曲げの精度が性能に直結し、技術で差がつきやすい。",h:"「拡管と曲げの精度でお困りではありませんか。加工条件から一緒に詰められます」"},
+  {t:"C",n:"燃料電池・水素関連機器メーカー",c:290,s:"全国",w:"高圧配管の需要が今後伸びる新領域。まだ調達先が固まっていない企業が多く、参入余地が大きい。",h:"「高圧に耐えるパイプの一体成形ができます。水素向けの試作からお受けできます」"},
+  {t:"C",n:"航空宇宙関連メーカー・サプライヤー",c:540,s:"全国",w:"宇宙ステーションの実績がそのまま名刺になる、数少ない領域。軽量化の価値が最も高く評価される。",h:"「宇宙ステーションの太陽光パネルに当社の折紙工学パイプが使われています。資料をお送りします」"},
+  {t:"C",n:"公設試験研究機関・産業支援機関",c:180,s:"全国",w:"地域企業とのマッチングを本業としている。無料で紹介してもらえるうえ、補助金申請の相談窓口にもなる。",h:"「パイプの塑性加工で地域の企業とつながりたいのですが、ご紹介いただける場はありますか」"},
+  {t:"C",n:"技術ポータル・展示会主催者",c:120,s:"全国",w:"設計者が能動的に検索する場所。加工事例を載せておけば、こちらから当たらなくても引合いが来る導線になる。",h:"「変肉厚加工の事例を掲載したいのですが、設計者の方が検索される言葉を教えていただけますか」"}
+];
+TARGETS.forEach(function(d,i){d.i=i;});
+
+(function(){
+  var a=TARGETS.filter(function(d){return d.t==="A";}).reduce(function(x,y){return x+y.c;},0);
+  var all=TARGETS.reduce(function(x,y){return x+y.c;},0);
+  document.getElementById("t-all").innerHTML=n(all)+'<small>件</small>';
+  document.getElementById("t-a").innerHTML=n(a)+'<small>件</small>';
+})();
+
+(function(){
+  var rows=["A","B","C"].map(function(t){
+    var sum=TARGETS.filter(function(d){return d.t===t;}).reduce(function(a,b){return a+b.c;},0);
+    return {t:t,sum:sum,cnt:TARGETS.filter(function(d){return d.t===t;}).length};
+  });
+  var max=niceMax(Math.max.apply(null,rows.map(function(r){return r.sum;}))*1.05,4);
+  var W=660,H=230,padL=250,padR=96,plotW=W-padL-padR,rowH=56,top=40,s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-12)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-18)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-20,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+36,top-20,"件",{fill:"var(--ink-3)",size:10});
+  var colors={A:"var(--s2)",B:"var(--s1)",C:"var(--s3)"};
+  rows.forEach(function(r,i){
+    var y=top+i*rowH,m=TIER_META[r.t];
+    s+=txt(0,y+8,"Tier "+r.t+"・"+m.label+"（"+r.cnt+"分類）",{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(0,y+26,m.note,{fill:"var(--ink-3)",size:10.5});
+    s+=rrect(padL,y-6,(r.sum/max)*plotW,24,4,colors[r.t]);
+    s+=txt(padL+(r.sum/max)*plotW+8,y+6,n(r.sum),{fill:"var(--ink-2)",size:11.5,mono:true,baseline:"middle"});
+  });
+  document.getElementById("c-tiers").innerHTML=
+    '<h4>3層別の母数（概算）</h4><p class="csub">Tier Aは1,394件しかありません。だから1校ずつ丁寧に当たれます</p>'+svg(W,H,s)+
+    '<p class="csub" style="margin:12px 0 0">前回は「製造業」という大きな括りで当たりました。今回は<b>母数を意図的に小さくしています。</b>話が通じる相手にだけ当たるほうが、同じ件数でも届く確率が上がるからです。</p>';
+})();
+
+(function(){
+  var seg=document.getElementById("t-seg"), q=document.getElementById("t-q"), sort=document.getElementById("t-sort");
+  var list=document.getElementById("t-list"), cn=document.getElementById("t-n"), cs=document.getElementById("t-sum");
+  var cur="all";
+  function render(){
+    var kw=q.value.trim().toLowerCase();
+    var arr=TARGETS.filter(function(d){
+      if(cur!=="all"&&d.t!==cur) return false;
+      if(!kw) return true;
+      return (d.n+d.w+d.h+d.s).toLowerCase().indexOf(kw)>=0;
+    });
+    var mode=sort.value;
+    arr=arr.slice().sort(function(a,b){
+      if(mode==="cnt") return b.c-a.c;
+      if(mode==="cntA") return a.c-b.c;
+      return a.i-b.i;
+    });
+    list.innerHTML=arr.map(function(d,idx){
+      var m=TIER_META[d.t];
+      return '<article class="trow t'+d.t+'">'+
+        '<div class="rank">'+String(idx+1).padStart(2,"0")+'</div>'+
+        '<div class="head"><div class="name">'+esc(d.n)+'</div>'+
+        '<div class="meta"><span class="chip '+(d.t==="A"?"a":d.t==="B"?"b":"c")+'">Tier '+d.t+'・'+m.label+'</span>'+
+        '<span class="cnt">'+n(d.c)+'<span>件</span></span></div>'+
+        '<div class="scope">対象範囲：'+esc(d.s)+'</div></div>'+
+        '<div class="why"><span class="fieldlabel">なぜ狙うか</span><div class="fieldbody">'+esc(d.w)+'</div></div>'+
+        '<div class="hook"><span class="fieldlabel">最初の一言</span><div class="fieldbody">'+esc(d.h)+'</div></div>'+
+        '</article>';
+    }).join("");
+    cn.textContent=arr.length;
+    cs.textContent=n(arr.reduce(function(a,b){return a+b.c;},0))+"件";
+  }
+  seg.addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    cur=b.dataset.t;
+    Array.prototype.forEach.call(seg.children,function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    render();
+  });
+  q.addEventListener("input",render);
+  sort.addEventListener("change",render);
+  render();
+})();
+
+/* ============ 07 在宅ワーカー ============ */
+var TASKS=[
+  {g:"採用まわり",h:38,items:[
+    {n:"求人原稿の作成・各媒体への掲載更新",h:10,k:1},
+    {n:"学校・訓練校のリスト作成と求人票の送付管理",h:8,k:1},
+    {n:"応募者への一次連絡・面接日程の調整",h:8,k:1},
+    {n:"会社見学・インターン受入資料の作成",h:6,k:0},
+    {n:"採用サイト・SNSの更新",h:6,k:0}
+  ]},
+  {g:"技術コンテンツの整備",h:34,items:[
+    {n:"加工事例の記事化（写真＋加工条件＋用途）",h:12,k:1},
+    {n:"動画の切り出し・字幕・各SNSへの投稿",h:10,k:1},
+    {n:"技術用語集の整備（変肉厚などの表記統一）",h:6,k:1},
+    {n:"技術ポータルの掲載情報の更新",h:6,k:0}
+  ]},
+  {g:"営業の下支え",h:32,items:[
+    {n:"ターゲットリストの作成・企業情報の収集",h:10,k:1},
+    {n:"問い合わせの一次対応・資料送付",h:8,k:1},
+    {n:"見積・図面の受付台帳の管理",h:8,k:0},
+    {n:"案件の進捗記録（2〜4年案件の追跡）",h:6,k:1}
+  ]},
+  {g:"社内AI活用の標準化",h:20,items:[
+    {n:"プロンプト集の作成・社内共有",h:8,k:1},
+    {n:"資料・議事録のAI下書き作成",h:6,k:0},
+    {n:"AI生成物の用語チェック（誤変換の修正）",h:6,k:1}
+  ]},
+  {g:"バックオフィス",h:16,items:[
+    {n:"受発注データの入力",h:6,k:0},
+    {n:"経費精算・仕訳入力",h:4,k:0},
+    {n:"ISO・品質文書の更新補助",h:6,k:0}
+  ]}
+];
+(function(){
+  document.getElementById("tasks").innerHTML=TASKS.map(function(g){
+    return '<div class="taskgroup"><header><h4>'+esc(g.g)+'</h4><span class="hh">'+g.h+' h/月</span></header><ul>'+
+      g.items.map(function(it){
+        return '<li'+(it.k?' class="key"':'')+'><span>'+esc(it.n)+'</span><b>'+it.h+'h</b></li>';
+      }).join("")+'</ul></div>';
+  }).join("");
+})();
+
+(function(){
+  var W=760,H=248,s="";
+  s+=box(268,16,224,52,"社長室（少人数）","発信・採用・資料作成が集中","var(--s2)");
+  var now=[
+    ["HP・SNSの更新","本業の合間になる"],
+    ["求人票・応募者対応","時期が来てから慌てる"],
+    ["資料・動画の企画","作りたいが手が回らない"],
+    ["AI活用","個人の無料版・属人的"]
+  ];
+  now.forEach(function(c,i){
+    var x=8+i*188;
+    s+='<path d="M 380 68 L 380 92 L '+(x+82)+' 92 L '+(x+82)+' 112" stroke="var(--rule-2)" stroke-width="1.3" fill="none"></path>';
+    s+='<rect x="'+x+'" y="112" width="166" height="54" rx="8" fill="var(--surface)" stroke="var(--rule-2)" stroke-width="1.3"></rect>';
+    s+=txt(x+12,134,c[0],{fill:"var(--ink)",size:11.5,weight:700,disp:true});
+    s+=txt(x+12,152,c[1],{fill:"var(--ink-3)",size:10});
+  });
+  s+='<rect x="8" y="186" width="380" height="44" rx="8" fill="var(--surface-2)" stroke="var(--rule-2)" stroke-width="1.3"></rect>';
+  s+=txt(20,206,"製造現場・技術部門（横浜・静岡・長野）",{fill:"var(--ink)",size:12,weight:700,disp:true});
+  s+=txt(20,223,"技術の中身はここにある。ただし外に出す時間がない",{fill:"var(--ink-3)",size:10});
+  s+=txt(404,206,"※ 発信は「やろうとしている」段階で止まりがちです。",{fill:"var(--accent)",size:10.5,weight:700});
+  s+=txt(404,223,"　 悪いのは人ではなく、続ける担当がいないことです。",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("c-org-now").innerHTML='<h4>いまの体制</h4><p class="csub">発信が少人数の余力に依存している</p>'+svg(W,H,s);
+})();
+
+(function(){
+  var W=760,H=278,s="";
+  s+=box(268,14,224,52,"社長室","決める・監修する・社内をつなぐ","var(--s3)");
+  var cols=[
+    {t:"在宅ワーカーチーム",u:"3〜4名相当／月140時間",c:"var(--s1)"},
+    {t:"営業支援ユニット",u:"学校・法人の開拓（外付け）",c:"var(--s5)"},
+    {t:"製造現場・技術部門",u:"技術の中身（従来どおり）",c:"var(--rule-2)"}
+  ];
+  cols.forEach(function(c,i){
+    var x=8+i*252;
+    s+='<path d="M 380 66 L 380 88 L '+(x+114)+' 88 L '+(x+114)+' 106" stroke="'+c.c+'" stroke-width="1.5" fill="none"></path>';
+    s+='<rect x="'+x+'" y="106" width="228" height="52" rx="8" fill="var(--surface-2)" stroke="'+c.c+'" stroke-width="1.6"></rect>';
+    s+=txt(x+13,128,c.t,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(x+13,146,c.u,{fill:"var(--ink-3)",size:10.5});
+  });
+  var subs=[
+    ["採用まわり 38h","技術コンテンツ 34h","営業の下支え 32h","AI活用の標準化 20h","バックオフィス 16h"],
+    ["リスト作成","資料送付・架電","引合いの引き渡しまで"],
+    ["加工条件の判断","記事の技術監修","品質保証"]
+  ];
+  subs.forEach(function(list,i){
+    var x=8+i*252;
+    list.forEach(function(t,j){ s+=txt(x+13,170+j*20,"・"+t,{fill:"var(--ink-2)",size:10.5}); });
+  });
+  s+='<rect x="8" y="244" width="744" height="28" rx="7" fill="var(--good-soft)"></rect>';
+  s+=txt(20,262,"到達点：加工事例が毎週1本増え、求人票が毎月新しい学校に届き、社長室の負荷は今より軽くなる。",{fill:"var(--good)",size:11.5,weight:700});
+  document.getElementById("c-org-next").innerHTML='<h4>在宅ワーカー活用後の体制</h4><p class="csub">社長室の下に、止まらない3つの機能を置く</p>'+svg(W,H,s);
+})();
+
+/* ============ 08 ROI ============ */
+var PRESETS={
+  cons:{sch:50, schr:4, appPer:0.4,hire:35,cpa:50, loss:0,  cap:3, app:800, inq:0.2,proto:15,mass:15,gp:200,lead:42,sfee:30,ofee:6},
+  base:{sch:80, schr:6, appPer:0.8,hire:50,cpa:80, loss:300,cap:6, app:1500,inq:0.3,proto:20,mass:25,gp:400,lead:30,sfee:30,ofee:8},
+  bull:{sch:140,schr:10,appPer:1.2,hire:65,cpa:110,loss:480,cap:10,app:2200,inq:0.4,proto:25,mass:25,gp:700,lead:24,sfee:40,ofee:11}
+};
+var KEYS=["sch","schr","appPer","hire","cpa","loss","cap","app","inq","proto","mass","gp","lead","sfee","ofee"];
+var POOL=681; /* Tier A のうち学校・訓練機関の母数 */
+var DEC={appPer:1,inq:1};
+var HORIZON=36;
+
+function readInputs(){
+  var p={}; KEYS.forEach(function(k){ p[k]=parseFloat(document.getElementById("k-"+k).value); }); return p;
+}
+function setInputs(o){ KEYS.forEach(function(k){ document.getElementById("k-"+k).value=o[k]; }); }
+
+function calc(p){
+  /* --- 採用エンジン：学校が積み上がり、応募が出る --- */
+  var schools=[],hires=[],capped=false,acc=0,newSch=0;
+  var monthCap=p.cap/12;
+  for(var m=1;m<=HORIZON;m++){
+    if(m>1){
+      /* 未開拓の母数からしか増えない（母数が尽きれば頭打ち） */
+      var remain=Math.max(POOL-acc,0);
+      newSch=Math.min(p.sch,remain)*(p.schr/100);
+      acc=Math.min(acc+newSch,POOL);
+    }
+    schools.push(acc);
+    /* 置いてもらった学校から、遅れて応募が出る（3ヶ月遅れ） */
+    var eff=(m>3)?schools[m-4]:0;
+    var raw=eff*(p.appPer/12)*(p.hire/100);
+    var h=Math.min(raw,monthCap);            /* 受け入れ上限で頭打ち */
+    if(raw>monthCap+1e-9) capped=true;
+    hires.push(h);
+  }
+  var y1Hire=hires.slice(0,12).reduce(function(a,b){return a+b;},0);
+  var y1School=schools[11];
+  var recruitValue1=y1Hire*(p.cpa*10000)+y1Hire*(p.loss*10000)*0.5; /* 欠員解消は年途中入社のため平均0.5年分 */
+  var invest1=(p.sfee+p.ofee)*10000*12;
+  var roi1=invest1>0?(recruitValue1-invest1)/invest1*100:0;
+
+  /* --- 営業エンジン：引合い→試作→量産（リードタイム後） --- */
+  var inqM=p.app*(p.inq/100), protoM=inqM*(p.proto/100), massM=protoM*(p.mass/100);
+  var salesGp=[],cumSales=0,cumSalesArr=[];
+  for(var m2=1;m2<=HORIZON;m2++){
+    var started=(m2>p.lead)?massM*(m2-p.lead):0;  /* リードタイム経過後、累積で量産が立ち上がる */
+    var g=started*(p.gp*10000)/12;
+    salesGp.push(g); cumSales+=g; cumSalesArr.push(cumSales);
+  }
+  var y1Inq=inqM*12, y1Proto=protoM*12;
+
+  /* --- 累積（36ヶ月） --- */
+  var cumCost=[],cumBenefit=[],cumRec=0,payback=null;
+  var monthCost=(p.sfee+p.ofee)*10000;
+  for(var i=0;i<HORIZON;i++){
+    cumRec+=hires[i]*(p.cpa*10000)+hires[i]*(p.loss*10000)*0.5;
+    cumBenefit.push(cumRec+cumSalesArr[i]);
+    cumCost.push(monthCost*(i+1));
+    if(payback===null&&cumBenefit[i]>=cumCost[i]) payback=i+1;
+  }
+  var whenMass=Math.ceil(p.lead)+1;
+
+  return {newSch:newSch,capped:capped,schools:schools,hires:hires,y1Hire:y1Hire,y1School:y1School,
+    recruitValue1:recruitValue1,invest1:invest1,roi1:roi1,
+    inqM:inqM,protoM:protoM,massM:massM,y1Inq:y1Inq,y1Proto:y1Proto,
+    salesGp:salesGp,cumSalesArr:cumSalesArr,cumBenefit:cumBenefit,cumCost:cumCost,
+    payback:payback,whenMass:whenMass,y3Benefit:cumBenefit[HORIZON-1],y3Cost:cumCost[HORIZON-1]};
+}
+function man(v){return n(v/10000);}
+
+function update(){
+  var p=readInputs();
+  KEYS.forEach(function(k){ document.getElementById("v-"+k).textContent=DEC[k]?p[k].toFixed(1):n(p[k]); });
+  var r=calc(p);
+
+  document.getElementById("o-roi1").innerHTML=(r.roi1>=0?"+":"")+Math.round(r.roi1)+'<small>%</small>';
+  document.getElementById("o-roi1").parentElement.className="stat "+(r.roi1>=0?"pos":"hot");
+  document.getElementById("o-hires").innerHTML=r.y1Hire.toFixed(1)+'<small>名</small>';
+  document.getElementById("o-hiresn").textContent="12ヶ月後に求人票 "+r.y1School.toFixed(0)+"校";
+  document.getElementById("o-inq").innerHTML=r.y1Inq.toFixed(0)+'<small>件</small>';
+  document.getElementById("o-inqn").textContent="うち試作へ "+r.y1Proto.toFixed(1)+"件";
+  document.getElementById("o-when").innerHTML=r.whenMass+'<small>ヶ月目</small>';
+  document.getElementById("o-whenn").textContent="リードタイム "+p.lead+"ヶ月を前提";
+
+  document.getElementById("f-app").textContent=n(p.app);
+  document.getElementById("f-inq").textContent=r.inqM.toFixed(1);
+  document.getElementById("f-inq-r").textContent="図面到達率 "+p.inq.toFixed(1)+"%";
+  document.getElementById("f-proto").textContent=r.protoM.toFixed(1);
+  document.getElementById("f-proto-r").textContent="試作率 "+p.proto+"%";
+  document.getElementById("f-mass").textContent=r.massM.toFixed(2);
+  document.getElementById("f-mass-r").textContent="量産率 "+p.mass+"% ／ 年"+(r.massM*12).toFixed(1)+"件";
+
+  drawLead(r,p);
+  drawHire(r);
+  drawCum(r);
+
+  var v=document.getElementById("o-verdict");
+  if(r.roi1>=0){
+    v.style.borderLeftColor="var(--good)";
+    v.innerHTML='<b>判定：</b> 採用エンジンだけで、1年目の効果は <b>'+man(r.recruitValue1)+
+      '万円</b>（入社 '+r.y1Hire.toFixed(1)+'名）に対して投資 <b>'+man(r.invest1)+'万円</b>、ROIは <b>'+
+      Math.round(r.roi1)+'%</b>。営業エンジンの粗利が立ちはじめるのは <b>'+r.whenMass+
+      'ヶ月目</b>からで、3年（36ヶ月）の累計では効果 <b>'+man(r.y3Benefit)+'万円</b>・投資 <b>'+man(r.y3Cost)+'万円</b>になります。'+
+      (r.payback?'累積で投資を上回るのは <b>'+r.payback+'ヶ月目</b>です。':'この前提では36ヶ月以内に累積投資を上回りません。');
+  } else {
+    v.style.borderLeftColor="var(--accent)";
+    v.innerHTML='<b style="color:var(--accent)">判定：</b> この前提では、採用エンジンだけでは1年目の投資を回収できません（ROI '+
+      Math.round(r.roi1)+'%）。ただし3年累計では効果 <b style="color:var(--accent)">'+man(r.y3Benefit)+
+      '万円</b>・投資 '+man(r.y3Cost)+'万円で、'+(r.payback?'<b style="color:var(--accent)">'+r.payback+'ヶ月目</b>に累積で上回ります。':'36ヶ月以内には上回りません。')+
+      ' <b style="color:var(--accent)">「求人票を置いてもらえる率」と「1校あたり年間応募数」</b>が低すぎる可能性があります。ここは実際に当たってみないと分からない数字です。';
+  }
+  if(r.capped){
+    v.innerHTML+='<br><span style="color:var(--warn)">※ 応募の量が「年間の受け入れ上限 '+p.cap+'名」に頭打ちしています。これ以上は、採用ではなく<b style="color:var(--warn)">教える側の体制</b>が制約です。上限を上げるには、熟練者の手順を記録に残す作業（07タブ）が先に必要になります。</span>';
+  }
+  if(p.loss===0){
+    v.innerHTML+='<br><span style="color:var(--ink-3)">※ 欠員の逸失粗利をゼロにしているため、採用単価の削減分だけで評価しています。最も厳しい見方です。</span>';
+  }
+}
+
+function drawLead(r,p){
+  var W=700,H=250,padL=140,padR=56,padT=42,padB=48;
+  var plotW=W-padL-padR;
+  var s="";
+  for(var m=0;m<=36;m+=6){
+    var x=padL+(m/36)*plotW;
+    s+='<line x1="'+x+'" y1="'+(padT-14)+'" x2="'+x+'" y2="'+(padT+130)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,padT-22,m+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  }
+  var stages=[
+    {k:"資料・動画をつくる",from:0,to:2,c:"var(--s2)"},
+    {k:"当たる・図面が届く",from:2,to:8,c:"var(--s5)"},
+    {k:"試作・評価",from:6,to:p.lead*0.75,c:"var(--s4)"},
+    {k:"量産の粗利が立つ",from:p.lead,to:36,c:"var(--s3)"}
+  ];
+  stages.forEach(function(st,i){
+    var y=padT+i*32;
+    var x0=padL+(Math.min(st.from,36)/36)*plotW, x1=padL+(Math.min(st.to,36)/36)*plotW;
+    s+=txt(padL-12,y+11,st.k,{fill:"var(--ink)",size:11.5,weight:700,anchor:"end",baseline:"middle"});
+    s+=rrect(x0,y,Math.max(x1-x0,4),22,4,st.c);
+  });
+  var lx=padL+(Math.min(p.lead,36)/36)*plotW;
+  s+='<line x1="'+lx+'" y1="'+(padT-14)+'" x2="'+lx+'" y2="'+(padT+130)+'" stroke="var(--s3)" stroke-width="1.6" stroke-dasharray="5 4"></line>';
+  s+=txt(lx-9,padT+126,"ここまで粗利はゼロ",{fill:"var(--s3)",size:10.5,weight:700,anchor:"end"});
+  s+='<rect x="'+padL+'" y="'+(padT+142)+'" width="'+plotW+'" height="30" rx="7" fill="var(--accent-soft)"></rect>';
+  s+=txt(padL+13,padT+161,"前回の契約は、この図の左から3ヶ月目あたりで「成果なし」と評価されました。",{fill:"var(--accent)",size:11,weight:700});
+  s+=txt(8,H-8,"※ つまみ「量産までのリードタイム」を動かすと、緑の帯の開始時期がそのまま動きます。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-lead").innerHTML=
+    '<h4>営業エンジンの時間軸</h4><p class="csub">御社のビジネスで、いつ何が起きるか</p>'+svg(W,H,s);
+}
+
+function drawHire(r){
+  var W=700,H=270,padL=62,padR=86,padT=30,padB=44;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var maxS=niceMax(Math.max(r.schools[11],1)*1.25,4);
+  var cumH=[],acc=0;
+  for(var i=0;i<12;i++){acc+=r.hires[i];cumH.push(acc);}
+  var maxH=niceMax(Math.max(cumH[11],0.5)*1.3,4);
+  var s="";
+  for(var g=0;g<=4;g++){
+    var y=padT+plotH-(g/4)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(maxS*g/4),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+    s+=txt(padL+plotW+10,y,(maxH*g/4).toFixed(1),{fill:"var(--s2)",size:10,mono:true,baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-14,"学校数",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  s+=txt(padL+plotW+10,padT-14,"累積入社",{fill:"var(--s2)",size:10});
+  var bw=plotW/12*0.58;
+  for(var m=0;m<12;m++){
+    var cx=padL+(m+0.5)*(plotW/12);
+    var h=(r.schools[m]/maxS)*plotH;
+    s+=rrect(cx-bw/2,padT+plotH-h,bw,h,2,"var(--s1)");
+    if(m%2===1||m===0) s+=txt(cx,padT+plotH+17,(m+1)+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  }
+  var d=cumH.map(function(v,i){
+    var x=padL+(i+0.5)*(plotW/12), y=padT+plotH-(v/maxH)*plotH;
+    return (i===0?"M ":"L ")+x+" "+y;
+  }).join(" ");
+  s+='<path d="'+d+'" fill="none" stroke="var(--s2)" stroke-width="2.4"></path>';
+  var lastX=padL+11.5*(plotW/12), lastY=padT+plotH-(cumH[11]/maxH)*plotH;
+  s+='<circle cx="'+lastX+'" cy="'+lastY+'" r="3.6" fill="var(--s2)"></circle>';
+  s+=txt(lastX+8,lastY,cumH[11].toFixed(1)+"名",{fill:"var(--s2)",size:11,weight:600,mono:true,baseline:"middle"});
+  s+=txt(padL,H-6,"※ 求人票を置いてもらってから応募が出るまで3ヶ月の遅れ。学校の母数は681校（Tier Aの学校・訓練機関）で頭打ちします。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-hire").innerHTML=
+    '<h4>採用エンジンの積み上がり（1年目）</h4><p class="csub">学校数が先に増え、入社が後から追う</p>'+
+    '<div class="legend"><span><i style="background:var(--s1)"></i>求人票を置いてもらえた学校数（左軸）</span><span><i style="background:var(--s2)"></i>累積の入社人数（右軸）</span></div>'+svg(W,H,s);
+}
+
+function drawCum(r){
+  var W=700,H=280,padL=66,padR=76,padT=30,padB=44;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var maxV=niceMax(Math.max(r.cumBenefit[35],r.cumCost[35])*1.15/10000,4);
+  var s="";
+  for(var i=0;i<=4;i++){
+    var g=maxV*i/4,y=padT+plotH-(g/maxV)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-12,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+(m/(HORIZON-1))*plotW;}
+  function py(v){return padT+plotH-(v/10000/maxV)*plotH;}
+  [["cumBenefit","var(--s3)"],["cumCost","var(--s2)"]].forEach(function(pair){
+    var key=pair[0],col=pair[1];
+    var d=r[key].map(function(v,i){return (i===0?"M ":"L ")+px(i)+" "+py(v);}).join(" ");
+    s+='<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="2.4"></path>';
+    s+='<circle cx="'+px(HORIZON-1)+'" cy="'+py(r[key][HORIZON-1])+'" r="3.6" fill="'+col+'"></circle>';
+    s+=txt(px(HORIZON-1)+8,py(r[key][HORIZON-1]),n(r[key][HORIZON-1]/10000),{fill:col,size:11,weight:600,mono:true,baseline:"middle"});
+  });
+  if(r.payback){
+    var bx=px(r.payback-1);
+    s+='<line x1="'+bx+'" y1="'+padT+'" x2="'+bx+'" y2="'+(padT+plotH)+'" stroke="var(--s3)" stroke-width="1.4" stroke-dasharray="5 4"></line>';
+    s+=txt(bx+7,padT+13,"累積で上回る "+r.payback+"ヶ月目",{fill:"var(--s3)",size:11,weight:700});
+  }
+  for(var m=0;m<HORIZON;m+=6) s+=txt(px(m),padT+plotH+17,(m+1)+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  s+=txt(px(HORIZON-1),padT+plotH+17,"36ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  document.getElementById("c-cum").innerHTML=
+    '<h4>3年（36ヶ月）の累積</h4><p class="csub">採用の効果と営業の粗利を合算した累積と、累積投資</p>'+
+    '<div class="legend"><span><i style="background:var(--s3)"></i>累積 効果（採用＋営業）</span><span><i style="background:var(--s2)"></i>累積 投資</span></div>'+svg(W,H,s);
+}
+
+(function(){
+  KEYS.forEach(function(k){
+    document.getElementById("k-"+k).addEventListener("input",function(){
+      Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(b){b.setAttribute("aria-pressed","false");});
+      update();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(b){
+    b.addEventListener("click",function(){
+      Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+      setInputs(PRESETS[b.dataset.preset]); update();
+    });
+  });
+  document.getElementById("r-reset").addEventListener("click",function(){
+    Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(x){x.setAttribute("aria-pressed",x.dataset.preset==="base"?"true":"false");});
+    setInputs(PRESETS.base); update();
+  });
+  setInputs(PRESETS.base);
+  update();
+})();
+
+})();
+</script>
