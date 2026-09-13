@@ -1,0 +1,1622 @@
+<title>Shinari Design 勝負しない設計</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700&family=Murecho:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#EEECEE;
+  --surface:#FCFBFC;
+  --surface-2:#E5E3E6;
+  --surface-3:#D7D4D9;
+  --ink:#191619;
+  --ink-2:#4D494F;
+  --ink-3:#7C787F;
+  --rule:#DEDBE0;
+  --rule-2:#C3BFC6;
+  --s1:#8E2470;
+  --s2:#357F46;
+  --s3:#2E88B4;
+  --s4:#C66A22;
+  --s5:#6259B4;
+  --brand:#8E2470;
+  --brand-soft:#F3E2ED;
+  --accent:#2E88B4;
+  --accent-soft:#DEEBF3;
+  --good:#357F46;
+  --good-soft:#E0EDE3;
+  --warn:#C66A22;
+  --warn-soft:#F7E9DC;
+  --info-soft:#E6E4F5;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#141215;
+    --surface:#1E1B1F;
+    --surface-2:#2A272B;
+    --surface-3:#363237;
+    --ink:#EDEAEE;
+    --ink-2:#B1ADB3;
+    --ink-3:#848087;
+    --rule:#2E2B2F;
+    --rule-2:#3D393E;
+    --s1:#CE66A8;
+    --s2:#4A9A58;
+    --s3:#4A9CCA;
+    --s4:#CA7A2E;
+    --s5:#8780D9;
+    --brand:#CE66A8;
+    --brand-soft:#331A2A;
+    --accent:#4A9CCA;
+    --accent-soft:#122430;
+    --good:#4A9A58;
+    --good-soft:#15271A;
+    --warn:#CA7A2E;
+    --warn-soft:#2F2112;
+    --info-soft:#1F1D33;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#141215;
+  --surface:#1E1B1F;
+  --surface-2:#2A272B;
+  --surface-3:#363237;
+  --ink:#EDEAEE;
+  --ink-2:#B1ADB3;
+  --ink-3:#848087;
+  --rule:#2E2B2F;
+  --rule-2:#3D393E;
+  --s1:#CE66A8;
+  --s2:#4A9A58;
+  --s3:#4A9CCA;
+  --s4:#CA7A2E;
+  --s5:#8780D9;
+  --brand:#CE66A8;
+  --brand-soft:#331A2A;
+  --accent:#4A9CCA;
+  --accent-soft:#122430;
+  --good:#4A9A58;
+  --good-soft:#15271A;
+  --warn:#CA7A2E;
+  --warn-soft:#2F2112;
+  --info-soft:#1F1D33;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);
+  font-family:"Murecho","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  font-size:15px;line-height:1.85;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;font-weight:700;margin:0;line-height:1.5;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:3px}
+.mono{font-family:"Space Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.wave{height:3px;background:linear-gradient(90deg,var(--brand) 0 28%,var(--rule-2) 28% 72%,var(--accent) 72% 100%);border:0;margin:0;opacity:.8}
+
+.masthead{background:var(--surface);border-bottom:1px solid var(--rule)}
+.mast-inner{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-end;padding:26px 0 20px}
+.eyebrow{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.mast-title{font-size:clamp(22px,3.1vw,35px);font-weight:700;margin-top:8px;letter-spacing:.01em}
+.mast-title em{font-style:normal;color:var(--brand)}
+.mast-sub{color:var(--ink-2);font-size:13.5px;margin-top:9px;max-width:66ch}
+.mast-meta{font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-align:right}
+.mast-meta b{color:var(--ink-2);font-weight:700}
+.flash{display:inline-flex;align-items:center;gap:8px;background:var(--brand-soft);color:var(--brand);
+  font-size:12px;font-weight:700;padding:5px 13px;border-radius:4px;margin-top:12px}
+
+.tabbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:none;border:0;border-bottom:3px solid transparent;font:inherit;font-size:13px;font-weight:700;
+  color:var(--ink-3);padding:13px 11px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brand)}
+.tab .num{font-family:"Space Mono",monospace;font-size:10px;color:var(--ink-3);margin-right:6px;font-weight:700}
+.tab[aria-selected="true"] .num{color:var(--brand)}
+
+.panel{padding:34px 0 76px}
+.panel[hidden]{display:none!important}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.sec-head h2{font-size:24px}
+.sec-head .tagline{font-size:12.5px;color:var(--ink-3)}
+.lede{color:var(--ink-2);font-size:14px;max-width:78ch;margin:10px 0 26px}
+.block{margin-top:40px}
+.block > h3{font-size:17.5px}
+.block > .sub{font-size:12.5px;color:var(--ink-3);margin:3px 0 16px}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(186px,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.card.flat{background:transparent;border-style:dashed}
+
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:15px 17px;display:flex;flex-direction:column;gap:1px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;top:0;left:0;width:36px;height:3px;background:var(--rule-2)}
+.stat.hot::before{background:var(--brand);width:100%}
+.stat.pos::before{background:var(--good);width:100%}
+.stat.info::before{background:var(--accent);width:100%}
+.stat.warn::before{background:var(--warn);width:100%}
+.stat .k{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.stat .v{font-family:"Space Mono",monospace;font-size:25px;font-weight:700;letter-spacing:-.03em;line-height:1.35;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:13px;margin-left:2px;color:var(--ink-2);font-family:"Murecho",sans-serif;font-weight:400}
+.stat .n{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:2px}
+.stat.hot .v{color:var(--brand)}
+.stat.pos .v{color:var(--good)}
+.stat.info .v{color:var(--accent)}
+.stat.warn .v{color:var(--warn)}
+
+.chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.chip.a{background:var(--brand-soft);color:var(--brand)}
+.chip.b{background:var(--accent-soft);color:var(--accent)}
+.chip.c{background:var(--good-soft);color:var(--good)}
+.chip.d{background:var(--warn-soft);color:var(--warn)}
+.chip.e{background:var(--info-soft);color:var(--s5)}
+
+.deflist{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;font-size:13.5px;align-items:baseline}
+.deflist dt{color:var(--ink-3);font-size:12px;font-weight:700;white-space:nowrap}
+.deflist dd{margin:0}
+.note{font-size:12px;color:var(--ink-3);line-height:1.78;margin-top:12px}
+.callout{background:var(--warn-soft);border-radius:10px;padding:14px 17px;font-size:12.5px;color:var(--ink-2);margin-top:14px}
+.callout b{color:var(--ink)}
+.callout.blue{background:var(--accent-soft)}
+.callout.rose{background:var(--brand-soft)}
+
+.swot{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:14px}
+.swot section{border:1px solid var(--rule);border-radius:10px;padding:16px 18px;background:var(--surface)}
+.swot h4{font-size:14px;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.swot h4::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--rule-2)}
+.swot .s h4::before{background:var(--s2)}
+.swot .w h4::before{background:var(--s1)}
+.swot .o h4::before{background:var(--s3)}
+.swot .t h4::before{background:var(--s4)}
+.swot ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+
+.reason{background:var(--surface);border:1px solid var(--rule);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.reason .rhead{display:flex;gap:16px;align-items:flex-start;padding:20px 24px 0}
+.reason .idx{font-family:"Shippori Mincho B1",serif;font-size:32px;font-weight:700;color:var(--brand);line-height:1;flex:0 0 auto}
+.reason .kicker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.reason h4{font-size:18px}
+.reason .rbody{padding:12px 24px 20px}
+.reason p{font-size:13.5px;color:var(--ink-2)}
+.reason .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(188px,1fr));gap:10px;margin:15px 0 4px}
+.reason .fact{background:var(--surface-2);border-radius:8px;padding:10px 13px}
+.reason .fact .fv{font-family:"Space Mono",monospace;font-size:19px;font-weight:700}
+.reason .fact .fk{font-size:11px;color:var(--ink-3);line-height:1.5}
+.reason .sowhat{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:13.5px}
+.reason .sowhat b{color:var(--brand)}
+
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch}
+@media(max-width:800px){.vs{grid-template-columns:1fr}}
+.vs-col{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.vs-col.bad{border-top:4px solid var(--brand)}
+.vs-col.good{border-top:4px solid var(--accent)}
+.vs-col .vt{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ink-3)}
+.vs-col h4{font-size:17px;margin:5px 0 12px}
+.vs-col ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:8px}
+.vs-col ul b{color:var(--ink)}
+.vs-mid{display:flex;align-items:center;justify-content:center;font-family:"Shippori Mincho B1",serif;font-size:20px;color:var(--rule-2)}
+@media(max-width:800px){.vs-mid{padding:4px 0}}
+
+.func{display:grid;grid-template-columns:30px 1fr 150px 1fr;gap:0 16px;background:var(--surface);border:1px solid var(--rule);
+  border-left:4px solid var(--rule-2);border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:9px;align-items:center}
+.func.keep{border-left-color:var(--s1)}
+.func.share{border-left-color:var(--s4)}
+.func.give{border-left-color:var(--s2)}
+.func .fn{font-family:"Space Mono",monospace;font-size:12px;color:var(--ink-3);font-weight:700}
+.func h4{font-size:14.5px}
+.func .fd{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.func .verdict-cell{font-size:12px;font-weight:700}
+.func.keep .verdict-cell{color:var(--s1)}
+.func.share .verdict-cell{color:var(--s4)}
+.func.give .verdict-cell{color:var(--s2)}
+.func .fw{font-size:12.5px;color:var(--ink-2)}
+@media(max-width:860px){.func{grid-template-columns:26px 1fr;gap:8px 12px}.func .verdict-cell,.func .fw{grid-column:2}}
+
+.timeline{overflow-x:auto;padding:24px 0 4px}
+.timeline-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(152px,1fr);min-width:900px;position:relative}
+.timeline-track::before{content:"";position:absolute;left:0;right:0;top:9px;height:2px;background:var(--rule-2)}
+.tl-item{position:relative;padding:26px 12px 0 0}
+.tl-item::before{content:"";position:absolute;left:0;top:2px;width:15px;height:15px;border-radius:50%;background:var(--surface);border:3px solid var(--rule-2)}
+.tl-item.on::before{background:var(--brand);border-color:var(--brand)}
+.tl-item.now::before{background:var(--accent);border-color:var(--accent);width:19px;height:19px;top:0}
+.tl-item .y{font-family:"Space Mono",monospace;font-size:11.5px;font-weight:700;color:var(--ink-3)}
+.tl-item.on .y{color:var(--brand)}
+.tl-item.now .y{color:var(--accent)}
+.tl-item .t{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+
+.pillar{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.pillar .pk{font-family:"Space Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink-3)}
+.pillar h4{font-size:16.5px}
+.pillar p{font-size:13px;color:var(--ink-2)}
+.pillar .kpi{margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:4px}
+.pillar .kpi b{font-family:"Space Mono",monospace;color:var(--ink);font-weight:700}
+
+.scroller{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+table.matrix{width:100%;border-collapse:collapse;font-size:13px;min-width:700px}
+table.matrix th,table.matrix td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.matrix th{font-size:11.5px;color:var(--ink-3);font-weight:700;background:var(--surface-2)}
+table.matrix tr:last-child td{border-bottom:0}
+table.matrix td:first-child{font-weight:700}
+table.matrix td.num{font-family:"Space Mono",monospace;text-align:right;white-space:nowrap;font-weight:700}
+table.matrix td.mk{text-align:center;font-family:"Space Mono",monospace;font-weight:700;font-size:14px}
+.mk.taken{color:var(--brand)}
+.mk.open{color:var(--good)}
+.mk.soon{color:var(--warn)}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:1px solid var(--rule);border-radius:10px}
+.seg{display:flex;background:var(--surface-2);border-radius:8px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:12px;font-weight:700;border:0;background:none;color:var(--ink-3);padding:6px 12px;border-radius:6px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.controls input[type="search"],.controls select{font:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--rule-2);border-radius:8px;background:var(--surface);color:var(--ink)}
+.controls input[type="search"]{min-width:190px;flex:1}
+.controls .count{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.controls .count b{font-family:"Space Mono",monospace;color:var(--ink);font-weight:700}
+
+.tlist{display:flex;flex-direction:column;gap:9px}
+.trow{display:grid;grid-template-columns:38px minmax(206px,1.02fr) minmax(238px,1.5fr) minmax(238px,1.5fr);gap:0 18px;
+  background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--rule-2);border-radius:0 10px 10px 0;padding:15px 18px;align-items:start}
+.trow.tA{border-left-color:var(--s1)}
+.trow.tB{border-left-color:var(--s3)}
+.trow.tC{border-left-color:var(--s2)}
+.trow .rank{font-family:"Space Mono",monospace;font-size:13px;color:var(--ink-3);font-weight:700;padding-top:2px}
+.trow .head{display:flex;flex-direction:column;gap:6px}
+.trow .name{font-family:"Shippori Mincho B1",serif;font-size:14.5px;font-weight:700;line-height:1.45}
+.trow .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.trow .cnt{font-family:"Space Mono",monospace;font-size:13px;font-weight:700}
+.trow .cnt span{font-size:11px;color:var(--ink-3);font-weight:400;margin-left:3px;font-family:"Murecho",sans-serif}
+.trow .fieldlabel{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);display:block;margin-bottom:3px}
+.trow .fieldbody{font-size:13px;color:var(--ink-2);line-height:1.7}
+.trow .hook .fieldbody{color:var(--ink);border-left:3px solid var(--rule-2);padding-left:11px}
+@media(max-width:900px){
+  .trow{grid-template-columns:34px 1fr;gap:10px 14px}
+  .trow .head,.trow .why,.trow .hook{grid-column:2}
+}
+
+.taskgroup{background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.taskgroup header{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:13px 16px;background:var(--surface-2)}
+.taskgroup header h4{font-size:14px}
+.taskgroup header .hh{font-family:"Space Mono",monospace;font-size:12px;color:var(--ink-2);font-weight:700}
+.taskgroup ul{list-style:none;margin:0;padding:6px 0}
+.taskgroup li{display:flex;justify-content:space-between;gap:12px;padding:7px 16px;font-size:13px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.taskgroup li:last-child{border-bottom:0}
+.taskgroup li b{font-family:"Space Mono",monospace;font-size:12px;color:var(--ink-3);font-weight:400;white-space:nowrap}
+.taskgroup li.key{color:var(--ink)}
+.taskgroup li.key > span:first-child::before{content:"◆";color:var(--brand);font-size:8px;margin-right:7px;vertical-align:2px}
+
+.chartbox{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px}
+.chartbox h4{font-size:14px}
+.chartbox .csub{font-size:12px;color:var(--ink-3);margin:2px 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);margin-bottom:10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+
+.roi-layout{display:grid;grid-template-columns:minmax(280px,336px) 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.roi-layout{grid-template-columns:1fr}}
+.knobs{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px;position:sticky;top:58px;max-height:calc(100vh - 74px);overflow-y:auto}
+.knob{margin-bottom:14px}
+.knob label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink-2);margin-bottom:5px;gap:10px}
+.knob label b{font-family:"Space Mono",monospace;font-size:13px;color:var(--ink);font-weight:700}
+.knob input[type="range"]{width:100%;accent-color:var(--brand);height:20px;cursor:pointer}
+.knob-group{border-top:1px solid var(--rule);padding-top:14px;margin-top:16px}
+.gh{font-family:"Space Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink-3);margin-bottom:12px}
+.gh span{color:var(--brand)}
+.resetbtn{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--rule-2);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:6px 12px;cursor:pointer}
+.resetbtn:hover{border-color:var(--ink-3);color:var(--ink)}
+.verdict{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--good);border-radius:0 10px 10px 0;padding:16px 20px;font-size:13.5px}
+.verdict b{font-family:"Space Mono",monospace;color:var(--good);font-weight:700}
+
+.funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px}
+.fstep{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:13px 14px}
+.fstep .fl{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.fstep .fv{font-family:"Space Mono",monospace;font-size:22px;font-weight:700}
+.fstep .fr{font-size:11px;color:var(--ink-3)}
+.fstep.end{background:var(--brand-soft);border-color:transparent}
+.fstep.end .fv,.fstep.end .fl,.fstep.end .fr{color:var(--brand)}
+
+.phase{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule)}
+.phase:first-of-type{border-top:0}
+.phase .pd{font-family:"Space Mono",monospace;font-size:12px;color:var(--brand);font-weight:700}
+.phase .pt{font-family:"Shippori Mincho B1",serif;font-size:16px;font-weight:700;line-height:1.4;margin-top:2px}
+.phase ul{margin:0;padding-left:1.15em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px}
+.phase ul b{color:var(--ink)}
+.owner{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:4px;margin-right:7px;vertical-align:1px}
+.owner.ai{background:var(--accent-soft);color:var(--accent)}
+.owner.kl{background:var(--brand-soft);color:var(--brand)}
+.srcs{font-size:12px;color:var(--ink-3);line-height:1.9}
+@media(max-width:640px){
+  .wrap{padding:0 16px}
+  .phase{grid-template-columns:1fr;gap:10px}
+  .reason .rhead{flex-direction:column;gap:6px}
+}
+</style>
+
+<hr class="wave">
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <div>
+      <div class="eyebrow">事前リサーチ ／ 成長戦略 ／ 2ユニット ROIシミュレーション</div>
+      <h1 class="mast-title">Shinari Design <em>勝負しない</em> 設計</h1>
+      <p class="mast-sub">プレゼンが苦手だというお話を、克服すべき課題としては扱いません。<b>コンペで負けるのは話術ではなく、多くの場合、事前準備の深さの差です。</b>そして本当の解は「プレゼンを上手くする」ことではなく、<b>プレゼンで勝負しなくていい案件の比率を上げる</b>ことです。そのための設計図です。</p>
+      <div class="flash">◆ 本ボードの主題：話術を磨くのではなく、話術に依存しない構造をつくる</div>
+    </div>
+    <div class="mast-meta">
+      <div><b>作成</b> 株式会社アイドマ・ホールディングス</div>
+      <div><b>宛先</b> 株式会社Shinari Design 御中</div>
+      <div><b>次回商談</b> 9月14日 14:00</div>
+      <div><b>更新</b> 2026年9月13日</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="セクション">
+  <div class="wrap tabs" role="tablist">
+    <button class="tab" data-p="research" role="tab" aria-selected="true"><span class="num">01</span>事前リサーチ</button>
+    <button class="tab" data-p="bottleneck" role="tab" aria-selected="false"><span class="num">02</span>ボトルネックの分解</button>
+    <button class="tab" data-p="grid" role="tab" aria-selected="false"><span class="num">03</span>重ならない設計</button>
+    <button class="tab" data-p="why" role="tab" aria-selected="false"><span class="num">04</span>今すぐやる3つの理由</button>
+    <button class="tab" data-p="strategy" role="tab" aria-selected="false"><span class="num">05</span>成長戦略</button>
+    <button class="tab" data-p="targets" role="tab" aria-selected="false"><span class="num">06</span>営業ターゲット30</button>
+    <button class="tab" data-p="remote" role="tab" aria-selected="false"><span class="num">07</span>在宅ワーカー活用</button>
+    <button class="tab" data-p="roi" role="tab" aria-selected="false"><span class="num">08</span>ROIシミュレーション</button>
+    <button class="tab" data-p="road" role="tab" aria-selected="false"><span class="num">09</span>90日ロードマップ</button>
+  </div>
+</nav>
+
+<!-- ===== 01 ===== -->
+<section class="panel wrap" id="p-research" role="tabpanel">
+  <div class="sec-head"><h2>事前リサーチ</h2><span class="tagline">商談メモで空欄だった項目を、公開情報で埋めました</span></div>
+  <p class="lede">前回の商談メモでは、企業名が「音社」、年商が「記載なし」となっていました。公開情報で確認したところ、<b>株式会社Shinari Design（シナリデザイン）</b>、東京都調布市、2021年設立。代表は<b>山田 真弓</b>様です。創業5年目で医療・福祉・公共に的を絞り、大学病院分院のデザイン支援まで到達している——<b>これは実績として十分に強い</b>、というのが本ボードの出発点です。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">設立</span><span class="v">2021<small>年</small></span><span class="n">創業5年目・東京都調布市</span></div>
+    <div class="stat"><span class="k">体制</span><span class="v">6<small>名</small></span><span class="n">デザイナー4名／フルリモート＋外部パートナー</span></div>
+    <div class="stat hot"><span class="k">営業を担う人</span><span class="v">1<small>名</small></span><span class="n">代表が営業・商談・プレゼンを兼務</span></div>
+    <div class="stat warn"><span class="k">新規獲得の経路</span><span class="v">紹介</span><span class="n">口コミ・紹介が中心。計画性と再現性が課題</span></div>
+  </div>
+
+  <div class="block">
+    <h3>会社概要</h3>
+    <p class="sub">公開情報（自社サイト・法人番号公表サイト・求人プラットフォーム等）より</p>
+    <div class="grid g2">
+      <div class="card">
+        <dl class="deflist">
+          <dt>商号</dt><dd>株式会社Shinari Design（シナリデザイン）</dd>
+          <dt>代表者</dt><dd>山田 真弓 様</dd>
+          <dt>設立</dt><dd>2021年</dd>
+          <dt>所在地</dt><dd>東京都調布市</dd>
+          <dt>資本金</dt><dd class="mono">1,000,000円</dd>
+          <dt>理念</dt><dd>デザインで社会貢献</dd>
+          <dt>領域</dt><dd>医療・福祉・公共を中心としたトータルブランディング</dd>
+          <dt>事業</dt><dd>デザイン支援／ECサイト運営代行／出版（現在休刊中）</dd>
+        </dl>
+      </div>
+      <div class="card">
+        <h4 style="font-size:15px;margin-bottom:10px">公開実績から読み取れること</h4>
+        <p style="font-size:13.5px;color:var(--ink-2)">グラフィック、Web、動画、書籍出版、建築設計、ブランディング、ユニフォーム、サイン・看板、SNS運用、地域創生。<b>この幅を4名のデザイナーで回している会社は、そう多くありません。</b>加えて大学病院分院のデザイン支援、医療系アプリ、介護事業者のECサイトという実績があります。</p>
+        <p style="font-size:13.5px;color:var(--ink-2);margin-top:12px">つまり<b>「実績が足りない」という課題ではありません</b>。実績は十分で、それを見てもらう機会の数が足りていない、という課題です。ここを取り違えると打ち手を間違えます。</p>
+        <div class="callout blue">本ボードは「もっと良いデザインを作りましょう」という提案ではありません。<b>すでにある実績を、どうやって見てもらう回数を増やすか</b>だけを書いています。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>2つの事業が、季節で補い合っている</h3>
+    <p class="sub">これは偶然ではなく、営業計画の土台になる構造です</p>
+    <div class="chartbox" id="c-season"></div>
+  </div>
+
+  <div class="block">
+    <h3>強み・弱み・機会・脅威</h3>
+    <p class="sub">公開情報と商談メモから読み取れる範囲で</p>
+    <div class="swot">
+      <section class="s"><h4>強み（S）</h4><ul>
+        <li>デザイン・広報・空間・ノベルティまで<b>一貫して面倒を見られる</b>幅</li>
+        <li>医療・福祉という、表現に配慮が要る難しい領域での実績</li>
+        <li>子育て世代の女性が自立して働けるフルリモート体制を、<b>すでに運用できている</b></li>
+        <li>デザイン（12〜3月）とEC（4〜11月）の繁忙期が噛み合わない＝年間の稼働が平準化できる</li>
+      </ul></section>
+      <section class="w"><h4>弱み（W）</h4><ul>
+        <li>営業・商談・プレゼンがすべて代表1名に集中している</li>
+        <li>新規獲得が紹介頼みで、件数の見通しが立たない</li>
+        <li>プレゼン・コンペへの苦手意識が、受注率の天井になっている懸念</li>
+        <li>制作と営業の兼務でリソースが逼迫し、営業が後回しになりやすい</li>
+      </ul></section>
+      <section class="o"><h4>機会（O）</h4><ul>
+        <li>かかりつけ医機能報告制度で、<b>クリニックが「選ばれる理由」を示す必要が出てきた</b></li>
+        <li>医療広告規制への対応が必須。<b>規制を分かっているデザイン会社は少ない</b></li>
+        <li>クリニックの商圏は狭く、<b>エリアを分ければ同じ診療科でも競合しない</b></li>
+        <li>伝統産業・ものづくりのEC化は、実績（布団リフォーム）が横展開しやすい</li>
+      </ul></section>
+      <section class="t"><h4>脅威（T）</h4><ul>
+        <li>営業専任を置くデザイン／システム会社とのコンペで打ち負けるリスク</li>
+        <li>紹介が途切れた瞬間に、新規がゼロになる構造</li>
+        <li>フリーランス新法により、外部パートナー管理が法的義務になった</li>
+        <li>大学病院への依存が続くと、1件の失注で年間計画が崩れる</li>
+      </ul></section>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>データの取り扱いについて。</b>御社ホームページ（shinari.design）へは本ボード作成環境のネットワーク制限により直接アクセスできませんでした。上記は法人番号公表サイト、求人プラットフォーム、検索結果の公開情報に基づいています。<b>年商、現在の年間受注件数、1案件あたりの平均単価、既存クライアントのエリア・診療科の分布は未確認</b>です。9月14日の商談で、とくに<b>直近1年の受注件数と平均単価、そして既存クライアントのエリア一覧</b>をご確認ください。03タブと08タブの前提が確定します。
+  </div>
+</section>
+
+<!-- ===== 02 ===== -->
+<section class="panel wrap" id="p-bottleneck" role="tabpanel" hidden>
+  <div class="sec-head"><h2>ボトルネックの分解</h2><span class="tagline">代表1名に集中している7つの機能</span></div>
+  <p class="lede">「営業が代表1人に依存している」という課題は、そのままでは打ち手になりません。<b>営業と呼んでいるものは、実際には7つの別々の仕事</b>です。分けてみると、外に出せるものと、絶対に出せないものがはっきり分かれます。</p>
+
+  <div class="block">
+    <div id="funcs"></div>
+    <div class="callout rose">
+      <b>ここが本ボードでいちばん申し上げたいことです。</b>④提案設計と⑤プレゼンは、<b>外に出してはいけません</b>。ここが御社の価値そのものだからです。代表が苦手意識を持っておられるのは⑤ですが、⑤の質を決めているのは、実は<b>③のヒアリングと、その前の下調べの量</b>です。そして③の前段（下調べ・競合確認・ヒアリングシートの準備）は、<b>まるごと外に出せます</b>。
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>プレゼンが苦手、という話について</h3>
+    <p class="sub">克服の提案ではなく、構造の提案です</p>
+    <div class="chartbox" id="c-entry"></div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card">
+        <span class="chip a">土俵①</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">コンペ（大学病院など）</h4>
+        <p style="font-size:13px;color:var(--ink-2)">情報が全社に均等に配られ、<b>その場のプレゼンで差がつく</b>設計になっています。準備で差をつけにくく、話術と場慣れが効きやすい。つまり<b>苦手意識が最も直撃する土俵</b>です。単価は高いが、心理的負担も最大。</p>
+        <p style="font-size:12.5px;color:var(--brand);margin-top:9px;font-weight:700">→ ここでの勝負を減らす</p>
+      </div>
+      <div class="card">
+        <span class="chip c">土俵②</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">紹介・指名</h4>
+        <p style="font-size:13px;color:var(--ink-2)">すでに信頼がある状態で始まるので、<b>プレゼンは確認の場</b>になります。勝率は高く、負担も小さい。ただし<b>件数を自分で決められない</b>のが最大の弱点で、いまの伸び悩みの原因そのものです。</p>
+        <p style="font-size:12.5px;color:var(--good);margin-top:9px;font-weight:700">→ 維持はするが、増やせない</p>
+      </div>
+      <div class="card">
+        <span class="chip b">土俵③</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">開業前・リニューアル前の相談</h4>
+        <p style="font-size:13px;color:var(--ink-2)"><b>コンペになる前に相談される</b>状態です。相手はまだ要件も固まっていないので、一緒に整理するところから入れます。ここでは話術ではなく<b>「この人は分かっている」という安心感</b>が決め手になります。医療の作法を知っている御社に最も有利な土俵です。</p>
+        <p style="font-size:12.5px;color:var(--accent);margin-top:9px;font-weight:700">→ ここを増やすのが本戦略</p>
+      </div>
+    </div>
+    <div class="callout blue">
+      <b>営業支援ユニットの役割は、土俵③を作ることです。</b>開業前・リニューアル検討中のクリニックに、コンペの公示より前に接触する。それだけで、代表が苦手だとおっしゃる場面そのものが減ります。<b>苦手を直すのではなく、苦手な場面に立つ回数を減らす</b>——これが、いまの御社に最も効率の良い打ち手だと考えています。
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>準備の量が、受注率を決める</h3>
+    <p class="sub">08タブのROIは、この仮説を数式にしています</p>
+    <div class="vs">
+      <div class="vs-col bad">
+        <div class="vt">いま（推定）</div>
+        <h4>1商談あたりの準備 1〜2時間</h4>
+        <ul>
+          <li>代表が制作の合間に、<b>自分で調べて自分で作っている</b>状態です。</li>
+          <li>相手のクリニックの診療圏、競合の既存サイト、院長の経歴、地域の人口構成——<b>調べれば分かることが、調べられていない</b>。</li>
+          <li>提案書は毎回ゼロから。テンプレートが育っていない。</li>
+          <li>結果、<b>その場の受け答えで勝負することになります</b>。だから苦手意識が成果に直結してしまう。</li>
+        </ul>
+      </div>
+      <div class="vs-mid">→</div>
+      <div class="vs-col good">
+        <div class="vt">在宅ワーカーを入れた場合</div>
+        <h4>1商談あたりの準備 5〜7時間</h4>
+        <ul>
+          <li>下調べ、競合サイトの確認、ヒアリングシートの用意を<b>在宅ワーカーが事前に済ませます</b>。</li>
+          <li>代表は<b>「何を提案するか」を考える時間</b>だけに集中できます。</li>
+          <li>提案書のたたき台があるので、ゼロから書く必要がありません。</li>
+          <li>相手のことを調べ切った状態で臨めば、<b>話術ではなく内容で選ばれます</b>。これが本当の解決策です。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 03 ===== -->
+<section class="panel wrap" id="p-grid" role="tabpanel" hidden>
+  <div class="sec-head"><h2>バッティングしない設計</h2><span class="tagline">既存クライアントを守りながら、新規を増やす</span></div>
+  <p class="lede">「自社クライアントと他社が絶対にバッティングしないエリア・業種設計でアプローチしたい」というご要望をいただきました。<b>これは医療分野では、技術的に十分に実現できます。</b>理由は単純で、クリニックの商圏が狭いからです。</p>
+
+  <div class="block">
+    <h3>なぜ医療なら成立するのか</h3>
+    <p class="sub">商圏の狭さが、そのまま設計の根拠になります</p>
+    <div class="grid g3">
+      <div class="card">
+        <span class="chip b">前提①</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">診療所の商圏は狭い</h4>
+        <p style="font-size:13px;color:var(--ink-2)">一般に、無床診療所の一次診療圏は<b>徒歩・自転車で通える範囲</b>と言われます。つまり同じ「内科」でも、市区町村が違えば患者を奪い合いません。<b>競合しない相手は、いくらでも作れます。</b></p>
+      </div>
+      <div class="card">
+        <span class="chip b">前提②</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">診療科が違えば競合しない</h4>
+        <p style="font-size:13px;color:var(--ink-2)">同じエリアでも、整形外科と小児科は競合しません。<b>エリア×診療科の二軸</b>で見ると、確保できるマス目の数は一気に増えます。1エリアに1社、ではなく、1マスに1社です。</p>
+      </div>
+      <div class="card">
+        <span class="chip b">前提③</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">母数が圧倒的に多い</h4>
+        <p style="font-size:13px;color:var(--ink-2)">全国の診療所・歯科医院・介護施設を合わせると、対象は<b>20万件を超えます</b>（06タブ）。御社が必要なのは年に数社です。<b>バッティングを避けても、母数は一切足りなくなりません。</b></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>運用のイメージ</h3>
+    <p class="sub">エリア×診療科のマス目で管理する。●＝既存で埋まっている／○＝空いている</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>エリア（例）</th><th style="text-align:center">内科</th><th style="text-align:center">整形外科</th><th style="text-align:center">小児科</th><th style="text-align:center">歯科</th><th style="text-align:center">精神・心療内科</th><th>この行の方針</th></tr></thead>
+        <tbody>
+          <tr><td>調布・府中</td><td class="mk taken">●</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td>地元。既存の内科があれば、他科で広げる</td></tr>
+          <tr><td>三鷹・武蔵野</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk soon">△</td><td class="mk open">○</td><td class="mk open">○</td><td>隣接商圏。△は既存の診療圏と近く要確認</td></tr>
+          <tr><td>世田谷</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td>全面的に空き。開業数も多く優先度が高い</td></tr>
+          <tr><td>八王子・多摩</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td>競合デザイン会社が手薄。単価は下がる傾向</td></tr>
+          <tr><td>神奈川（川崎・横浜北部）</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td>商圏が完全に分かれる。安全に広げられる</td></tr>
+          <tr><td>地方（オンライン前提）</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td class="mk open">○</td><td>フルリモート体制の強みがそのまま効く</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">上の表は<b>書き方の例</b>です。●の位置は仮置きで、実際のクライアント分布は伺っていません。<b>9月14日に既存クライアントのエリアと診療科を一覧でいただければ、この表を実データで埋めます。</b>埋めた表がそのままリストの抽出条件になります。</p>
+  </div>
+
+  <div class="block">
+    <h3>運用ルールの案</h3>
+    <p class="sub">曖昧にしておくと、後で必ず揉めます。先に決めておきます</p>
+    <div class="grid g3">
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:8px">RULE 01</div>
+        <h4 style="font-size:14.5px;margin-bottom:7px">同一市区町村・同一診療科は1社まで</h4>
+        <p style="font-size:13px;color:var(--ink-2)">最も分かりやすい線引きです。既存クライアントと同じマス目には、こちらから当たりません。リストの抽出段階で機械的に除外します。</p>
+      </div>
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:8px">RULE 02</div>
+        <h4 style="font-size:14.5px;margin-bottom:7px">隣接市区町村は、既存クライアントに確認</h4>
+        <p style="font-size:13px;color:var(--ink-2)">商圏が重なる可能性がある場合は、既存のクライアントに一言お伝えしてから進めます。<b>この一手間が、伴走型の会社の信用を守ります。</b></p>
+      </div>
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:8px">RULE 03</div>
+        <h4 style="font-size:14.5px;margin-bottom:7px">ものづくり側は「同一品目・同一産地」で判定</h4>
+        <p style="font-size:13px;color:var(--ink-2)">EC支援では、同じ産地の同じ品目が競合になります。布団・陶磁器・食品などの品目軸と産地軸で、医療と同じマス目管理をします。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 04 ===== -->
+<section class="panel wrap" id="p-why" role="tabpanel" hidden>
+  <div class="sec-head"><h2>今すぐやらないといけない3つの理由</h2><span class="tagline">法律・制度・世の中の流れ</span></div>
+  <p class="lede">1つ目と2つ目はクライアント側（医療機関）に起きていること、3つ目は<b>御社自身に起きていること</b>です。3つ目はとくに、外部パートナーと組んでいる会社にはすでに適用されています。</p>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">1</div>
+      <div>
+        <div class="kicker"><span class="chip a">医療法</span><span class="chip d">2025年4月開始・第1回報告は2026年1〜3月</span></div>
+        <h4>クリニックが「何ができる医院か」を公表し、比較される時代に入った</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p>2023年の医療法改正により、<b>かかりつけ医機能報告制度</b>が2025年4月から始まりました。医療機関が自院のかかりつけ医機能を都道府県に報告し、<b>都道府県がそれを公表する</b>仕組みです。第1回の報告期間は2026年1月〜3月で、すでに終わっています。あわせて2024年4月には医療機能情報提供制度が全国統一のシステムに刷新され、患者が全国どこでも同じ形式で医療機関を検索・比較できるようになりました。慢性疾患の患者への書面交付・説明の努力義務も2025年4月から始まっています。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">2025.04</div><div class="fk">かかりつけ医機能報告制度の開始</div></div>
+        <div class="fact"><div class="fv">2026.01-03</div><div class="fk">第1回の報告期間（実施済み）</div></div>
+        <div class="fact"><div class="fv">2024.04</div><div class="fk">医療機能情報提供制度が全国統一に</div></div>
+      </div>
+      <div class="sowhat"><b>Shinari Designにとって：</b>ここで起きたのは、<b>「クリニックが横並びで比較される公的な土台ができた」</b>ということです。公表される項目は事務的な情報ですが、比較される状態になれば、医院は必ず<b>「うちは何が違うのか」を自分の言葉で言えるようにしたくなります</b>。それはまさにブランディングの仕事です。しかも第1回の公表が動き出したいまが、院長が自院の位置づけを意識する最初のタイミングです。<b>1年後には「もう考えた」という状態になります。</b></div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">2</div>
+      <div>
+        <div class="kicker"><span class="chip d">医療広告規制</span><span class="chip a">監視が拡大中</span></div>
+        <h4>医療広告の違反が年間5,000件超。「きれいなだけのサイト」では通らない</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p>医療機関のウェブサイトは2018年6月から医療広告規制の対象です。厚生労働省のネットパトロール事業では、<b>2025年度（2026年2月末時点）に1,842サイトで合計5,225件の違反</b>が確認されました。通報受付は6,324サイトに達し、違反が確認されたサイトのうち約7割（1,238サイト）が自主的な改善または広告の中止に至っています。さらに2025年度以降は<b>AIスクリーニングの導入</b>と、従来のウェブサイトに加えた<b>SNS広告への監視網の拡大</b>が進んでいます。ビフォーアフター写真や体験談の扱いなど、判断が難しい論点も増えています。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">5,225<small>件</small></div><div class="fk">2025年度に確認された違反（1,842サイト）</div></div>
+        <div class="fact"><div class="fv">6,324<small>サイト</small></div><div class="fk">同年度の通報受付</div></div>
+        <div class="fact"><div class="fv">AI＋SNS</div><div class="fk">2025年度以降に拡大した監視手法</div></div>
+      </div>
+      <div class="sowhat"><b>Shinari Designにとって：</b>これは<b>参入障壁がそのまま武器になる</b>という話です。医療広告ガイドラインを理解していないデザイン会社が作ったサイトは、公開後に是正を求められます。院長にとってこれは最悪の体験で、<b>「医療を分かっている会社に頼めばよかった」という後悔に直結します</b>。御社はすでに医療・福祉で実績を積んでいます。「規制に適合した表現ができます」という一言は、価格でも派手さでもない、<b>安心という選ばれ方</b>を作ります。そしてこの安心は、プレゼンの話術ではなく、実績と知識で伝わるものです。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">3</div>
+      <div>
+        <div class="kicker"><span class="chip e">法律・自社に適用</span><span class="chip a">2024年11月1日 施行済み</span></div>
+        <h4>フリーランス新法。外部パートナーとの取引が、善意の運用から法的義務になった</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p><b>フリーランス・事業者間取引適正化等法（フリーランス新法）</b>が2024年11月1日に施行されました。フリーランスに業務委託する発注事業者には、①<b>取引条件を書面または電磁的方法で明示する義務</b>、②<b>物品等を受け取った日から60日以内のできる限り短い期間で報酬を支払う義務</b>、③<b>妊娠・出産・育児・介護と業務の両立への配慮</b>、④<b>ハラスメント対策に係る体制整備</b>、⑤<b>中途解除等の事前予告・理由開示</b>が課されます。継続的な業務委託かどうかで適用範囲は変わりますが、<b>取引条件の明示はすべての業務委託が対象</b>です。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">60<small>日以内</small></div><div class="fk">報酬支払期日の上限</div></div>
+        <div class="fact"><div class="fv">書面明示</div><div class="fk">すべての業務委託が対象</div></div>
+        <div class="fact"><div class="fv">2024.11.01</div><div class="fk">施行済み。すでに適用されています</div></div>
+      </div>
+      <div class="sowhat"><b>Shinari Designにとって：</b>御社はカメラマン、コンサルタントなど<b>外部パートナーと組んで案件を回しておられます</b>。そして社内も子育て世代の女性メンバーが中心のフルリモート体制です。つまりこの法律は、<b>御社の働き方そのものに関わります</b>。これまで信頼関係で回してきた部分——条件の伝え方、支払いのタイミング、産休・育休中の配慮——が、法的な義務になりました。責める話ではありません。<b>むしろ御社はもともと配慮の行き届いた運用をされているはずです。</b>問題は、それを代表1人が制作・営業と兼務しながら管理し続けられるか、という一点です。<b>抜けは、悪意ではなく多忙から生まれます。</b>ここは仕組みと担当者で防ぐべき領域です。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 05 ===== -->
+<section class="panel wrap" id="p-strategy" role="tabpanel" hidden>
+  <div class="sec-head"><h2>業績向上のための成長戦略</h2><span class="tagline">3本柱と、季節の使い方</span></div>
+  <p class="lede">前回「いきなり多くではなく、まずは1社獲得して学びを深めたい」というご意向を伺いました。<b>本戦略はその方針に合わせて設計しています。</b>初年度の目標は件数の最大化ではなく、<b>再現できる型を1つ作ること</b>です。</p>
+
+  <div class="grid g3">
+    <div class="pillar">
+      <div class="pk">PILLAR 01 ／ 本命</div>
+      <h4>コンペの前に会う</h4>
+      <p>開業前・リニューアル検討中のクリニックに、<b>要件が固まる前</b>に接触します。ここで会えれば、コンペという土俵に上がらずに済みます。アイドマの営業支援ユニットが担うのは<b>リスト作成からアポイント獲得まで</b>。商談そのものは代表が行います。</p>
+      <div class="kpi"><span>主指標：<b>コンペ以外からの商談数</b></span><span>副指標：<b>受注に占めるコンペ比率</b></span><span>着手：<b>1ヶ月目から</b></span></div>
+    </div>
+    <div class="pillar">
+      <div class="pk">PILLAR 02 ／ 受注率を上げる</div>
+      <h4>準備の量で勝つ</h4>
+      <p>1商談あたりの事前準備を<b>1〜2時間から5〜7時間に</b>引き上げます。増やす時間は代表のものではなく、在宅ワーカーのものです。下調べ・競合確認・提案書のたたき台までを外に出し、代表は<b>「何を提案するか」だけを考えます</b>。</p>
+      <div class="kpi"><span>主指標：<b>1商談あたりの準備時間</b></span><span>副指標：<b>受注率</b></span><span>着手：<b>即日</b></span></div>
+    </div>
+    <div class="pillar">
+      <div class="pk">PILLAR 03 ／ 守りと土台</div>
+      <h4>外部パートナー管理を仕組みにする</h4>
+      <p>フリーランス新法への対応を、<b>負担ではなく武器に変えます</b>。条件明示・支払管理・配慮の記録を型にすれば、外部パートナーが安心して長く組んでくれます。<b>良いカメラマンを確保し続けられることは、そのまま制作品質です。</b></p>
+      <div class="kpi"><span>主指標：<b>条件明示書の発行率</b></span><span>副指標：<b>パートナーの継続率</b></span><span>着手：<b>即日</b></span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>季節を、営業計画に使う</h3>
+    <p class="sub">デザインが忙しい時期に営業はできません。それを前提に組みます</p>
+    <div class="chartbox" id="c-plan"></div>
+  </div>
+
+  <div class="block">
+    <h3>現状と、3年後の姿</h3>
+    <p class="sub">数値は本ボードの標準前提に基づく想定です</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>項目</th><th>いま（推定）</th><th>1年後</th><th>3年後</th></tr></thead>
+        <tbody>
+          <tr><td>新規の入り方</td><td>紹介・口コミ・コンペ</td><td>コンペ以外の商談が毎月ある</td><td>受注の大半がコンペ以前の相談から</td></tr>
+          <tr><td>商談の準備</td><td>代表が合間に1〜2時間</td><td>在宅ワーカーが事前に5〜7時間</td><td>提案テンプレートが診療科別に揃う</td></tr>
+          <tr><td>代表の役割</td><td>営業・商談・提案・制作・管理</td><td>提案とプレゼンに集中</td><td>提案の型を社内に渡し、次の事業へ</td></tr>
+          <tr><td>クライアント構成</td><td>大学病院の比重が高い</td><td>地域クリニックが加わる</td><td>エリア×診療科で分散し、1件の失注が響かない</td></tr>
+          <tr><td>パートナー管理</td><td>代表の記憶と個別のやりとり</td><td>条件明示・支払期日を台帳で管理</td><td>安心して組める会社として選ばれる</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>この戦略の弱点</h3>
+    <p class="sub">先に申し上げておきます</p>
+    <div class="grid g2">
+      <div class="card flat">
+        <h4 style="font-size:14.5px;margin-bottom:8px">弱点①　商談の数は、代表の時間で頭打ちになる</h4>
+        <p style="font-size:13px;color:var(--ink-2)">アポイントをいくら増やしても、商談に出るのは代表お一人です。制作と並行する以上、<b>月に対応できる商談数には上限があります</b>。だからこのシミュレーションでは、アプローチ数を増やすより<b>1件あたりの受注率を上げる</b>設計にしています。上限は08タブのつまみで設定できます。無理な数字を置かないでください。</p>
+      </div>
+      <div class="card flat">
+        <h4 style="font-size:14.5px;margin-bottom:8px">弱点②　医療の商談は、決まるまでが長い</h4>
+        <p style="font-size:13px;color:var(--ink-2)">開業案件は物件取得から開院まで半年〜1年。リニューアルも予算年度に左右されます。<b>初回接触から受注まで3〜6ヶ月はかかる前提</b>です。1年目のROIはその分だけ低く出ます。ここを曖昧にすると「効果がなかった」という話になるので、最初に握らせてください。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 06 ===== -->
+<section class="panel wrap" id="p-targets" role="tabpanel" hidden>
+  <div class="sec-head"><h2>営業ターゲット30</h2><span class="tagline">母数・狙う理由・最初の一言</span></div>
+  <p class="lede">Tier Aは医療機関への直接アプローチ、Tier Bは医療の周辺にいる<b>紹介元・共同提案先</b>、Tier Cはものづくり・EC支援の対象です。母数は業界統計と推計に基づく<b>概算・全国ベース</b>です。<b>バッティング回避で除外しても、母数はまったく足りなくなりません</b>——それを示すための一覧でもあります。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">総母数（30セグメント計）</span><span class="v" id="t-all">—</span><span class="n">全国の医療機関・事業者数の合算</span></div>
+    <div class="stat hot"><span class="k">Tier A・医療機関に直接</span><span class="v" id="t-a">—</span><span class="n">エリア×診療科で絞り込む前の母数</span></div>
+    <div class="stat pos"><span class="k">1年目の目標</span><span class="v">5<small>社</small></span><span class="n">まずは型を作る。件数は追いません</span></div>
+    <div class="stat"><span class="k">1年で接触できる件数</span><span class="v">9,600<small>件</small></span><span class="n">月800件×12ヶ月</span></div>
+  </div>
+
+  <div class="block">
+    <h3>3層別の母数</h3>
+    <p class="sub">必要なのは年5社。母数の0.002％で足ります</p>
+    <div class="chartbox" id="c-tiers"></div>
+  </div>
+
+  <div class="block">
+    <h3>ターゲット一覧</h3>
+    <p class="sub">Tierで絞る／母数で並べ替える／キーワードで検索する</p>
+    <div class="controls">
+      <div class="seg" id="t-seg">
+        <button data-t="all" aria-pressed="true">すべて（30）</button>
+        <button data-t="A" aria-pressed="false">A・医療機関（10）</button>
+        <button data-t="B" aria-pressed="false">B・医療の周辺（10）</button>
+        <button data-t="C" aria-pressed="false">C・ものづくり／EC（10）</button>
+      </div>
+      <input type="search" id="t-q" placeholder="業種・理由・切り口を検索" aria-label="ターゲットを検索">
+      <select id="t-sort" aria-label="並べ替え">
+        <option value="pri">優先度順</option>
+        <option value="cnt">母数が多い順</option>
+        <option value="cntA">母数が少ない順</option>
+      </select>
+      <div class="count">表示 <b id="t-n">30</b> 件 ／ 母数計 <b id="t-sum">—</b></div>
+    </div>
+    <div class="tlist" id="t-list"></div>
+  </div>
+</section>
+
+<!-- ===== 07 ===== -->
+<section class="panel wrap" id="p-remote" role="tabpanel" hidden>
+  <div class="sec-head"><h2>在宅ワーカー活用</h2><span class="tagline">御社にとっては、増員ではなく「役割の追加」です</span></div>
+  <p class="lede">最初にお断りしておきます。<b>在宅ワーカーの活用方法を、御社にご説明する必要はありません。</b>子育て世代の女性メンバーが自立して活躍できるフルリモート体制を、すでに5年間運用してこられたのは御社のほうです。ですので本タブは「リモートワークのすすめ」ではなく、<b>いま社内にない役割は何か</b>だけを書いています。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">移管できる業務量</span><span class="v">120<small>h/月</small></span><span class="n">正社員0.75名分の稼働</span></div>
+    <div class="stat hot"><span class="k">うち代表が抱えている分</span><span class="v">68<small>h/月</small></span><span class="n">下調べ・提案準備・パートナー管理</span></div>
+    <div class="stat"><span class="k">対象業務の数</span><span class="v">17<small>種</small></span><span class="n">5カテゴリに分類</span></div>
+    <div class="stat pos"><span class="k">在宅ワーカー体制</span><span class="v">3<small>名相当</small></span><span class="n">1人1日2時間の分業</span></div>
+  </div>
+
+  <div class="block">
+    <h3>いま社内にない役割</h3>
+    <p class="sub">デザインができる人は足りています。足りないのは、この3つの役割です</p>
+    <div class="grid g3">
+      <div class="card">
+        <span class="chip a">役割①</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">調べる人</h4>
+        <p style="font-size:13px;color:var(--ink-2)">商談相手のクリニックの診療圏、競合の既存サイト、院長の経歴、地域の人口構成。<b>調べれば分かることを、事前に調べておく人</b>です。いまこれは代表が制作の合間にやっています。だから十分にできません。</p>
+      </div>
+      <div class="card">
+        <span class="chip a">役割②</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">たたき台を作る人</h4>
+        <p style="font-size:13px;color:var(--ink-2)">提案書を毎回ゼロから書くのは非効率です。<b>診療科別のテンプレートに、調べた情報を流し込むところまで</b>を担当します。何を提案するかは代表が決めます。作業と判断を分けます。</p>
+      </div>
+      <div class="card">
+        <span class="chip a">役割③</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">約束を管理する人</h4>
+        <p style="font-size:13px;color:var(--ink-2)">外部パートナーへの条件明示、支払期日（60日以内）の管理、稼働の取りまとめ。<b>フリーランス新法で法的義務になった部分</b>です。ここは代表の記憶に依存させてはいけない領域になりました。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>在宅ワーカーに依頼できる業務</h3>
+    <p class="sub">◆印は、いま代表の時間をとくに奪っている業務です。時間は月間の想定工数</p>
+    <div class="grid g3" id="tasks"></div>
+    <div class="callout">
+      <b>この業種ならではの注意点。</b>外に出せるのは<b>調べる・整える・記録する</b>までです。デザインの方向性、提案のコンセプト、クライアントへの最終的な回答は、必ず代表と社内デザイナーに残します。とくに<b>医療広告ガイドラインに関わる表現の判断は外に出せません</b>——外注先の判断ミスがそのまま御社の信用に跳ね返るからです。在宅ワーカーには「この表現は要確認」というフラグを立てるところまでを担ってもらいます。
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：現状</h3>
+    <p class="sub">制作はチームで回っているが、営業と管理は代表を通っている</p>
+    <div class="chartbox" id="c-org-now"></div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：在宅ワーカー活用後</h3>
+    <p class="sub">代表は「考える」「決める」「話す」に残り、その前後を外に出す</p>
+    <div class="chartbox" id="c-org-next"></div>
+  </div>
+
+  <div class="block">
+    <h3>代表の時間配分は、どう変わるか</h3>
+    <p class="sub">月160時間を基準にした想定</p>
+    <div class="chartbox" id="c-time"></div>
+  </div>
+</section>
+
+<!-- ===== 08 ===== -->
+<section class="panel wrap" id="p-roi" role="tabpanel" hidden>
+  <div class="sec-head"><h2>ROIシミュレーション</h2><span class="tagline">アプローチ数ではなく、準備時間で受注率を動かす</span></div>
+  <p class="lede">このシミュレーションは、他社向けのものとは設計が違います。<b>アプローチ数を増やしても、商談に出るのは代表お一人</b>だからです。ですので伸ばす変数を「件数」ではなく<b>「1商談あたりの準備時間」</b>に置いています。準備時間を作るのが生産性向上支援ユニットの役割で、その準備を活かす商談を作るのが営業支援ユニットの役割です。</p>
+
+  <div class="roi-layout">
+    <div class="knobs">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h4 style="font-size:15px">前提条件</h4>
+        <button class="resetbtn" id="r-reset">標準に戻す</button>
+      </div>
+      <div class="seg" style="margin-bottom:16px">
+        <button data-preset="cons" aria-pressed="false">保守</button>
+        <button data-preset="base" aria-pressed="true">標準</button>
+        <button data-preset="bull" aria-pressed="false">強気</button>
+      </div>
+
+      <div class="gh">◆ 商談をつくる ／ <span>営業支援ユニット</span></div>
+      <div class="knob"><label for="k-app">月間アプローチ数<b><span id="v-app"></span>件</b></label><input type="range" id="k-app" min="200" max="2500" step="50"></div>
+      <div class="knob"><label for="k-appo">アポイント率<b><span id="v-appo"></span>%</b></label><input type="range" id="k-appo" min="0.2" max="3" step="0.1"></div>
+      <div class="knob"><label for="k-cap">代表が月に出られる商談数<b><span id="v-cap"></span>件</b></label><input type="range" id="k-cap" min="2" max="16" step="1"></div>
+      <div class="knob"><label for="k-lag">初回接触から受注までの月数<b><span id="v-lag"></span>ヶ月</b></label><input type="range" id="k-lag" min="1" max="9" step="1"></div>
+      <div class="knob"><label for="k-sfee">ユニット月額費用<b><span id="v-sfee"></span>万円</b></label><input type="range" id="k-sfee" min="15" max="60" step="1"></div>
+
+      <div class="knob-group">
+        <div class="gh">◆ 受注率を上げる ／ <span>生産性向上支援ユニット</span></div>
+        <div class="knob"><label for="k-prep">1商談あたりの準備時間<b><span id="v-prep"></span>h</b></label><input type="range" id="k-prep" min="1" max="12" step="0.5"></div>
+        <div class="knob"><label for="k-basewin">準備1時間のときの受注率<b><span id="v-basewin"></span>%</b></label><input type="range" id="k-basewin" min="5" max="35" step="1"></div>
+        <div class="knob"><label for="k-lift">準備1時間あたりの受注率の伸び<b><span id="v-lift"></span>%</b></label><input type="range" id="k-lift" min="0" max="15" step="1"></div>
+        <div class="knob"><label for="k-pool">在宅ワーカーの提案準備枠<b><span id="v-pool"></span>h/月</b></label><input type="range" id="k-pool" min="0" max="60" step="2"></div>
+        <div class="knob"><label for="k-ofee">ユニット月額費用<b><span id="v-ofee"></span>万円</b></label><input type="range" id="k-ofee" min="3" max="20" step="1"></div>
+      </div>
+
+      <div class="knob-group">
+        <div class="gh">◆ <span>1案件の経済性</span></div>
+        <div class="knob"><label for="k-price">初期の受注額（1案件）<b><span id="v-price"></span>万円</b></label><input type="range" id="k-price" min="20" max="400" step="10"></div>
+        <div class="knob"><label for="k-cont">2年目以降の年間継続額<b><span id="v-cont"></span>万円</b></label><input type="range" id="k-cont" min="0" max="200" step="10"></div>
+        <div class="knob"><label for="k-gm">粗利率<b><span id="v-gm"></span>%</b></label><input type="range" id="k-gm" min="25" max="80" step="1"></div>
+        <div class="knob"><label for="k-keep">年間の継続率<b><span id="v-keep"></span>%</b></label><input type="range" id="k-keep" min="30" max="95" step="5"></div>
+        <div class="knob"><label for="k-dcap">年間に制作できる案件数<b><span id="v-dcap"></span>件</b></label><input type="range" id="k-dcap" min="2" max="24" step="1"></div>
+        <p class="note" style="margin-top:-4px">※ デザイナー4名で、既存クライアントの伴走と並行して新規を何件受けられるか。ここが本当の上限です。</p>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div>
+        <h4 style="font-size:15px;margin-bottom:3px">1年目の着地</h4>
+        <p class="sub" style="margin-bottom:12px">医療案件は決まるまでが長いので、初年度は受注が年後半に寄ります</p>
+        <div class="grid g4">
+          <div class="stat pos"><span class="k">1年目 ROI</span><span class="v" id="o-roi">—</span><span class="n">（粗利−投資）÷投資</span></div>
+          <div class="stat hot"><span class="k">実効の受注率</span><span class="v" id="o-win">—</span><span class="n" id="o-winn">—</span></div>
+          <div class="stat info"><span class="k">1年目の受注社数</span><span class="v" id="o-deals">—</span><span class="n" id="o-dealsn">—</span></div>
+          <div class="stat"><span class="k">3年累計の粗利</span><span class="v" id="o-y3">—</span><span class="n" id="o-y3n">—</span></div>
+        </div>
+      </div>
+
+      <div>
+        <p class="sub" style="margin-bottom:10px">月間のファネル</p>
+        <div class="funnel">
+          <div class="fstep"><div class="fl">アプローチ</div><div class="fv" id="f-app">—</div><div class="fr">電話・メール・FAX・DM</div></div>
+          <div class="fstep"><div class="fl">アポイント</div><div class="fv" id="f-appo">—</div><div class="fr" id="f-appo-r">—</div></div>
+          <div class="fstep"><div class="fl">商談（代表が対応）</div><div class="fv" id="f-meet">—</div><div class="fr" id="f-meet-r">—</div></div>
+          <div class="fstep end"><div class="fl">受注</div><div class="fv" id="f-win">—</div><div class="fr" id="f-win-r">—</div></div>
+        </div>
+      </div>
+
+      <div class="chartbox" id="c-curve"></div>
+      <div class="chartbox" id="c-months"></div>
+      <div class="chartbox" id="c-y3"></div>
+
+      <div class="verdict" id="o-verdict"></div>
+
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:10px">この試算の読み方</div>
+        <ul style="margin:0;padding-left:1.2em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">
+          <li><b>準備時間は、無限には増やせません。</b>在宅ワーカーの提案準備枠を商談数で割った分しか、1件あたりに配れないからです。つまみを上げても<b>供給できる上限で頭打ち</b>になり、その場合は警告が出ます。商談を増やすほど1件あたりの準備は薄くなる——この綱引きが、このシミュレーションの本体です。</li>
+          <li><b>「準備1時間あたりの受注率の伸び」が最大の仮説です。</b>初期値は1時間あたり＋6ポイントを置いていますが、これは検証されていない数字です。<b>つまみをゼロにすれば、準備の効果を一切認めない前提で試算できます</b>。厳しく見たい場合はゼロにしてご確認ください。</li>
+          <li><b>初回接触から受注までの月数は、医療案件では3〜6ヶ月が目安です。</b>この遅れの分だけ1年目の数字は低く出ます。ここを短く見積もると、後で「効果がなかった」という話になります。<b>実際の肌感覚を9月14日にお聞かせください。</b></li>
+          <li><b>1案件の初期受注額と継続額が未確認です。</b>初期値は控えめに置いています。伴走型で年間どの程度の追加発注があるのか、実績値に置き換えるだけで3年累計の意味が変わります。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 09 ===== -->
+<section class="panel wrap" id="p-road" role="tabpanel" hidden>
+  <div class="sec-head"><h2>90日ロードマップ</h2><span class="tagline">目標は3社ではなく、1社です</span></div>
+  <p class="lede">「まずは1社獲得して学びを深めたい」というご意向に合わせています。<b>90日で狙うのは、受注1社と、その過程で分かったことの記録</b>です。件数を追うのは2年目からで十分です。</p>
+
+  <div class="card">
+    <div class="phase">
+      <div><div class="pd">DAY 0</div><div class="pt">9月14日<br>次回商談</div></div>
+      <ul>
+        <li><span class="owner ai">アイドマ</span>本ボードの02タブ（ボトルネックの分解）と08タブのシミュレーションをご説明</li>
+        <li><span class="owner ai">アイドマ</span>セールスプラットフォームからの抽出条件と、想定リスト件数のご提示</li>
+        <li><span class="owner kl">Shinari</span><b>既存クライアントのエリアと診療科の一覧</b>（03タブの表を実データで埋めます）</li>
+        <li><span class="owner kl">Shinari</span><b>直近1年の受注件数・平均単価・継続発注の有無</b>（08タブの前提が確定します）</li>
+        <li><span class="owner kl">Shinari</span>初回接触から受注までにかかった実際の月数の肌感覚</li>
+        <li>この場で決めること：<b>最初に当たる1マス（エリア×診療科）</b></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 1-30</div><div class="pt">1マスに絞って<br>テストする</div></div>
+      <ul>
+        <li><span class="owner ai">アイドマ</span>バッティング除外をかけたリストを作成。<b>最初は1マス（例：世田谷×整形外科）だけ</b></li>
+        <li><span class="owner ai">アイドマ</span>トークスクリプトを2〜3パターン作成し、反応の差を計測</li>
+        <li><span class="owner kl">Shinari</span>在宅ワーカーへの移管を<b>下調べとヒアリングシートの準備</b>から開始</li>
+        <li><span class="owner kl">Shinari</span>診療科別の提案テンプレートを1本だけ作る（最初の1マス用）</li>
+        <li><span class="owner ai">アイドマ</span>外部パートナー向けの条件明示書の雛形をご提供（フリーランス新法対応）</li>
+        <li>30日目の到達点：<b>商談1〜2件。反応の良かった切り口が1つ特定できている状態</b></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 31-60</div><div class="pt">準備の量を<br>上げて臨む</div></div>
+      <ul>
+        <li><span class="owner kl">Shinari</span>1商談あたりの準備時間を<b>5時間以上</b>確保して臨む（在宅ワーカーが前工程を担当）</li>
+        <li><span class="owner ai">アイドマ</span>反応の良かったマスを2〜3マスに拡大。悪かった切り口は捨てる</li>
+        <li><span class="owner kl">Shinari</span>商談後に必ず記録を残す。<b>勝った理由・負けた理由を言語化する</b></li>
+        <li><span class="owner ai">アイドマ</span>Tier B（開業支援コンサル・医療機器ディーラー等）への接触を開始</li>
+        <li><span class="owner kl">Shinari</span>デザイン繁忙期（12月〜）に入る前の仕込みとして、提案テンプレートを3診療科分まで拡張</li>
+        <li>60日目の到達点：<b>商談4〜6件。受注1件、または最終検討中が1件</b></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 61-90</div><div class="pt">型を1つ<br>確定させる</div></div>
+      <ul>
+        <li><span class="owner kl">Shinari</span>受注1社。ここまでで<b>「どのマスの、どの切り口で、どんな準備をすれば決まるか」</b>を1本に固める</li>
+        <li><span class="owner ai">アイドマ</span>その型を再現するためのリスト抽出条件とスクリプトを確定し、御社に納品</li>
+        <li><span class="owner kl">Shinari</span>外部パートナーの条件明示・支払期日管理を在宅ワーカーへ完全移管</li>
+        <li><span class="owner ai">アイドマ</span>デザイン繁忙期（12〜3月）の営業量を落とす計画に切り替え。<b>EC側のリストへ軸足を移す</b></li>
+        <li>90日目の到達点：<b>受注1社と、再現できる型が1つ。これが本プロジェクトの成果物です</b></li>
+        <li>ここまでの学びをもとに、2年目の目標件数を一緒に置きます</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>出典</h3>
+    <p class="sub">本ボードで用いた公開データ</p>
+    <div class="card flat">
+      <div class="srcs">
+        ・かかりつけ医機能報告制度（2023年医療法改正・2025年4月開始・第1回報告期間2026年1〜3月）：厚生労働省<br>
+        ・医療機能情報提供制度の全国統一化（2024年4月）／慢性疾患患者への書面交付・説明の努力義務（2025年4月）：厚生労働省<br>
+        ・医療広告ガイドライン ネットパトロール事業（2025年度・2026年2月末時点で1,842サイト・5,225件の違反確認、通報受付6,324サイト、約7割が自主改善または広告中止、AIスクリーニング導入とSNS監視の拡大）：厚生労働省 医療機関ネットパトロール事業<br>
+        ・フリーランス・事業者間取引適正化等法（2024年11月1日施行／取引条件の明示義務、60日以内の報酬支払義務、育児介護への配慮、ハラスメント対策の体制整備、中途解除の事前予告）：公正取引委員会・厚生労働省<br>
+        ・株式会社Shinari Designの会社概要（東京都調布市・2021年設立・資本金100万円・代表 山田真弓様・デザイナー4名・事業領域）：法人番号公表サイト、求人プラットフォーム等の公開情報<br>
+        <br>
+        ターゲット30の母数は、医療施設調査・工業統計・各種名簿に基づく<b>概算</b>です。実際のリスト作成時に精査します。03タブのエリア×診療科の表は<b>書き方の例</b>であり、●の位置は実データではありません。08タブの「準備時間と受注率の関係」は<b>検証されていない仮説</b>であり、実績の蓄積によって置き換えるべき数値です。
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+"use strict";
+
+var tabs=Array.prototype.slice.call(document.querySelectorAll(".tab"));
+tabs.forEach(function(t){
+  t.addEventListener("click",function(){
+    tabs.forEach(function(x){
+      x.setAttribute("aria-selected",x===t?"true":"false");
+      document.getElementById("p-"+x.dataset.p).hidden=(x!==t);
+    });
+    window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  });
+});
+
+var NF=new Intl.NumberFormat("ja-JP");
+function n(v){return NF.format(Math.round(v));}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function svg(w,h,inner){
+  return '<svg viewBox="0 0 '+w+' '+h+'" role="img" preserveAspectRatio="xMidYMid meet" '+
+    'style="max-width:'+Math.round(w*1.18)+'px;margin:0 auto">'+inner+'</svg>';
+}
+function txt(x,y,s,o){
+  o=o||{};
+  return '<text x="'+x+'" y="'+y+'" fill="'+(o.fill||"var(--ink-2)")+'" font-size="'+(o.size||11)+'" '+
+   'font-family="'+(o.mono?"Space Mono, monospace":(o.disp?"Shippori Mincho B1, serif":"Murecho, sans-serif"))+'" '+
+   'font-weight="'+(o.weight||400)+'" text-anchor="'+(o.anchor||"start")+'"'+
+   (o.baseline?' dominant-baseline="'+o.baseline+'"':'')+'>'+esc(s)+'</text>';
+}
+function rrect(x,y,w,h,r,fill){
+  if(h<=0||w<=0) return "";
+  r=Math.min(r,h/2,w/2);
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+r+'" fill="'+fill+'"></rect>';
+}
+function box(x,y,w,h,title,sub,color,dashed){
+  var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="var(--surface-2)" stroke="'+(color||"var(--rule-2)")+'" stroke-width="1.6"'+(dashed?' stroke-dasharray="5 4"':'')+'></rect>';
+  s+=txt(x+13,y+(sub?23:h/2+5),title,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+  if(sub) s+=txt(x+13,y+40,sub,{fill:"var(--ink-3)",size:10.5});
+  return s;
+}
+function niceMax(v,div){
+  if(!(v>0)) return div;
+  var unit=v/div, step=Math.pow(10,Math.floor(Math.log10(unit))), r=unit/step;
+  var mult=r<=1?1:r<=2?2:r<=2.5?2.5:r<=5?5:10;
+  return step*mult*div;
+}
+
+/* ============ 01 季節 ============ */
+(function(){
+  var months=["4月","5月","6月","7月","8月","9月","10月","11月","12月","1月","2月","3月"];
+  var design=[2,2,3,3,3,4,5,6,9,10,10,8];
+  var ec    =[7,8,9,9,8,8,9,9,4,3,2,3];
+  var W=760,H=280,padL=56,padR=112,padT=38,padB=52;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var max=10,s="";
+  for(var g=0;g<=2;g++){
+    var y=padT+plotH-(g/2)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,["低","中","高"][g],{fill:"var(--ink-3)",size:10,anchor:"end",baseline:"middle"});
+  }
+  function path(arr,col){
+    var d=arr.map(function(v,i){
+      var x=padL+(i+0.5)*(plotW/12), y=padT+plotH-(v/max)*plotH;
+      return (i===0?"M ":"L ")+x+" "+y;
+    }).join(" ");
+    return '<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="2.6"></path>';
+  }
+  /* デザイン繁忙帯 */
+  s+='<rect x="'+(padL+8*(plotW/12))+'" y="'+padT+'" width="'+(4*(plotW/12))+'" height="'+plotH+'" fill="var(--s1)" opacity="0.09"></rect>';
+  s+='<rect x="'+padL+'" y="'+padT+'" width="'+(8*(plotW/12))+'" height="'+plotH+'" fill="var(--s3)" opacity="0.07"></rect>';
+  s+=path(ec,"var(--s3)");
+  s+=path(design,"var(--s1)");
+  months.forEach(function(m,i){
+    s+=txt(padL+(i+0.5)*(plotW/12),padT+plotH+18,m,{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  });
+  s+=txt(padL+plotW+10,padT+plotH-(design[11]/max)*plotH,"デザイン",{fill:"var(--s1)",size:11.5,weight:700,baseline:"middle"});
+  s+=txt(padL+plotW+10,padT+plotH-(ec[11]/max)*plotH,"EC運営代行",{fill:"var(--s3)",size:11.5,weight:700,baseline:"middle"});
+  s+=txt(padL+2*(plotW/12),padT-14,"EC繁忙期（4〜11月）",{fill:"var(--s3)",size:11,weight:700});
+  s+=txt(padL+8.3*(plotW/12),padT-14,"デザイン繁忙期（12〜3月）",{fill:"var(--s1)",size:11,weight:700});
+  s+=txt(padL,H-8,"※ 商談メモの記載に基づく概念図です。縦軸は繁忙の度合いで、実数値ではありません。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-season").innerHTML=
+    '<h4>2事業の繁忙期</h4><p class="csub">片方が忙しいとき、もう片方は空いている</p>'+svg(W,H,s)+
+    '<p class="csub" style="margin:12px 0 0"><b>営業をかける時期は、ここから決まります。</b>デザインが最も忙しい12〜3月に新規開拓をしても、受注できたところで作る手がありません。逆に<b>4〜11月に仕込んだ案件が、12月以降に立ち上がる</b>——この順番に合わせて営業量を設計します。</p>';
+})();
+
+/* ============ 02 7つの機能 ============ */
+var FUNCS=[
+  {n:"01",t:"リスト作成・ターゲット選定",d:"誰に当たるかを決める",v:"外に出せる",c:"give",w:"営業支援ユニットが担当。バッティング除外の条件もここで設定します。"},
+  {n:"02",t:"アプローチ（電話・メール・FAX・DM）",d:"接触して、会う約束を取る",v:"外に出せる",c:"give",w:"営業支援ユニットが担当。代表の時間はここに1分も使わなくて構いません。"},
+  {n:"03",t:"事前の下調べ・ヒアリング準備",d:"相手を調べ、聞くことを決めておく",v:"外に出せる",c:"give",w:"在宅ワーカーが担当。ここが増えると、⑤の勝率が変わります。本ボードの核心です。"},
+  {n:"04",t:"初回ヒアリング",d:"要望と背景を引き出す",v:"半分だけ",c:"share",w:"型は標準化できますが、深掘りは代表が担当。ヒアリングシートを用意しておけば負担は減ります。"},
+  {n:"05",t:"提案設計（コンセプトを決める）",d:"何を提案するかを考える",v:"社内に残す",c:"keep",w:"御社の価値そのもの。ここを外に出したら、御社である意味がなくなります。"},
+  {n:"06",t:"プレゼン・コンペ",d:"提案を伝え、納得してもらう",v:"社内に残す",c:"keep",w:"代表が担当。苦手意識があるのはここですが、対策は②と③の設計で打ちます。"},
+  {n:"07",t:"制作ディレクション・既存顧客サポート",d:"作り、届け、伴走する",v:"半分だけ",c:"share",w:"判断は社内。素材整理・校正・進捗の取りまとめは在宅ワーカーへ移せます。"}
+];
+(function(){
+  document.getElementById("funcs").innerHTML=FUNCS.map(function(f){
+    return '<div class="func '+f.c+'"><div class="fn">'+f.n+'</div>'+
+      '<div><h4>'+esc(f.t)+'</h4><div class="fd">'+esc(f.d)+'</div></div>'+
+      '<div class="verdict-cell">'+esc(f.v)+'</div>'+
+      '<div class="fw">'+esc(f.w)+'</div></div>';
+  }).join("");
+})();
+
+/* ============ 02 入り方別 ============ */
+(function(){
+  var rows=[
+    {k:"コンペ（大学病院など）",win:25,load:95,price:100,c:"var(--s1)",note:"話術で差がつく土俵"},
+    {k:"紹介・指名",win:70,load:30,price:70,c:"var(--s2)",note:"件数を自分で決められない"},
+    {k:"開業前・リニューアル前の相談",win:55,load:40,price:80,c:"var(--s3)",note:"増やせる。増やすべき"}
+  ];
+  var W=760,H=300,padL=214,padR=150,padT=52,padB=52;
+  var plotW=W-padL-padR,rowH=68,s="";
+  var cols=[{k:"win",label:"想定 勝率",x:0},{k:"load",label:"心理的な負担",x:0.38},{k:"price",label:"単価の高さ",x:0.76}];
+  cols.forEach(function(c){
+    c.px=padL+c.x*plotW;
+    s+=txt(c.px,padT-22,c.label,{fill:"var(--ink-3)",size:10.5,weight:700});
+  });
+  rows.forEach(function(r,i){
+    var y=padT+i*rowH;
+    s+=txt(padL-14,y+10,r.k,{fill:"var(--ink)",size:12.5,weight:700,anchor:"end",disp:true});
+    s+=txt(padL-14,y+28,r.note,{fill:"var(--ink-3)",size:10,anchor:"end"});
+    cols.forEach(function(c){
+      var v=r[c.k],bw=plotW*0.30;
+      s+=rrect(c.px,y,bw,16,3,"var(--surface-3)");
+      s+=rrect(c.px,y,bw*(v/100),16,3,c.k==="load"?"var(--s4)":r.c);
+      s+=txt(c.px+bw+6,y+8,v,{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+    });
+  });
+  s+='<rect x="'+padL+'" y="'+(padT+3*rowH-8)+'" width="'+(plotW+120)+'" height="52" rx="8" fill="var(--accent-soft)"></rect>';
+  s+=txt(padL+14,padT+3*rowH+12,"3行目を増やすのが本戦略です。勝率も単価も十分で、負担だけが低い。",{fill:"var(--accent)",size:12,weight:700});
+  s+=txt(padL+14,padT+3*rowH+32,"そして、この土俵に立つには「コンペ公示より前に接触している」ことだけが条件です。",{fill:"var(--ink-2)",size:11});
+  s+=txt(8,H-8,"※ 3つの数値はいずれも相対的な目安で、実測値ではありません。9/14に実際の肌感覚と突き合わせさせてください。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-entry").innerHTML=
+    '<h4>案件の入り方は3種類ある</h4><p class="csub">勝率・負担・単価は、入り方によってまったく違う</p>'+svg(W,H,s);
+})();
+
+/* ============ 05 季節×営業量 ============ */
+(function(){
+  var months=["4月","5月","6月","7月","8月","9月","10月","11月","12月","1月","2月","3月"];
+  var sales=[9,10,10,9,8,10,9,8,4,3,3,5];
+  var W=760,H=270,padL=56,padR=70,padT=46,padB=52;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var max=10,s="";
+  s+='<rect x="'+(padL+8*(plotW/12))+'" y="'+padT+'" width="'+(4*(plotW/12))+'" height="'+plotH+'" fill="var(--s1)" opacity="0.09"></rect>';
+  var bw=plotW/12*0.6;
+  for(var i=0;i<12;i++){
+    var cx=padL+(i+0.5)*(plotW/12);
+    var h=(sales[i]/max)*plotH;
+    s+=rrect(cx-bw/2,padT+plotH-h,bw,h,3,sales[i]>=8?"var(--s3)":"var(--s4)");
+    s+=txt(cx,padT+plotH+18,months[i],{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  }
+  s+=txt(padL,padT-26,"営業アプローチの量",{fill:"var(--ink-3)",size:10.5,weight:700});
+  s+=txt(padL+8.3*(plotW/12),padT-26,"デザイン繁忙期は量を落とす",{fill:"var(--s1)",size:10.5,weight:700});
+  s+=txt(padL+1.5*(plotW/12),padT+16,"ここで仕込む",{fill:"var(--s3)",size:12,weight:700,disp:true});
+  s+=txt(padL+8.6*(plotW/12),padT+16,"ここで作る",{fill:"var(--s1)",size:12,weight:700,disp:true});
+  s+=txt(padL,H-8,"※ 12〜3月は営業量を落とし、EC側のリストに軸足を移します。年間の費用は変えず、当てる先を入れ替えます。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-plan").innerHTML=
+    '<h4>営業量の年間計画</h4><p class="csub">受注できても作る手がなければ意味がありません</p>'+svg(W,H,s);
+})();
+
+/* ============ 06 ターゲット ============ */
+var TIER_META={
+  A:{label:"医療機関に直接",note:"エリア×診療科で絞り込む"},
+  B:{label:"医療の周辺",note:"紹介元・共同提案先になる"},
+  C:{label:"ものづくり／EC",note:"EC支援の実績が横展開できる"}
+};
+var TARGETS=[
+  {t:"A",n:"開業5年以内のクリニック",c:12000,w:"開業時に作ったサイトやサインが、実際の患者層と合っていないことに気づく時期。最初の見直しが発生しやすい。",h:"「開業のときに作られたサイト、いま来られている患者さんの層と合っていますか」"},
+  {t:"A",n:"開業20年以上のクリニック",c:34000,w:"建物の老朽化、承継、リニューアルが重なる時期。内装・サイン・サイトをまとめて見直す大型案件になりやすい。",h:"「内装の改修をお考えの時期でしたら、サインとサイトも一緒に整えると費用が抑えられます」"},
+  {t:"A",n:"歯科医院",c:67000,w:"母数が圧倒的に多く、競合も多いため差別化の必要性が最も高い。商圏が狭くバッティング回避がしやすい。",h:"「近隣に歯科医院が増えていませんか。選ばれる理由を形にするお手伝いをしています」"},
+  {t:"A",n:"無床診療所（内科）",c:27000,w:"かかりつけ医機能報告の中心。公表される情報が横並びになるため、それ以外の部分で差をつける必要が出た。",h:"「かかりつけ医機能の公表が始まりましたが、患者さんへの伝え方はどうされていますか」"},
+  {t:"A",n:"整形外科・リハビリテーション科",c:8600,w:"高齢者と現役世代の両方が対象で、訴求を分ける必要がある。院内サインや動線設計の相談につながりやすい。",h:"「リハビリの導線、患者さんが迷われることはありませんか。サインから整理できます」"},
+  {t:"A",n:"小児科・産婦人科",c:9400,w:"親世代への訴求が決め手で、デザインの良し悪しが最も直接的に集患に効く領域。御社の表現力が活きる。",h:"「お母さん方に選ばれているかどうか、いちばん見た目が効く診療科だと思っています」"},
+  {t:"A",n:"精神科・心療内科",c:7200,w:"表現への配慮が最も必要で、医療広告規制の論点も多い。分かっていない業者に頼めない領域＝参入障壁が高い。",h:"「広告規制の兼ね合いで、書ける表現と書けない表現があります。そこから整理できます」"},
+  {t:"A",n:"在宅療養支援診療所",c:15000,w:"連携先（ケアマネ・訪問看護）への説明資料が必要だが、作れていない事業所が多い。BtoB向けのツール需要。",h:"「ケアマネさんにお渡しする資料、いまどうされていますか。紹介が増える形に整えられます」"},
+  {t:"A",n:"介護老人保健施設・特別養護老人ホーム",c:14000,w:"入居者募集と職員採用の両方でデザインが要る。御社の福祉領域の実績がそのまま信用になる。",h:"「ご入居の案内と職員募集、どちらも同じ資料でされていませんか。分けたほうが届きます」"},
+  {t:"A",n:"訪問看護ステーション",c:17000,w:"開設数が伸びており、新規ほどツールがない。単価は下がるが、数が出るうえ制作が軽い。入口案件に向く。",h:"「立ち上げ時のパンフレットとサイト、まとめてお受けできます」"},
+
+  {t:"B",n:"医療機関専門の開業支援コンサルタント",c:1400,w:"開業前の医師と最初に接触する存在。ここと組めればコンペになる前に相談が来る。最重要のTier B。",h:"「開業支援の中でデザインを外注されていませんか。医療専門でお受けしています」"},
+  {t:"B",n:"医療特化の会計事務所・税理士法人",c:2600,w:"開業から日常の経営まで伴走しており、院長が最も相談する相手。紹介が生まれやすく、継続性が高い。",h:"「顧問先の先生方から、サイトや看板のご相談を受けられることはありませんか」"},
+  {t:"B",n:"医療機器ディーラー・卸",c:3200,w:"開業時に必ず入る業者。内装業者と並んで最も早く情報を持つ。営業担当と関係を作れば案件が流れてくる。",h:"「新規開業の情報を早くお持ちですよね。デザイン側でお手伝いできる形を探しています」"},
+  {t:"B",n:"医療専門の内装・設計事務所",c:1100,w:"空間を作る側。サイン・ロゴ・サイトは守備範囲外のことが多く、補い合える。競合ではなく補完関係。",h:"「内装はお願いできませんが、サインとロゴとサイトは当社で一括できます」"},
+  {t:"B",n:"調剤薬局チェーン本部",c:1800,w:"門前・面対応の薬局は近隣クリニックの情報を持つ。薬局自体のブランディング需要も同時に発生する。",h:"「門前の先生方との関係で、デザインのご相談を受けられることはありませんか」"},
+  {t:"B",n:"医療モール・クリニックビルの開発事業者",c:900,w:"1棟に複数のクリニックが入るため、1件の関係から複数案件が生まれる。最も効率の良いTier B。",h:"「モール全体のサイン計画と、各院のツールをまとめてお受けできます」"},
+  {t:"B",n:"医療機関向け人材紹介・採用支援",c:1900,w:"採用難が続いており、採用ブランディングの需要が高い。御社の採用ブース・冊子の実績が直結する。",h:"「求人票だけでは看護師さんに届かない、というご相談は増えていませんか」"},
+  {t:"B",n:"電子カルテ・医療ITベンダー",c:640,w:"導入時に院内の情報整理を行うため、サイト改修の話が同時に出やすい。技術側とデザイン側で補完できる。",h:"「システム導入と同じタイミングで、患者さん向けの案内も整えませんか」"},
+  {t:"B",n:"医師会・歯科医師会・看護協会等の団体",c:1300,w:"団体の広報物・会報・イベント資料という直接の受注に加え、会員への紹介経路にもなる二重の価値。",h:"「会報や研修のご案内、いまどちらで作られていますか」"},
+  {t:"B",n:"医療機関向けリース・金融",c:380,w:"母数は最も小さいが、開業資金の相談を最初に受ける立場。1社との関係が長期の案件供給につながる。",h:"「開業をご支援される際に、デザイン面でご紹介いただける先をお探しではありませんか」"},
+
+  {t:"C",n:"寝具・布団メーカー",c:1100,w:"布団リフォームのB2C化という明確な実績がある。同じ話がそのまま通じる、最も成約可能性の高いセグメント。",h:"「布団リフォームをネット通販で伸ばした事例があります。同じ形をお作りできます」"},
+  {t:"C",n:"伝統工芸の事業者・産地組合",c:5400,w:"良いものを作っているが伝え方が苦手、という典型。補助金も付きやすく、予算を確保しやすい。",h:"「作られているものの良さが、ネット上で伝わりきっていないように見えました」"},
+  {t:"C",n:"BtoB製造業でBtoC展開を検討中の企業",c:12000,w:"技術はあるが消費者向けの言葉を持たない。ゼロから設計できるため、ブランディングの価値が最も高く出る。",h:"「これまで卸だけでやってこられた会社が、直販を始めるお手伝いをしています」"},
+  {t:"C",n:"食品加工・地域食品メーカー",c:22000,w:"母数が最も大きく、ギフト需要と地域産品需要の両方がある。パッケージからECまで一貫して受けられる。",h:"「パッケージと通販サイト、別々の会社に出されていませんか。揃えたほうが売れます」"},
+  {t:"C",n:"酒蔵・味噌醤油蔵",c:3400,w:"ストーリーが強く、ブランディングの素材に事欠かない。海外向けの展開余地もあり、案件が長期化しやすい。",h:"「蔵の物語をきちんと出せているサイトは、まだ多くありません」"},
+  {t:"C",n:"陶磁器・ガラス・漆器",c:3900,w:"写真の見え方が売上を直接左右する領域。撮影から任せられる御社の体制がそのまま差別化になる。",h:"「商品写真だけで売れ方が変わります。撮影からまとめてお受けできます」"},
+  {t:"C",n:"家具・木工・インテリア製造",c:7800,w:"単価が高く、じっくり検討される商材。サイトの情報設計が購入の決め手になるため、制作の価値が伝わりやすい。",h:"「高額なものほど、サイトで納得してもらう必要があります。そこを設計しています」"},
+  {t:"C",n:"繊維・アパレルOEM",c:9600,w:"代表がアパレルの経験をお持ちで、話が最も通じる領域。OEMから自社ブランドへの転換需要が続いている。",h:"「OEMだけでなく、自社ブランドを立ち上げたいというお話はありませんか」"},
+  {t:"C",n:"農業法人・6次産業化事業者",c:8700,w:"加工品の販売にはパッケージとECが必須。補助金の対象になりやすく、予算面のハードルが低い。",h:"「加工品を作られたあと、売る手段のところで止まっていませんか」"},
+  {t:"C",n:"自治体・商工会の地域産品振興部門",c:1900,w:"複数事業者をまとめて支援する立場で、1件の関係から複数案件が生まれる。公共領域の実績も活きる。",h:"「地域の事業者さんを、まとめてご支援する形でお手伝いできます」"}
+];
+TARGETS.forEach(function(d,i){d.i=i;});
+
+(function(){
+  var a=TARGETS.filter(function(d){return d.t==="A";}).reduce(function(x,y){return x+y.c;},0);
+  var all=TARGETS.reduce(function(x,y){return x+y.c;},0);
+  document.getElementById("t-all").innerHTML=n(all)+'<small>件</small>';
+  document.getElementById("t-a").innerHTML=n(a)+'<small>件</small>';
+})();
+
+(function(){
+  var rows=["A","B","C"].map(function(t){
+    var sum=TARGETS.filter(function(d){return d.t===t;}).reduce(function(a,b){return a+b.c;},0);
+    return {t:t,sum:sum,cnt:TARGETS.filter(function(d){return d.t===t;}).length};
+  });
+  var max=niceMax(Math.max.apply(null,rows.map(function(r){return r.sum;}))*1.05,4);
+  var W=660,H=230,padL=240,padR=98,plotW=W-padL-padR,rowH=56,top=40,s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-12)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-18)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-20,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+38,top-20,"件",{fill:"var(--ink-3)",size:10});
+  var colors={A:"var(--s1)",B:"var(--s3)",C:"var(--s2)"};
+  rows.forEach(function(r,i){
+    var y=top+i*rowH,m=TIER_META[r.t];
+    s+=txt(0,y+8,"Tier "+r.t+"・"+m.label+"（"+r.cnt+"分類）",{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(0,y+26,m.note,{fill:"var(--ink-3)",size:10.5});
+    s+=rrect(padL,y-6,(r.sum/max)*plotW,24,4,colors[r.t]);
+    s+=txt(padL+(r.sum/max)*plotW+8,y+6,n(r.sum),{fill:"var(--ink-2)",size:11.5,mono:true,baseline:"middle"});
+  });
+  document.getElementById("c-tiers").innerHTML=
+    '<h4>3層別の母数（全国・概算）</h4><p class="csub">年5社で足りる会社にとって、母数はいくらでもあります</p>'+svg(W,H,s)+
+    '<p class="csub" style="margin:12px 0 0"><b>ここでお伝えしたいのは「たくさん当たりましょう」ではありません。</b>むしろ逆です。母数がこれだけあるからこそ、<b>既存クライアントとぶつかるマス目を全部よけても、当てる先はいくらでも残ります</b>。バッティング回避は、成長のブレーキになりません。</p>';
+})();
+
+(function(){
+  var seg=document.getElementById("t-seg"), q=document.getElementById("t-q"), sort=document.getElementById("t-sort");
+  var list=document.getElementById("t-list"), cn=document.getElementById("t-n"), cs=document.getElementById("t-sum");
+  var cur="all";
+  function render(){
+    var kw=q.value.trim().toLowerCase();
+    var arr=TARGETS.filter(function(d){
+      if(cur!=="all"&&d.t!==cur) return false;
+      if(!kw) return true;
+      return (d.n+d.w+d.h).toLowerCase().indexOf(kw)>=0;
+    });
+    var mode=sort.value;
+    arr=arr.slice().sort(function(a,b){
+      if(mode==="cnt") return b.c-a.c;
+      if(mode==="cntA") return a.c-b.c;
+      return a.i-b.i;
+    });
+    list.innerHTML=arr.map(function(d,idx){
+      var m=TIER_META[d.t];
+      return '<article class="trow t'+d.t+'">'+
+        '<div class="rank">'+String(idx+1).padStart(2,"0")+'</div>'+
+        '<div class="head"><div class="name">'+esc(d.n)+'</div>'+
+        '<div class="meta"><span class="chip '+(d.t==="A"?"a":d.t==="B"?"b":"c")+'">Tier '+d.t+'・'+m.label+'</span>'+
+        '<span class="cnt">'+n(d.c)+'<span>件</span></span></div></div>'+
+        '<div class="why"><span class="fieldlabel">なぜ狙うか</span><div class="fieldbody">'+esc(d.w)+'</div></div>'+
+        '<div class="hook"><span class="fieldlabel">最初の一言</span><div class="fieldbody">'+esc(d.h)+'</div></div>'+
+        '</article>';
+    }).join("");
+    cn.textContent=arr.length;
+    cs.textContent=n(arr.reduce(function(a,b){return a+b.c;},0))+"件";
+  }
+  seg.addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    cur=b.dataset.t;
+    Array.prototype.forEach.call(seg.children,function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    render();
+  });
+  q.addEventListener("input",render);
+  sort.addEventListener("change",render);
+  render();
+})();
+
+/* ============ 07 在宅ワーカー ============ */
+var TASKS=[
+  {g:"営業の下支え",h:32,items:[
+    {n:"ターゲットリストの作成・バッティング除外の確認",h:10,k:1},
+    {n:"アプローチ後の反応整理・優先度付け",h:8,k:1},
+    {n:"ヒアリングシートの作成・事前の下調べ",h:8,k:1},
+    {n:"商談履歴・案件台帳の記録",h:6,k:0}
+  ]},
+  {g:"提案準備",h:28,items:[
+    {n:"競合クリニックの調査（診療圏・既存サイト）",h:10,k:1},
+    {n:"提案書のたたき台作成（テンプレート運用）",h:10,k:1},
+    {n:"事例集・実績資料の更新",h:8,k:1}
+  ]},
+  {g:"パートナー・契約管理",h:22,items:[
+    {n:"業務委託の条件明示書の作成・送付管理",h:8,k:1},
+    {n:"報酬支払期日の管理（60日以内）",h:6,k:1},
+    {n:"外部パートナーの稼働・進捗の取りまとめ",h:8,k:0}
+  ]},
+  {g:"制作の下支え",h:24,items:[
+    {n:"素材整理・画像加工・バナーの量産",h:10,k:0},
+    {n:"原稿の文字起こし・校正",h:6,k:0},
+    {n:"納品物のチェックリスト運用",h:8,k:0}
+  ]},
+  {g:"広報・バックオフィス",h:14,items:[
+    {n:"実績のnote・SNSでの発信",h:8,k:1},
+    {n:"請求・入金消込",h:6,k:0}
+  ]}
+];
+(function(){
+  document.getElementById("tasks").innerHTML=TASKS.map(function(g){
+    return '<div class="taskgroup"><header><h4>'+esc(g.g)+'</h4><span class="hh">'+g.h+' h/月</span></header><ul>'+
+      g.items.map(function(it){
+        return '<li'+(it.k?' class="key"':'')+'><span>'+esc(it.n)+'</span><b>'+it.h+'h</b></li>';
+      }).join("")+'</ul></div>';
+  }).join("");
+})();
+
+(function(){
+  var W=760,H=248,s="";
+  s+=box(268,16,224,52,"代表（山田 様）","営業も提案も管理も、ここを通る","var(--s1)");
+  var now=[
+    ["リスト・アプローチ","手が回らず紹介待ち"],
+    ["下調べ・提案準備","制作の合間に1〜2時間"],
+    ["プレゼン・コンペ","苦手意識が成果に直結"],
+    ["パートナー・契約管理","記憶と個別のやりとり"]
+  ];
+  now.forEach(function(c,i){
+    var x=8+i*188;
+    s+='<path d="M 380 68 L 380 92 L '+(x+82)+' 92 L '+(x+82)+' 112" stroke="var(--rule-2)" stroke-width="1.3" fill="none"></path>';
+    s+='<rect x="'+x+'" y="112" width="166" height="54" rx="8" fill="var(--surface)" stroke="var(--rule-2)" stroke-width="1.3"></rect>';
+    s+=txt(x+12,134,c[0],{fill:"var(--ink)",size:11.5,weight:700,disp:true});
+    s+=txt(x+12,152,c[1],{fill:"var(--ink-3)",size:10});
+  });
+  s+='<rect x="8" y="186" width="380" height="44" rx="8" fill="var(--surface-2)" stroke="var(--s2)" stroke-width="1.4"></rect>';
+  s+=txt(20,206,"デザイナー4名（フルリモート）",{fill:"var(--ink)",size:12,weight:700,disp:true});
+  s+=txt(20,223,"制作はチームで回っている。ここは問題ありません",{fill:"var(--ink-3)",size:10});
+  s+=txt(404,206,"※ 詰まっているのは制作ではなく、制作の前後です。",{fill:"var(--brand)",size:10.5,weight:700});
+  s+=txt(404,223,"　 だから増員ではなく、役割の追加が要ります。",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("c-org-now").innerHTML='<h4>いまの体制</h4><p class="csub">制作は分業できている。営業と管理だけが分業できていない</p>'+svg(W,H,s);
+})();
+
+(function(){
+  var W=760,H=278,s="";
+  s+=box(268,14,224,52,"代表（山田 様）","考える・決める・話す","var(--s1)");
+  var cols=[
+    {t:"在宅ワーカーチーム",u:"3名相当／月120時間",c:"var(--s3)"},
+    {t:"アイドマ 営業支援ユニット",u:"リスト〜アポイント（外付け）",c:"var(--s4)"},
+    {t:"デザイナー4名",u:"制作（従来どおり）",c:"var(--s2)"}
+  ];
+  cols.forEach(function(c,i){
+    var x=8+i*252;
+    s+='<path d="M 380 66 L 380 88 L '+(x+114)+' 88 L '+(x+114)+' 106" stroke="'+c.c+'" stroke-width="1.5" fill="none"></path>';
+    s+='<rect x="'+x+'" y="106" width="228" height="52" rx="8" fill="var(--surface-2)" stroke="'+c.c+'" stroke-width="1.6"></rect>';
+    s+=txt(x+13,128,c.t,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(x+13,146,c.u,{fill:"var(--ink-3)",size:10.5});
+  });
+  var subs=[
+    ["営業の下支え 32h","提案準備 28h","パートナー管理 22h","制作の下支え 24h","広報・事務 14h"],
+    ["リスト作成","架電・メール・DM","アポイント獲得まで"],
+    ["デザインの判断","制作","クライアント対応"]
+  ];
+  subs.forEach(function(list,i){
+    var x=8+i*252;
+    list.forEach(function(t,j){ s+=txt(x+13,170+j*20,"・"+t,{fill:"var(--ink-2)",size:10.5}); });
+  });
+  s+='<rect x="8" y="244" width="744" height="28" rx="7" fill="var(--good-soft)"></rect>';
+  s+=txt(20,262,"到達点：代表が商談に臨むとき、相手のことを調べ切った資料が手元にある。話術で補う必要がなくなる。",{fill:"var(--good)",size:11.5,weight:700});
+  document.getElementById("c-org-next").innerHTML='<h4>在宅ワーカー活用後の体制</h4><p class="csub">制作チームはそのまま。前後に2つの機能を足す</p>'+svg(W,H,s);
+})();
+
+(function(){
+  var rows=[
+    {k:"提案設計（何を提案するか）",a:16,b:38},
+    {k:"商談・プレゼン",a:14,b:30},
+    {k:"リスト作成・アプローチ",a:12,b:0},
+    {k:"下調べ・提案準備",a:18,b:8},
+    {k:"制作ディレクション",a:40,b:44},
+    {k:"パートナー・契約管理",a:16,b:4},
+    {k:"経理・その他事務",a:14,b:4},
+    {k:"新規事業の構想",a:0,b:32}
+  ];
+  var W=760,H=330,padL=214,padR=100,padT=38,padB=44;
+  var plotW=W-padL-padR,plotH=H-padT-padB,rowH=plotH/rows.length;
+  var max=niceMax(48,4),s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(padT-10)+'" x2="'+x+'" y2="'+(padT+plotH)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,padT-18,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+28,padT-18,"h/月",{fill:"var(--ink-3)",size:10});
+  rows.forEach(function(r,i){
+    var y=padT+i*rowH+3, bh=(rowH-10)/2;
+    s+=txt(padL-12,y+bh,r.k,{fill:"var(--ink)",size:11.5,anchor:"end",baseline:"middle"});
+    s+=rrect(padL,y,(r.a/max)*plotW,bh,3,"var(--rule-2)");
+    s+=rrect(padL,y+bh+3,(r.b/max)*plotW,bh,3,r.b>=r.a?"var(--s2)":"var(--s1)");
+    s+=txt(padL+(r.b/max)*plotW+7,y+bh+3+bh/2,r.b+"h",{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+  });
+  s+=txt(padL,H-10,"上＝いま（推定）／下＝移管後。合計は月160時間で揃えています。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-time").innerHTML=
+    '<h4>代表の時間配分</h4><p class="csub">総量は変えず、中身を入れ替える</p>'+
+    '<div class="legend"><span><i style="background:var(--rule-2)"></i>いま</span><span><i style="background:var(--s2)"></i>移管後</span></div>'+svg(W,H,s);
+})();
+
+/* ============ 08 ROI ============ */
+var PRESETS={
+  cons:{app:400, appo:0.6,cap:4, lag:6,sfee:30,prep:3, basewin:10,lift:3, pool:20,ofee:6, price:70, cont:20,gm:50,keep:50,dcap:4},
+  base:{app:800, appo:1.0,cap:6, lag:4,sfee:30,prep:5, basewin:15,lift:6, pool:28,ofee:7, price:150,cont:50,gm:58,keep:70,dcap:10},
+  bull:{app:1400,appo:1.5,cap:9, lag:3,sfee:40,prep:7, basewin:20,lift:8, pool:40,ofee:10,price:250,cont:80,gm:65,keep:80,dcap:16}
+};
+var KEYS=["app","appo","cap","lag","sfee","prep","basewin","lift","pool","ofee","price","cont","gm","keep","dcap"];
+var DEC={appo:1,prep:1};
+var WIN_CEIL=55;
+
+function readInputs(){
+  var p={}; KEYS.forEach(function(k){ p[k]=parseFloat(document.getElementById("k-"+k).value); }); return p;
+}
+function setInputs(o){ KEYS.forEach(function(k){ document.getElementById("k-"+k).value=o[k]; }); }
+
+function calc(p){
+  var appo=p.app*(p.appo/100);
+  var meets=Math.min(appo,p.cap);            /* 代表が出られる数で頭打ち */
+  var apCapped=appo>p.cap+1e-9;
+
+  /* 準備時間は在宅ワーカーの枠を商談数で割った分＋代表の自力1時間が上限 */
+  var supply=1+(meets>0?p.pool/meets:0);
+  var effPrep=Math.min(p.prep,supply);
+  var prepCapped=p.prep>supply+1e-9;
+
+  var win=p.basewin+p.lift*(effPrep-1);
+  win=Math.max(0,Math.min(win,WIN_CEIL));
+  var rawWinsM=meets*(win/100);              /* 月あたりの受注数（接触ベース） */
+  var winsM=Math.min(rawWinsM,p.dcap/12);    /* 制作キャパで頭打ち */
+  var dCapped=rawWinsM>p.dcap/12+1e-9;
+
+  /* 受注はリードタイム分だけ遅れて計上 */
+  var wins=[],cumW=0,y1Wins=0;
+  for(var m=1;m<=36;m++){
+    var w=(m>p.lag)?winsM:0;
+    wins.push(w); cumW+=w;
+    if(m<=12) y1Wins+=w;
+  }
+  var initial=p.price*10000, contYear=p.cont*10000, gmR=p.gm/100;
+
+  /* 月次の粗利：初期は受注月に、継続は翌年以降に残存率をかけて */
+  var gp=[],cumGp=[],cum=0;
+  for(var m2=1;m2<=36;m2++){
+    var g=wins[m2-1]*initial*gmR;
+    /* 12ヶ月前までに受注した案件からの継続収入（年次の継続率を月割り） */
+    for(var back=12;back<m2;back+=12){
+      var idx=m2-back-1;
+      if(idx>=0){
+        var surv=Math.pow(p.keep/100,back/12);
+        g+=wins[idx]*(contYear/12)*gmR*surv;
+      }
+    }
+    gp.push(g); cum+=g; cumGp.push(cum);
+  }
+  var monthCost=(p.sfee+p.ofee)*10000;
+  var cumCost=[],payback=null;
+  for(var i=0;i<36;i++){
+    cumCost.push(monthCost*(i+1));
+    if(payback===null&&cumGp[i]>=cumCost[i]) payback=i+1;
+  }
+  var y1Gp=cumGp[11], y1Cost=monthCost*12;
+  var roi=y1Cost>0?(y1Gp-y1Cost)/y1Cost*100:0;
+
+  return {appo:appo,meets:meets,apCapped:apCapped,rawWinsM:rawWinsM,dCapped:dCapped,supply:supply,effPrep:effPrep,prepCapped:prepCapped,
+    win:win,winsM:winsM,wins:wins,y1Wins:y1Wins,gp:gp,cumGp:cumGp,cumCost:cumCost,payback:payback,
+    y1Gp:y1Gp,y1Cost:y1Cost,roi:roi,y3Gp:cumGp[35],y3Cost:cumCost[35],monthCost:monthCost};
+}
+function man(v){return n(v/10000);}
+
+function update(){
+  var p=readInputs();
+  KEYS.forEach(function(k){ document.getElementById("v-"+k).textContent=DEC[k]?p[k].toFixed(1):n(p[k]); });
+  var r=calc(p);
+
+  document.getElementById("o-roi").innerHTML=(r.roi>=0?"+":"")+Math.round(r.roi)+'<small>%</small>';
+  document.getElementById("o-roi").parentElement.className="stat "+(r.roi>=0?"pos":"hot");
+  document.getElementById("o-win").innerHTML=r.win.toFixed(1)+'<small>%</small>';
+  document.getElementById("o-winn").textContent="準備"+r.effPrep.toFixed(1)+"h／基礎"+p.basewin+"%＋伸び分";
+  document.getElementById("o-deals").innerHTML=r.y1Wins.toFixed(1)+'<small>社</small>';
+  document.getElementById("o-dealsn").textContent="受注開始は"+(p.lag+1)+"ヶ月目から";
+  document.getElementById("o-y3").innerHTML=man(r.y3Gp)+'<small>万円</small>';
+  document.getElementById("o-y3n").textContent="3年投資 "+man(r.y3Cost)+"万円／継続率"+p.keep+"%";
+
+  document.getElementById("f-app").textContent=n(p.app);
+  document.getElementById("f-appo").textContent=r.appo.toFixed(1);
+  document.getElementById("f-appo-r").textContent="アポ率 "+p.appo.toFixed(1)+"%";
+  document.getElementById("f-meet").textContent=r.meets.toFixed(1);
+  document.getElementById("f-meet-r").textContent=r.apCapped?("上限 "+p.cap+"件で頭打ち"):("上限 "+p.cap+"件まで余力あり");
+  document.getElementById("f-win").textContent=r.winsM.toFixed(2);
+  document.getElementById("f-win-r").textContent="受注率 "+r.win.toFixed(1)+"%";
+
+  drawCurve(r,p);
+  drawMonths(r,p);
+  drawY3(r,p);
+
+  var v=document.getElementById("o-verdict");
+  if(r.roi>=0){
+    v.style.borderLeftColor="var(--good)";
+    v.innerHTML='<b>判定：</b> 1年目の粗利は <b>'+man(r.y1Gp)+'万円</b>（受注 '+r.y1Wins.toFixed(1)+
+      '社）、投資は <b>'+man(r.y1Cost)+'万円</b>、ROIは <b>'+Math.round(r.roi)+'%</b>。'+
+      (r.payback?'累積で投資を上回るのは <b>'+r.payback+'ヶ月目</b>です。':'')+
+      ' 3年累計では粗利 <b>'+man(r.y3Gp)+'万円</b>・投資 '+man(r.y3Cost)+
+      '万円。<b>受注率が '+r.win.toFixed(1)+'% まで上がっているのは、1商談あたり '+r.effPrep.toFixed(1)+
+      '時間の準備ができている前提</b>です。ここが崩れると全部崩れます。';
+  } else {
+    v.style.borderLeftColor="var(--brand)";
+    v.innerHTML='<b style="color:var(--brand)">判定：</b> この前提では1年目に投資を回収できません（ROI '+Math.round(r.roi)+
+      '%）。医療案件はリードタイムが長いので、1年目に低く出ること自体は異常ではありません。3年累計では粗利 <b style="color:var(--brand)">'+
+      man(r.y3Gp)+'万円</b>・投資 '+man(r.y3Cost)+'万円で、'+
+      (r.payback?'<b style="color:var(--brand)">'+r.payback+'ヶ月目</b>に累積で上回ります。':'36ヶ月以内には上回りません。')+
+      ' <b style="color:var(--brand)">1案件の受注額</b>を実績値に置き換えてご確認ください。';
+  }
+  if(r.prepCapped){
+    v.innerHTML+='<br><span style="color:var(--warn)">※ 準備時間が供給の上限（1商談あたり '+r.supply.toFixed(1)+
+      'h）で頭打ちしています。商談 '+r.meets.toFixed(1)+'件に対して在宅ワーカーの提案準備枠が '+p.pool+
+      'h/月しかないためです。<b style="color:var(--warn)">商談を増やすほど、1件あたりの準備は薄くなります。</b></span>';
+  }
+  if(r.dCapped){
+    v.innerHTML+='<br><span style="color:var(--warn)">※ 受注が「年間に制作できる案件数 '+p.dcap+
+      '件」で頭打ちしています。この前提なら月'+r.rawWinsM.toFixed(2)+'件は決まる計算ですが、作る手が足りません。'+
+      '<b style="color:var(--warn)">ここから先に効くのは、件数を増やすことではなく、単価を上げるか、受ける案件を選ぶことです。</b></span>';
+  }
+  if(r.apCapped){
+    v.innerHTML+='<br><span style="color:var(--ink-3)">※ アポイントは月'+r.appo.toFixed(1)+'件取れていますが、代表が出られるのは'+p.cap+
+      '件までなので、それ以上は商談になりません。アプローチ数を増やしても効果は出ません。</span>';
+  }
+  if(p.lift===0){
+    v.innerHTML+='<br><span style="color:var(--ink-3)">※ 準備の効果をゼロにしているため、受注率は基礎値のまま固定されています。最も厳しい見方です。</span>';
+  }
+}
+
+function drawCurve(r,p){
+  var W=700,H=280,padL=64,padR=88,padT=34,padB=48;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var maxH=12,maxW=WIN_CEIL+5;
+  var s="";
+  for(var g=0;g<=4;g++){
+    var y=padT+plotH-(g/4)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,Math.round(maxW*g/4)+"%",{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-14,"受注率",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(h){return padL+((h-1)/(maxH-1))*plotW;}
+  function py(w){return padT+plotH-(w/maxW)*plotH;}
+  var d="",cap="";
+  for(var h=1;h<=maxH;h+=0.5){
+    var w=Math.max(0,Math.min(p.basewin+p.lift*(h-1),WIN_CEIL));
+    d+=(d===""?"M ":"L ")+px(h)+" "+py(w);
+  }
+  s+='<path d="'+d+'" fill="none" stroke="var(--s3)" stroke-width="2.6"></path>';
+  /* 供給上限の帯 */
+  if(r.supply<maxH){
+    s+='<rect x="'+px(r.supply)+'" y="'+padT+'" width="'+(padL+plotW-px(r.supply))+'" height="'+plotH+'" fill="var(--s4)" opacity="0.10"></rect>';
+    s+='<line x1="'+px(r.supply)+'" y1="'+padT+'" x2="'+px(r.supply)+'" y2="'+(padT+plotH)+'" stroke="var(--s4)" stroke-width="1.5" stroke-dasharray="5 4"></line>';
+    s+=txt(px(r.supply)+7,padT+14,"いまの体制で配れる上限 "+r.supply.toFixed(1)+"h",{fill:"var(--s4)",size:10.5,weight:700});
+  }
+  /* いまの位置 */
+  var cx=px(r.effPrep),cy=py(r.win);
+  s+='<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="var(--s1)"></circle>';
+  s+='<circle cx="'+cx+'" cy="'+cy+'" r="11" fill="none" stroke="var(--s1)" stroke-width="1.5" opacity="0.5"></circle>';
+  s+=txt(cx+16,cy,"いまの設定："+r.effPrep.toFixed(1)+"h → "+r.win.toFixed(1)+"%",{fill:"var(--s1)",size:11.5,weight:700,baseline:"middle"});
+  for(var h2=1;h2<=maxH;h2+=2) s+=txt(px(h2),padT+plotH+18,h2+"h",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  s+=txt(padL,H-8,"※ この曲線は仮説です。実績が溜まったら、実際の受注率で置き換えてください。上限は"+WIN_CEIL+"%で止めています。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-curve").innerHTML=
+    '<h4>準備時間と受注率の関係</h4><p class="csub">このボードでいちばん重要なグラフです</p>'+svg(W,H,s);
+}
+
+function drawMonths(r,p){
+  var W=700,H=270,padL=64,padR=76,padT=30,padB=44;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var maxV=niceMax(Math.max(r.cumGp[11],r.cumCost[11])*1.15/10000,4);
+  var s="";
+  for(var i=0;i<=4;i++){
+    var g=maxV*i/4,y=padT+plotH-(g/maxV)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-12,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+(m/11)*plotW;}
+  function py(v){return padT+plotH-(v/10000/maxV)*plotH;}
+  [["cumGp","var(--s2)"],["cumCost","var(--s1)"]].forEach(function(pair){
+    var d=r[pair[0]].slice(0,12).map(function(v,i){return (i===0?"M ":"L ")+px(i)+" "+py(v);}).join(" ");
+    s+='<path d="'+d+'" fill="none" stroke="'+pair[1]+'" stroke-width="2.4"></path>';
+    s+='<circle cx="'+px(11)+'" cy="'+py(r[pair[0]][11])+'" r="3.6" fill="'+pair[1]+'"></circle>';
+    s+=txt(px(11)+8,py(r[pair[0]][11]),n(r[pair[0]][11]/10000),{fill:pair[1],size:11,weight:700,mono:true,baseline:"middle"});
+  });
+  var lx=px(p.lag);
+  s+='<line x1="'+lx+'" y1="'+padT+'" x2="'+lx+'" y2="'+(padT+plotH)+'" stroke="var(--s4)" stroke-width="1.4" stroke-dasharray="5 4"></line>';
+  s+=txt(lx+7,padT+13,"最初の受注はここから",{fill:"var(--s4)",size:10.5,weight:700});
+  if(r.payback&&r.payback<=12){
+    var bx=px(r.payback-1);
+    s+='<line x1="'+bx+'" y1="'+padT+'" x2="'+bx+'" y2="'+(padT+plotH)+'" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"></line>';
+    s+=txt(bx+7,padT+32,"投資回収 "+r.payback+"ヶ月目",{fill:"var(--s2)",size:11,weight:700});
+  }
+  for(var m=0;m<12;m+=2) s+=txt(px(m),padT+plotH+17,(m+1)+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  document.getElementById("c-months").innerHTML=
+    '<h4>1年目の累積</h4><p class="csub">リードタイムの分だけ、粗利の立ち上がりが遅れます</p>'+
+    '<div class="legend"><span><i style="background:var(--s2)"></i>累積 粗利</span><span><i style="background:var(--s1)"></i>累積 投資</span></div>'+svg(W,H,s);
+}
+
+function drawY3(r,p){
+  var W=700,H=250,padL=64,padR=82,padT=32,padB=46;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var maxV=niceMax(Math.max(r.cumGp[35],r.cumCost[35])*1.12/10000,4);
+  var s="";
+  for(var i=0;i<=4;i++){
+    var g=maxV*i/4,y=padT+plotH-(g/maxV)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-12,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+(m/35)*plotW;}
+  function py(v){return padT+plotH-(v/10000/maxV)*plotH;}
+  [["cumGp","var(--s2)"],["cumCost","var(--s1)"]].forEach(function(pair){
+    var d=r[pair[0]].map(function(v,i){return (i===0?"M ":"L ")+px(i)+" "+py(v);}).join(" ");
+    s+='<path d="'+d+'" fill="none" stroke="'+pair[1]+'" stroke-width="2.4"></path>';
+    s+='<circle cx="'+px(35)+'" cy="'+py(r[pair[0]][35])+'" r="3.6" fill="'+pair[1]+'"></circle>';
+    s+=txt(px(35)+8,py(r[pair[0]][35]),n(r[pair[0]][35]/10000),{fill:pair[1],size:11,weight:700,mono:true,baseline:"middle"});
+  });
+  for(var m=0;m<36;m+=6) s+=txt(px(m),padT+plotH+17,(m+1)+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  s+=txt(padL,H-8,"※ 2年目以降は、既存クライアントからの継続発注（年"+p.cont+"万円・継続率"+p.keep+"%）が積み上がります。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-y3").innerHTML=
+    '<h4>3年（36ヶ月）の累積</h4><p class="csub">伴走型の会社は、2年目以降に効いてきます</p>'+
+    '<div class="legend"><span><i style="background:var(--s2)"></i>累積 粗利（初期＋継続）</span><span><i style="background:var(--s1)"></i>累積 投資</span></div>'+svg(W,H,s);
+}
+
+(function(){
+  KEYS.forEach(function(k){
+    document.getElementById("k-"+k).addEventListener("input",function(){
+      Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(b){b.setAttribute("aria-pressed","false");});
+      update();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(b){
+    b.addEventListener("click",function(){
+      Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+      setInputs(PRESETS[b.dataset.preset]); update();
+    });
+  });
+  document.getElementById("r-reset").addEventListener("click",function(){
+    Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(x){x.setAttribute("aria-pressed",x.dataset.preset==="base"?"true":"false");});
+    setInputs(PRESETS.base); update();
+  });
+  setInputs(PRESETS.base);
+  update();
+})();
+
+})();
+</script>
