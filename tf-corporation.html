@@ -1,0 +1,1524 @@
+<title>TFコーポレーション 未開拓11分野の攻略盤</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Sans+JP:wght@400;500;600&family=Source+Code+Pro:wght@400;600&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#ECECF1;
+  --surface:#FAFAFC;
+  --surface-2:#E4E4EC;
+  --surface-3:#D6D6E0;
+  --ink:#17161C;
+  --ink-2:#4A4954;
+  --ink-3:#787784;
+  --rule:#DCDCE4;
+  --rule-2:#C0C0CC;
+  --s1:#0086A3;
+  --s2:#96690C;
+  --s3:#B0366B;
+  --s4:#4C4099;
+  --s5:#1F7A3C;
+  --brand:#4C4099;
+  --brand-soft:#E5E2F2;
+  --accent:#B0366B;
+  --accent-soft:#F7E3EC;
+  --done:#0086A3;
+  --done-soft:#DDEEF3;
+  --open:#96690C;
+  --open-soft:#F3EBD7;
+  --new:#B0366B;
+  --new-soft:#F7E3EC;
+  --check-soft:#E6E6EC;
+  --good:#1F7A3C;
+  --good-soft:#DEEDE3;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#101014;
+    --surface:#1A1A20;
+    --surface-2:#24242D;
+    --surface-3:#2E2E38;
+    --ink:#EBEBF0;
+    --ink-2:#AFAFBA;
+    --ink-3:#83838F;
+    --rule:#2B2B34;
+    --rule-2:#3A3A45;
+    --s1:#2BA3C4;
+    --s2:#AE8420;
+    --s3:#D2679A;
+    --s4:#8B7EDC;
+    --s5:#3D9C57;
+    --brand:#8B7EDC;
+    --brand-soft:#211E33;
+    --accent:#D2679A;
+    --accent-soft:#321C26;
+    --done:#2BA3C4;
+    --done-soft:#122630;
+    --open:#AE8420;
+    --open-soft:#2C2614;
+    --new:#D2679A;
+    --new-soft:#321C26;
+    --check-soft:#26262E;
+    --good:#3D9C57;
+    --good-soft:#152A1C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#101014;
+  --surface:#1A1A20;
+  --surface-2:#24242D;
+  --surface-3:#2E2E38;
+  --ink:#EBEBF0;
+  --ink-2:#AFAFBA;
+  --ink-3:#83838F;
+  --rule:#2B2B34;
+  --rule-2:#3A3A45;
+  --s1:#2BA3C4;
+  --s2:#AE8420;
+  --s3:#D2679A;
+  --s4:#8B7EDC;
+  --s5:#3D9C57;
+  --brand:#8B7EDC;
+  --brand-soft:#211E33;
+  --accent:#D2679A;
+  --accent-soft:#321C26;
+  --done:#2BA3C4;
+  --done-soft:#122630;
+  --open:#AE8420;
+  --open-soft:#2C2614;
+  --new:#D2679A;
+  --new-soft:#321C26;
+  --check-soft:#26262E;
+  --good:#3D9C57;
+  --good-soft:#152A1C;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);
+  font-family:"IBM Plex Sans JP","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  font-size:15px;line-height:1.78;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"BIZ UDPGothic","IBM Plex Sans JP",sans-serif;font-weight:700;margin:0;line-height:1.4;text-wrap:balance}
+p{margin:0}
+a{color:var(--s1)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+.mono{font-family:"Source Code Pro",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.grid-rule{height:1px;background:var(--rule);border:0;margin:0}
+
+.masthead{background:var(--surface);border-bottom:1px solid var(--rule)}
+.mast-inner{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-end;padding:26px 0 20px}
+.eyebrow{font-family:"Source Code Pro",monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.mast-title{font-size:clamp(25px,3.4vw,38px);font-weight:700;margin-top:8px;letter-spacing:-.005em}
+.mast-title em{font-style:normal;color:var(--accent)}
+.mast-sub{color:var(--ink-2);font-size:13.5px;margin-top:9px;max-width:66ch}
+.mast-meta{font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-align:right}
+.mast-meta b{color:var(--ink-2);font-weight:600}
+.flash{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);color:var(--accent);
+  font-size:12px;font-weight:600;padding:5px 12px;border-radius:3px;margin-top:12px}
+
+.tabbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:none;border:0;border-bottom:3px solid transparent;font:inherit;font-size:13px;font-weight:600;
+  color:var(--ink-3);padding:13px 15px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brand)}
+.tab .num{font-family:"Source Code Pro",monospace;font-size:10px;color:var(--ink-3);margin-right:6px}
+.tab[aria-selected="true"] .num{color:var(--brand)}
+
+.panel{padding:34px 0 76px}
+.panel[hidden]{display:none!important}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.sec-head h2{font-size:24px}
+.sec-head .tagline{font-size:12.5px;color:var(--ink-3)}
+.lede{color:var(--ink-2);font-size:14px;max-width:76ch;margin:10px 0 26px}
+.block{margin-top:40px}
+.block > h3{font-size:17.5px}
+.block > .sub{font-size:12.5px;color:var(--ink-3);margin:3px 0 16px}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(186px,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:20px}
+.card.flat{background:transparent;border-style:dashed}
+
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:15px 17px;display:flex;flex-direction:column;gap:1px;border-top:3px solid var(--rule-2)}
+.stat.hot{border-top-color:var(--accent)}
+.stat.pos{border-top-color:var(--good)}
+.stat.info{border-top-color:var(--s1)}
+.stat.brand{border-top-color:var(--brand)}
+.stat .k{font-size:11.5px;color:var(--ink-3);font-weight:600}
+.stat .v{font-family:"Source Code Pro",monospace;font-size:25px;font-weight:600;letter-spacing:-.03em;line-height:1.35;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:13px;margin-left:2px;color:var(--ink-2);font-family:"IBM Plex Sans JP",sans-serif;font-weight:400}
+.stat .n{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:2px}
+.stat.hot .v{color:var(--accent)}
+.stat.pos .v{color:var(--good)}
+.stat.brand .v{color:var(--brand)}
+
+.chip{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:3px 9px;border-radius:3px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.chip.done{background:var(--done-soft);color:var(--done)}
+.chip.open{background:var(--open-soft);color:var(--open)}
+.chip.new{background:var(--new-soft);color:var(--new)}
+.chip.brand{background:var(--brand-soft);color:var(--brand)}
+.chip.good{background:var(--good-soft);color:var(--good)}
+
+.deflist{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;font-size:13.5px;align-items:baseline}
+.deflist dt{color:var(--ink-3);font-size:12px;font-weight:600;white-space:nowrap}
+.deflist dd{margin:0}
+.note{font-size:12px;color:var(--ink-3);line-height:1.75;margin-top:12px}
+.callout{background:var(--open-soft);border-radius:4px;padding:13px 16px;font-size:12.5px;color:var(--ink-2);margin-top:14px}
+.callout b{color:var(--ink)}
+
+/* 19分野マトリクス */
+.matrix-legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:12px;color:var(--ink-2);margin-bottom:14px}
+.matrix-legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.fieldgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(146px,1fr));gap:8px}
+.fieldcell{border:1px solid var(--rule);border-left:3px solid var(--rule-2);border-radius:3px;padding:9px 11px;background:var(--surface)}
+.fieldcell .fn{font-family:"Source Code Pro",monospace;font-size:9.5px;color:var(--ink-3);display:block}
+.fieldcell .ft{font-family:"BIZ UDPGothic",sans-serif;font-size:12.5px;font-weight:700;line-height:1.4;margin-top:1px}
+.fieldcell .fs{font-size:10px;margin-top:3px;font-weight:600}
+.fieldcell.done{border-left-color:var(--done)} .fieldcell.done .fs{color:var(--done)}
+.fieldcell.open{border-left-color:var(--open);background:var(--open-soft)} .fieldcell.open .fs{color:var(--open)}
+.fieldcell.new{border-left-color:var(--new);background:var(--new-soft)} .fieldcell.new .fs{color:var(--new)}
+.fieldcell.check{border-left-color:var(--rule-2)} .fieldcell.check .fs{color:var(--ink-3)}
+
+.swot{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:14px}
+.swot section{border:1px solid var(--rule);border-radius:4px;padding:16px 18px;background:var(--surface)}
+.swot h4{font-size:14px;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.swot h4::before{content:"";width:12px;height:3px;background:var(--rule-2)}
+.swot .s h4::before{background:var(--s1)}
+.swot .w h4::before{background:var(--s3)}
+.swot .o h4::before{background:var(--s4)}
+.swot .t h4::before{background:var(--s2)}
+.swot ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+
+.reason{background:var(--surface);border:1px solid var(--rule);border-radius:4px;margin-bottom:16px;overflow:hidden}
+.reason .rhead{display:flex;gap:16px;align-items:flex-start;padding:20px 24px 0}
+.reason .idx{font-family:"BIZ UDPGothic",sans-serif;font-size:34px;font-weight:700;color:var(--accent);line-height:1;flex:0 0 auto}
+.reason .kicker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.reason h4{font-size:18px}
+.reason .rbody{padding:12px 24px 20px}
+.reason p{font-size:13.5px;color:var(--ink-2)}
+.reason .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(188px,1fr));gap:10px;margin:15px 0 4px}
+.reason .fact{background:var(--surface-2);border-radius:3px;padding:10px 13px}
+.reason .fact .fv{font-family:"Source Code Pro",monospace;font-size:19px;font-weight:600}
+.reason .fact .fk{font-size:11px;color:var(--ink-3);line-height:1.5}
+.reason .sowhat{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:13.5px}
+.reason .sowhat b{color:var(--accent)}
+
+.timeline{overflow-x:auto;padding:24px 0 4px}
+.timeline-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(154px,1fr);min-width:840px;position:relative}
+.timeline-track::before{content:"";position:absolute;left:0;right:0;top:8px;height:2px;background:var(--rule-2)}
+.tl-item{position:relative;padding:26px 12px 0 0}
+.tl-item::before{content:"";position:absolute;left:0;top:2px;width:14px;height:14px;background:var(--surface);border:3px solid var(--rule-2)}
+.tl-item.on::before{background:var(--accent);border-color:var(--accent)}
+.tl-item.now::before{background:var(--brand);border-color:var(--brand);width:18px;height:18px;top:0}
+.tl-item .y{font-family:"Source Code Pro",monospace;font-size:11.5px;font-weight:600;color:var(--ink-3)}
+.tl-item.on .y{color:var(--accent)}
+.tl-item.now .y{color:var(--brand)}
+.tl-item .t{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+
+.pillar{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.pillar .pk{font-family:"Source Code Pro",monospace;font-size:10.5px;letter-spacing:.09em;color:var(--ink-3)}
+.pillar h4{font-size:16.5px}
+.pillar p{font-size:13px;color:var(--ink-2)}
+.pillar .kpi{margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:4px}
+.pillar .kpi b{font-family:"Source Code Pro",monospace;color:var(--ink);font-weight:600}
+
+.scroller{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--surface)}
+table.matrix{width:100%;border-collapse:collapse;font-size:13px;min-width:660px}
+table.matrix th,table.matrix td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.matrix th{font-size:11.5px;color:var(--ink-3);font-weight:600;background:var(--surface-2)}
+table.matrix tr:last-child td{border-bottom:0}
+table.matrix td:first-child{font-weight:600}
+
+/* トークの型 */
+.script{display:grid;gap:10px}
+.script-row{display:grid;grid-template-columns:118px 1fr;gap:14px;align-items:stretch}
+.script-tag{display:flex;flex-direction:column;justify-content:center;font-size:11.5px;font-weight:600;border-radius:3px;background:var(--surface-2);color:var(--ink-2);padding:10px;text-align:center;line-height:1.4}
+.script-tag span{font-family:"Source Code Pro",monospace;font-size:10px;color:var(--ink-3)}
+.script-body{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:13px 16px;font-size:13px;color:var(--ink-2)}
+.script-body q{font-family:"BIZ UDPGothic",sans-serif;color:var(--ink);display:block;margin-top:6px;font-size:13.5px}
+.script-arrow{grid-column:1/-1;text-align:center;color:var(--rule-2);font-size:13px;line-height:1}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:1px solid var(--rule);border-radius:4px}
+.seg{display:flex;background:var(--surface-2);border-radius:3px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:12px;font-weight:600;border:0;background:none;color:var(--ink-3);padding:6px 12px;border-radius:2px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.controls input[type="search"],.controls select{font:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--rule-2);border-radius:3px;background:var(--surface);color:var(--ink)}
+.controls input[type="search"]{min-width:190px;flex:1}
+.controls .count{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.controls .count b{font-family:"Source Code Pro",monospace;color:var(--ink);font-weight:600}
+
+.tlist{display:flex;flex-direction:column;gap:9px}
+.trow{display:grid;grid-template-columns:38px minmax(206px,1.02fr) minmax(238px,1.5fr) minmax(238px,1.5fr);gap:0 18px;
+  background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--rule-2);border-radius:0 4px 4px 0;padding:15px 18px;align-items:start}
+.trow.tA{border-left-color:var(--new)}
+.trow.tB{border-left-color:var(--open)}
+.trow.tC{border-left-color:var(--s1)}
+.trow .rank{font-family:"Source Code Pro",monospace;font-size:13px;color:var(--ink-3);font-weight:600;padding-top:2px}
+.trow .head{display:flex;flex-direction:column;gap:6px}
+.trow .name{font-family:"BIZ UDPGothic",sans-serif;font-size:14.5px;font-weight:700;line-height:1.45}
+.trow .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.trow .cnt{font-family:"Source Code Pro",monospace;font-size:13px;font-weight:600}
+.trow .cnt span{font-size:11px;color:var(--ink-3);font-weight:400;margin-left:3px;font-family:"IBM Plex Sans JP",sans-serif}
+.trow .fieldlabel{font-size:10.5px;font-weight:600;letter-spacing:.08em;color:var(--ink-3);display:block;margin-bottom:3px}
+.trow .fieldbody{font-size:13px;color:var(--ink-2);line-height:1.7}
+.trow .hook .fieldbody{color:var(--ink);border-left:3px solid var(--rule-2);padding-left:11px}
+@media(max-width:900px){
+  .trow{grid-template-columns:34px 1fr;gap:10px 14px}
+  .trow .head,.trow .why,.trow .hook{grid-column:2}
+}
+
+.taskgroup{background:var(--surface);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.taskgroup header{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:13px 16px;background:var(--surface-2)}
+.taskgroup header h4{font-size:14px}
+.taskgroup header .hh{font-family:"Source Code Pro",monospace;font-size:12px;color:var(--ink-2)}
+.taskgroup ul{list-style:none;margin:0;padding:6px 0}
+.taskgroup li{display:flex;justify-content:space-between;gap:12px;padding:7px 16px;font-size:13px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.taskgroup li:last-child{border-bottom:0}
+.taskgroup li b{font-family:"Source Code Pro",monospace;font-size:12px;color:var(--ink-3);font-weight:400;white-space:nowrap}
+.taskgroup li.key{color:var(--ink)}
+.taskgroup li.key > span:first-child::before{content:"▶";color:var(--accent);font-size:8px;margin-right:7px;vertical-align:1px}
+
+.chartbox{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:18px}
+.chartbox h4{font-size:14px}
+.chartbox .csub{font-size:12px;color:var(--ink-3);margin:2px 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);margin-bottom:10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+
+.roi-layout{display:grid;grid-template-columns:minmax(280px,336px) 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.roi-layout{grid-template-columns:1fr}}
+.knobs{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:18px;position:sticky;top:58px;max-height:calc(100vh - 74px);overflow-y:auto}
+.knob{margin-bottom:14px}
+.knob label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink-2);margin-bottom:5px;gap:10px}
+.knob label b{font-family:"Source Code Pro",monospace;font-size:13px;color:var(--ink);font-weight:600}
+.knob input[type="range"]{width:100%;accent-color:var(--brand);height:20px;cursor:pointer}
+.knob-group{border-top:1px solid var(--rule);padding-top:14px;margin-top:16px}
+.gh{font-family:"Source Code Pro",monospace;font-size:10.5px;letter-spacing:.08em;color:var(--ink-3);margin-bottom:12px}
+.gh span{color:var(--brand)}
+.resetbtn{font:inherit;font-size:12px;font-weight:600;border:1px solid var(--rule-2);background:var(--surface);color:var(--ink-2);border-radius:3px;padding:6px 12px;cursor:pointer}
+.resetbtn:hover{border-color:var(--ink-3);color:var(--ink)}
+.verdict{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--good);border-radius:0 4px 4px 0;padding:16px 20px;font-size:13.5px}
+.verdict b{font-family:"Source Code Pro",monospace;color:var(--good);font-weight:600}
+
+.funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(136px,1fr));gap:10px}
+.fstep{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:13px 14px}
+.fstep .fl{font-size:11.5px;color:var(--ink-3);font-weight:600}
+.fstep .fv{font-family:"Source Code Pro",monospace;font-size:22px;font-weight:600}
+.fstep .fr{font-size:11px;color:var(--ink-3)}
+.fstep.end{background:var(--brand-soft);border-color:transparent}
+.fstep.end .fv,.fstep.end .fl,.fstep.end .fr{color:var(--brand)}
+
+.phase{display:grid;grid-template-columns:136px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule)}
+.phase:first-of-type{border-top:0}
+.phase .pd{font-family:"Source Code Pro",monospace;font-size:12px;color:var(--accent);font-weight:600}
+.phase .pt{font-family:"BIZ UDPGothic",sans-serif;font-size:16px;font-weight:700;line-height:1.4;margin-top:2px}
+.phase ul{margin:0;padding-left:1.15em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px}
+.phase ul b{color:var(--ink)}
+.owner{display:inline-block;font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:2px;margin-right:7px;vertical-align:1px}
+.owner.ai{background:var(--done-soft);color:var(--done)}
+.owner.tf{background:var(--brand-soft);color:var(--brand)}
+.srcs{font-size:12px;color:var(--ink-3);line-height:1.9}
+@media(max-width:640px){
+  .wrap{padding:0 16px}
+  .phase{grid-template-columns:1fr;gap:10px}
+  .reason .rhead{flex-direction:column;gap:6px}
+  .script-row{grid-template-columns:1fr}
+}
+</style>
+
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <div>
+      <div class="eyebrow">事前リサーチ / 成長戦略 / 2ユニット ROIシミュレーション</div>
+      <h1 class="mast-title">株式会社TFコーポレーション <em>未開拓11分野</em> の攻略盤</h1>
+      <p class="mast-sub">業界知識がなくてもアポが取れる型を、外部リソースで先に作る。特定技能は2026年1月の閣議決定で19分野に拡大し、御社の未開拓分野は8から11に増えました。その11分野を、社内のテレアポ8名に触れずに攻略する設計です。</p>
+      <div class="flash">■ 制度更新：2026年1月23日の閣議決定で3分野が追加され、特定技能は全19分野に</div>
+    </div>
+    <div class="mast-meta">
+      <div><b>作成</b> 株式会社アイドマ・ホールディングス</div>
+      <div><b>宛先</b> 松田 社長</div>
+      <div><b>更新</b> 2026年9月13日</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="セクション">
+  <div class="wrap">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-p="research"><span class="num">01</span>事前リサーチ</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="market"><span class="num">02</span>市場環境</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="why"><span class="num">03</span>今すぐやる3つの理由</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="strategy"><span class="num">04</span>成長戦略</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="targets"><span class="num">05</span>営業ターゲット30</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="remote"><span class="num">06</span>在宅ワーカー活用</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="roi"><span class="num">07</span>ROIシミュレーション</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="road"><span class="num">08</span>90日ロードマップ</button>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- 01 -->
+<section class="panel" id="p-research" role="tabpanel">
+  <div class="sec-head"><h2>事前リサーチ</h2><span class="tagline">前回商談メモの構造化と、制度の最新状況</span></div>
+  <p class="lede">課題は営業力ではありません。テレアポ8名・クロージング2名という分業体制は既に機能しており、既存分野では成果が出ています。止まっているのは一点だけ——<b>営業メンバーが未知の業種の業務内容をイメージできず、最初の一言が出てこないこと</b>。これは知識の問題ではなく、<b>型がないこと</b>の問題です。</p>
+
+  <div class="grid g4">
+    <div class="stat brand"><span class="k">特定技能の対象分野</span><span class="v">19<small>分野</small></span><span class="n">2026年1月の閣議決定で3分野追加</span></div>
+    <div class="stat hot"><span class="k">TFの未開拓分野</span><span class="v">11<small>分野</small></span><span class="n">従来の8分野 ＋ 新設3分野</span></div>
+    <div class="stat info"><span class="k">営業体制</span><span class="v">10<small>名</small></span><span class="n">テレアポ8名／クロージング2名</span></div>
+    <div class="stat"><span class="k">登録支援機関としての実績</span><span class="v">6<small>年</small></span><span class="n">法務省認可・複数分野で導入実績</span></div>
+  </div>
+
+  <div class="block">
+    <h3>特定技能19分野の攻略状況</h3>
+    <p class="sub">商談メモの記載から整理。2026年1月追加の3分野は、まだどの支援機関にも実績がありません。</p>
+    <div class="matrix-legend">
+      <span><i style="background:var(--done)"></i>導入実績あり（5）</span>
+      <span><i style="background:var(--rule-2)"></i>実績を要確認（3）</span>
+      <span><i style="background:var(--open)"></i>未開拓（8）</span>
+      <span><i style="background:var(--new)"></i>2027年度 新設・全社が実績ゼロ（3）</span>
+    </div>
+    <div class="fieldgrid" id="field-grid"></div>
+    <div class="callout"><b>次回商談で確認したい点：</b>「宿泊」「外食業」「自動車運送業」の3分野は、メモから実績の有無が判断できませんでした。特に<b>自動車運送業</b>は2024年3月追加の新しい分野で、社長のお持ちの全国トラック協会とのネットワークが直接効く領域です。ここが未開拓なら、最も勝ち筋の太いターゲットになります。</div>
+  </div>
+
+  <div class="grid g2 block">
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:10px">企業プロフィール</div>
+      <dl class="deflist">
+        <dt>企業名</dt><dd>株式会社TFコーポレーション</dd>
+        <dt>Webサイト</dt><dd><a href="https://tf-corporation.co.jp/" target="_blank" rel="noopener">tf-corporation.co.jp</a></dd>
+        <dt>代表</dt><dd>松田 社長</dd>
+        <dt>事業</dt><dd>人材サービス全般（登録支援機関事業／人材派遣／清掃関係受託事業 ほか4事業）</dd>
+        <dt>モデル</dt><dd>法務省認可の登録支援機関として、特定技能1号等の外国人材を企業へ紹介・支援するB2B</dd>
+        <dt>営業体制</dt><dd>テレアポ8名／クロージング2名の社内分業＋外部営業代行＋士業からの紹介</dd>
+        <dt>ネットワーク</dt><dd>全国トラック協会、大手企業幹部との独自のつながり</dd>
+        <dt>目標</dt><dd>特定技能の全分野での新規開拓・顧客獲得</dd>
+      </dl>
+      <p class="note">※ 本ボード作成環境からは同社サイトへ直接アクセスできなかったため、企業情報は前回商談メモに基づく整理です。従業員数・年商は非開示のため試算には用いていません。</p>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:12px">ボトルネックの正体</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div><span class="chip good">機能している</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">テレアポ8名・クロージング2名の分業。既存分野では十分に成果が出ており、<b style="color:var(--ink)">営業の実行力そのものは証明済み</b>です。触る必要はありません。</p></div>
+        <div><span class="chip open">止まっている</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">未知の業種（農業・漁業等）の業務内容をイメージできず、架電にハードルを感じて停滞。<b style="color:var(--ink)">「何を言えばいいか分からない」が原因</b>で、やる気や能力ではありません。</p></div>
+        <div><span class="chip new">失われつつある</span><p style="font-size:13px;color:var(--ink-2);margin-top:7px">労働人口減少で外国人材需要が高まるなか、未開拓分野のシェアを他社に取られる。<b style="color:var(--ink)">登録支援機関は全国11,323社</b>——既存分野は既に飽和しています。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>強み・課題の整理</h3>
+    <div class="swot">
+      <section class="s"><h4>強み</h4><ul>
+        <li>社長自身の豊富な海外駐在・商社マン経験</li>
+        <li>6年前からの登録支援機関としての実績と信用</li>
+        <li>全国トラック協会や大手企業幹部との独自のネットワーク</li>
+        <li>テレアポ8名・クロージング2名という、すぐ動ける実行部隊</li>
+      </ul></section>
+      <section class="w"><h4>課題</h4><ul>
+        <li>営業担当が経験範囲外の業種に具体的な提案ができない</li>
+        <li>分野別のリスト・トークスクリプトが標準化されていない</li>
+        <li>未開拓分野の開拓ノウハウとリソースが不足</li>
+        <li>支援業務の事務量が増えるほど営業リソースが削られる構造</li>
+      </ul></section>
+      <section class="o"><h4>機会</h4><ul>
+        <li>2026年1月の閣議決定で3分野追加、全19分野へ</li>
+        <li>新設3分野の5年間受入れ見込数は合計123万人超と制度史上最大規模</li>
+        <li>2024年追加の4分野は受入れ実績がまだ小さく、競合も実績ゼロ</li>
+        <li>受入れ見込数は5年で82万人と、従来34.5万人の2.4倍</li>
+      </ul></section>
+      <section class="t"><h4>脅威</h4><ul>
+        <li>登録支援機関は11,323社まで増え、既存分野は価格競争へ</li>
+        <li>2027年4月の育成就労施行で、上流の監理支援機関が入口を押さえる</li>
+        <li>職員数に応じた受入れ上限が新設され、後からの一気拡大が困難に</li>
+        <li>未開拓分野のシェアを先行者に固定されるリスク</li>
+      </ul></section>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="panel" id="p-market" role="tabpanel" hidden>
+  <div class="sec-head"><h2>市場環境</h2><span class="tagline">枠は2.4倍に広がり、プレイヤーも増えた</span></div>
+  <p class="lede">特定技能で働く外国人は<b>404,527人</b>と過去最多を更新し、受入れ見込数は5年で82万人。市場は明確に拡大しています。一方で登録支援機関は<b>11,323社</b>。<b>既存分野で戦うか、まだ誰もいない分野に行くか</b>——この選択が数年後の差になります。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">特定技能外国人（2026年末）</span><span class="v">404,527<small>人</small></span><span class="n">過去最多を更新</span></div>
+    <div class="stat pos"><span class="k">受入れ見込数（2024年度〜5年）</span><span class="v">82<small>万人</small></span><span class="n">従来34.5万人の2.4倍に再設定</span></div>
+    <div class="stat hot"><span class="k">新設3分野の受入れ見込数</span><span class="v">123<small>万人超</small></span><span class="n">5年間・制度史上最大規模</span></div>
+    <div class="stat"><span class="k">登録支援機関</span><span class="v">11,323<small>社</small></span><span class="n">参入障壁の低さから急増</span></div>
+  </div>
+
+  <div class="grid g2 block">
+    <div class="chartbox">
+      <h4>受入れ見込数の推移</h4>
+      <p class="csub">制度開始時と2024年の再設定。枠そのものが2.4倍に広がりました。</p>
+      <div id="ch-quota"></div>
+      <p class="note">枠の拡大は「国が人手不足を認めた分野が増えた」ということ。<b>枠がある＝受入企業側に予算と必要性がある</b>状態です。営業する側から見れば、説得ではなく紹介の仕事に近づきます。</p>
+    </div>
+    <div class="chartbox">
+      <h4>分野の拡大と、TFの攻略余地</h4>
+      <p class="csub">12分野 → 16分野 → 19分野。増えた分野ほど競合の実績が薄い。</p>
+      <div id="ch-fields"></div>
+      <p class="note">2019年の制度開始時は12分野。2024年3月に自動車運送業・鉄道・林業・木材産業の4分野、2026年1月にリネンサプライ・物流倉庫・資源循環の3分野が加わりました。<b>後から増えた7分野は、11,323社のどこもまだ実績を積めていません。</b></p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>この市場での勝ち方</h3>
+    <div class="grid g3">
+      <div class="card"><span class="chip brand">1</span><h4 style="font-size:15px;margin:10px 0 6px">既存分野では戦わない</h4><p style="font-size:13px;color:var(--ink-2)">介護・外食・製造業は11,323社が群がる領域で、差別化は価格になります。既存分野は今の社内体制で守り、<b>新規リソースは一切投入しない</b>のが正解です。</p></div>
+      <div class="card"><span class="chip brand">2</span><h4 style="font-size:15px;margin:10px 0 6px">実績ゼロの分野で先に実績を作る</h4><p style="font-size:13px;color:var(--ink-2)">新設3分野は評価試験もこれから。<b>「実績がないから提案できない」は全社共通の条件</b>です。ならば先に受入企業と関係を作った機関が、運用開始と同時に受注します。</p></div>
+      <div class="card"><span class="chip brand">3</span><h4 style="font-size:15px;margin:10px 0 6px">知識ではなく型で埋める</h4><p style="font-size:13px;color:var(--ink-2)">農業も漁業も、経営者の悩みは「人が採れない・辞める・高齢化」で同じです。<b>業界知識は最初の一言には要りません</b>。必要なのは分野ごとに1つだけ覚える固有名詞です。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="panel" id="p-why" role="tabpanel" hidden>
+  <div class="sec-head"><h2>今すぐやらないといけない3つの理由</h2><span class="tagline">法律・制度・世の中の流れ</span></div>
+  <p class="lede">3つとも、<b>今この瞬間に窓が開いている</b>ものです。特に1つ目は、申請の受付が今年4月に始まったばかりで、2027年4月の施行までに動かなければ選択肢が減ります。</p>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">1</div><div>
+      <div class="kicker"><span class="chip new">法律</span><span class="chip">2027年4月施行／申請受付は2026年4月15日開始</span></div>
+      <h4>育成就労制度で、受け入れられる企業数に「人員の上限」がかかる</h4>
+    </div></div>
+    <div class="rbody">
+      <p>2024年6月成立の改正入管法により、技能実習に代わる<b>育成就労制度が2027年4月に施行</b>されます。3年で特定技能1号レベルまで育成する制度で、<b>特定技能への移行を前提に設計</b>されています。監理団体は「監理支援機関」として許可制に移行し、常勤職員2名以上、<b>職員1名あたり実施機関8社・育成就労者40人までという上限</b>が新設されました。許可申請は<b>2026年4月15日に受付が始まっており</b>、2027年4月以降も事業を続けるには早期の申請が必要です。転籍も緩和され、支援の質がそのまま定着率に直結します。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">2027/4</div><div class="fk">育成就労制度の施行</div></div>
+        <div class="fact"><div class="fv">8<span style="font-size:12px">社/40人</span></div><div class="fk">職員1名あたりの受入上限</div></div>
+        <div class="fact"><div class="fv">受付中</div><div class="fk">監理支援機関の許可申請（2026年4月15日〜）</div></div>
+      </div>
+      <div class="sowhat"><b>TFにとって：</b>育成就労→特定技能1号という流れが標準になるため、<b>入口を押さえた機関が特定技能の顧客も握る</b>構造になります。さらに職員数による上限がある以上、<b>「後から一気に増やす」ができません</b>。顧客企業の数は、人員計画と同時に先に積んでおく必要があります。営業を止めている今の1年が、そのまま2027年以降の受入可能数の差になります。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">2</div><div>
+      <div class="kicker"><span class="chip new">制度</span><span class="chip">2026年1月23日 閣議決定</span></div>
+      <h4>3分野が追加され19分野に。未開拓は8ではなく11分野になった</h4>
+    </div></div>
+    <div class="rbody">
+      <p>2026年1月23日の閣議決定で、<b>リネンサプライ・物流倉庫・資源循環</b>の3分野が特定技能に追加され、対象は<b>全19分野</b>になりました。この3分野の5年間の受入れ見込数は<b>合計123万人超</b>と、制度史上で最大規模です。運用開始は2027年度で、技能評価試験の整備もこれから。つまり<b>現時点で実績を持っている支援機関は、11,323社のうち1社も存在しません</b>。2024年3月追加の自動車運送業・鉄道・林業・木材産業の4分野も、受入れ実績はまだごく小さい段階です。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">19<span style="font-size:12px">分野</span></div><div class="fk">2026年1月の追加後の対象分野</div></div>
+        <div class="fact"><div class="fv">123<span style="font-size:12px">万人超</span></div><div class="fk">新設3分野の5年間受入れ見込数</div></div>
+        <div class="fact"><div class="fv">0<span style="font-size:12px">社</span></div><div class="fk">新設分野で実績を持つ支援機関</div></div>
+      </div>
+      <div class="sowhat"><b>TFにとって：</b>「実績がないから提案しづらい」という営業メンバーの心理的ハードルが、<b>新設分野では全社に等しくかかります</b>。競合も同じ条件なら、先に動いた機関が勝ちます。しかも御社は清掃関係受託事業を持っており、<b>リネンサプライと資源循環は業務理解のある隣接領域</b>です。未開拓11分野のうち、最も入りやすい入口がここに生まれました。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead"><div class="idx">3</div><div>
+      <div class="kicker"><span class="chip new">世の中の流れ</span><span class="chip">2025年農林業センサス ほか</span></div>
+      <h4>需要側の逼迫が数字で確定した。相手はもう説得する必要がない</h4>
+    </div></div>
+    <div class="rbody">
+      <p>2025年農林業センサスによれば、全国の農林業経営体は<b>83万9千経営体で、5年前から23.2%減少</b>しました。農業経営体82万8千、林業経営体2万3千。自動車整備は<b>全国9.2万工場・従業員55.4万人</b>を抱えながら整備要員の確保が課題になっています。特定技能で働く外国人は404,527人と過去最多を更新し続けており、需要と供給の両方が同時に動いています。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">−23.2<span style="font-size:12px">%</span></div><div class="fk">農林業経営体の5年間の減少率</div></div>
+        <div class="fact"><div class="fv">9.2<span style="font-size:12px">万工場</span></div><div class="fk">自動車整備工場（従業員55.4万人）</div></div>
+        <div class="fact"><div class="fv">404,527<span style="font-size:12px">人</span></div><div class="fk">特定技能外国人・過去最多</div></div>
+      </div>
+      <div class="sowhat"><b>TFにとって：</b>これは営業トークの前提を変えます。未開拓分野の経営者は、<b>すでに人手不足を痛感しており、外国人材という選択肢も知っています</b>。必要なのは「必要性を説く」ことではなく、<b>「うちでも使えるのか」という不安に具体的に答えること</b>だけ。だからこそ、業界知識より先に必要なのは<b>型化されたリストとスクリプト</b>です。ここが整えば、今のテレアポ8名がそのまま戦力になります。</div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>制度カレンダー</h3>
+    <div class="timeline">
+      <div class="timeline-track">
+        <div class="tl-item on"><div class="y">2019年4月</div><div class="t">特定技能 制度開始<br>12分野・5年34.5万人</div></div>
+        <div class="tl-item on"><div class="y">2024年3月29日</div><div class="t">4分野追加で16分野へ<br>5年82万人に再設定</div></div>
+        <div class="tl-item on"><div class="y">2024年6月</div><div class="t">改正入管法 成立<br>育成就労制度の創設</div></div>
+        <div class="tl-item on"><div class="y">2026年1月23日</div><div class="t">3分野追加で19分野へ<br>新設3分野で123万人超</div></div>
+        <div class="tl-item now"><div class="y">2026年4月15日〜</div><div class="t">監理支援機関の<br>許可申請 受付開始（現在地）</div></div>
+        <div class="tl-item"><div class="y">2027年4月</div><div class="t">育成就労制度 施行<br>職員数による受入上限</div></div>
+        <div class="tl-item"><div class="y">2027年度</div><div class="t">新設3分野<br>運用開始</div></div>
+        <div class="tl-item"><div class="y">2029年3月</div><div class="t">現行の受入れ見込数<br>期間が終了</div></div>
+      </div>
+    </div>
+    <div class="verdict" style="margin-top:18px;border-left-color:var(--accent)">
+      <b style="color:var(--accent)">結論：</b>制度の窓は<b style="color:var(--accent)">2027年4月まで</b>です。新設分野で先行者になれる期間、そして育成就労の体制を整える期間が、そこで一度閉じます。今の1年で顧客企業をどれだけ積めたかが、その後の受入可能数の上限を決めます。<b style="color:var(--accent)">営業を止めている11分野が、そのまま機会損失の総量</b>です。
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="panel" id="p-strategy" role="tabpanel" hidden>
+  <div class="sec-head"><h2>成長戦略</h2><span class="tagline">社内体制には一切触らずに、11分野を外付けで開ける</span></div>
+  <p class="lede">今うまくいっている既存分野の体制を変えるのは損失です。<b>テレアポ8名は既存分野に専念させたまま、未開拓11分野だけを外部チームで開ける</b>。これが最もリスクの小さい設計です。</p>
+
+  <div class="grid g3">
+    <div class="pillar">
+      <span class="pk">PILLAR 01</span>
+      <h4>未開拓11分野を、外付けの営業チームで叩く</h4>
+      <p>業界知識の壁は、社内で埋めるより外部で吸収したほうが速い。680万件超の法人データベースから分野別にリストを抽出し、電話・メール・手紙のマルチチャネルでアポイントまでを代行。社内はクロージングだけを担当します。</p>
+      <div class="kpi"><span>目標：<b>月間32アポイント</b>（未開拓分野のみ）</span><span>手段：営業支援ユニット</span></div>
+    </div>
+    <div class="pillar">
+      <span class="pk">PILLAR 02</span>
+      <h4>業界知識を「1分野1フレーズ」に圧縮する</h4>
+      <p>農業も漁業も、経営者の悩みは人材で共通です。共通の入口＋分野固有の一言＋数字、という3層でスクリプトを組めば、担当者が覚えるのは分野ごとに1フレーズだけ。テストマーケティングで反応の出たものだけを残します。</p>
+      <div class="kpi"><span>目標：<b>11分野×3パターン</b>のスクリプト確立</span><span>手段：テストマーケティング＋標準化</span></div>
+    </div>
+    <div class="pillar">
+      <span class="pk">PILLAR 03</span>
+      <h4>支援業務の事務を外に出し、営業と面談に人を戻す</h4>
+      <p>届出書類・面談記録・在留期限管理といった定型事務は、在宅ワーカーチームへ。受入れが増えるほど事務は増えるため、先に仕組みを作らないと成長がそのまま業務逼迫になります。</p>
+      <div class="kpi"><span>目標：<b>月160時間</b>の事務を移管</span><span>手段：生産性向上支援ユニット</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>業界知識に依存しないトークの型</h3>
+    <p class="sub">担当者が覚えるのは「分野固有の一言」だけ。残りは全分野で共通です。</p>
+    <div class="script">
+      <div class="script-row">
+        <div class="script-tag">共通の入口<span>全11分野で同じ</span></div>
+        <div class="script-body">人手不足・採用コスト・定着率という、業種を問わず経営者が抱える論点から入る。ここに業界知識は一切要りません。
+          <q>「御社の業界でも、募集を出しても人が集まらないという話を伺うことが増えています。実際いかがですか」</q></div>
+      </div>
+      <div class="script-arrow">▼</div>
+      <div class="script-row">
+        <div class="script-tag" style="background:var(--open-soft);color:var(--open)">分野固有の一言<span>1分野につき1つだけ</span></div>
+        <div class="script-body">その分野が特定技能の対象であることと、固有名詞をひとつだけ入れる。相手に「分かっている人」と認識されるのはこの一言です。
+          <q>「農業分野は特定技能の対象で、耕種農業と畜産農業の区分があります。繁忙期だけの派遣型でも受け入れが可能です」</q></div>
+      </div>
+      <div class="script-arrow">▼</div>
+      <div class="script-row">
+        <div class="script-tag" style="background:var(--brand-soft);color:var(--brand)">数字と次の一歩<span>全11分野で同じ</span></div>
+        <div class="script-body">制度の枠と自社の立場を数字で示し、資料送付かオンライン面談に着地させる。判断材料は資料に委ねます。
+          <q>「受入れ枠は5年で82万人に広がっています。6年やっている登録支援機関として、費用と流れをまとめた資料をお送りしてもよろしいですか」</q></div>
+      </div>
+    </div>
+    <div class="callout"><b>この型の要点は「分野固有の一言」だけを可変にすることです。</b>11分野分を在宅ワーカーが調べて作り、テストマーケティングで反応率を測り、効いたものだけを残す。営業メンバーは<b>覚えるのではなく、手元のスクリプトを読むだけ</b>で構いません。「現場がどうなるといいか」として挙げられていた状態は、この型で実現できます。</div>
+  </div>
+
+  <div class="block">
+    <h3>課題 → 打ち手 → 使うユニット</h3>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>現状の課題</th><th>打ち手</th><th>担当</th><th>90日で見る指標</th></tr></thead>
+        <tbody>
+          <tr><td>営業担当が未知の業種にアプローチできない</td><td>未開拓11分野のリスト抽出とアプローチを外部が代行。社内はクロージングのみ担当する</td><td><span class="chip done">営業支援ユニット</span></td><td>分野別のアポイント数</td></tr>
+          <tr><td>分野別のトークスクリプトがない</td><td>共通の入口＋分野固有の一言の3層構成で11分野分を作成し、テストマーケティングで検証・標準化</td><td><span class="chip done">営業支援ユニット</span></td><td>分野別の反応率・スクリプト確定数</td></tr>
+          <tr><td>どの企業が今まさに検討しているか分からない</td><td>自社サイトへの解析タグ設置で閲覧企業を特定し、インテントデータでホットリストを抽出して優先架電</td><td><span class="chip done">営業支援ユニット</span></td><td>ホットリスト経由のアポ率</td></tr>
+          <tr><td>支援業務の事務量が営業リソースを削る</td><td>届出書類の準備・面談記録・在留期限管理を在宅ワーカーへ移管し、ワークフロー化する</td><td><span class="chip new">生産性向上支援</span></td><td>社内の事務時間（週次）</td></tr>
+          <tr><td>受入れが増えるほど業務が逼迫する構造</td><td>受入れ人数に比例する事務を外部チームに載せ、社員1名あたりの担当可能企業数を引き上げる</td><td><span class="chip new">生産性向上支援</span></td><td>社員1名あたりの担当企業数</td></tr>
+          <tr><td>2027年の育成就労に向けた体制が未整備</td><td>顧客企業数を先に積み、職員数による受入上限を見据えた人員計画をROIと合わせて設計する</td><td><span class="chip brand">両ユニット</span></td><td>契約企業数の純増</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="panel" id="p-targets" role="tabpanel" hidden>
+  <div class="sec-head"><h2>営業ターゲット30</h2><span class="tagline">母数・狙う理由・初回の切り口</span></div>
+  <p class="lede">未開拓11分野の受入企業を中心に、30セグメントへ分解しました。<b>「初回の切り口」は、そのまま架電の第一声として使える形</b>で書いています。母数は公的統計と業界推計に基づく概算です。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">総母数（30セグメント計）</span><span class="v" id="t-total">—</span><span class="n">事業所・経営体・法人数の合算</span></div>
+    <div class="stat hot"><span class="k">Tier A・新設&amp;新分野</span><span class="v" id="t-a">—</span><span class="n">競合も実績ゼロのスタートライン</span></div>
+    <div class="stat brand"><span class="k">Tier B・既存の未開拓分野</span><span class="v" id="t-b">—</span><span class="n">農業・漁業・造船・航空・整備 ほか</span></div>
+    <div class="stat"><span class="k">1年で接触できる件数</span><span class="v">48,000<small>件</small></span><span class="n">月4,000件×12ヶ月</span></div>
+  </div>
+
+  <div class="chartbox block">
+    <h4>3層別の母数</h4>
+    <p class="csub">母数は十分にある。どこから当たるかで、競合の厚みが変わります。</p>
+    <div id="ch-tiers"></div>
+    <p class="note">Tier Aは2024年・2026年に追加された分野の受入企業、Tier Bは制度開始時からある分野のうちTFが未開拓の領域、Tier Cは業界の壁を越えるための紹介チャネルです。</p>
+  </div>
+
+  <div class="block">
+    <h3>ターゲット一覧</h3>
+    <p class="sub">Tierで絞る／母数で並べ替える／キーワードで検索する</p>
+    <div class="controls">
+      <div class="seg" id="tier-seg">
+        <button aria-pressed="true" data-t="all">すべて（30）</button>
+        <button aria-pressed="false" data-t="A">A・新分野（10）</button>
+        <button aria-pressed="false" data-t="B">B・未開拓（10）</button>
+        <button aria-pressed="false" data-t="C">C・紹介チャネル（10）</button>
+      </div>
+      <input type="search" id="t-search" placeholder="業種・理由・切り口を検索" aria-label="ターゲット検索">
+      <select id="t-sort" aria-label="並べ替え">
+        <option value="rank">優先度順</option>
+        <option value="count">母数の多い順</option>
+        <option value="countAsc">母数の少ない順</option>
+      </select>
+      <span class="count">表示 <b id="t-shown">30</b> 件 ／ 母数計 <b id="t-sum">—</b></span>
+    </div>
+    <div class="tlist" id="t-list"></div>
+    <p class="note">母数の出所：トラック運送事業者62,559社は全日本トラック協会、自動車整備工場9.2万工場は国土交通省、農業経営体82.8万・林業経営体2.3万は2025年農林業センサス、登録支援機関11,323社は業界調査。その他は業界推計に基づく概算です。<b>実リストはデータベース抽出後の実数で確定させてください。</b></p>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="panel" id="p-remote" role="tabpanel" hidden>
+  <div class="sec-head"><h2>在宅ワーカー活用</h2><span class="tagline">何を出せるか／出したあと組織はどうなるか</span></div>
+  <p class="lede">登録支援機関の業務は、受入れが増えるほど事務が比例して増えます。「社員でなくてもできる業務」を洗い出すと<b>月160時間分</b>。そのうち<b>44時間は営業事務</b>で、これを外に出せばテレアポ8名の架電時間がそのまま増えます。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">移管できる業務量</span><span class="v" id="rw-total">160<small>h/月</small></span><span class="n">正社員1名分の稼働に相当</span></div>
+    <div class="stat hot"><span class="k">うち営業事務</span><span class="v">44<small>h/月</small></span><span class="n">移管すれば架電時間に変わる</span></div>
+    <div class="stat"><span class="k">対象業務の数</span><span class="v">20<small>種</small></span><span class="n">5カテゴリに分類</span></div>
+    <div class="stat pos"><span class="k">在宅ワーカー体制</span><span class="v">5<small>名相当</small></span><span class="n">1人1日2〜4時間の分業</span></div>
+  </div>
+
+  <div class="block">
+    <h3>在宅ワーカーに依頼できる業務</h3>
+    <p class="sub">▶ 印は、未開拓分野の開拓に直接効く業務です。時間は月間の想定工数。</p>
+    <div class="grid g2" id="task-groups"></div>
+    <div class="callout"><b>登録支援機関ならではの注意点。</b>支援業務のうち、定期面談そのものや意思決定を伴う判断は社内に残します。外に出すのは<b>書類のドラフト作成・記録の転記・期限管理といった定型作業</b>だけ。届出の最終確認と提出は必ず社内で行う前提で、ワークフローを設計します。</div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：現状</h3>
+    <p class="sub">テレアポ8名が既存分野しか叩けず、未開拓11分野が空白のまま残っている</p>
+    <div class="chartbox"><div id="ch-org-before"></div></div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：2ユニット導入後</h3>
+    <p class="sub">社内体制はそのまま。未開拓11分野だけを外付けし、事務を在宅チームへ逃がす</p>
+    <div class="chartbox"><div id="ch-org-after"></div></div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card"><span class="chip done">ポイント①</span><h4 style="font-size:14.5px;margin:9px 0 6px">既存の営業体制を一切いじらない</h4><p style="font-size:13px;color:var(--ink-2)">テレアポ8名は得意な既存分野に専念。成果が出ている仕組みを壊さずに、<b>未開拓分野だけを別ラインで走らせます</b>。失敗しても既存の売上には影響しません。</p></div>
+      <div class="card"><span class="chip done">ポイント②</span><h4 style="font-size:14.5px;margin:9px 0 6px">クロージング2名は全分野を受ける</h4><p style="font-size:13px;color:var(--ink-2)">アポイントが取れた状態から入るため、分野の知識は商談前に資料で補えます。型化されたスクリプトと分野別資料があれば、<b>2名のままで11分野を捌けます</b>。</p></div>
+      <div class="card"><span class="chip done">ポイント③</span><h4 style="font-size:14.5px;margin:9px 0 6px">受入れ増加に事務が比例しない体制にする</h4><p style="font-size:13px;color:var(--ink-2)">2027年の育成就労では職員数が受入上限を決めます。<b>事務を外に出せば、同じ職員数で担当できる企業数が増える</b>——これは制度対応そのものです。</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>営業チームの時間配分</h3>
+    <p class="sub">テレアポ8名の稼働（月1,280時間）が、どこに使われているか</p>
+    <div class="chartbox">
+      <div class="legend">
+        <span><i style="background:var(--s1)"></i>既存分野への架電</span>
+        <span><i style="background:var(--s3)"></i>未開拓分野への架電</span>
+        <span><i style="background:var(--s2)"></i>リスト作成・スクリプト準備</span>
+        <span><i style="background:var(--s4)"></i>結果入力・事務</span>
+      </div>
+      <div id="ch-time"></div>
+      <p class="note">現状、リスト作成と結果入力に月340時間（全体の27%）が消えています。この事務を在宅ワーカーへ移管すれば<b>架電時間が月1,050時間へ</b>。未開拓分野は営業支援ユニットが別ラインで担当するため、社内は<b>既存分野の架電に集中</b>できます。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="panel" id="p-roi" role="tabpanel" hidden>
+  <div class="sec-head"><h2>ROIシミュレーション</h2><span class="tagline">営業支援ユニット ＋ 生産性向上支援ユニット</span></div>
+  <p class="lede">左のつまみを動かすと、右の数字とグラフがその場で再計算されます。この業界の特性上、<b>受注から入国・売上計上までのリードタイム</b>を明示的に織り込んでいます。ここが投資回収の時期を決める最大の要因です。</p>
+
+  <div class="roi-layout">
+    <aside class="knobs">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h4 style="margin:0;font-size:14px">前提条件</h4>
+        <button class="resetbtn" id="roi-reset" type="button">標準に戻す</button>
+      </div>
+      <div class="seg" id="preset-seg" style="margin-bottom:18px">
+        <button aria-pressed="false" data-preset="cons" style="flex:1">保守</button>
+        <button aria-pressed="true" data-preset="base" style="flex:1">標準</button>
+        <button aria-pressed="false" data-preset="bull" style="flex:1">強気</button>
+      </div>
+
+      <div class="gh"><span>■</span> 営業支援ユニット（未開拓11分野）</div>
+      <div class="knob"><label for="k-app">月間アプローチ数 <b><span id="v-app"></span>件</b></label><input type="range" id="k-app" min="500" max="10000" step="100"></div>
+      <div class="knob"><label for="k-appo">アポイント率 <b><span id="v-appo"></span>%</b></label><input type="range" id="k-appo" min="0.2" max="2.5" step="0.1"></div>
+      <div class="knob"><label for="k-meet">商談実施率 <b><span id="v-meet"></span>%</b></label><input type="range" id="k-meet" min="50" max="100" step="5"></div>
+      <div class="knob"><label for="k-win">商談→契約率 <b><span id="v-win"></span>%</b></label><input type="range" id="k-win" min="2" max="25" step="1"></div>
+      <div class="knob"><label for="k-sfee">ユニット月額費用 <b><span id="v-sfee"></span>万円</b></label><input type="range" id="k-sfee" min="15" max="90" step="1"></div>
+      <div class="knob"><label for="k-init">初期費用 <b><span id="v-init"></span>万円</b></label><input type="range" id="k-init" min="0" max="150" step="5"></div>
+
+      <div class="knob-group"><div class="gh"><span>■</span> 生産性向上支援ユニット</div>
+        <div class="knob"><label for="k-hours">移管する業務量 <b><span id="v-hours"></span>h/月</b></label><input type="range" id="k-hours" min="40" max="320" step="10"></div>
+        <div class="knob"><label for="k-inrate">社内の時間単価（社保・間接費込） <b><span id="v-inrate"></span>円</b></label><input type="range" id="k-inrate" min="1500" max="3500" step="100"></div>
+        <div class="knob"><label for="k-ofee">ユニット月額費用（在宅ワーカー費用込） <b><span id="v-ofee"></span>万円</b></label><input type="range" id="k-ofee" min="10" max="70" step="1"></div>
+        <div class="knob"><label for="k-rethours">社内営業に戻る時間 <b><span id="v-rethours"></span>h/月</b></label><input type="range" id="k-rethours" min="0" max="200" step="10"></div>
+        <div class="knob"><label for="k-cph">1時間あたりの架電件数 <b><span id="v-cph"></span>件</b></label><input type="range" id="k-cph" min="5" max="40" step="1"></div>
+      </div>
+
+      <div class="knob-group"><div class="gh"><span>■</span> 契約1件あたりの収益</div>
+        <div class="knob"><label for="k-initrev">初期収益（紹介料等） <b><span id="v-initrev"></span>万円</b></label><input type="range" id="k-initrev" min="0" max="300" step="10"></div>
+        <div class="knob"><label for="k-monrev">月額支援委託料 <b><span id="v-monrev"></span>万円</b></label><input type="range" id="k-monrev" min="1" max="30" step="1"></div>
+        <div class="knob"><label for="k-lead">受注→入国・売上計上までの月数 <b><span id="v-lead"></span>ヶ月</b></label><input type="range" id="k-lead" min="0" max="10" step="1"></div>
+        <div class="knob"><label for="k-gm">粗利率 <b><span id="v-gm"></span>%</b></label><input type="range" id="k-gm" min="20" max="80" step="5"></div>
+      </div>
+      <p class="note" style="margin-top:4px">※ 費用は一般的なレンジを置いた試算用の初期値です。正式なお見積りは要件確定後にご提示します。</p>
+    </aside>
+
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div>
+        <h3 style="font-size:17px">12ヶ月後の着地</h3>
+        <p class="sub" style="font-size:12.5px;color:var(--ink-3);margin:3px 0 14px">リードタイムを織り込んだ、1年目に実際に計上される売上・粗利ベース</p>
+        <div class="grid g4">
+          <div class="stat pos"><span class="k">年間ROI</span><span class="v" id="o-roi">—</span><span class="n">（粗利＋事務削減−投資）÷投資</span></div>
+          <div class="stat brand"><span class="k">年間 契約企業数</span><span class="v" id="o-closes">—</span><span class="n" id="o-closesplit">—</span></div>
+          <div class="stat info"><span class="k">12ヶ月後の受注残</span><span class="v" id="o-backlog">—</span><span class="n">未計上のパイプライン（翌期に乗る）</span></div>
+          <div class="stat hot"><span class="k">投資回収</span><span class="v" id="o-payback">—</span><span class="n" id="o-investnote">—</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="eyebrow" style="margin-bottom:10px">未開拓11分野のファネル（月間）</div>
+        <div class="funnel">
+          <div class="fstep"><div class="fl">アプローチ</div><div class="fv" id="f-app">—</div><div class="fr" id="f-app-r">—</div></div>
+          <div class="fstep"><div class="fl">アポイント</div><div class="fv" id="f-appo">—</div><div class="fr" id="f-appo-r">—</div></div>
+          <div class="fstep"><div class="fl">商談</div><div class="fv" id="f-meet">—</div><div class="fr" id="f-meet-r">—</div></div>
+          <div class="fstep end"><div class="fl">契約</div><div class="fv" id="f-win">—</div><div class="fr" id="f-win-r">—</div></div>
+        </div>
+      </div>
+
+      <div class="chartbox">
+        <h4>売上計上の推移</h4>
+        <p class="csub">受注してもリードタイムの分だけ売上は遅れます。青が初期収益、赤が月額支援委託料。</p>
+        <div class="legend"><span><i style="background:var(--s1)"></i>初期収益（紹介料等）</span><span><i style="background:var(--s3)"></i>月額支援委託料</span></div>
+        <div id="ch-revenue"></div>
+      </div>
+
+      <div class="chartbox">
+        <h4>累積の効果と投資</h4>
+        <p class="csub">粗利と事務コスト削減の累計が、投資の累計を上回る月が投資回収のタイミングです</p>
+        <div class="legend"><span><i style="background:var(--s5)"></i>累積効果（粗利＋事務削減）</span><span><i style="background:var(--s3)"></i>累積投資</span></div>
+        <div id="ch-payback"></div>
+      </div>
+
+      <div class="chartbox">
+        <h4>リードタイムの感度分析</h4>
+        <p class="csub">受注から売上計上までの月数だけを動かしたときの、1年目のROI</p>
+        <div id="ch-sens"></div>
+      </div>
+
+      <div class="verdict" id="o-verdict"></div>
+
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:10px">この試算の読み方</div>
+        <ul style="margin:0;padding-left:1.2em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">
+          <li><b>リードタイムがこの事業の本質です。</b>受注しても、試験・在留資格申請・入国を経なければ売上は立ちません。標準の5ヶ月なら、<b>1年目に計上できるのは最初の7ヶ月分の受注だけ</b>。裏を返せば、<b>今動かないと来期の数字にならない</b>ということです。</li>
+          <li>生産性向上支援ユニットの効果は2つあります。事務コストの差額（社内人件費と在宅ワーカー費用の差）と、社内に戻った営業時間が架電に変わることによる契約増。金額として大きいのは後者です。</li>
+          <li><b>12ヶ月後の受注残</b>は、受注済みでまだ売上計上されていないパイプラインです。1年目のROIには入りませんが、翌期の頭からそのまま乗ります。投資判断はこの数字も併せてご覧ください。</li>
+          <li>年商・従業員数が非開示のため、<b>契約1件あたりの収益は業界の一般的なレンジで仮置き</b>しています。実額をご共有いただければ、この試算は提案から計画に変わります。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="panel" id="p-road" role="tabpanel" hidden>
+  <div class="sec-head"><h2>90日ロードマップ</h2><span class="tagline">既存分野には触れず、未開拓11分野だけを走らせる</span></div>
+  <p class="lede"><span class="owner tf">TFコーポレーション</span>と<span class="owner ai">アイドマ</span>の役割を分けて記載しています。社内の負担は「クロージングに出る」ことだけです。</p>
+
+  <div class="phase">
+    <div><div class="pd">DAY 1–30</div><div class="pt">分野の優先順位づけと<br>テストマーケティング</div></div>
+    <ul>
+      <li><span class="owner tf">TF</span>未開拓11分野のうち、<b>着手する3分野を選定</b>。社長のネットワークが効く自動車運送業、清掃受託の知見が活きるリネンサプライ・資源循環が第一候補です。</li>
+      <li><span class="owner ai">アイドマ</span>選定分野のリストを抽出し、<b>小ロットのテストマーケティング</b>を実施。分野別・文面別の反応率を測定する。</li>
+      <li><span class="owner ai">アイドマ</span>3層構成のトークスクリプトを分野ごとに3パターン作成。「分野固有の一言」を在宅ワーカーが調査して埋める。</li>
+      <li><span class="owner tf">TF</span>自社サイトへのアクセス解析タグを設置し、<b>閲覧企業の特定</b>を開始する。</li>
+      <li><span class="owner ai">アイドマ</span>支援業務の事務のうち、書類ドラフト作成と在留期限管理のワークフローを設計し、在宅ワーカーを募集・選定する。</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 31–60</div><div class="pt">勝ちパターンの特定と<br>残り8分野への展開</div></div>
+    <ul>
+      <li><span class="owner ai">アイドマ</span>反応率の高い分野・文面・時間帯を特定し、配信をそこへ寄せる。クロージング2名へのアポイント供給を開始。</li>
+      <li><span class="owner tf">TF</span>クロージング2名は<b>商談のみ</b>を担当。分野の知識は事前送付する分野別資料で補う。</li>
+      <li><span class="owner ai">アイドマ</span>インテントデータからホットリストを抽出し、優先架電の順序を決める。</li>
+      <li><span class="owner ai">アイドマ</span>検証済みの型を<b>残り8分野へ横展開</b>。在宅ワーカーが分野固有の一言を順次作成する。</li>
+      <li><span class="owner tf">TF</span>在宅ワーカーへの事務移管を開始し、テレアポ8名のリスト作成・結果入力の時間を計測する。</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div><div class="pd">DAY 61–90</div><div class="pt">2027年に向けた<br>体制の設計</div></div>
+    <ul>
+      <li><span class="owner ai">アイドマ</span>11分野すべてでスクリプトとリストを確定。分野別の反応率・契約率を一覧化する。</li>
+      <li><span class="owner tf">TF</span>育成就労（2027年4月施行）への対応方針を決定。<b>監理支援機関の許可申請を行うかどうか</b>を、契約企業数の見通しと併せて判断する。</li>
+      <li><span class="owner ai">アイドマ</span>職員1名あたり8社・40人という上限を前提に、契約企業数と必要人員のシミュレーションを更新する。</li>
+      <li><span class="owner ai">アイドマ</span>3ヶ月の実績値（アポ率・契約率・1件あたり収益・リードタイム）でROIモデルを更新する。</li>
+      <li><span class="owner tf">TF</span>営業パートナー契約（相互紹介）の範囲を確定し、アイドマ側の顧客基盤との接続を検討する。</li>
+    </ul>
+  </div>
+
+  <hr class="grid-rule" style="margin:34px 0">
+
+  <div class="block" style="margin-top:0">
+    <h3>次回商談で確認したい6つ</h3>
+    <p class="sub">試算の精度を上げるために、社長にしか答えられない数字</p>
+    <div class="grid g2">
+      <div class="card"><b>1. 契約1件あたりの初期収益と月額支援委託料</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">ROIの分子を決める最重要変数。レンジでも構いません。</p></div>
+      <div class="card"><b>2. 受注から入国・売上計上までの実績月数</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">投資回収の時期を決める最大の要因です。分野ごとに差があれば、その差も。</p></div>
+      <div class="card"><b>3. 「宿泊」「外食業」「自動車運送業」の実績有無</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">未開拓が11分野なのか、それ以上なのかが確定します。</p></div>
+      <div class="card"><b>4. 1契約あたりの平均受入れ人数</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">企業単位か人数単位かで、売上の積み上がり方が変わります。</p></div>
+      <div class="card"><b>5. 育成就労（監理支援機関）への対応方針</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">許可申請を行うかどうかで、営業の優先順位が変わります。</p></div>
+      <div class="card"><b>6. 支援担当者1名あたりの現在の担当企業数</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">事務を移管したときに、何社まで増やせるかの基準になります。</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>出典</h3>
+    <ul class="srcs">
+      <li>特定技能の受入れ見込数の再設定および対象分野の追加（2024年3月29日 閣議決定） — <a href="https://www.yodochu.or.jp/2024/04/04/%E7%89%B9%E5%AE%9A%E6%8A%80%E8%83%BD%E3%81%AE%E5%8F%97%E5%85%A5%E3%82%8C%E8%A6%8B%E8%BE%BC%E3%81%BF%E6%95%B0%E3%81%AE%E5%86%8D%E8%A8%AD%E5%AE%9A%E3%81%8A%E3%82%88%E3%81%B3%E5%AF%BE%E8%B1%A1%E5%88%86%E9%87%8E%E7%AD%89%E3%81%AE%E8%BF%BD%E5%8A%A0%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6-2024%E5%B9%B43%E6%9C%8829%E6%97%A5%E9%96%A3%E8%AD%B0%E6%B1%BA%E5%AE%9A/" target="_blank" rel="noopener">淀川中小企業振興協同組合</a>／<a href="https://www.adecco.com/ja-jp/client/useful/tokuteiginou-info/tokuteiginou/details-of-16-ssw-occupations" target="_blank" rel="noopener">アデコ</a></li>
+      <li>3分野追加（リネンサプライ・物流倉庫・資源循環／2026年1月23日 閣議決定・2027年度運用開始） — <a href="https://www.smilevisa.jp/owned-media/2027-specified-skilled-worker-linen-supply-sector/" target="_blank" rel="noopener">SMILEVISA</a>／<a href="https://www.adecco.com/ja-jp/client/useful/tokuteiginou-info/tokuteiginou/ssw-recycling-guide-2027" target="_blank" rel="noopener">アデコ</a></li>
+      <li>育成就労制度（2027年4月施行・監理支援機関の許可要件・2026年4月15日申請受付開始） — <a href="https://www.jinzainesia.co.jp/column/articles/ikusei-shuro-pillar" target="_blank" rel="noopener">人材ネシア</a>／<a href="https://linola-partners.com/blog/https-linola-partners-com-employment-for-skill-development-latest-operations-guidelines-special/" target="_blank" rel="noopener">Linolaパートナーズ法律事務所</a></li>
+      <li>特定技能外国人数 404,527人（過去最多） — <a href="https://www.smilevisa.jp/owned-media/updated_data_tokuteiginou/" target="_blank" rel="noopener">SMILEVISA</a>／<a href="https://meikoglobal.jp/magazine/number-of-specified-skills-workers/" target="_blank" rel="noopener">MEIKOGLOBAL</a></li>
+      <li>登録支援機関 11,323社 — <a href="https://frm-journal.jp/touroku-shien/touroku-shien-kikan-toha/" target="_blank" rel="noopener">FRM Journal</a></li>
+      <li>2025年農林業センサス（農林業経営体83万9千・5年で23.2%減） — <a href="https://www.maff.go.jp/j/tokei/kekka_gaiyou/noucen/040909/index.html" target="_blank" rel="noopener">農林水産省</a></li>
+      <li>自動車整備工場 9.2万工場・従業員55.4万人 — <a href="https://www.cas.go.jp/jp/seisaku/atarashii_sihonsyugi/shouryokukatousi/05-1.pdf" target="_blank" rel="noopener">国土交通省「省力化投資促進プラン ―自動車整備業―」</a></li>
+      <li>トラック運送事業者数 — <a href="https://jta.or.jp/wp-content/themes/jta_theme/pdf/yusosangyo2024.pdf" target="_blank" rel="noopener">日本のトラック輸送産業 現状と課題 2024</a></li>
+      <li>アイドマ・ホールディングス クラウドユニット — <a href="https://www.aidma-hd.jp/crowdunit_category/" target="_blank" rel="noopener">aidma-hd.jp</a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<hr class="grid-rule">
+<footer style="background:var(--surface);border-top:1px solid var(--rule)">
+  <div class="wrap" style="padding:20px 24px 28px;font-size:12px;color:var(--ink-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <span>株式会社TFコーポレーション 様向け 事前リサーチ・成長戦略・ROI分析／株式会社アイドマ・ホールディングス</span>
+    <span class="mono">2026-09-13</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+var tabs=Array.prototype.slice.call(document.querySelectorAll(".tab"));
+tabs.forEach(function(t){
+  t.addEventListener("click",function(){
+    tabs.forEach(function(x){
+      x.setAttribute("aria-selected",x===t?"true":"false");
+      document.getElementById("p-"+x.dataset.p).hidden=(x!==t);
+    });
+    window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  });
+});
+
+var NF=new Intl.NumberFormat("ja-JP");
+function n(v){return NF.format(Math.round(v));}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function svg(w,h,inner){
+  return '<svg viewBox="0 0 '+w+' '+h+'" role="img" preserveAspectRatio="xMidYMid meet" '+
+    'style="max-width:'+Math.round(w*1.18)+'px;margin:0 auto">'+inner+'</svg>';
+}
+function txt(x,y,s,o){
+  o=o||{};
+  return '<text x="'+x+'" y="'+y+'" fill="'+(o.fill||"var(--ink-2)")+'" font-size="'+(o.size||11)+'" '+
+   'font-family="'+(o.mono?"Source Code Pro, monospace":(o.disp?"BIZ UDPGothic, sans-serif":"IBM Plex Sans JP, sans-serif"))+'" '+
+   'font-weight="'+(o.weight||400)+'" text-anchor="'+(o.anchor||"start")+'"'+
+   (o.baseline?' dominant-baseline="'+o.baseline+'"':'')+'>'+esc(s)+'</text>';
+}
+function rrect(x,y,w,h,r,fill){
+  if(h<=0||w<=0) return "";
+  r=Math.min(r,h/2,w/2);
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+r+'" fill="'+fill+'"></rect>';
+}
+function niceMax(v,div){
+  if(!(v>0)) return div;
+  var unit=v/div, step=Math.pow(10,Math.floor(Math.log10(unit))), r=unit/step;
+  var mult=r<=1?1:r<=2?2:r<=2.5?2.5:r<=5?5:10;
+  return step*mult*div;
+}
+
+/* ---- 19分野マトリクス ---- */
+var FIELDS=[
+ {n:"介護",s:"done"},{n:"ビルクリーニング",s:"done"},{n:"工業製品製造業",s:"done"},
+ {n:"建設",s:"done"},{n:"飲食料品製造業",s:"done"},
+ {n:"宿泊",s:"check"},{n:"外食業",s:"check"},{n:"自動車運送業",s:"check"},
+ {n:"造船・舶用工業",s:"open"},{n:"自動車整備",s:"open"},{n:"航空",s:"open"},
+ {n:"鉄道",s:"open"},{n:"農業",s:"open"},{n:"漁業",s:"open"},
+ {n:"林業",s:"open"},{n:"木材産業",s:"open"},
+ {n:"リネンサプライ",s:"new"},{n:"物流倉庫",s:"new"},{n:"資源循環",s:"new"}
+];
+var FIELD_LABEL={done:"導入実績あり",check:"実績を要確認",open:"未開拓",new:"2027年度 新設"};
+document.getElementById("field-grid").innerHTML=FIELDS.map(function(f,i){
+  return '<div class="fieldcell '+f.s+'"><span class="fn">'+String(i+1).padStart(2,"0")+'</span>'+
+    '<div class="ft">'+esc(f.n)+'</div><div class="fs">'+FIELD_LABEL[f.s]+'</div></div>';
+}).join("");
+
+/* ---- 受入れ見込数 ---- */
+(function(){
+  var W=520,H=260,padT=44,padB=56,plotH=H-padT-padB,max=100,s="";
+  var data=[{l:"2019年 制度開始",v:34.5,c:"var(--s4)"},{l:"2024年 再設定",v:82,c:"var(--s1)"}];
+  [0,25,50,75,100].forEach(function(g){
+    var y=padT+plotH-(g/max)*plotH;
+    s+='<line x1="8" y1="'+y+'" x2="'+(W-38)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(W-34,y,String(g),{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+  });
+  s+=txt(8,18,"万人（5年間）",{fill:"var(--ink-3)",size:10});
+  data.forEach(function(d,i){
+    var bw=118,x=76+i*(bw+128),h=(d.v/max)*plotH,y=padT+plotH-h;
+    s+=rrect(x,y,bw,h,3,d.c);
+    s+=txt(x+bw/2,y-10,d.v+"万人",{fill:"var(--ink)",size:15,weight:600,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+20,d.l,{fill:"var(--ink-2)",size:11.5,anchor:"middle"});
+  });
+  var ax=76+118+14,bx=76+118+128-14;
+  s+=txt((ax+bx)/2,padT+plotH/2,"2.4倍",{fill:"var(--accent)",size:15,weight:600,mono:true,anchor:"middle"});
+  s+=txt(8,H-8,"※ 2024年度からの5年間（2029年3月まで）の受入れ見込数",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("ch-quota").innerHTML=svg(W,H,s);
+})();
+
+/* ---- 分野の拡大 ---- */
+(function(){
+  var W=520,H=260,padT=44,padB=56,plotH=H-padT-padB,max=20,s="";
+  var data=[
+    {l:"2019年",base:12,add:0},
+    {l:"2024年3月",base:12,add:4},
+    {l:"2026年1月",base:16,add:3}
+  ];
+  [0,5,10,15,20].forEach(function(g){
+    var y=padT+plotH-(g/max)*plotH;
+    s+='<line x1="8" y1="'+y+'" x2="'+(W-34)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(W-30,y,String(g),{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+  });
+  s+=txt(8,18,"分野",{fill:"var(--ink-3)",size:10});
+  data.forEach(function(d,i){
+    var bw=92,x=54+i*(bw+64);
+    var hb=(d.base/max)*plotH, ha=(d.add/max)*plotH;
+    var yb=padT+plotH-hb;
+    s+=rrect(x,yb,bw,hb,3,"var(--s4)");
+    if(ha>0) s+=rrect(x,yb-ha-2,bw,ha,3,"var(--accent)");
+    s+=txt(x+bw/2,yb-ha-11,(d.base+d.add)+"分野",{fill:"var(--ink)",size:13,weight:600,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+20,d.l,{fill:"var(--ink-2)",size:11.5,anchor:"middle"});
+    if(d.add>0) s+=txt(x+bw/2,padT+plotH+36,"+"+d.add,{fill:"var(--accent)",size:11,weight:600,mono:true,anchor:"middle"});
+  });
+  s+=txt(8,H-8,"■ 既存分野　■ その時点で追加された分野",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("ch-fields").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- targets ---------------- */
+var TARGETS=[
+ {t:"A",name:"トラック運送事業者（自動車運送業）",c:62559,
+  why:"2024年3月追加の新分野で、母数が6.2万社と圧倒的。社長の全国トラック協会ネットワークが直接効き、2024年問題でドライバー不足が構造化している。",
+  hook:"ドライバーの募集、いま何人待ちの状態ですか。自動車運送業が特定技能の対象になったのをご存じでしょうか。受け入れまでの流れを資料でお送りします。"},
+ {t:"A",name:"バス事業者（自動車運送業）",c:2300,
+  why:"運転手不足で減便・路線廃止が全国で起きており、経営課題として最上位。事業者数が絞られるため全件アプローチが現実的。",
+  hook:"減便を避けるために、運転手の確保でお困りではありませんか。バスも特定技能の対象分野です。"},
+ {t:"A",name:"タクシー事業者（自動車運送業）",c:5800,
+  why:"高齢化率が業界最高水準で、乗務員の平均年齢は60歳前後。新分野のため支援実績を持つ機関がほぼ存在しない。",
+  hook:"乗務員の平均年齢、上がり続けていませんか。タクシーも特定技能で受け入れが可能になりました。"},
+ {t:"A",name:"産業廃棄物処理・リサイクル業者（資源循環）",c:15000,
+  why:"2026年1月追加の新分野。清掃関係受託事業を持つTFにとって最も業務理解のある隣接領域で、説明の説得力が違う。",
+  hook:"2027年度から資源循環が特定技能の対象になります。今のうちに受け入れ体制を整えておく企業が増えています。"},
+ {t:"A",name:"一般廃棄物の収集運搬・中間処理業者（資源循環）",c:9000,
+  why:"自治体委託が多く事業が安定している一方、現場の高齢化が深刻。新分野で競合が動いていない今が最も入りやすい。",
+  hook:"現場の平均年齢が上がっていませんか。資源循環分野が新設され、2027年度から受け入れが始まります。"},
+ {t:"A",name:"リネンサプライ事業者（新設）",c:1200,
+  why:"2026年1月追加。ホテル・病院向けの洗濯は労働集約型で人手不足が慢性化。清掃受託の知見がそのまま会話に使える。",
+  hook:"工場の稼働、人員が揃わずに制限されていませんか。リネンサプライが特定技能の新分野として追加されました。"},
+ {t:"A",name:"物流倉庫・3PL事業者（新設）",c:6000,
+  why:"2026年1月追加。EC拡大で庫内作業の需要は増える一方、採用が追いつかない。物流倉庫単独での受け入れが可能になった意義が大きい。",
+  hook:"庫内スタッフの募集、派遣に頼りきりになっていませんか。物流倉庫が特定技能の対象に加わりました。"},
+ {t:"A",name:"鉄道事業者・鉄道車両整備会社（鉄道）",c:200,
+  why:"2024年追加分野で事業者数が約200と限定的。全件に届けられる母数であり、一度決まれば規模が大きく継続性も高い。",
+  hook:"軌道保守や車両整備の要員確保はいかがですか。鉄道分野が特定技能の対象になっています。"},
+ {t:"A",name:"素材生産業者・森林組合（林業）",c:23600,
+  why:"2024年追加分野。林業経営体は2.3万で5年間の減少が著しく、担い手不足が業界最大の課題。補助事業との併用提案もできる。",
+  hook:"伐採や造林の担い手、確保できていますか。林業も2024年から特定技能の対象分野になりました。"},
+ {t:"A",name:"製材・合板・集成材メーカー（木材産業）",c:4000,
+  why:"2024年追加分野。国産材需要の回復で稼働を上げたいのに人が採れないという構造。工場単位で複数名の受け入れが見込める。",
+  hook:"製材ラインの人員、フル稼働できていますか。木材産業が特定技能の対象に追加されています。"},
+
+ {t:"B",name:"農業法人・団体経営体（農業）",c:40000,
+  why:"雇用型経営体で受け入れ実績も蓄積されつつある。派遣形態での受け入れが認められる数少ない分野で、繁忙期対応の提案ができる。",
+  hook:"繁忙期の人手、毎年どう凌いでいますか。農業は派遣形態でも特定技能の受け入れが可能です。"},
+ {t:"B",name:"雇用のある大規模個人農家（農業）",c:100000,
+  why:"農業経営体82.8万のうち雇用を伴う層。5年で23.2%減という淘汰のなかで、規模を維持したい経営体ほど外部人材に踏み切る。",
+  hook:"作付面積を維持するのに、人が足りていますか。耕種農業なら特定技能の受け入れができます。"},
+ {t:"B",name:"漁業法人・養殖業者（漁業）",c:60000,
+  why:"高齢化率が全産業で最も高い分野のひとつ。養殖は陸上作業が多く、受け入れのハードルが漁船漁業より低い。",
+  hook:"後継者と乗組員、どちらも厳しい状況ではありませんか。漁業も特定技能の対象で、養殖業の区分があります。"},
+ {t:"B",name:"水産加工場・漁協（漁業／飲食料品製造業）",c:9000,
+  why:"飲食料品製造業の実績がそのまま応用でき、TFにとって最も入りやすい未開拓の隣接領域。地域の漁協経由で横展開できる。",
+  hook:"加工場のライン、人が揃わずに止まる日はありませんか。すでに同業種で受け入れの実績があります。"},
+ {t:"B",name:"造船所・舶用工業メーカー（造船・舶用工業）",c:1000,
+  why:"溶接・塗装など技能が明確で、制度開始時からある分野なのに受け入れ機関が少ない。1社あたりの受け入れ人数が多い。",
+  hook:"溶接工の確保、国内採用だけで足りていますか。造船・舶用工業は特定技能で複数の職種区分があります。"},
+ {t:"B",name:"船舶修繕・艤装・塗装の協力会社（造船・舶用工業）",c:1500,
+  why:"元請の造船所より小規模で意思決定が速い。協力会社のネットワークで横に広がりやすい。",
+  hook:"元請から増員を求められて困っていませんか。協力会社様でも特定技能の受け入れは可能です。"},
+ {t:"B",name:"航空地上支援（グランドハンドリング）会社",c:200,
+  why:"インバウンド回復で便数が戻る一方、コロナ期に人員が流出したまま。航空分野の在留者の大半がこの区分で、実績も出ている。",
+  hook:"便数が戻ってもグラハン要員が足りない、という話を各地で伺います。航空分野は特定技能の対象です。"},
+ {t:"B",name:"航空機整備（MRO）事業者",c:100,
+  why:"事業者数が限定的で全件アプローチが可能。整備士の育成に時間がかかるため、早期から人材を確保したい動機が強い。",
+  hook:"整備士の採用と育成、何年計画で回されていますか。航空機整備も特定技能の対象区分にあります。"},
+ {t:"B",name:"自動車整備工場（認証・指定事業場）",c:92000,
+  why:"全国9.2万工場・従業員55.4万人という巨大な母数。整備要員不足が国交省の政策課題になっており、制度認知も進んでいる。",
+  hook:"整備要員の募集、反応はいかがですか。自動車整備は特定技能の対象で、認証工場であれば受け入れが可能です。"},
+ {t:"B",name:"ディーラー系・カー用品チェーンの整備部門",c:6000,
+  why:"本部で一括導入が決まれば全国の店舗に展開できる。母数は少なくても1件あたりのインパクトが桁違い。",
+  hook:"全国の整備拠点で、要員の充足率に差が出ていませんか。本部一括での受け入れ設計をご提案できます。"},
+
+ {t:"C",name:"業界団体・協同組合（全国トラック協会 ほか）",c:3000,
+  why:"社長が既にネットワークを持つチャネル。会員企業への一斉告知や共同受け入れの枠組みを作れば、1件で数十社に届く。",
+  hook:"会員企業様から人手不足のご相談は増えていませんか。会員向けの説明会という形でご一緒できませんか。"},
+ {t:"C",name:"社会保険労務士事務所",c:23000,
+  why:"既に士業からの紹介実績があり、最も再現性の高いチャネル。顧問先の労務課題として外国人材の相談が持ち込まれている。",
+  hook:"顧問先から外国人の受け入れについて聞かれること、増えていませんか。登録支援機関として後ろで支えます。"},
+ {t:"C",name:"行政書士事務所（入管業務）",c:5000,
+  why:"在留資格申請の専門家だが、支援業務まではカバーできない事務所が多い。役割分担が明確で提携しやすい。",
+  hook:"申請はできても、支援計画の実行まではお困りではありませんか。支援業務だけをお引き受けできます。"},
+ {t:"C",name:"税理士・会計事務所",c:30000,
+  why:"経営者との接触頻度が最も高く、人手不足の相談が最初に入る。紹介手数料の設計次第で継続的なチャネルになる。",
+  hook:"顧問先の人手不足、数字に表れてきていませんか。解決策の一つとしてご紹介いただける形をご用意しています。"},
+ {t:"C",name:"監理団体／監理支援機関（技能実習・育成就労）",c:3600,
+  why:"2027年の育成就労で実習生が特定技能へ移行する際、支援を委託する先が必要になる。上流を押さえる最重要チャネル。",
+  hook:"育成就労から特定技能へ移行される方の支援、どこまで自前でされますか。移行後の支援をお引き受けできます。"},
+ {t:"C",name:"他の登録支援機関（提携・再委託）",c:11323,
+  why:"11,323社のうち多くは小規模で、対応分野が限られる。自社が受けられない分野の案件を相互に回す関係が作れる。",
+  hook:"対応されていない分野のご相談が来たとき、どうされていますか。相互にお回しできる関係を作りませんか。"},
+ {t:"C",name:"日本語学校・専門学校",c:900,
+  why:"卒業生の進路として特定技能への移行ニーズがある。学校側も就職実績が欲しいため、協力関係を築きやすい。",
+  hook:"卒業後に特定技能で働きたいという学生さん、いらっしゃいませんか。受け入れ企業をご紹介できます。"},
+ {t:"C",name:"送出機関の日本法人・国際人材会社",c:500,
+  why:"候補者の供給側と組めば、企業側の需要とマッチングできる。未開拓分野の人材確保という供給面の不安を解消できる。",
+  hook:"日本側の受け入れ企業、新しい分野でお探しではありませんか。分野を広げて開拓しています。"},
+ {t:"C",name:"自治体・産業振興公社の企業支援窓口",c:1800,
+  why:"地域の人手不足対策として外国人材の受け入れ支援に予算がつく。公的機関との実績は民間商談での信用に直結する。",
+  hook:"地域企業の人手不足対策、どこまで踏み込まれていますか。説明会やセミナーでご一緒できませんか。"},
+ {t:"C",name:"地方銀行・信用金庫の法人営業部",c:350,
+  why:"取引先の事業継続に直結するテーマで、本業支援として紹介が成立する。1行決まれば取引先数百社にリーチできる。",
+  hook:"お取引先の人手不足、事業性評価にも影響していませんか。本業支援のメニューとしてご提供できます。"}
+];
+var TIER_META={
+  A:{label:"新分野",note:"2024年・2026年追加／競合も実績ゼロ",cls:"new"},
+  B:{label:"未開拓",note:"制度開始時からある分野のうち未着手",cls:"open"},
+  C:{label:"紹介チャネル",note:"業界の壁を越える近道",cls:"done"}
+};
+
+(function(){
+  var total=TARGETS.reduce(function(a,b){return a+b.c;},0);
+  var a=TARGETS.filter(function(d){return d.t==="A";}).reduce(function(x,y){return x+y.c;},0);
+  var b=TARGETS.filter(function(d){return d.t==="B";}).reduce(function(x,y){return x+y.c;},0);
+  document.getElementById("t-total").innerHTML=n(total)+'<small>件</small>';
+  document.getElementById("t-a").innerHTML=n(a)+'<small>件</small>';
+  document.getElementById("t-b").innerHTML=n(b)+'<small>件</small>';
+})();
+
+(function(){
+  var rows=["A","B","C"].map(function(t){
+    var sum=TARGETS.filter(function(d){return d.t===t;}).reduce(function(a,b){return a+b.c;},0);
+    return {t:t,sum:sum,cnt:TARGETS.filter(function(d){return d.t===t;}).length};
+  });
+  var max=niceMax(Math.max.apply(null,rows.map(function(r){return r.sum;}))*1.05,4);
+  var W=620,H=230,padL=234,padR=86,plotW=W-padL-padR,rowH=56,top=40,s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-12)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-18)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-20,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+8,top-20,"件",{fill:"var(--ink-3)",size:10});
+  var colors={A:"var(--new)",B:"var(--open)",C:"var(--s1)"};
+  rows.forEach(function(r,i){
+    var y=top+i*rowH,m=TIER_META[r.t];
+    s+=txt(0,y+8,"Tier "+r.t+"・"+m.label+"（"+r.cnt+"業種）",{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(0,y+26,m.note,{fill:"var(--ink-3)",size:10.5});
+    s+=rrect(padL,y-6,(r.sum/max)*plotW,24,3,colors[r.t]);
+    s+=txt(padL+(r.sum/max)*plotW+8,y+6,n(r.sum),{fill:"var(--ink-2)",size:11.5,mono:true,baseline:"middle"});
+  });
+  document.getElementById("ch-tiers").innerHTML=svg(W,H,s);
+})();
+
+var state={tier:"all",q:"",sort:"rank"};
+function renderTargets(){
+  var list=TARGETS.map(function(d,i){d._rank=i+1;return d;});
+  if(state.tier!=="all") list=list.filter(function(d){return d.t===state.tier;});
+  if(state.q){
+    var q=state.q.toLowerCase();
+    list=list.filter(function(d){return (d.name+d.why+d.hook).toLowerCase().indexOf(q)>=0;});
+  }
+  if(state.sort==="count") list=list.slice().sort(function(a,b){return b.c-a.c;});
+  if(state.sort==="countAsc") list=list.slice().sort(function(a,b){return a.c-b.c;});
+  document.getElementById("t-shown").textContent=list.length;
+  document.getElementById("t-sum").textContent=n(list.reduce(function(a,b){return a+b.c;},0))+"件";
+  document.getElementById("t-list").innerHTML=list.map(function(d){
+    var m=TIER_META[d.t];
+    return '<article class="trow t'+d.t+'">'+
+      '<div class="rank">'+String(d._rank).padStart(2,"0")+'</div>'+
+      '<div class="head"><div class="name">'+esc(d.name)+'</div>'+
+      '<div class="meta"><span class="chip '+m.cls+'">Tier '+d.t+'・'+m.label+'</span>'+
+      '<span class="cnt">'+n(d.c)+'<span>件</span></span></div></div>'+
+      '<div class="why"><span class="fieldlabel">なぜ狙うか</span><p class="fieldbody">'+esc(d.why)+'</p></div>'+
+      '<div class="hook"><span class="fieldlabel">初回の切り口</span><p class="fieldbody">'+esc(d.hook)+'</p></div>'+
+    '</article>';
+  }).join("");
+}
+document.querySelectorAll("#tier-seg button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll("#tier-seg button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    state.tier=b.dataset.t;renderTargets();
+  });
+});
+document.getElementById("t-search").addEventListener("input",function(e){state.q=e.target.value.trim();renderTargets();});
+document.getElementById("t-sort").addEventListener("change",function(e){state.sort=e.target.value;renderTargets();});
+renderTargets();
+
+/* ---------------- 在宅ワーカー業務 ---------------- */
+var TASKS=[
+ {g:"営業事務",h:44,items:[
+   {n:"未開拓分野のターゲットリスト作成・企業情報収集",h:12,key:true},
+   {n:"分野別トークスクリプトの調査・作成・更新",h:8,key:true},
+   {n:"フォーム送信・メール・手紙DMの作成と送付",h:10,key:true},
+   {n:"テレアポ結果の入力と架電リストのメンテナンス",h:8,key:true},
+   {n:"商談日程の調整・議事録作成・CRM入力",h:6}]},
+ {g:"支援業務の事務",h:48,items:[
+   {n:"支援計画書・雇用条件書のドラフト作成",h:12},
+   {n:"定期届出・随時届出の書類準備（提出は社内）",h:12},
+   {n:"面談記録の文字起こしと記録簿への転記",h:10},
+   {n:"在留期限・更新スケジュールの一元管理",h:8},
+   {n:"住居確保・ライフライン契約の情報収集と手配補助",h:6}]},
+ {g:"採用・候補者管理",h:32,items:[
+   {n:"送出機関・提携先からの候補者情報の整理",h:8},
+   {n:"候補者の書類チェック（パスポート・試験合格証等）",h:8},
+   {n:"面接日程の調整と通訳手配",h:8},
+   {n:"入国前オリエンテーション資料の多言語化",h:8}]},
+ {g:"マーケティング",h:20,items:[
+   {n:"自社サイトのアクセス解析レポート作成（閲覧企業の特定）",h:6,key:true},
+   {n:"インテントデータからのホットリスト抽出・優先度づけ",h:6,key:true},
+   {n:"分野別の導入事例・実績資料の作成",h:8,key:true}]},
+ {g:"バックオフィス",h:16,items:[
+   {n:"請求書の発行・入金消込",h:6},
+   {n:"経費精算と仕訳入力",h:5},
+   {n:"各種契約書の作成・管理",h:5}]}
+];
+(function(){
+  var total=TASKS.reduce(function(a,b){return a+b.h;},0);
+  document.getElementById("rw-total").innerHTML=total+'<small>h/月</small>';
+  document.getElementById("task-groups").innerHTML=TASKS.map(function(g){
+    return '<section class="taskgroup"><header><h4>'+esc(g.g)+'</h4><span class="hh">'+g.h+' h/月</span></header><ul>'+
+      g.items.map(function(it){
+        return '<li'+(it.key?' class="key"':'')+'><span>'+esc(it.n)+'</span><b>'+it.h+'h</b></li>';
+      }).join("")+'</ul></section>';
+  }).join("");
+})();
+
+/* ---------------- 組織図 ---------------- */
+function orgBox(x,y,w,h,title,sub,opt){
+  opt=opt||{};
+  var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="4" fill="'+(opt.fill||"var(--surface-2)")+'" stroke="'+(opt.color||"var(--rule-2)")+'" stroke-width="'+(opt.bold?2.5:1.25)+'"'+(opt.dash?' stroke-dasharray="5 4"':'')+'></rect>';
+  s+=txt(x+13,y+(sub?20:h/2+4),title,{fill:opt.tc||"var(--ink)",size:opt.size||12.5,weight:700,disp:true});
+  if(sub) s+=txt(x+13,y+35,sub,{fill:"var(--ink-3)",size:10.5});
+  return s;
+}
+function elbow(x1,y1,x2,y2,my){
+  return '<path d="M '+x1+' '+y1+' L '+x1+' '+my+' L '+x2+' '+my+' L '+x2+' '+y2+'" fill="none" stroke="var(--rule-2)" stroke-width="1.25"></path>';
+}
+(function(){
+  var W=880,H=250,s="";
+  s+=orgBox(330,6,220,48,"松田 社長","ネットワーク・提携・戦略",{color:"var(--brand)",fill:"var(--brand-soft)",bold:true});
+  var cols=[
+    {x:8,w:276,t:"テレアポ部隊 8名",u:"既存分野のみ架電できる",c:"var(--s1)"},
+    {x:302,w:276,t:"クロージング部隊 2名",u:"アポがあれば分野は問わない",c:"var(--s1)"},
+    {x:596,w:276,t:"支援担当",u:"届出・面談・在留管理",c:"var(--rule-2)"}
+  ];
+  cols.forEach(function(c){
+    s+=elbow(440,54,c.x+c.w/2,86,70);
+    s+=orgBox(c.x,86,c.w,52,c.t,c.u,{color:c.c});
+  });
+  s+='<rect x="8" y="164" width="864" height="54" rx="4" fill="var(--open-soft)" stroke="var(--open)" stroke-width="1.5" stroke-dasharray="6 4"></rect>';
+  s+=txt(24,188,"未開拓 11分野（農業・漁業・造船・航空・整備・鉄道・林業・木材／新設3分野）",{fill:"var(--open)",size:13,weight:700,disp:true});
+  s+=txt(24,206,"担当者が業務内容をイメージできず、架電にハードルを感じて停滞している",{fill:"var(--ink-2)",size:11.5});
+  s+=txt(8,240,"※ 営業体制そのものは機能している。空白なのは「誰も担当していない11分野」だけ。",{fill:"var(--ink-3)",size:11});
+  document.getElementById("ch-org-before").innerHTML=svg(W,H,s);
+})();
+(function(){
+  var W=880,H=392,s="";
+  s+=orgBox(330,6,220,48,"松田 社長","ネットワーク・提携・戦略",{color:"var(--brand)",fill:"var(--brand-soft)",bold:true});
+  var colX=[8,304,600],colW=272;
+  var heads=[
+    {t:"既存分野ライン",u:"社内体制のまま・変更なし",c:"var(--s1)"},
+    {t:"未開拓11分野ライン",u:"新設・外付けで走らせる",c:"var(--new)"},
+    {t:"在宅ワーカーチーム",u:"5名相当／月160時間",c:"var(--s2)"}
+  ];
+  heads.forEach(function(hd,i){
+    s+=elbow(440,54,colX[i]+colW/2,84,70);
+    s+=orgBox(colX[i],84,colW,50,hd.t,hd.u,{color:hd.c,bold:true});
+  });
+  function sub(x,y,w,t,h,color){
+    var r='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="30" rx="3" fill="var(--surface)" stroke="'+(color||"var(--rule)")+'" stroke-width="1"></rect>';
+    r+=txt(x+12,y+19,t,{fill:"var(--ink-2)",size:11.5});
+    if(h) r+=txt(x+w-12,y+19,h,{fill:"var(--ink-3)",size:10.5,mono:true,anchor:"end"});
+    return r;
+  }
+  ["テレアポ 8名（既存分野に専念）","クロージング 2名（全分野を担当）","支援担当（面談と判断に専念）"].forEach(function(t,i){ s+=sub(colX[0],146+i*36,colW,t); });
+  ["アイドマが分野別リストを抽出","電話・メール・手紙で接触","アポ獲得 → 社内の2名へ供給"].forEach(function(t,i){ s+=sub(colX[1],146+i*36,colW,t,null,"var(--new)"); });
+  [["営業事務","44h"],["支援業務の事務","48h"],["採用・候補者管理","32h"],["マーケティング","20h"],["バックオフィス","16h"]].forEach(function(t,i){
+    s+=sub(colX[2],146+i*36,colW,t[0],t[1]);
+  });
+  s+='<path d="M 440 330 L 440 300" fill="none" stroke="var(--new)" stroke-width="1.5" stroke-dasharray="4 3"></path>';
+  s+='<path d="M 736 330 L 736 318" fill="none" stroke="var(--s2)" stroke-width="1.5" stroke-dasharray="4 3"></path>';
+  s+=orgBox(304,330,colW,50,"アイドマ 営業支援ユニット","11分野のアプローチを丸ごと代行",{color:"var(--new)",fill:"var(--new-soft)",dash:true,size:12});
+  s+=orgBox(600,330,colW,50,"アイドマ 生産性向上支援ユニット","設計・採用・マニュアル・教育・定例MTG",{color:"var(--s2)",fill:"var(--open-soft)",dash:true,size:12});
+  s+=txt(8,346,"既存の売上に",{fill:"var(--ink-3)",size:11});
+  s+=txt(8,362,"影響を与えずに",{fill:"var(--ink-3)",size:11});
+  s+=txt(8,378,"11分野を試せます",{fill:"var(--ink-3)",size:11});
+  document.getElementById("ch-org-after").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- 営業チームの時間配分 ---------------- */
+(function(){
+  var cats=[
+    {l:"既存分野への架電",c:"var(--s1)",before:880,after:1050},
+    {l:"未開拓分野への架電",c:"var(--s3)",before:60,after:0},
+    {l:"リスト作成・準備",c:"var(--s2)",before:180,after:110},
+    {l:"結果入力・事務",c:"var(--s4)",before:160,after:120}
+  ];
+  var W=760,H=250,padL=76,padR=66,plotW=W-padL-padR,total=1280,s="";
+  [["現状",40,"before"],["移管後",132,"after"]].forEach(function(row){
+    var y=row[1],k=row[2],x=padL;
+    s+=txt(0,y+23,row[0],{fill:"var(--ink)",size:13,weight:700,disp:true});
+    cats.forEach(function(c){
+      var w=(c[k]/total)*plotW;
+      if(w<=0) return;
+      s+=rrect(x,y,Math.max(w-2,1),38,3,c.c);
+      if(w>52) s+=txt(x+w/2-1,y+24,String(c[k])+"h",{fill:"#FFFFFF",size:11.5,weight:600,mono:true,anchor:"middle"});
+      x+=w;
+    });
+    s+=txt(padL+plotW+8,y+24,"計1,280h",{fill:"var(--ink-3)",size:10.5,mono:true});
+  });
+  var ax=padL+(880/total)*plotW, bx=padL+(1050/total)*plotW;
+  s+='<path d="M '+ax+' 96 L '+ax+' 112 M '+bx+' 96 L '+bx+' 112" stroke="var(--rule-2)" stroke-width="1" stroke-dasharray="3 3"></path>';
+  s+='<path d="M '+(ax+4)+' 104 L '+(bx-8)+' 104" stroke="var(--accent)" stroke-width="2"></path>';
+  s+='<path d="M '+(bx-8)+' 100 L '+bx+' 104 L '+(bx-8)+' 108 Z" fill="var(--accent)"></path>';
+  s+=txt(bx+8,108,"既存分野の架電時間が ＋170h／月",{fill:"var(--accent)",size:12,weight:600});
+  s+=txt(0,214,"※ テレアポ8名×月160時間＝1,280時間として配分。未開拓分野は営業支援ユニットが別ラインで担当するため、社内の該当時間はゼロになります。",{fill:"var(--ink-3)",size:11});
+  document.getElementById("ch-time").innerHTML=svg(W,H,s);
+})();
+
+/* ---------------- ROI ---------------- */
+var PRESETS={
+  cons:{app:3000,appo:0.5,meet:80,win:5,sfee:35,init:30,hours:120,inrate:2200,ofee:28,rethours:40,cph:15,initrev:60,monrev:4,lead:6,gm:45},
+  base:{app:4000,appo:0.8,meet:85,win:8,sfee:35,init:30,hours:160,inrate:2200,ofee:30,rethours:60,cph:20,initrev:80,monrev:5,lead:5,gm:50},
+  bull:{app:6000,appo:1.1,meet:90,win:11,sfee:45,init:30,hours:200,inrate:2400,ofee:36,rethours:90,cph:25,initrev:110,monrev:7,lead:4,gm:55}
+};
+var KEYS=["app","appo","meet","win","sfee","init","hours","inrate","ofee","rethours","cph","initrev","monrev","lead","gm"];
+var DEC={appo:1};
+
+function readInputs(){var o={};KEYS.forEach(function(k){o[k]=parseFloat(document.getElementById("k-"+k).value);});return o;}
+function setInputs(p){KEYS.forEach(function(k){document.getElementById("k-"+k).value=p[k];});}
+
+function calc(p){
+  var extraApp=p.rethours*p.cph;
+  var totalApp=p.app+extraApp;
+  var appo=totalApp*(p.appo/100);
+  var meet=appo*(p.meet/100);
+  var closes=meet*(p.win/100);
+  var salesCloses=(p.app*(p.appo/100)*(p.meet/100))*(p.win/100);
+  var opsCloses=closes-salesCloses;
+
+  var initRev=p.initrev*10000, monRev=p.monrev*10000;
+  var opsSaving=p.hours*p.inrate - p.ofee*10000;
+  var monthCost=p.sfee*10000 + p.ofee*10000;
+
+  var monthly=[],cumProfit=[],cumCost=[],cumInit=0,cumMon=0,recognised=0;
+  for(var m=1;m<=12;m++){
+    /* m月に売上計上されるのは (m - lead) 月に受注したコホート */
+    var cohort=m-p.lead;
+    var mInit = cohort>=1 ? closes*initRev : 0;
+    /* 月額は計上開始月から毎月積み上がる */
+    var activeCohorts = cohort>=1 ? cohort : 0;
+    var mMon = closes*activeCohorts*monRev;
+    cumInit+=mInit; cumMon+=mMon;
+    monthly.push({init:mInit,mon:mMon});
+    cumProfit.push((cumInit+cumMon)*(p.gm/100) + opsSaving*m);
+    cumCost.push(p.init*10000 + monthCost*m);
+  }
+  var yearRev=cumInit+cumMon;
+  var yearProfit=yearRev*(p.gm/100);
+  var invest=p.init*10000 + monthCost*12;
+  var effect=yearProfit + opsSaving*12;
+  var roi=invest>0?(effect-invest)/invest*100:0;
+  var recognisedCohorts=Math.max(0,Math.min(12,12-p.lead));
+  var backlog=(12-recognisedCohorts)*closes*initRev;
+  var payback=null;
+  for(var i=0;i<12;i++){ if(payback===null&&cumProfit[i]>=cumCost[i]) payback=i+1; }
+  return {totalApp:totalApp,extraApp:extraApp,appo:appo,meet:meet,closes:closes,salesCloses:salesCloses,opsCloses:opsCloses,
+          yearRev:yearRev,yearProfit:yearProfit,invest:invest,effect:effect,roi:roi,opsSaving:opsSaving,
+          monthly:monthly,cumProfit:cumProfit,cumCost:cumCost,payback:payback,backlog:backlog};
+}
+function man(v){return n(v/10000);}
+
+function update(){
+  var p=readInputs();
+  KEYS.forEach(function(k){ document.getElementById("v-"+k).textContent=DEC[k]?p[k].toFixed(1):n(p[k]); });
+  var r=calc(p);
+
+  document.getElementById("o-roi").innerHTML=(r.roi>=0?"+":"")+Math.round(r.roi)+'<small>%</small>';
+  document.getElementById("o-roi").parentElement.className="stat "+(r.roi>=0?"pos":"hot");
+  document.getElementById("o-closes").innerHTML=(r.closes*12).toFixed(1)+'<small>社</small>';
+  document.getElementById("o-closesplit").textContent="営業支援 "+(r.salesCloses*12).toFixed(1)+"社 ／ 社内に戻った時間 "+(r.opsCloses*12).toFixed(1)+"社";
+  document.getElementById("o-backlog").innerHTML=man(r.backlog)+'<small>万円</small>';
+  document.getElementById("o-payback").innerHTML=r.payback?r.payback+'<small>ヶ月目</small>':'<span style="font-size:17px">12ヶ月内に未達</span>';
+  document.getElementById("o-investnote").textContent="年間投資 "+man(r.invest)+"万円";
+
+  document.getElementById("f-app").textContent=n(r.totalApp);
+  document.getElementById("f-app-r").textContent="外部 "+n(p.app)+" ＋ 社内 "+n(r.extraApp);
+  document.getElementById("f-appo").textContent=r.appo.toFixed(0);
+  document.getElementById("f-meet").textContent=r.meet.toFixed(1);
+  document.getElementById("f-win").textContent=r.closes.toFixed(2);
+  document.getElementById("f-appo-r").textContent="アポ率 "+p.appo.toFixed(1)+"%";
+  document.getElementById("f-meet-r").textContent="実施率 "+p.meet+"%";
+  document.getElementById("f-win-r").textContent="契約率 "+p.win+"%";
+
+  drawRevenue(r,p);
+  drawPayback(r);
+  drawSens(p);
+
+  var v=document.getElementById("o-verdict");
+  if(r.roi>=0&&r.payback){
+    v.style.borderLeftColor="var(--good)";
+    v.innerHTML='<b>判定：</b> 年間 <b>'+(r.closes*12).toFixed(1)+'社</b> の契約で、1年目に計上される売上は <b>'+man(r.yearRev)+
+      '万円</b>。粗利と事務コスト削減を合わせた効果は <b>'+man(r.effect)+'万円</b>、投資 <b>'+man(r.invest)+
+      '万円</b> に対してROIは <b>'+Math.round(r.roi)+'%</b>、投資回収は <b>'+r.payback+'ヶ月目</b>です。加えて <b>'+man(r.backlog)+
+      '万円</b> が受注残として翌期に乗ります。';
+  } else {
+    v.style.borderLeftColor="var(--accent)";
+    v.innerHTML='<b style="color:var(--accent)">判定：</b> この前提では1年以内に投資を回収できません。効果 <b style="color:var(--accent)">'+man(r.effect)+
+      '万円</b> に対して投資は <b style="color:var(--accent)">'+man(r.invest)+'万円</b>。ただし受注残が <b style="color:var(--accent)">'+man(r.backlog)+
+      '万円</b> 残っており、これは翌期の頭に乗ります。リードタイムの長い事業では、1年目のROIだけで判断すると過小評価になる点にご注意ください。';
+  }
+}
+
+function drawRevenue(r,p){
+  var W=700,H=290,padL=66,padR=58,padT=26,padB=42;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var last=r.monthly[11];
+  var max=niceMax(Math.max.apply(null,r.monthly.map(function(d){return d.init+d.mon;}).concat([100000]))*1.12,4);
+  var s="";
+  for(var i=0;i<=4;i++){
+    var val=max*i/4,y=padT+plotH-(val/max)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-12,"万円/月",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+((m-1)/11)*plotW;}
+  var bw=plotW/12*0.58;
+  for(var m=1;m<=12;m++){
+    var d=r.monthly[m-1],x=px(m)-bw/2,yb=padT+plotH;
+    var h1=(d.init/max)*plotH, h2=(d.mon/max)*plotH;
+    if(h1>0) s+=rrect(x,yb-h1,bw,h1,2,"var(--s1)");
+    if(h2>0) s+=rrect(x,yb-h1-h2-(h1>0?2:0),bw,h2,2,"var(--s3)");
+    if(m%3===0||m===1) s+=txt(px(m),yb+18,m+"ヶ月",{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  if(p.lead>0&&p.lead<12){
+    var lx=px(p.lead)+bw/2+2;
+    s+='<line x1="'+lx+'" y1="'+padT+'" x2="'+lx+'" y2="'+(padT+plotH)+'" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 4"></line>';
+    s+=txt(lx+7,padT+12,"リードタイム "+p.lead+"ヶ月：ここまで売上はゼロ",{fill:"var(--accent)",size:11,weight:600});
+  }
+  var ty=padT+plotH-((last.init+last.mon)/max)*plotH;
+  s+=txt(px(12)+9,ty,n((last.init+last.mon)/10000)+"万円",{fill:"var(--ink)",size:11.5,weight:600,mono:true,baseline:"middle"});
+  document.getElementById("ch-revenue").innerHTML=svg(W,H,s);
+}
+
+function drawPayback(r){
+  var W=700,H=270,padL=70,padR=58,padT=24,padB=40;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var hi=Math.max(r.cumProfit[11],r.cumCost[11],1);
+  var lo=Math.min(0,r.cumProfit[0]);
+  var max=niceMax(hi*1.06,4), min=lo<0?-niceMax(-lo,2):0;
+  var range=max-min,s="";
+  for(var i=0;i<=4;i++){
+    var val=min+range*i/4,y=padT+plotH-((val-min)/range)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,n(val/10000),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-8,padT-10,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+((m-1)/11)*plotW;}
+  function py(v){return padT+plotH-((v-min)/range)*plotH;}
+  [1,3,6,9,12].forEach(function(m){ s+=txt(px(m),padT+plotH+18,m+"ヶ月",{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"}); });
+  function line(arr,color){
+    return '<path d="'+arr.map(function(v,i){return (i?"L":"M")+" "+px(i+1)+" "+py(v);}).join(" ")+
+      '" fill="none" stroke="'+color+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>';
+  }
+  s+=line(r.cumCost,"var(--s3)");
+  s+=line(r.cumProfit,"var(--s5)");
+  if(r.payback){
+    var x=px(r.payback);
+    s+='<line x1="'+x+'" y1="'+padT+'" x2="'+x+'" y2="'+(padT+plotH)+'" stroke="var(--s5)" stroke-width="1.5" stroke-dasharray="4 4"></line>';
+    s+='<circle cx="'+x+'" cy="'+py(r.cumProfit[r.payback-1])+'" r="5" fill="var(--s5)" stroke="var(--surface)" stroke-width="2"></circle>';
+    s+=txt(x+8,padT+12,"投資回収 "+r.payback+"ヶ月目",{fill:"var(--s5)",size:11,weight:600});
+  }
+  s+='<circle cx="'+px(12)+'" cy="'+py(r.cumProfit[11])+'" r="4" fill="var(--s5)"></circle>';
+  s+=txt(px(12)+8,py(r.cumProfit[11]),n(r.cumProfit[11]/10000),{fill:"var(--s5)",size:11,weight:600,mono:true,baseline:"middle"});
+  s+='<circle cx="'+px(12)+'" cy="'+py(r.cumCost[11])+'" r="4" fill="var(--s3)"></circle>';
+  s+=txt(px(12)+8,py(r.cumCost[11]),n(r.cumCost[11]/10000),{fill:"var(--s3)",size:11,weight:600,mono:true,baseline:"middle"});
+  document.getElementById("ch-payback").innerHTML=svg(W,H,s);
+}
+
+function drawSens(p){
+  var leads=[2,3,4,5,6,8];
+  var curIdx=0,curD=Infinity;
+  leads.forEach(function(v,i){var d=Math.abs(v-p.lead);if(d<curD){curD=d;curIdx=i;}});
+  var vals=leads.map(function(L){ return {l:L, roi:calc(Object.assign({},p,{lead:L})).roi}; });
+  var maxRoi=Math.max.apply(null,vals.map(function(v){return v.roi;}));
+  var minRoi=Math.min.apply(null,vals.map(function(v){return v.roi;}));
+  var top=Math.max(maxRoi,10), bot=Math.min(minRoi,0);
+  var range=top-bot||1;
+  var W=700,H=276,padL=62,padR=20,padT=28,padB=62;
+  var plotW=W-padL-padR,plotH=H-padT-padB,slot=plotW/leads.length,bw=slot*0.56,s="";
+  for(var i=0;i<=4;i++){
+    var val=bot+range*i/4,y=padT+plotH-((val-bot)/range)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-8,y,Math.round(val)+"%",{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  var zeroY=padT+plotH-((0-bot)/range)*plotH;
+  s+='<line x1="'+padL+'" y1="'+zeroY+'" x2="'+(padL+plotW)+'" y2="'+zeroY+'" stroke="var(--rule-2)" stroke-width="1.5"></line>';
+  s+=txt(padL-8,padT-12,"年間ROI",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  vals.forEach(function(v,i){
+    var x=padL+i*slot+(slot-bw)/2;
+    var y0=zeroY, y1=padT+plotH-((v.roi-bot)/range)*plotH;
+    var top2=Math.min(y0,y1), h=Math.abs(y1-y0), cur=(i===curIdx);
+    var col=cur?"var(--accent)":(v.roi>=0?"var(--s5)":"var(--s3)");
+    s+=rrect(x,top2,bw,Math.max(h,2),3,col);
+    s+=txt(x+bw/2,(v.roi>=0?top2-7:top2+h+15),(v.roi>=0?"+":"")+Math.round(v.roi)+"%",{fill:col,size:11,weight:600,mono:true,anchor:"middle"});
+    s+=txt(x+bw/2,padT+plotH+30,v.l+"ヶ月",{fill:cur?"var(--accent)":"var(--ink-3)",size:11,weight:cur?600:400,mono:true,anchor:"middle"});
+    if(cur) s+=txt(x+bw/2,padT+plotH+46,"現在の設定",{fill:"var(--accent)",size:10,weight:600,anchor:"middle"});
+  });
+  s+=txt(padL,H-6,"横軸：受注から入国・売上計上までの月数。短縮できるほど1年目のROIは跳ね上がります。",{fill:"var(--ink-3)",size:10.5});
+  document.getElementById("ch-sens").innerHTML=svg(W,H,s);
+}
+
+KEYS.forEach(function(k){
+  document.getElementById("k-"+k).addEventListener("input",function(){
+    document.querySelectorAll("#preset-seg button").forEach(function(x){x.setAttribute("aria-pressed","false");});
+    update();
+  });
+});
+document.querySelectorAll("#preset-seg button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll("#preset-seg button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    setInputs(PRESETS[b.dataset.preset]);update();
+  });
+});
+document.getElementById("roi-reset").addEventListener("click",function(){
+  document.querySelectorAll("#preset-seg button").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.preset==="base"?"true":"false");});
+  setInputs(PRESETS.base);update();
+});
+setInputs(PRESETS.base);
+update();
+
+})();
+</script>
