@@ -1,0 +1,1611 @@
+<title>横浜ITコンサル 天井と、その超え方</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDMincho:wght@400;700&family=IBM+Plex+Sans+JP:wght@400;500;700&family=Overpass+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#ECEDF1;
+  --surface:#FBFBFD;
+  --surface-2:#E3E4EA;
+  --surface-3:#D4D6DE;
+  --ink:#16171C;
+  --ink-2:#4A4C55;
+  --ink-3:#7A7C86;
+  --rule:#DCDDE3;
+  --rule-2:#C0C2CB;
+  --s1:#5A45BE;
+  --s2:#0F7A55;
+  --s3:#B5401F;
+  --s4:#2C6FB5;
+  --s5:#8A6B00;
+  --brand:#5A45BE;
+  --brand-soft:#E6E2F6;
+  --accent:#B5401F;
+  --accent-soft:#F7E3DC;
+  --good:#0F7A55;
+  --good-soft:#DAEDE5;
+  --warn:#8A6B00;
+  --warn-soft:#F2EBD4;
+  --info-soft:#DEE9F5;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#131417;
+    --surface:#1C1D22;
+    --surface-2:#27282F;
+    --surface-3:#33353D;
+    --ink:#EBECF1;
+    --ink-2:#AFB1BA;
+    --ink-3:#83858E;
+    --rule:#2C2D34;
+    --rule-2:#3B3D45;
+    --s1:#8C7FE0;
+    --s2:#2C9E78;
+    --s3:#DC6440;
+    --s4:#5697D6;
+    --s5:#B48F1A;
+    --brand:#8C7FE0;
+    --brand-soft:#221E3A;
+    --accent:#DC6440;
+    --accent-soft:#321A12;
+    --good:#2C9E78;
+    --good-soft:#102820;
+    --warn:#B48F1A;
+    --warn-soft:#2B2410;
+    --info-soft:#17222F;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#131417;
+  --surface:#1C1D22;
+  --surface-2:#27282F;
+  --surface-3:#33353D;
+  --ink:#EBECF1;
+  --ink-2:#AFB1BA;
+  --ink-3:#83858E;
+  --rule:#2C2D34;
+  --rule-2:#3B3D45;
+  --s1:#8C7FE0;
+  --s2:#2C9E78;
+  --s3:#DC6440;
+  --s4:#5697D6;
+  --s5:#B48F1A;
+  --brand:#8C7FE0;
+  --brand-soft:#221E3A;
+  --accent:#DC6440;
+  --accent-soft:#321A12;
+  --good:#2C9E78;
+  --good-soft:#102820;
+  --warn:#B48F1A;
+  --warn-soft:#2B2410;
+  --info-soft:#17222F;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);
+  font-family:"IBM Plex Sans JP","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  font-size:15px;line-height:1.85;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"BIZ UDMincho","Hiragino Mincho ProN",serif;font-weight:700;margin:0;line-height:1.5;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:3px}
+.mono{font-family:"Overpass Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.wave{height:3px;background:linear-gradient(90deg,var(--brand) 0 32%,var(--rule-2) 32% 68%,var(--accent) 68% 100%);border:0;margin:0;opacity:.8}
+
+.masthead{background:var(--surface);border-bottom:1px solid var(--rule)}
+.mast-inner{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-end;padding:26px 0 20px}
+.eyebrow{font-family:"Overpass Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.mast-title{font-size:clamp(22px,3.1vw,35px);font-weight:700;margin-top:8px;letter-spacing:.01em}
+.mast-title em{font-style:normal;color:var(--accent)}
+.mast-sub{color:var(--ink-2);font-size:13.5px;margin-top:9px;max-width:66ch}
+.mast-meta{font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-align:right}
+.mast-meta b{color:var(--ink-2);font-weight:700}
+.flash{display:inline-flex;align-items:center;gap:8px;background:var(--brand-soft);color:var(--brand);
+  font-size:12px;font-weight:700;padding:5px 13px;border-radius:4px;margin-top:12px}
+
+.tabbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:none;border:0;border-bottom:3px solid transparent;font:inherit;font-size:13px;font-weight:700;
+  color:var(--ink-3);padding:13px 11px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brand)}
+.tab .num{font-family:"Overpass Mono",monospace;font-size:10px;color:var(--ink-3);margin-right:6px;font-weight:700}
+.tab[aria-selected="true"] .num{color:var(--brand)}
+
+.panel{padding:34px 0 76px}
+.panel[hidden]{display:none!important}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.sec-head h2{font-size:24px}
+.sec-head .tagline{font-size:12.5px;color:var(--ink-3)}
+.lede{color:var(--ink-2);font-size:14px;max-width:78ch;margin:10px 0 26px}
+.block{margin-top:40px}
+.block > h3{font-size:17.5px}
+.block > .sub{font-size:12.5px;color:var(--ink-3);margin:3px 0 16px}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(186px,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.card.flat{background:transparent;border-style:dashed}
+
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:15px 17px;display:flex;flex-direction:column;gap:1px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;top:0;left:0;width:36px;height:3px;background:var(--rule-2)}
+.stat.hot::before{background:var(--accent);width:100%}
+.stat.pos::before{background:var(--good);width:100%}
+.stat.info::before{background:var(--brand);width:100%}
+.stat.warn::before{background:var(--warn);width:100%}
+.stat .k{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.stat .v{font-family:"Overpass Mono",monospace;font-size:25px;font-weight:700;letter-spacing:-.03em;line-height:1.35;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:13px;margin-left:2px;color:var(--ink-2);font-family:"IBM Plex Sans JP",sans-serif;font-weight:400}
+.stat .n{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:2px}
+.stat.hot .v{color:var(--accent)}
+.stat.pos .v{color:var(--good)}
+.stat.info .v{color:var(--brand)}
+.stat.warn .v{color:var(--warn)}
+
+.chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.chip.a{background:var(--brand-soft);color:var(--brand)}
+.chip.b{background:var(--info-soft);color:var(--s4)}
+.chip.c{background:var(--good-soft);color:var(--good)}
+.chip.d{background:var(--warn-soft);color:var(--warn)}
+.chip.e{background:var(--accent-soft);color:var(--accent)}
+
+.deflist{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;font-size:13.5px;align-items:baseline}
+.deflist dt{color:var(--ink-3);font-size:12px;font-weight:700;white-space:nowrap}
+.deflist dd{margin:0}
+.note{font-size:12px;color:var(--ink-3);line-height:1.78;margin-top:12px}
+.callout{background:var(--warn-soft);border-radius:10px;padding:14px 17px;font-size:12.5px;color:var(--ink-2);margin-top:14px}
+.callout b{color:var(--ink)}
+.callout.blue{background:var(--info-soft)}
+.callout.violet{background:var(--brand-soft)}
+
+.swot{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:14px}
+.swot section{border:1px solid var(--rule);border-radius:10px;padding:16px 18px;background:var(--surface)}
+.swot h4{font-size:14px;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.swot h4::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--rule-2)}
+.swot .s h4::before{background:var(--s2)}
+.swot .w h4::before{background:var(--s3)}
+.swot .o h4::before{background:var(--s1)}
+.swot .t h4::before{background:var(--s5)}
+.swot ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+
+.reason{background:var(--surface);border:1px solid var(--rule);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.reason .rhead{display:flex;gap:16px;align-items:flex-start;padding:20px 24px 0}
+.reason .idx{font-family:"BIZ UDMincho",serif;font-size:32px;font-weight:700;color:var(--brand);line-height:1;flex:0 0 auto}
+.reason .kicker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.reason h4{font-size:18px}
+.reason .rbody{padding:12px 24px 20px}
+.reason p{font-size:13.5px;color:var(--ink-2)}
+.reason .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(188px,1fr));gap:10px;margin:15px 0 4px}
+.reason .fact{background:var(--surface-2);border-radius:8px;padding:10px 13px}
+.reason .fact .fv{font-family:"Overpass Mono",monospace;font-size:19px;font-weight:700}
+.reason .fact .fk{font-size:11px;color:var(--ink-3);line-height:1.5}
+.reason .sowhat{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:13.5px}
+.reason .sowhat b{color:var(--brand)}
+
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch}
+@media(max-width:800px){.vs{grid-template-columns:1fr}}
+.vs-col{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.vs-col.bad{border-top:4px solid var(--accent)}
+.vs-col.good{border-top:4px solid var(--brand)}
+.vs-col .vt{font-family:"Overpass Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ink-3)}
+.vs-col h4{font-size:17px;margin:5px 0 12px}
+.vs-col ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:8px}
+.vs-col ul b{color:var(--ink)}
+.vs-mid{display:flex;align-items:center;justify-content:center;font-family:"BIZ UDMincho",serif;font-size:20px;color:var(--rule-2)}
+@media(max-width:800px){.vs-mid{padding:4px 0}}
+
+.step{display:grid;grid-template-columns:76px 1fr;gap:0 18px;background:var(--surface);border:1px solid var(--rule);
+  border-left:4px solid var(--rule-2);border-radius:0 10px 10px 0;padding:17px 20px;margin-bottom:10px;align-items:start}
+.step.p0{border-left-color:var(--s5)}
+.step.p1{border-left-color:var(--s4)}
+.step.p2{border-left-color:var(--s2)}
+.step .sn{font-family:"Overpass Mono",monospace;font-size:12px;font-weight:700;color:var(--ink-3);line-height:1.6}
+.step h4{font-size:15.5px;margin-bottom:6px}
+.step p{font-size:13px;color:var(--ink-2)}
+.step .cost{font-family:"Overpass Mono",monospace;font-size:12px;color:var(--ink);font-weight:700;margin-top:8px;display:block}
+
+.timeline{overflow-x:auto;padding:24px 0 4px}
+.timeline-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(152px,1fr);min-width:880px;position:relative}
+.timeline-track::before{content:"";position:absolute;left:0;right:0;top:9px;height:2px;background:var(--rule-2)}
+.tl-item{position:relative;padding:26px 12px 0 0}
+.tl-item::before{content:"";position:absolute;left:0;top:2px;width:15px;height:15px;border-radius:50%;background:var(--surface);border:3px solid var(--rule-2)}
+.tl-item.on::before{background:var(--brand);border-color:var(--brand)}
+.tl-item.now::before{background:var(--accent);border-color:var(--accent);width:19px;height:19px;top:0}
+.tl-item .y{font-family:"Overpass Mono",monospace;font-size:11.5px;font-weight:700;color:var(--ink-3)}
+.tl-item.on .y{color:var(--brand)}
+.tl-item.now .y{color:var(--accent)}
+.tl-item .t{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+
+.pillar{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.pillar .pk{font-family:"Overpass Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink-3)}
+.pillar h4{font-size:16.5px}
+.pillar p{font-size:13px;color:var(--ink-2)}
+.pillar .kpi{margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:4px}
+.pillar .kpi b{font-family:"Overpass Mono",monospace;color:var(--ink);font-weight:700}
+
+.scroller{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+table.matrix{width:100%;border-collapse:collapse;font-size:13px;min-width:700px}
+table.matrix th,table.matrix td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.matrix th{font-size:11.5px;color:var(--ink-3);font-weight:700;background:var(--surface-2)}
+table.matrix tr:last-child td{border-bottom:0}
+table.matrix td:first-child{font-weight:700}
+table.matrix td.num{font-family:"Overpass Mono",monospace;text-align:right;white-space:nowrap;font-weight:700}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:1px solid var(--rule);border-radius:10px}
+.seg{display:flex;background:var(--surface-2);border-radius:8px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:12px;font-weight:700;border:0;background:none;color:var(--ink-3);padding:6px 12px;border-radius:6px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.controls input[type="search"],.controls select{font:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--rule-2);border-radius:8px;background:var(--surface);color:var(--ink)}
+.controls input[type="search"]{min-width:190px;flex:1}
+.controls .count{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.controls .count b{font-family:"Overpass Mono",monospace;color:var(--ink);font-weight:700}
+
+.tlist{display:flex;flex-direction:column;gap:9px}
+.trow{display:grid;grid-template-columns:38px minmax(206px,1.02fr) minmax(238px,1.5fr) minmax(238px,1.5fr);gap:0 18px;
+  background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--rule-2);border-radius:0 10px 10px 0;padding:15px 18px;align-items:start}
+.trow.tA{border-left-color:var(--s4)}
+.trow.tB{border-left-color:var(--s2)}
+.trow.tC{border-left-color:var(--s1)}
+.trow .rank{font-family:"Overpass Mono",monospace;font-size:13px;color:var(--ink-3);font-weight:700;padding-top:2px}
+.trow .head{display:flex;flex-direction:column;gap:6px}
+.trow .name{font-family:"BIZ UDMincho",serif;font-size:14.5px;font-weight:700;line-height:1.45}
+.trow .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.trow .cnt{font-family:"Overpass Mono",monospace;font-size:13px;font-weight:700}
+.trow .cnt span{font-size:11px;color:var(--ink-3);font-weight:400;margin-left:3px;font-family:"IBM Plex Sans JP",sans-serif}
+.trow .fieldlabel{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);display:block;margin-bottom:3px}
+.trow .fieldbody{font-size:13px;color:var(--ink-2);line-height:1.7}
+.trow .hook .fieldbody{color:var(--ink);border-left:3px solid var(--rule-2);padding-left:11px}
+@media(max-width:900px){
+  .trow{grid-template-columns:34px 1fr;gap:10px 14px}
+  .trow .head,.trow .why,.trow .hook{grid-column:2}
+}
+
+.taskgroup{background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.taskgroup header{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:13px 16px;background:var(--surface-2)}
+.taskgroup header h4{font-size:14px}
+.taskgroup header .hh{font-family:"Overpass Mono",monospace;font-size:12px;color:var(--ink-2);font-weight:700}
+.taskgroup ul{list-style:none;margin:0;padding:6px 0}
+.taskgroup li{display:flex;justify-content:space-between;gap:12px;padding:7px 16px;font-size:13px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.taskgroup li:last-child{border-bottom:0}
+.taskgroup li b{font-family:"Overpass Mono",monospace;font-size:12px;color:var(--ink-3);font-weight:400;white-space:nowrap}
+.taskgroup li.key{color:var(--ink)}
+.taskgroup li.key > span:first-child::before{content:"◆";color:var(--brand);font-size:8px;margin-right:7px;vertical-align:2px}
+
+.chartbox{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px}
+.chartbox h4{font-size:14px}
+.chartbox .csub{font-size:12px;color:var(--ink-3);margin:2px 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);margin-bottom:10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+
+.roi-layout{display:grid;grid-template-columns:minmax(280px,336px) 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.roi-layout{grid-template-columns:1fr}}
+.knobs{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px;position:sticky;top:58px;max-height:calc(100vh - 74px);overflow-y:auto}
+.knob{margin-bottom:14px}
+.knob label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink-2);margin-bottom:5px;gap:10px}
+.knob label b{font-family:"Overpass Mono",monospace;font-size:13px;color:var(--ink);font-weight:700}
+.knob input[type="range"]{width:100%;accent-color:var(--brand);height:20px;cursor:pointer}
+.knob-group{border-top:1px solid var(--rule);padding-top:14px;margin-top:16px}
+.gh{font-family:"Overpass Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink-3);margin-bottom:12px}
+.gh span{color:var(--brand)}
+.resetbtn{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--rule-2);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:6px 12px;cursor:pointer}
+.resetbtn:hover{border-color:var(--ink-3);color:var(--ink)}
+.verdict{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--good);border-radius:0 10px 10px 0;padding:16px 20px;font-size:13.5px}
+.verdict b{font-family:"Overpass Mono",monospace;color:var(--good);font-weight:700}
+
+.funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px}
+.fstep{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:13px 14px}
+.fstep .fl{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.fstep .fv{font-family:"Overpass Mono",monospace;font-size:22px;font-weight:700}
+.fstep .fr{font-size:11px;color:var(--ink-3)}
+.fstep.end{background:var(--brand-soft);border-color:transparent}
+.fstep.end .fv,.fstep.end .fl,.fstep.end .fr{color:var(--brand)}
+
+.phase{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule)}
+.phase:first-of-type{border-top:0}
+.phase .pd{font-family:"Overpass Mono",monospace;font-size:12px;color:var(--accent);font-weight:700}
+.phase .pt{font-family:"BIZ UDMincho",serif;font-size:16px;font-weight:700;line-height:1.4;margin-top:2px}
+.phase ul{margin:0;padding-left:1.15em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px}
+.phase ul b{color:var(--ink)}
+.owner{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:4px;margin-right:7px;vertical-align:1px}
+.owner.ai{background:var(--brand-soft);color:var(--brand)}
+.owner.kl{background:var(--accent-soft);color:var(--accent)}
+.srcs{font-size:12px;color:var(--ink-3);line-height:1.9}
+@media(max-width:640px){
+  .wrap{padding:0 16px}
+  .phase{grid-template-columns:1fr;gap:10px}
+  .reason .rhead{flex-direction:column;gap:6px}
+  .step{grid-template-columns:1fr;gap:8px}
+}
+</style>
+
+<hr class="wave">
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <div>
+      <div class="eyebrow">事前リサーチ ／ 成長戦略 ／ 2ユニット ROIシミュレーション</div>
+      <h1 class="mast-title">横浜ITコンサル <em>天井</em> と、その超え方</h1>
+      <p class="mast-sub">PM支援は、社長の時間をそのまま売る事業です。<b>だから必ず天井が来ます</b>——計算すると月100万円前後です。AI学習サービスは粗利9割で時間を消費しないので、天井がありません。<b>この2つは、同じ会社の中にある、経済性がまったく違う2つの事業です。</b>営業の設計も、当然違います。</p>
+      <div class="flash">◆ 本ボードの主題：まずPM支援で食い扶持をつくり、その顧客にAI研修を積む</div>
+    </div>
+    <div class="mast-meta">
+      <div><b>作成</b> 株式会社アイドマ・ホールディングス</div>
+      <div><b>宛先</b> 横浜ITコンサル合同会社 御中</div>
+      <div><b>次回商談</b> 日程調整中</div>
+      <div><b>更新</b> 2026年9月15日</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="セクション">
+  <div class="wrap tabs" role="tablist">
+    <button class="tab" data-p="research" role="tab" aria-selected="true"><span class="num">01</span>事前リサーチ</button>
+    <button class="tab" data-p="engines" role="tab" aria-selected="false"><span class="num">02</span>事業の経済性</button>
+    <button class="tab" data-p="cash" role="tab" aria-selected="false"><span class="num">03</span>費用をどう払うか</button>
+    <button class="tab" data-p="why" role="tab" aria-selected="false"><span class="num">04</span>今すぐやる3つの理由</button>
+    <button class="tab" data-p="strategy" role="tab" aria-selected="false"><span class="num">05</span>成長戦略</button>
+    <button class="tab" data-p="targets" role="tab" aria-selected="false"><span class="num">06</span>営業ターゲット30</button>
+    <button class="tab" data-p="remote" role="tab" aria-selected="false"><span class="num">07</span>在宅ワーカー活用</button>
+    <button class="tab" data-p="roi" role="tab" aria-selected="false"><span class="num">08</span>ROIシミュレーション</button>
+    <button class="tab" data-p="road" role="tab" aria-selected="false"><span class="num">09</span>90日ロードマップ</button>
+  </div>
+</nav>
+
+<!-- ===== 01 ===== -->
+<section class="panel wrap" id="p-research" role="tabpanel">
+  <div class="sec-head"><h2>事前リサーチ</h2><span class="tagline">商談メモで空欄だった項目を、公開情報で埋めました</span></div>
+  <p class="lede">前回の商談メモでは企業名が「未言及」でしたが、法人番号公表サイトで確認できました。<b>横浜ITコンサル合同会社（Yokohama IT Consulting LLC）、神奈川県横浜市神奈川区、設立2026年3月10日</b>。つまり<b>創業からまだ6ヶ月</b>です。この前提を外して戦略は立てられないので、本ボードはすべて「創業6ヶ月・1人・法人顧客ゼロ」から出発しています。</p>
+
+  <div class="grid g4">
+    <div class="stat hot"><span class="k">設立</span><span class="v">2026.03</span><span class="n">3月10日設立。創業6ヶ月目</span></div>
+    <div class="stat"><span class="k">体制</span><span class="v">1<small>名</small></span><span class="n">社長お一人。営業も納品も同じ人</span></div>
+    <div class="stat warn"><span class="k">法人顧客</span><span class="v">0<small>件</small></span><span class="n">実績ゼロからの開拓になります</span></div>
+    <div class="stat pos"><span class="k">AI学習サービスの粗利率</span><span class="v">90<small>%</small></span><span class="n">時間を消費しない。ここが唯一の突破口</span></div>
+  </div>
+
+  <div class="block">
+    <h3>会社概要</h3>
+    <p class="sub">公開情報（法人番号公表サイト・企業情報データベース・自社サイトの検索結果）より</p>
+    <div class="grid g2">
+      <div class="card">
+        <dl class="deflist">
+          <dt>商号</dt><dd>横浜ITコンサル合同会社（Yokohama IT Consulting LLC）</dd>
+          <dt>法人番号</dt><dd class="mono">1020003030537</dd>
+          <dt>設立</dt><dd><b>2026年3月10日</b></dd>
+          <dt>所在地</dt><dd>神奈川県横浜市神奈川区西神奈川2-14-4</dd>
+          <dt>従業員</dt><dd>1名（社長）</dd>
+          <dt>事業</dt><dd>AI・システム開発支援／AI導入コンサルティング／IT研修</dd>
+          <dt>自社サービス</dt><dd>AI資格学習サービス <b>aikentei.org</b> の運営</dd>
+          <dt>ドメイン</dt><dd>yokohama-it.co.jp</dd>
+        </dl>
+      </div>
+      <div class="card">
+        <h4 style="font-size:15px;margin-bottom:10px">社長のお名前について（要確認）</h4>
+        <p style="font-size:13.5px;color:var(--ink-2)">前回の文字起こしでは<b>「小総 一（おさ はじめ）様」</b>と記載されつつ、同じ記録内に「カメ総一」「小神社長」という表記も残っていました。<b>音声認識による表記揺れ</b>と思われます。公開されている法人情報でも代表社員名は確認できませんでした。</p>
+        <p style="font-size:13.5px;color:var(--ink-2);margin-top:12px">提案書や契約書でお名前を間違えることは、創業間もない会社同士の取引では致命的です。<b>次回、正式な表記（漢字・読み）を最初にご確認させてください。</b>本ボードでは表記を避け「社長」と記載しています。</p>
+        <div class="callout blue">同様に、<b>年商・資本金・現在の資金余力・PMアシスタントの想定時間単価</b>も未確認です。とくに時間単価は08タブの試算を左右します。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>3つのサービスと、その値付け</h3>
+    <p class="sub">商談メモに記載のあった料金から、単位あたりの経済性を出しました</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>サービス</th><th>料金（メモ記載）</th><th class="num">月あたり換算</th><th>性質</th><th>この事業の役割</th></tr></thead>
+        <tbody>
+          <tr><td>PMアシスタント</td><td>要相談（月20時間〜）</td><td class="num">20万円 ※仮</td><td>社長の時間を売る</td><td><b>いちばん早く現金になる。天井もここで決まる</b></td></tr>
+          <tr><td>AI学習サイト（パイロット）</td><td>3ヶ月 98,000円／30名まで</td><td class="num">32,667円</td><td>お試し・期間限定</td><td>入口。ここから本契約に上げないと意味がない</td></tr>
+          <tr><td>AI研修パッケージ</td><td>年間 約500,000円</td><td class="num">41,667円</td><td>ストック・粗利90%</td><td><b>天井を超える唯一の道。ただし立ち上がりが遅い</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">※ PMアシスタントの月20万円は「月20時間×時間単価1万円」という<b>仮置き</b>です。実際の単価を伺えば、02タブと08タブの数字が確定します。</p>
+    <div class="callout">
+      <b>ここで1つ、先に申し上げておきます。</b>AI学習サイトのパイロットは<b>30名で3ヶ月98,000円＝1人あたり月1,089円</b>です。この価格は導入のハードルとしては優秀ですが、<b>これ単体を月5社積んでも月16万円にしかなりません</b>。外部の営業支援を使うなら、この価格帯の商材だけを追いかけるのは割に合いません。02タブで詳しく見ます。
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>強み・弱み・機会・脅威</h3>
+    <p class="sub">公開情報と商談メモから読み取れる範囲で</p>
+    <div class="swot">
+      <section class="s"><h4>強み（S）</h4><ul>
+        <li>経験豊富なPMを<b>月20時間から</b>アサインできる刻みの細かさ</li>
+        <li>AI学習ツールの粗利率が約90%。売れば売るほど利益が残る構造</li>
+        <li>1人会社ゆえの意思決定の速さ。見積も条件も即断できる</li>
+        <li>AI導入コンサル・開発・研修を1社で受けられる（分業されていない）</li>
+      </ul></section>
+      <section class="w"><h4>弱み（W）</h4><ul>
+        <li><b>法人実績ゼロ</b>。初回の信用をどう作るかが最大の関門</li>
+        <li>営業も納品も社長1人。<b>受注すると営業が止まる</b>という構造</li>
+        <li>手動メール営業では件数が出ない。時間対効果が極端に低い</li>
+        <li>創業6ヶ月。資金余力が読めず、固定費のリスクが相対的に重い</li>
+      </ul></section>
+      <section class="o"><h4>機会（O）</h4><ul>
+        <li><b>人材開発支援助成金で研修費の最大75%が助成される</b>（中小企業）</li>
+        <li>AI新法・AI基本計画により、企業のAI活用が国策として後押しされている</li>
+        <li>2027年末のSAP保守終了で、基幹刷新プロジェクトとPM需要が集中</li>
+        <li>社労士・税理士など<b>助成金に強い士業が、そのまま紹介チャネルになる</b></li>
+      </ul></section>
+      <section class="t"><h4>脅威（T）</h4><ul>
+        <li><b>無料のAI検定・AI学習サイトが複数存在する</b>。「検定」だけでは差別化できない</li>
+        <li>大手研修会社・eラーニング事業者との価格・ブランド競争</li>
+        <li>PM支援は社長が倒れたら止まる。属人リスクが100%</li>
+        <li>助成金の対象コースは年度で変わる。制度に依存しすぎると足元が崩れる</li>
+      </ul></section>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>データの取り扱いについて。</b>御社ホームページ（yokohama-it.co.jp）およびaikentei.orgへは、本ボード作成環境のネットワーク制限により直接アクセスできませんでした。上記は法人番号公表サイトと企業情報データベースの公開情報に基づいています。<b>代表社員名、資本金、AI学習サービスの詳細な機能・競合との差、PMの実務経歴</b>は未確認です。とくに<b>PMとしての実績（どの規模の、どんなプロジェクトを何本）</b>は、Tier Aの営業で最も効く材料になります。次回、必ずお聞かせください。
+  </div>
+</section>
+
+<!-- ===== 02 ===== -->
+<section class="panel wrap" id="p-engines" role="tabpanel" hidden>
+  <div class="sec-head"><h2>2つの事業の経済性</h2><span class="tagline">同じ会社の中に、まったく違う2つの商売がある</span></div>
+  <p class="lede">前回、目標として「PM支援は月1〜2社、AI学習システムは月5社」と伺いました。<b>この2つは、同じ営業の仕方では取れません。</b>経済性が違うからです。まずそこを分けます。</p>
+
+  <div class="block">
+    <h3>PM支援には、計算できる天井があります</h3>
+    <p class="sub">社長の1ヶ月の時間から逆算すると、上限がはっきり出ます</p>
+    <div class="chartbox" id="c-ceiling"></div>
+    <div class="callout">
+      <b>この計算の意味。</b>PM支援は<b>社長の時間をそのまま売る事業</b>です。1社につき月20時間。月に使える時間が140時間で、商談と管理に40時間かかるなら、納品に回せるのは100時間——<b>つまり同時に受けられるのは5社まで</b>です。月20万円×5社＝月100万円。これがPM支援単体の天井です。6社目は物理的に受けられません。<b>「月1〜2社を継続的に獲得」という目標は、3ヶ月で天井に当たります。</b>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>2つの事業を並べて比べる</h3>
+    <p class="sub">同じ「1件の受注」でも、残るものがまったく違います</p>
+    <div class="vs">
+      <div class="vs-col bad">
+        <div class="vt">ENGINE 1</div>
+        <h4>PM支援（社長の時間を売る）</h4>
+        <ul>
+          <li><b>すぐ現金になります。</b>契約したその月から売上が立ちます。創業期にはこれが決定的です。</li>
+          <li>実績がそのまま次の案件の信用になります。<b>1本目が最も重要</b>です。</li>
+          <li>ただし<b>受注するほど営業の時間がなくなります</b>。5社埋まると新規開拓が止まります。</li>
+          <li>社長が動けなくなれば、その月の売上はゼロです。属人リスクが100%。</li>
+          <li><b>天井：月100万円前後（5社×20万円）。</b></li>
+        </ul>
+      </div>
+      <div class="vs-mid">対</div>
+      <div class="vs-col good">
+        <div class="vt">ENGINE 2</div>
+        <h4>AI研修・学習サービス（仕組みを売る）</h4>
+        <ul>
+          <li><b>粗利90%。</b>そして納品に社長の時間をほとんど使いません。</li>
+          <li>年額契約なので<b>積み上がります</b>。今月の5社は、来月も再来月も売上です。</li>
+          <li>天井がありません。50社でも100社でも、時間の制約は受けません。</li>
+          <li>ただし<b>立ち上がりが遅い</b>。実績ゼロの研修を法人が買うまでには時間がかかります。</li>
+          <li><b>天井：なし。ただし1社あたり月41,667円と単価が低い。</b></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>だから、順番はこうなります</h3>
+    <p class="sub">「両方を同時に、ゼロから」が最もうまくいかない進め方です</p>
+    <div class="chartbox" id="c-order"></div>
+    <div class="callout violet">
+      <b>最短ルートは、ゼロから10社にAI研修を売ることではありません。</b>PM支援で入った法人に、<b>すでに信頼がある状態でAI研修を足す</b>ことです。PM支援で社内に入れば、その会社の人材育成の課題も、誰が決裁するかも見えます。<b>新規で1社取る労力と、既存顧客に1つ足す労力は、まったく違います。</b>08タブのシミュレーションには「アップセル率」というつまみを用意しました。
+    </div>
+  </div>
+</section>
+
+<!-- ===== 03 ===== -->
+<section class="panel wrap" id="p-cash" role="tabpanel" hidden>
+  <div class="sec-head"><h2>費用をどう払うか</h2><span class="tagline">成果報酬のご希望について、正面からお答えします</span></div>
+  <p class="lede">前回、<b>成果報酬形式をご希望</b>と伺いました。売上ゼロ・創業6ヶ月の会社にとって固定費が怖いのは当然で、これは正しい感覚です。<b>ごまかさずにお答えします。</b></p>
+
+  <div class="block">
+    <h3>なぜ成果報酬で受けにくいのか</h3>
+    <p class="sub">こちらの都合ではなく、構造の話です</p>
+    <div class="grid g3">
+      <div class="card">
+        <span class="chip e">理由①</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">実績ゼロの商材は、成果が読めません</h4>
+        <p style="font-size:13px;color:var(--ink-2)">成果報酬は「この商材ならこのくらい決まる」という<b>過去データがあって初めて成立</b>します。法人実績ゼロ・導入事例ゼロの新サービスでは、供給側が確率を見積もれません。読めないものは請けられない、というだけの話です。</p>
+      </div>
+      <div class="card">
+        <span class="chip e">理由②</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">結果的に高くつきます</h4>
+        <p style="font-size:13px;color:var(--ink-2)">成果報酬はリスクを供給側が負うぶん、<b>1件あたりの単価にリスク分が上乗せ</b>されます。仮にPM案件1件で年240万円の売上が立つとして、成果報酬で30%なら72万円。固定で月30万円×12ヶ月＝360万円と比べると安く見えますが、<b>2件、3件と決まるほど成果報酬のほうが高くなります</b>。</p>
+      </div>
+      <div class="card">
+        <span class="chip e">理由③</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">ノウハウが残りません</h4>
+        <p style="font-size:13px;color:var(--ink-2)">前回「<b>自社に再現性のある営業ノウハウ・仕組み・データが資産として残ること</b>」を期待値として挙げておられました。成果報酬は結果だけを買う形なので、どのリストのどの切り口が効いたかは供給側に残ります。ご期待とは逆方向です。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>では、いくら必要なのか</h3>
+    <p class="sub">固定費を払うなら、何社で元が取れるかを先に決めておきます</p>
+    <div class="chartbox" id="c-breakeven"></div>
+    <div class="callout">
+      <b>損益分岐は、驚くほど低い位置にあります。</b>営業支援30万円＋在宅ワーカー6万円＝月36万円に対して、<b>PM支援がたった2社決まれば月40万円</b>。粗利はほぼ社長の時間なので、そのまま回収できます。AI研修だけで回収しようとすると<b>10社</b>必要です。だから<b>最初にPM支援を2社取ることが、このプロジェクト全体の第一関門</b>になります。逆に言えば、そこさえ超えれば以降は自走します。
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>段階を分けるご提案</h3>
+    <p class="sub">いきなりフルで始めない、という選択肢です</p>
+    <div class="step p0">
+      <div class="sn">PHASE 0<br>0-1ヶ月</div>
+      <div>
+        <h4>小さく確かめる</h4>
+        <p>リストの抽出条件とトークスクリプトだけを先に作り、<b>実際に反応が出るかを小さい件数で確かめます</b>。ここで反応がゼロなら、そもそも当てる先か訴求が間違っています。フルで始める前に、それを知っておくべきです。社長のお手を煩わせないよう、送信も代行します。</p>
+        <span class="cost">想定：小規模構成／期間限定</span>
+      </div>
+    </div>
+    <div class="step p1">
+      <div class="sn">PHASE 1<br>2-4ヶ月</div>
+      <div>
+        <h4>PM支援2社を取り切る</h4>
+        <p>反応のあった切り口に絞り、<b>Tier A（PM需要）に集中</b>します。目標はPM支援2社。ここが決まれば月40万円の売上が立ち、営業支援の費用は自己資金ではなく<b>事業の売上から払える</b>状態になります。AI研修はこの期間、無理に追いません。</p>
+        <span class="cost">想定：営業支援ユニット＋在宅ワーカー</span>
+      </div>
+    </div>
+    <div class="step p2">
+      <div class="sn">PHASE 2<br>5ヶ月目〜</div>
+      <div>
+        <h4>AI研修を積み上げる</h4>
+        <p>PM顧客へのアップセルと、Tier B・Tier C（士業チャネル）への展開を本格化します。<b>助成金の話ができる社労士・税理士と組むのがここでの本命</b>です。PM支援は5社で天井に当たるので、ここから先の成長はすべてAI研修側が担います。</p>
+        <span class="cost">想定：フル構成／リスト範囲を拡大</span>
+      </div>
+    </div>
+    <div class="callout blue">
+      <b>この段階設計には、正直な狙いがあります。</b>Phase 0で反応が出なければ、御社は大きな固定費を払わずに済みます。弊社としても、成果が出ない契約を続けるより早く軌道修正したい。<b>成果報酬にはできませんが、「小さく始めて、決まったら広げる」なら、ご負担のかけ方をコントロールできます。</b>具体的な金額は次回のお見積りでご提示します。
+    </div>
+  </div>
+</section>
+
+<!-- ===== 04 ===== -->
+<section class="panel wrap" id="p-why" role="tabpanel" hidden>
+  <div class="sec-head"><h2>今すぐやらないといけない3つの理由</h2><span class="tagline">法律・制度・世の中の流れ</span></div>
+  <p class="lede">3つとも、御社の準備が整うのを待ってはくれません。とくに2つ目は<b>今年度が最終年度</b>です。</p>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">1</div>
+      <div>
+        <div class="kicker"><span class="chip a">法律</span><span class="chip e">2025年9月 全面施行済み</span></div>
+        <h4>日本初のAI法が施行され、企業のAI活用が国策になった</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p><b>人工知能関連技術の研究開発及び活用の推進に関する法律（AI新法）</b>が2025年6月に公布され、同年9月に全面施行されました。日本で初めてAIに特化して制定された法律です。AIを活用する事業者には<b>「自ら積極的にAIを活用して事業の効率化・高度化に努めること」「国や地方公共団体のAI施策に協力すること」</b>という責務が定められています。いずれも努力義務で罰則はありませんが、方向性は明確です。さらに2025年12月には<b>「人工知能基本計画」が閣議決定</b>され、「世界で最もAIを開発・活用しやすい国」を目指すことが掲げられました。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">2025.09</div><div class="fk">AI新法の全面施行</div></div>
+        <div class="fact"><div class="fv">2025.12</div><div class="fk">人工知能基本計画を閣議決定</div></div>
+        <div class="fact"><div class="fv">努力義務</div><div class="fk">罰則なし。ただし方向性は確定</div></div>
+      </div>
+      <div class="sowhat"><b>横浜ITコンサルにとって：</b>罰則がないので「だから今すぐ買ってください」とは言えません。ただし<b>営業の切り口としては決定的に効きます</b>。「AI新法で企業の努力義務になりました」という一言は、担当者が社内で稟議を通すときの<b>言い訳になる</b>からです。法人向けの提案は、決裁者が上を説得できるかどうかで決まります。<b>制度は、その説得材料を無料で供給してくれています。</b>いま最も使いやすい材料です。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">2</div>
+      <div>
+        <div class="kicker"><span class="chip d">助成金</span><span class="chip e">2026年度が最終年度・残り約6ヶ月</span></div>
+        <h4>研修費の最大75%が助成される。しかもこの制度は今年度で終わる</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p><b>人材開発支援助成金の「事業展開等リスキリング支援コース」</b>は、中小企業の場合<b>経費の75%を助成</b>します（年間上限1億円）。対象は新規事業進出に必要な訓練、企業内のDX・GX化に伴う訓練など。<b>AI研修はDX関連の訓練として対象になり得ます。</b>2026年2月には大幅な拡充が行われ、2026年度からは「おおむね3年以内の人事配置計画に基づく訓練」も新たに追加されました。ただし——<b>令和8年度（2026年度）が最終年度</b>とされており、<b>今年度中に計画届を提出</b>する必要があります。計画届の提出から訓練実施（Off-JT10時間以上）を経て支給申請、という流れです。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">75<small>%</small></div><div class="fk">中小企業の経費助成率</div></div>
+        <div class="fact"><div class="fv">12.5<small>万円</small></div><div class="fk">年50万円の研修の実質負担額</div></div>
+        <div class="fact"><div class="fv">2026年度</div><div class="fk">最終年度。計画届は今年度中に</div></div>
+      </div>
+      <div class="sowhat"><b>横浜ITコンサルにとって：</b>これは営業の切り口ではなく、<b>値付けそのものを変える事実</b>です。年間50万円のAI研修パッケージが、助成金を使えば<b>実質12.5万円</b>になります。「50万円は高い」と言っていた相手が、「12.5万円なら」に変わります。しかも<b>この制度は今年度で終わります</b>。相手にとっての締切があるということは、<b>こちらから連絡する理由がある</b>ということです。実績ゼロの会社が法人にアポを取る最大の難所は「なぜ今あなたと話すのか」ですが、その答えを制度が用意してくれています。<b>そして、この話を最も正確にできるのは社労士です。</b>06タブのTier Cで、社労士事務所を紹介チャネルの筆頭に置いた理由がこれです。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">3</div>
+      <div>
+        <div class="kicker"><span class="chip b">世の中の流れ</span><span class="chip e">2027年末に向けて需要がピーク</span></div>
+        <h4>SAPの保守終了で基幹刷新が集中する。PMの奪い合いが始まっている</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p>SAPの基幹システム「SAP ERP 6.0」の標準保守が<b>2027年末に終了</b>します。当初は2025年末とされていたものが、2020年2月に2027年末まで延長されました。保守終了後は法改正への対応が困難になり、延長保守も終われば<b>セキュリティパッチが提供されなくなります</b>。対応は「最新版へ移行」「延命」「他社製品へ切替」の3択ですが、<b>S/4HANAへの移行は一般に6〜18ヶ月かかる</b>プロジェクトです。逆算すると、<b>2026年後半に着手していない企業は、2027年末に間に合いません</b>。結果として、いま基幹刷新プロジェクトが一斉に立ち上がり、それを回すPMの奪い合いが起きています。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">2027年末</div><div class="fk">SAP ERP 6.0の標準保守終了</div></div>
+        <div class="fact"><div class="fv">6-18<small>ヶ月</small></div><div class="fk">S/4HANA移行プロジェクトの期間</div></div>
+        <div class="fact"><div class="fv">月20<small>時間〜</small></div><div class="fk">御社のアサイン単位。ここが武器です</div></div>
+      </div>
+      <div class="sowhat"><b>横浜ITコンサルにとって：</b>PM需要のピークが、ちょうど御社の創業期と重なりました。そして<b>御社の「月20時間から」という刻み方が、この局面では武器になります</b>。大手コンサルファームは常駐フルタイムが前提で、月20時間の小口には応じません。しかし現場が本当に困っているのは「フルタイムのPMを雇うほどではないが、進捗管理と課題整理をやってくれる経験者がほしい」という穴です。<b>そこは今、ほぼ空いています。</b>ただしこの需要は2027年末に向けて立ち上がり、その後は落ち着きます。<b>窓が開いているのは、およそ1年半です。</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 05 ===== -->
+<section class="panel wrap" id="p-strategy" role="tabpanel" hidden>
+  <div class="sec-head"><h2>業績向上のための成長戦略</h2><span class="tagline">3本柱と、その順番</span></div>
+  <p class="lede">柱は3本ですが、<b>同時には立てません</b>。1人会社にとって、同時並行はほぼ常に失敗します。柱1で食い扶持と信用を作り、柱2で天井を超え、柱3がその両方を支えます。</p>
+
+  <div class="grid g3">
+    <div class="pillar">
+      <div class="pk">PILLAR 01 ／ 最優先（0-4ヶ月）</div>
+      <h4>PM支援で2社取り切る</h4>
+      <p>SAP 2027年問題で動いている企業、PM不足の中堅SIer、情シスの薄い事業会社。<b>「月20時間から入れます」の一点で当たります。</b>2社決まれば営業支援の費用が売上から払えるようになり、同時に<b>語れる実績</b>ができます。実績ゼロという最大の弱点が、ここで消えます。</p>
+      <div class="kpi"><span>主指標：<b>PM契約社数</b></span><span>副指標：<b>月次の稼働時間</b></span><span>着手：<b>即日</b></span></div>
+    </div>
+    <div class="pillar">
+      <div class="pk">PILLAR 02 ／ 本命（5ヶ月目〜）</div>
+      <h4>AI研修を、助成金とセットで売る</h4>
+      <p>年間50万円が<b>実質12.5万円</b>になる話をセットで持っていきます。単体の商材として売るのではなく、<b>助成金の使い道として売ります</b>。PM支援で入った法人へのアップセルが最短ルートで、そこから士業チャネルに広げます。天井を超える唯一の道です。</p>
+      <div class="kpi"><span>主指標：<b>年額契約の社数</b></span><span>副指標：<b>パイロット→本契約の転換率</b></span><span>着手：<b>3ヶ月目から準備</b></span></div>
+    </div>
+    <div class="pillar">
+      <div class="pk">PILLAR 03 ／ 土台（即日）</div>
+      <h4>社長の時間を、納品と商談だけに</h4>
+      <p>1人会社の最大の敵は<b>雑務</b>です。リスト作成、フォーム送信、提案書、請求、受講者管理。これらを在宅ワーカーに出せば、社長の時間はそのまま納品可能時間になります。<b>PM支援は時間が売り物なので、時間を空けることが直接売上になります。</b></p>
+      <div class="kpi"><span>主指標：<b>社長が納品に使える時間</b></span><span>副指標：<b>雑務に使う時間</b></span><span>着手：<b>即日</b></span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>3年後までの絵</h3>
+    <p class="sub">PM支援が天井に当たったあと、何が伸びるか</p>
+    <div class="chartbox" id="c-growth"></div>
+  </div>
+
+  <div class="block">
+    <h3>いまと、3年後の姿</h3>
+    <p class="sub">数値は本ボードの標準前提に基づく想定です</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>項目</th><th>いま</th><th>1年後</th><th>3年後</th></tr></thead>
+        <tbody>
+          <tr><td>法人顧客</td><td>0社</td><td>PM 4〜5社＋AI研修 10社前後</td><td>PM 5社（天井）＋AI研修 40社以上</td></tr>
+          <tr><td>売上の構成</td><td>—</td><td>PM支援が8割。時間依存</td><td>AI研修が過半。<b>時間に依存しない売上が主力</b></td></tr>
+          <tr><td>営業の方法</td><td>社長の手動メール</td><td>外部の営業支援＋在宅ワーカー</td><td>士業・ITベンダー経由の紹介が主力</td></tr>
+          <tr><td>社長の時間</td><td>営業と雑務に消える</td><td>納品と商談に集中</td><td>納品は外部PMに配分。自身は開発と設計へ</td></tr>
+          <tr><td>属人リスク</td><td>100%</td><td>100%（PM支援は社長のみ）</td><td>AI研修が動き続けるため、売上の半分は残る</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>この戦略の弱点</h3>
+    <p class="sub">先に申し上げておきます</p>
+    <div class="grid g2">
+      <div class="card flat">
+        <h4 style="font-size:14.5px;margin-bottom:8px">弱点①　PM支援が埋まると、営業が止まります</h4>
+        <p style="font-size:13px;color:var(--ink-2)">5社分の納品で月100時間使えば、残りは商談と管理でほぼ消えます。<b>いちばん儲かっている時期に、いちばん次の種が蒔けなくなる</b>——これが1人会社の構造的な罠です。だからこそ柱3（在宅ワーカー）を最初から入れておく必要があります。08タブのシミュレーションでは、この時間の奪い合いをそのまま計算しています。</p>
+      </div>
+      <div class="card flat">
+        <h4 style="font-size:14.5px;margin-bottom:8px">弱点②　AI検定は、無料の競合がすでにあります</h4>
+        <p style="font-size:13px;color:var(--ink-2)">調べたところ、<b>無料で受験できるAI・生成AIの検定サイトが複数存在します</b>。ですので「検定が受けられます」だけでは戦えません。御社の価値は検定そのものではなく、<b>法人向けの管理ツール・進捗の可視化・助成金に対応した研修の形式</b>のほうにあるはずです。次回、この部分の作り込みがどこまで進んでいるかを確認させてください。訴求の軸をここに寄せる必要があります。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 06 ===== -->
+<section class="panel wrap" id="p-targets" role="tabpanel" hidden>
+  <div class="sec-head"><h2>営業ターゲット30</h2><span class="tagline">母数・狙う理由・最初の一言</span></div>
+  <p class="lede">Tier AはPM支援、Tier BはAI研修、<b>Tier Cは紹介チャネル</b>です。1人会社が数を取るには、自分の営業網だけでは足りません。<b>他人の営業網を借りる設計</b>を最初から入れています。母数は業界統計と推計に基づく<b>概算・全国ベース</b>です。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">総母数（30セグメント計）</span><span class="v" id="t-all">—</span><span class="n">全国の法人・事業所数の合算</span></div>
+    <div class="stat hot"><span class="k">Tier A・PM支援</span><span class="v" id="t-a">—</span><span class="n">最初の4ヶ月はここだけに集中</span></div>
+    <div class="stat pos"><span class="k">第一関門</span><span class="v">2<small>社</small></span><span class="n">PM支援2社で営業費用が回収できます</span></div>
+    <div class="stat"><span class="k">1年で接触できる件数</span><span class="v">14,400<small>件</small></span><span class="n">月1,200件×12ヶ月</span></div>
+  </div>
+
+  <div class="block">
+    <h3>3層別の母数</h3>
+    <p class="sub">必要なのは最初の2社。母数は問題になりません</p>
+    <div class="chartbox" id="c-tiers"></div>
+  </div>
+
+  <div class="block">
+    <h3>ターゲット一覧</h3>
+    <p class="sub">Tierで絞る／母数で並べ替える／キーワードで検索する</p>
+    <div class="controls">
+      <div class="seg" id="t-seg">
+        <button data-t="all" aria-pressed="true">すべて（30）</button>
+        <button data-t="A" aria-pressed="false">A・PM支援（10）</button>
+        <button data-t="B" aria-pressed="false">B・AI研修（10）</button>
+        <button data-t="C" aria-pressed="false">C・紹介チャネル（10）</button>
+      </div>
+      <input type="search" id="t-q" placeholder="業種・理由・切り口を検索" aria-label="ターゲットを検索">
+      <select id="t-sort" aria-label="並べ替え">
+        <option value="pri">優先度順</option>
+        <option value="cnt">母数が多い順</option>
+        <option value="cntA">母数が少ない順</option>
+      </select>
+      <div class="count">表示 <b id="t-n">30</b> 件 ／ 母数計 <b id="t-sum">—</b></div>
+    </div>
+    <div class="tlist" id="t-list"></div>
+  </div>
+</section>
+
+<!-- ===== 07 ===== -->
+<section class="panel wrap" id="p-remote" role="tabpanel" hidden>
+  <div class="sec-head"><h2>在宅ワーカー活用</h2><span class="tagline">1人会社にとって、時間を空けることは直接売上です</span></div>
+  <p class="lede">PM支援は時間を売る事業です。つまり<b>社長の時間が1時間空けば、それはそのまま1時間分の売上余力になります</b>。仮に時間単価1万円なら、雑務を月40時間外に出せば月40万円分の納品余力が生まれる計算です。在宅ワーカーの費用は、その何分の一かにすぎません。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">移管できる業務量</span><span class="v">100<small>h/月</small></span><span class="n">正社員0.6名分の稼働</span></div>
+    <div class="stat hot"><span class="k">うち社長が抱えている分</span><span class="v">100<small>h/月</small></span><span class="n">1人会社なので、全部が社長の時間です</span></div>
+    <div class="stat"><span class="k">対象業務の数</span><span class="v">16<small>種</small></span><span class="n">5カテゴリに分類</span></div>
+    <div class="stat pos"><span class="k">在宅ワーカー体制</span><span class="v">2〜3<small>名相当</small></span><span class="n">1人1日2時間の分業</span></div>
+  </div>
+
+  <div class="block">
+    <h3>在宅ワーカーに依頼できる業務</h3>
+    <p class="sub">◆印は、いま社長の時間をとくに奪っている業務です。時間は月間の想定工数</p>
+    <div class="grid g3" id="tasks"></div>
+    <div class="callout">
+      <b>この事業ならではの注意点。</b>外に出せるのは<b>手順が決まっている作業</b>だけです。PM支援の中身（進捗判断、課題の切り分け、クライアントへの提言）、AI教材の設計、見積の最終金額、契約条件は社長に残します。とくに<b>PM業務そのものは絶対に外に出せません</b>——それを売っているからです。外に出すのは「PMをやるための準備と後始末」だけ、という線引きが必要です。
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：現状</h3>
+    <p class="sub">全部が1本の線でつながっている。どこかが詰まると全部止まる</p>
+    <div class="chartbox" id="c-org-now"></div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：在宅ワーカー活用後</h3>
+    <p class="sub">社長は「PMをやる」「商談で決める」だけに残る</p>
+    <div class="chartbox" id="c-org-next"></div>
+  </div>
+
+  <div class="block">
+    <h3>社長の時間配分は、どう変わるか</h3>
+    <p class="sub">月160時間を基準にした想定</p>
+    <div class="chartbox" id="c-time"></div>
+  </div>
+</section>
+
+<!-- ===== 08 ===== -->
+<section class="panel wrap" id="p-roi" role="tabpanel" hidden>
+  <div class="sec-head"><h2>ROIシミュレーション</h2><span class="tagline">社長の時間の奪い合いを、そのまま計算します</span></div>
+  <p class="lede">このシミュレーションの中心は<b>時間の制約</b>です。PM支援を受注すれば納品時間が増え、商談に出られる回数が減り、次の受注が減ります。<b>この自己制動を無視した試算は、1人会社では意味がありません</b>。左のつまみを動かすと、時間の奪い合いを含めて再計算されます。</p>
+
+  <div class="roi-layout">
+    <div class="knobs">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h4 style="font-size:15px">前提条件</h4>
+        <button class="resetbtn" id="r-reset">標準に戻す</button>
+      </div>
+      <div class="seg" style="margin-bottom:16px">
+        <button data-preset="cons" aria-pressed="false">保守</button>
+        <button data-preset="base" aria-pressed="true">標準</button>
+        <button data-preset="bull" aria-pressed="false">強気</button>
+      </div>
+
+      <div class="gh">◆ 商談をつくる ／ <span>営業支援ユニット</span></div>
+      <div class="knob"><label for="k-app">月間アプローチ数<b><span id="v-app"></span>件</b></label><input type="range" id="k-app" min="300" max="3000" step="100"></div>
+      <div class="knob"><label for="k-appo">アポイント率<b><span id="v-appo"></span>%</b></label><input type="range" id="k-appo" min="0.2" max="3" step="0.1"></div>
+      <div class="knob"><label for="k-sfee">ユニット月額費用<b><span id="v-sfee"></span>万円</b></label><input type="range" id="k-sfee" min="15" max="60" step="1"></div>
+
+      <div class="knob-group">
+        <div class="gh">◆ エンジン1 ／ <span>PM支援（時間を売る）</span></div>
+        <div class="knob"><label for="k-pmWin">商談→PM受注率<b><span id="v-pmWin"></span>%</b></label><input type="range" id="k-pmWin" min="2" max="35" step="1"></div>
+        <div class="knob"><label for="k-pmh">1社あたり 月間稼働時間<b><span id="v-pmh"></span>h</b></label><input type="range" id="k-pmh" min="10" max="60" step="5"></div>
+        <div class="knob"><label for="k-rate">時間単価<b><span id="v-rate"></span>円</b></label><input type="range" id="k-rate" min="4000" max="20000" step="500"></div>
+        <div class="knob"><label for="k-pmKeep">PM契約の年間継続率<b><span id="v-pmKeep"></span>%</b></label><input type="range" id="k-pmKeep" min="30" max="95" step="5"></div>
+      </div>
+
+      <div class="knob-group">
+        <div class="gh">◆ エンジン2 ／ <span>AI研修（仕組みを売る）</span></div>
+        <div class="knob"><label for="k-aiWin">商談→AI研修受注率<b><span id="v-aiWin"></span>%</b></label><input type="range" id="k-aiWin" min="1" max="30" step="1"></div>
+        <div class="knob"><label for="k-upsell">PM顧客へのアップセル率<b><span id="v-upsell"></span>%</b></label><input type="range" id="k-upsell" min="0" max="90" step="5"></div>
+        <div class="knob"><label for="k-aiPrice">AI研修の年額<b><span id="v-aiPrice"></span>万円</b></label><input type="range" id="k-aiPrice" min="10" max="200" step="5"></div>
+        <div class="knob"><label for="k-aiGm">AI研修の粗利率<b><span id="v-aiGm"></span>%</b></label><input type="range" id="k-aiGm" min="50" max="95" step="5"></div>
+        <div class="knob"><label for="k-aiKeep">AI研修の年間継続率<b><span id="v-aiKeep"></span>%</b></label><input type="range" id="k-aiKeep" min="30" max="95" step="5"></div>
+      </div>
+
+      <div class="knob-group">
+        <div class="gh">◆ 社長の時間 ／ <span>生産性向上支援ユニット</span></div>
+        <div class="knob"><label for="k-avail">月間の可処分時間<b><span id="v-avail"></span>h</b></label><input type="range" id="k-avail" min="80" max="200" step="10"></div>
+        <div class="knob"><label for="k-other">雑務に残る時間<b><span id="v-other"></span>h/月</b></label><input type="range" id="k-other" min="0" max="80" step="5"></div>
+        <div class="knob"><label for="k-mtgh">1商談あたりの所要時間<b><span id="v-mtgh"></span>h</b></label><input type="range" id="k-mtgh" min="1" max="6" step="0.5"></div>
+        <div class="knob"><label for="k-ofee">ユニット月額費用<b><span id="v-ofee"></span>万円</b></label><input type="range" id="k-ofee" min="3" max="20" step="1"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div>
+        <h4 style="font-size:15px;margin-bottom:3px">1年目の着地</h4>
+        <p class="sub" style="margin-bottom:12px">PM支援が先に立ち上がり、AI研修が後から積み上がります</p>
+        <div class="grid g4">
+          <div class="stat pos"><span class="k">1年目 ROI</span><span class="v" id="o-roi">—</span><span class="n">（粗利−投資）÷投資</span></div>
+          <div class="stat hot"><span class="k">12ヶ月後のPM契約</span><span class="v" id="o-pm">—</span><span class="n" id="o-pmn">—</span></div>
+          <div class="stat info"><span class="k">12ヶ月後のAI研修</span><span class="v" id="o-ai">—</span><span class="n" id="o-ain">—</span></div>
+          <div class="stat"><span class="k">12ヶ月目の月次売上</span><span class="v" id="o-mrr">—</span><span class="n" id="o-mrrn">—</span></div>
+        </div>
+      </div>
+
+      <div>
+        <p class="sub" style="margin-bottom:10px">月間のファネル（12ヶ月目の時点）</p>
+        <div class="funnel">
+          <div class="fstep"><div class="fl">アプローチ</div><div class="fv" id="f-app">—</div><div class="fr">メール・フォーム・電話</div></div>
+          <div class="fstep"><div class="fl">アポイント</div><div class="fv" id="f-appo">—</div><div class="fr" id="f-appo-r">—</div></div>
+          <div class="fstep"><div class="fl">商談（社長が対応）</div><div class="fv" id="f-meet">—</div><div class="fr" id="f-meet-r">—</div></div>
+          <div class="fstep end"><div class="fl">受注（PM＋AI）</div><div class="fv" id="f-win">—</div><div class="fr" id="f-win-r">—</div></div>
+        </div>
+      </div>
+
+      <div class="chartbox" id="c-hours"></div>
+      <div class="chartbox" id="c-revenue"></div>
+      <div class="chartbox" id="c-cum"></div>
+
+      <div class="verdict" id="o-verdict"></div>
+
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:10px">この試算の読み方</div>
+        <ul style="margin:0;padding-left:1.2em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">
+          <li><b>時間の配分には順番があります。</b>既存PM顧客への納品が最優先、次に商談、残りが雑務です。納品で時間が埋まると<b>商談できる回数が自動的に減り</b>、新規受注も減ります。上のグラフでその様子が見えます。これが1人会社の天井です。</li>
+          <li><b>「雑務に残る時間」のつまみが、在宅ワーカーの効果です。</b>初期値は20時間ですが、在宅ワーカーを入れない場合は60時間程度が現実的です。<b>つまみを60に上げてみてください</b>——商談できる回数が減り、受注が落ちるのが見えます。それが在宅ワーカーを入れない場合のコストです。</li>
+          <li><b>時間単価が最大の不確実要素です。</b>PMアシスタントの単価は前回「要相談」でした。初期値は1万円/時間を仮置きしています。<b>ここが5,000円なのか15,000円なのかで、事業の姿がまったく変わります。</b>次回、必ず決めさせてください。</li>
+          <li><b>前回伺った目標と、この試算を突き合わせてください。</b>「PM支援は月1〜2社、AI学習システムは月5社」という目標でした。PM支援は<b>月1〜2社を数ヶ月続けた時点で天井に当たります</b>（そこから先は受けたくても受けられません）。AI研修の月5社は、強気の前提でも届きません。<b>目標が間違っているのではなく、必要な期間が想定より長い</b>ということです。ここを先に握っておかないと、半年後に「効果がなかった」という話になります。</li>
+          <li><b>AI研修の年額は、助成金を考慮していません。</b>御社が受け取る金額は50万円のままで、相手の実質負担が12.5万円になるという意味です。<b>助成金は値引きではなく、成約率を上げる材料</b>として効きます。受注率のつまみに織り込んでご確認ください。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 09 ===== -->
+<section class="panel wrap" id="p-road" role="tabpanel" hidden>
+  <div class="sec-head"><h2>90日ロードマップ</h2><span class="tagline">狙うのは、PM支援2社です</span></div>
+  <p class="lede">90日の目標はただ一つ、<b>PM支援を2社取ること</b>です。そこまで行けば営業費用が売上から払えるようになり、語れる実績もできます。AI研修はその後です。<b>同時にやろうとすると、どちらも中途半端になります。</b></p>
+
+  <div class="card">
+    <div class="phase">
+      <div><div class="pd">DAY 0</div><div class="pt">次回商談<br>（日程調整中）</div></div>
+      <ul>
+        <li><span class="owner ai">アイドマ</span>本ボードの02タブ（天井の計算）と03タブ（費用の段階設計）をご説明</li>
+        <li><span class="owner ai">アイドマ</span>Phase 0の具体的な構成とお見積りをご提示</li>
+        <li><span class="owner kl">御社</span><b>正式な社名表記と代表者名の漢字・読み</b>（提案書で間違えないために）</li>
+        <li><span class="owner kl">御社</span><b>PMアシスタントの想定時間単価</b>（08タブの試算が確定します）</li>
+        <li><span class="owner kl">御社</span><b>PMとしての実績</b>——どの規模の、どんなプロジェクトを何本。Tier Aで最も効く材料です</li>
+        <li><span class="owner kl">御社</span>AI学習サービスの法人向け管理機能が、いまどこまで動くか</li>
+        <li>この場で決めること：<b>Phase 0を回すかどうか</b></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 1-30</div><div class="pt">反応が出るかを<br>小さく確かめる</div></div>
+      <ul>
+        <li><span class="owner ai">アイドマ</span>Tier Aから<b>SAP 2027年問題の当事者と中堅SIer</b>に絞ってリストを抽出</li>
+        <li><span class="owner ai">アイドマ</span>切り口を一本化：<b>「月20時間からPMを入れられます」</b>。会社紹介は後回し</li>
+        <li><span class="owner ai">アイドマ</span>トークとメール文面を2〜3パターン作り、反応率の差を計測</li>
+        <li><span class="owner kl">御社</span>在宅ワーカーへの移管を<b>リスト整備とフォーム送信</b>から開始</li>
+        <li><span class="owner kl">御社</span>PM実績を1枚の資料にまとめる（守秘に配慮した形で）</li>
+        <li>30日目の到達点：<b>商談1〜3件。反応の出る切り口が1つ特定できている状態</b></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 31-60</div><div class="pt">1社目を<br>取り切る</div></div>
+      <ul>
+        <li><span class="owner ai">アイドマ</span>反応のあった層に集中。効かなかった切り口は捨てる</li>
+        <li><span class="owner kl">御社</span>初回商談は<b>提案せず、聞くことに徹する</b>。実績ゼロの会社が売り込むと警戒されます</li>
+        <li><span class="owner kl">御社</span>1社目は<b>条件を譲ってでも取る</b>。最初の1社は売上ではなく実績を買う投資です</li>
+        <li><span class="owner ai">アイドマ</span>並行して、Tier Cの<b>社労士事務所</b>への接触を準備（助成金の切り口）</li>
+        <li><span class="owner kl">御社</span>AI研修の提案書を、<b>助成金の説明とセット</b>で1本作っておく</li>
+        <li>60日目の到達点：<b>PM支援1社。稼働開始、または契約直前</b></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 61-90</div><div class="pt">2社目と、<br>助成金の窓口</div></div>
+      <ul>
+        <li><span class="owner kl">御社</span>PM支援2社目。ここで<b>月40万円に到達し、営業費用が売上から払える</b>状態に</li>
+        <li><span class="owner ai">アイドマ</span>Tier Cの社労士・税理士へ本格接触。<b>「顧問先に使える助成金の出口」として提案</b></li>
+        <li><span class="owner kl">御社</span>1社目のPM顧客に、AI研修のアップセルを打診（<b>助成金の計画届が今年度中</b>という締切を添えて）</li>
+        <li><span class="owner ai">アイドマ</span>Phase 1の成果を集計し、Phase 2（AI研修中心）へ切り替えるかを判断</li>
+        <li>90日目の到達点：<b>PM支援2社＋AI研修の商談が走っている状態。ここが折り返しです</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>出典</h3>
+    <p class="sub">本ボードで用いた公開データ</p>
+    <div class="card flat">
+      <div class="srcs">
+        ・横浜ITコンサル合同会社の会社概要（法人番号1020003030537／神奈川県横浜市神奈川区西神奈川2-14-4／設立2026年3月10日／AI・システム開発支援、AI導入コンサル、IT研修、AI資格学習サービスaikentei.orgの運営）：法人番号公表サイト、企業情報データベースの公開情報<br>
+        ・AI新法（人工知能関連技術の研究開発及び活用の推進に関する法律／2025年6月公布・同年9月全面施行／事業者の責務は努力義務・罰則なし）、人工知能基本計画（2025年12月 閣議決定）：内閣府・政府広報<br>
+        ・人材開発支援助成金「事業展開等リスキリング支援コース」（中小企業の経費助成率75%／年間上限1億円／令和8年度が最終年度・今年度中の計画届提出が必要／令和8年度から「おおむね3年以内の人事配置計画に基づく訓練」を追加）：厚生労働省<br>
+        ・SAP ERP 6.0の標準保守終了（2027年末／2020年2月に2025年末から延長／S/4HANA移行は一般に6〜18ヶ月）：SAP社発表および各種解説<br>
+        ・無料で受験できるAI・生成AI検定サービスの存在：各サービス公式サイト<br>
+        <br>
+        ターゲット30の母数は、経済センサス・各種業界統計・名簿に基づく<b>概算</b>です。実際のリスト作成時に精査します。02タブの「天井」と08タブの試算は、<b>PMアシスタントの時間単価を1万円と仮置き</b >した計算であり、実際の単価が決まり次第すべて置き換わります。
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+"use strict";
+
+var tabs=Array.prototype.slice.call(document.querySelectorAll(".tab"));
+tabs.forEach(function(t){
+  t.addEventListener("click",function(){
+    tabs.forEach(function(x){
+      x.setAttribute("aria-selected",x===t?"true":"false");
+      document.getElementById("p-"+x.dataset.p).hidden=(x!==t);
+    });
+    window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  });
+});
+
+var NF=new Intl.NumberFormat("ja-JP");
+function n(v){return NF.format(Math.round(v));}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function svg(w,h,inner){
+  return '<svg viewBox="0 0 '+w+' '+h+'" role="img" preserveAspectRatio="xMidYMid meet" '+
+    'style="max-width:'+Math.round(w*1.18)+'px;margin:0 auto">'+inner+'</svg>';
+}
+function txt(x,y,s,o){
+  o=o||{};
+  return '<text x="'+x+'" y="'+y+'" fill="'+(o.fill||"var(--ink-2)")+'" font-size="'+(o.size||11)+'" '+
+   'font-family="'+(o.mono?"Overpass Mono, monospace":(o.disp?"BIZ UDMincho, serif":"IBM Plex Sans JP, sans-serif"))+'" '+
+   'font-weight="'+(o.weight||400)+'" text-anchor="'+(o.anchor||"start")+'"'+
+   (o.baseline?' dominant-baseline="'+o.baseline+'"':'')+'>'+esc(s)+'</text>';
+}
+function rrect(x,y,w,h,r,fill){
+  if(h<=0||w<=0) return "";
+  r=Math.min(r,h/2,w/2);
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+r+'" fill="'+fill+'"></rect>';
+}
+function box(x,y,w,h,title,sub,color,dashed){
+  var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="var(--surface-2)" stroke="'+(color||"var(--rule-2)")+'" stroke-width="1.6"'+(dashed?' stroke-dasharray="5 4"':'')+'></rect>';
+  s+=txt(x+13,y+(sub?23:h/2+5),title,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+  if(sub) s+=txt(x+13,y+40,sub,{fill:"var(--ink-3)",size:10.5});
+  return s;
+}
+function niceMax(v,div){
+  if(!(v>0)) return div;
+  var unit=v/div, step=Math.pow(10,Math.floor(Math.log10(unit))), r=unit/step;
+  var mult=r<=1?1:r<=2?2:r<=2.5?2.5:r<=5?5:10;
+  return step*mult*div;
+}
+
+/* ============ 02 天井 ============ */
+(function(){
+  var W=760,H=340,padL=60,padR=150,padT=44,padB=100;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var AVAIL=140,PMH=20,RATE=10000;
+  var maxSoc=8,s="";
+  for(var g=0;g<=4;g++){
+    var y=padT+plotH-(g/4)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(AVAIL*g/4),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-16,"時間/月",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  var bw=plotW/maxSoc*0.62;
+  for(var i=1;i<=maxSoc;i++){
+    var cx=padL+(i-0.5)*(plotW/maxSoc);
+    var deliver=i*PMH, over=deliver>AVAIL-40;
+    var h=(Math.min(deliver,AVAIL)/AVAIL)*plotH;
+    s+=rrect(cx-bw/2,padT+plotH-h,bw,h,3,over?"var(--s3)":"var(--s1)");
+    s+=txt(cx,padT+plotH+18,i+"社",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+    if(!over) s+=txt(cx,padT+plotH-h-8,n(i*PMH*RATE/10000)+"万",{fill:"var(--s1)",size:10,mono:true,anchor:"middle",weight:700});
+  }
+  /* 商談＋管理の帯 */
+  var limitY=padT+plotH-((AVAIL-40)/AVAIL)*plotH;
+  s+='<rect x="'+padL+'" y="'+padT+'" width="'+plotW+'" height="'+(limitY-padT)+'" fill="var(--s3)" opacity="0.08"></rect>';
+  s+='<line x1="'+padL+'" y1="'+limitY+'" x2="'+(padL+plotW)+'" y2="'+limitY+'" stroke="var(--s3)" stroke-width="1.6" stroke-dasharray="5 4"></line>';
+  s+=txt(padL+plotW+10,limitY,"納品に回せる上限 100h",{fill:"var(--s3)",size:11,weight:700,baseline:"middle"});
+  s+=txt(padL+plotW+10,padT+12,"商談と管理に40h",{fill:"var(--ink-3)",size:10.5});
+  s+=txt(padL+plotW+10,padT+30,"（在宅ワーカー活用後）",{fill:"var(--ink-3)",size:10});
+  s+='<rect x="'+padL+'" y="'+(padT+plotH+34)+'" width="'+(plotW+140)+'" height="30" rx="7" fill="var(--brand-soft)"></rect>';
+  s+=txt(padL+13,padT+plotH+53,"天井：同時5社 × 月20万円 ＝ 月100万円。6社目は物理的に受けられません。",{fill:"var(--brand)",size:11.5,weight:700});
+  s+=txt(8,H-6,"※ 可処分時間140h／1社20h／時間単価1万円で計算した概算です。単価が決まれば正確な数字に置き換わります。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-ceiling").innerHTML=
+    '<h4>PM支援の天井（社長1名・月140時間の場合）</h4><p class="csub">受注社数と、必要な納品時間</p>'+svg(W,H,s);
+})();
+
+/* ============ 02 順番 ============ */
+(function(){
+  var W=760,H=260,s="";
+  s+=box(8,24,232,76,"① PM支援で2社","月40万円。営業費用が売上から払える","var(--s1)");
+  s+=txt(21,86,"→ 同時に「実績ゼロ」が消える",{fill:"var(--s1)",size:10.5,weight:700});
+
+  s+=box(264,24,232,76,"② その顧客にAI研修を足す","信頼がある状態からの提案","var(--s2)");
+  s+=txt(277,86,"→ 新規で取るより圧倒的に速い",{fill:"var(--s2)",size:10.5,weight:700});
+
+  s+=box(520,24,232,76,"③ 士業チャネルへ広げる","助成金の出口として紹介される","var(--s4)");
+  s+=txt(533,86,"→ 1人でも件数が出る唯一の形",{fill:"var(--s4)",size:10.5,weight:700});
+
+  s+='<path d="M 240 62 L 264 62" stroke="var(--rule-2)" stroke-width="2" marker-end="url(#ar)"></path>';
+  s+='<path d="M 496 62 L 520 62" stroke="var(--rule-2)" stroke-width="2" marker-end="url(#ar)"></path>';
+  s+='<defs><marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="var(--rule-2)"></path></marker></defs>';
+
+  s+='<rect x="8" y="130" width="744" height="56" rx="9" fill="var(--surface)" stroke="var(--s3)" stroke-width="1.6" stroke-dasharray="6 4"></rect>';
+  s+=txt(24,155,"やってはいけない進め方：①と②を同時に、どちらもゼロから",{fill:"var(--s3)",size:13,weight:700,disp:true});
+  s+=txt(24,175,"リストも訴求も決裁者も違うので、1人では両方とも中途半端になります。",{fill:"var(--ink-2)",size:11});
+
+  s+=txt(8,214,"PM支援は「いま困っている現場」に、AI研修は「来年度の予算と助成金」に売る商材です。",{fill:"var(--ink-3)",size:11});
+  s+=txt(8,234,"相手も、タイミングも、決裁のされ方も違います。同じ営業活動では取れません。",{fill:"var(--ink-3)",size:11});
+  document.getElementById("c-order").innerHTML=
+    '<h4>取る順番</h4><p class="csub">1人会社にとって、同時並行はほぼ常に失敗します</p>'+svg(W,H,s);
+})();
+
+/* ============ 03 損益分岐 ============ */
+(function(){
+  var W=760,H=280,padL=196,padR=120,padT=48,padB=54;
+  var plotW=W-padL-padR;
+  var COST=36;
+  var rows=[
+    {k:"PM支援だけで回収",sub:"1社＝月20万円",need:2,unit:20,c:"var(--s1)"},
+    {k:"AI研修だけで回収",sub:"1社＝月3.75万円（粗利90%）",need:10,unit:3.75,c:"var(--s2)"},
+    {k:"組み合わせで回収",sub:"PM1社＋AI研修5社",need:6,unit:0,c:"var(--s4)",mixed:[20,18.75]}
+  ];
+  var max=niceMax(56,4),s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(padT-14)+'" x2="'+x+'" y2="'+(padT+3*58-14)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,padT-22,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+32,padT-22,"万円/月",{fill:"var(--ink-3)",size:10});
+  var cx=padL+(COST/max)*plotW;
+  s+='<rect x="'+padL+'" y="'+(padT-14)+'" width="'+(cx-padL)+'" height="'+(3*58)+'" fill="var(--s3)" opacity="0.07"></rect>';
+  s+='<line x1="'+cx+'" y1="'+(padT-14)+'" x2="'+cx+'" y2="'+(padT+3*58-14)+'" stroke="var(--s3)" stroke-width="1.8"></line>';
+  s+=txt(cx,padT-38,"月額費用 36万円",{fill:"var(--s3)",size:11.5,weight:700,anchor:"middle"});
+  rows.forEach(function(r,i){
+    var y=padT+i*58;
+    s+=txt(padL-14,y+6,r.k,{fill:"var(--ink)",size:12.5,weight:700,anchor:"end",disp:true});
+    s+=txt(padL-14,y+24,r.sub,{fill:"var(--ink-3)",size:10,anchor:"end"});
+    if(r.mixed){
+      var w1=(r.mixed[0]/max)*plotW,w2=(r.mixed[1]/max)*plotW;
+      s+=rrect(padL,y-6,w1,26,4,"var(--s1)");
+      s+=rrect(padL+w1,y-6,w2,26,4,"var(--s2)");
+      s+=txt(padL+w1+w2+9,y+7,"38.8万円 ○",{fill:"var(--s4)",size:11.5,mono:true,weight:700,baseline:"middle"});
+    }else{
+      var total=r.need*r.unit,w=(total/max)*plotW;
+      s+=rrect(padL,y-6,w,26,4,r.c);
+      s+=txt(padL+w+9,y+7,r.need+"社 → "+total.toFixed(2).replace(/\.?0+$/,"")+"万円 ○",{fill:r.c,size:11.5,mono:true,weight:700,baseline:"middle"});
+    }
+  });
+  s+=txt(8,H-8,"※ PM支援は社長の時間なので粗利をほぼ100%として計算しています。AI研修は粗利90%で計算。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-breakeven").innerHTML=
+    '<h4>月36万円を回収するのに必要な社数</h4><p class="csub">営業支援30万円＋在宅ワーカー6万円の場合</p>'+svg(W,H,s);
+})();
+
+/* ============ 05 3年の絵 ============ */
+(function(){
+  var W=760,H=290,padL=60,padR=130,padT=40,padB=52;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var months=36;
+  var pm=[],ai=[];
+  for(var m=1;m<=months;m++){
+    var p=Math.min(5,Math.max(0,(m-2)*0.45));
+    var a=(m<=4)?0:Math.min(60,(m-4)*1.5);
+    pm.push(p*20);
+    ai.push(a*3.75);
+  }
+  var max=niceMax(Math.max.apply(null,ai.map(function(v,i){return v+pm[i];}))*1.12,4);
+  var s="";
+  for(var g=0;g<=4;g++){
+    var y=padT+plotH-(g/4)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(max*g/4),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-14,"万円/月",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(i){return padL+(i/(months-1))*plotW;}
+  function py(v){return padT+plotH-(v/max)*plotH;}
+  var dTot="",dPm="";
+  for(var i=0;i<months;i++){
+    dTot+=(i===0?"M ":"L ")+px(i)+" "+py(pm[i]+ai[i]);
+    dPm+=(i===0?"M ":"L ")+px(i)+" "+py(pm[i]);
+  }
+  s+='<path d="'+dTot+' L '+px(months-1)+' '+py(0)+' L '+px(0)+' '+py(0)+' Z" fill="var(--s2)" opacity="0.22"></path>';
+  s+='<path d="'+dPm+' L '+px(months-1)+' '+py(0)+' L '+px(0)+' '+py(0)+' Z" fill="var(--s1)" opacity="0.3"></path>';
+  s+='<path d="'+dPm+'" fill="none" stroke="var(--s1)" stroke-width="2.4"></path>';
+  s+='<path d="'+dTot+'" fill="none" stroke="var(--s2)" stroke-width="2.4"></path>';
+  var capY=py(100);
+  s+='<line x1="'+padL+'" y1="'+capY+'" x2="'+(padL+plotW)+'" y2="'+capY+'" stroke="var(--s3)" stroke-width="1.5" stroke-dasharray="5 4"></line>';
+  s+=txt(padL+plotW+8,capY,"PM支援の天井 100万円",{fill:"var(--s3)",size:10.5,weight:700,baseline:"middle"});
+  s+=txt(padL+plotW+8,py(pm[months-1]+ai[months-1]),"合計",{fill:"var(--s2)",size:11,weight:700,baseline:"middle"});
+  for(var m2=0;m2<months;m2+=6) s+=txt(px(m2),padT+plotH+18,(m2+1)+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  s+=txt(px(months-1),padT+plotH+18,"36ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  s+=txt(8,H-8,"※ 本ボードの標準前提に基づく概念図です。08タブのつまみで数字は変わります。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-growth").innerHTML=
+    '<h4>3年間の月次売上イメージ</h4><p class="csub">PM支援は5社で止まり、その先はAI研修だけが伸びます</p>'+
+    '<div class="legend"><span><i style="background:var(--s1)"></i>PM支援（天井あり）</span><span><i style="background:var(--s2)"></i>＋AI研修（天井なし）</span></div>'+svg(W,H,s);
+})();
+
+/* ============ 06 ターゲット ============ */
+var TIER_META={
+  A:{label:"PM支援",note:"いま困っている現場に当てる"},
+  B:{label:"AI研修",note:"助成金の使い道として提案する"},
+  C:{label:"紹介チャネル",note:"他人の営業網を借りる"}
+};
+var TARGETS=[
+  {t:"A",n:"SAP ERP 6.0を使っている企業",c:2000,w:"2027年末の保守終了が確定しており、動かない選択肢がない。移行は6〜18ヶ月かかるため、いま着手していない企業は既に焦っている。",h:"「2027年の保守終了、移行の体制はもう組まれましたか。月20時間からPMを入れられます」"},
+  {t:"A",n:"中堅SIer（従業員50〜300名）",c:3400,w:"案件はあるがPMが足りず、受注を断っている会社が実在する。同業なので専門用語が通じ、単価の話も早い。",h:"「PMが足りずにお断りされている案件はありませんか。スポットでお受けできます」"},
+  {t:"A",n:"独立系システム開発会社",c:12000,w:"技術者中心の組織はPM人材が薄い。母数が最も大きく、電話とメールが届きやすい層。最初に当てるべき先。",h:"「開発は回っていても、進捗管理と課題整理で詰まることはありませんか」"},
+  {t:"A",n:"情報システム部門を持つ事業会社（300名以上）",c:8600,w:"社内にPM経験者がおらず、ベンダー任せで炎上するパターンが多い。発注側に立てるPMは希少で、感謝されやすい。",h:"「ベンダーさんとの間に立って進捗を見る役、社内にいらっしゃいますか」"},
+  {t:"A",n:"製造業（生産管理システム刷新層・100名以上）",c:11000,w:"基幹刷新の波が来ており、現場と情シスの板挟みでプロジェクトが止まりやすい。長期案件になりやすい。",h:"「生産管理の刷新、現場との調整で止まっていませんか。そこを整理する役で入れます」"},
+  {t:"A",n:"医療法人・病院（電子カルテ更改）",c:8200,w:"電子カルテの更改は5〜7年周期で必ず来る。医療側にIT人材が薄く、外部PMの必要性が高い。",h:"「カルテの更改、院内の調整役はどなたが担当されていますか」"},
+  {t:"A",n:"コンサルティングファーム",c:2800,w:"自社のPMが埋まったときの外部調達先を常に探している。一度入れば継続的に案件が流れてくる。",h:"「PMのリソースが逼迫されたときの外部の受け皿として、登録いただけませんか」"},
+  {t:"A",n:"ERP導入ベンダー・パートナー",c:900,w:"母数は小さいが、2027年問題の当事者と直結している。1社との関係が複数案件につながる。",h:"「移行案件が集中されていませんか。PMのスポット補強でお手伝いできます」"},
+  {t:"A",n:"自治体・外郭団体（システム標準化）",c:1800,w:"ガバメントクラウド移行と業務システムの標準化が進行中。予算が確保済みで、入札の枠組みも明確。",h:"「標準化対応の進行管理、外部の手をお使いになる予定はありますか」"},
+  {t:"A",n:"スタートアップ（シード〜シリーズA）",c:4500,w:"CTOはいても専任PMがいない。月20時間という刻みが最も刺さる層。単価は下がるが決裁が速い。",h:"「開発は進んでいても、スケジュールが読めないことはありませんか。月20時間から入れます」"},
+
+  {t:"B",n:"製造業（従業員30名以上）",c:42000,w:"DX関連の訓練として助成金の対象になりやすい。現場のAI活用ニーズが具体的で、研修の目的を説明しやすい。",h:"「研修費の75%が助成される制度、今年度が最終年度なのはご存じですか」"},
+  {t:"B",n:"士業事務所（会計・税理士・社労士）",c:29000,w:"AI活用が業務に直結する職種で、所内教育の必要性が高い。かつ助成金の理解が早く、話が通じる。",h:"「所内の生成AI活用、ルールと教育はどうされていますか。助成金が使えます」"},
+  {t:"B",n:"建設業（従業員30名以上）",c:24000,w:"人手不足が深刻で、省力化・DXへの投資意欲が高い。助成金の活用経験がある会社も多い。",h:"「現場の書類仕事、AIで減らせる部分があります。研修費は助成金の対象です」"},
+  {t:"B",n:"医療法人・介護事業者",c:26000,w:"記録業務の負担が大きく、AI活用の効果が見えやすい。職員教育の予算が制度的に確保されている。",h:"「記録や申し送りの時間、AIで短縮できます。職員研修として助成金が使えます」"},
+  {t:"B",n:"商社・卸売（従業員30名以上）",c:22000,w:"提案書・見積・翻訳など、生成AIの効果が最も出やすい業務が多い。管理部門の人数も揃っている。",h:"「提案書や見積の作成時間、AIで半分にできます。まず30名でお試しいただけます」"},
+  {t:"B",n:"教育機関・学習塾",c:18000,w:"AI教育そのものへの関心が高く、講師側のリテラシー向上が急務。導入事例として発信しやすい層。",h:"「先生方のAIリテラシー、体系的に学べる形をご用意しています」"},
+  {t:"B",n:"不動産・住宅",c:14000,w:"物件情報の作成・顧客対応にAIの効果が出やすい。営業組織なので研修の文化がある。",h:"「物件紹介文の作成、AIに任せられます。営業研修の一環として助成金が使えます」"},
+  {t:"B",n:"人材派遣・BPO・コールセンター",c:12000,w:"スタッフの育成が事業そのもの。研修コンテンツの外部調達に慣れており、意思決定が速い。",h:"「派遣スタッフの方のAIスキル、証明できる形にしておくと単価が上がります」"},
+  {t:"B",n:"自治体・外郭団体",c:3200,w:"職員のAI活用が政策課題になっている。予算年度に合わせた提案ができれば継続する。",h:"「職員向けのAI研修、来年度のご予算で検討されていませんか」"},
+  {t:"B",n:"業界団体・商工会議所・組合",c:2400,w:"会員向け研修として一括導入されると、1件で数十社に届く。母数は小さいが1件の価値が最も大きい。",h:"「会員企業向けのAI研修として、団体でお使いいただける形にできます」"},
+
+  {t:"C",n:"社会保険労務士事務所",c:23000,w:"助成金申請の実務を担う専門家。顧問先に「使える助成金の出口」を探しており、AI研修はまさにその出口。最重要チャネル。",h:"「リスキリング支援コース、顧問先で使える研修をお探しではありませんか」"},
+  {t:"C",n:"会計事務所・税理士法人",c:31000,w:"顧問先の経営課題を最も把握している立場。母数が最大で、紹介が発生すれば継続的に流れてくる。",h:"「顧問先のAI活用のご相談、受けられることはありませんか。研修でお手伝いできます」"},
+  {t:"C",n:"中小企業診断士・経営コンサルタント",c:9800,w:"補助金・助成金の計画づくりを支援しており、研修という実行手段を探している。提案に組み込んでもらえる。",h:"「計画は作れても実行の研修まで手が回らない、ということはありませんか」"},
+  {t:"C",n:"ITベンダー・SaaS事業者",c:5600,w:"自社製品の導入時に「使いこなす教育」が必要になる。同梱販売ができれば、営業コストゼロで数が出る。",h:"「導入後の教育、御社製品とセットでご提供できる形をお作りできます」"},
+  {t:"C",n:"研修会社・教育事業者",c:4200,w:"AIコンテンツを自社で作れない研修会社が多い。OEM提供すれば、相手の営業網がそのまま使える。",h:"「AI分野のコンテンツ、御社の名前でご提供できる形もございます」"},
+  {t:"C",n:"人材紹介・フリーランスエージェント",c:2900,w:"PM案件の供給元。登録しておけば、営業をかけずに案件が流れてくる。Tier Aの補完として必須。",h:"「月20時間から稼働できるPMとして登録させていただけませんか」"},
+  {t:"C",n:"助成金・補助金の申請支援会社",c:1600,w:"助成金ありきで顧客を持っており、対象となる研修サービスを探している。相性が構造的に良い。",h:"「リスキリング支援コースの対象になる研修として、ご紹介いただけませんか」"},
+  {t:"C",n:"商工会議所・よろず支援拠点",c:1000,w:"地域の中小企業と直結しており、公的な信用が乗る。セミナー登壇の機会が、そのまま営業になる。",h:"「会員企業向けのAIセミナー、登壇のご相談をさせていただけませんか」"},
+  {t:"C",n:"地域金融機関（信金・信組含む）",c:750,w:"取引先の経営支援に本気で取り組んでおり、紹介の影響力が大きい。信用力の裏付けにもなる。",h:"「お取引先のDX支援メニューの一つとして、置いていただけませんか」"},
+  {t:"C",n:"eラーニングプラットフォーム事業者",c:380,w:"母数は最小だが、1社と組めばコンテンツが継続的に配信される。自社で営業しなくても収益が立つ形。",h:"「AI分野の講座として、御社のプラットフォームに載せていただけませんか」"}
+];
+TARGETS.forEach(function(d,i){d.i=i;});
+
+(function(){
+  var a=TARGETS.filter(function(d){return d.t==="A";}).reduce(function(x,y){return x+y.c;},0);
+  var all=TARGETS.reduce(function(x,y){return x+y.c;},0);
+  document.getElementById("t-all").innerHTML=n(all)+'<small>件</small>';
+  document.getElementById("t-a").innerHTML=n(a)+'<small>件</small>';
+})();
+
+(function(){
+  var rows=["A","B","C"].map(function(t){
+    var sum=TARGETS.filter(function(d){return d.t===t;}).reduce(function(a,b){return a+b.c;},0);
+    return {t:t,sum:sum,cnt:TARGETS.filter(function(d){return d.t===t;}).length};
+  });
+  var max=niceMax(Math.max.apply(null,rows.map(function(r){return r.sum;}))*1.05,4);
+  var W=660,H=230,padL=236,padR=100,plotW=W-padL-padR,rowH=56,top=40,s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-12)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-18)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-20,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+40,top-20,"件",{fill:"var(--ink-3)",size:10});
+  var colors={A:"var(--s4)",B:"var(--s2)",C:"var(--s1)"};
+  rows.forEach(function(r,i){
+    var y=top+i*rowH,m=TIER_META[r.t];
+    s+=txt(0,y+8,"Tier "+r.t+"・"+m.label+"（"+r.cnt+"分類）",{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(0,y+26,m.note,{fill:"var(--ink-3)",size:10.5});
+    s+=rrect(padL,y-6,(r.sum/max)*plotW,24,4,colors[r.t]);
+    s+=txt(padL+(r.sum/max)*plotW+8,y+6,n(r.sum),{fill:"var(--ink-2)",size:11.5,mono:true,baseline:"middle"});
+  });
+  document.getElementById("c-tiers").innerHTML=
+    '<h4>3層別の母数（全国・概算）</h4><p class="csub">最初の4ヶ月は、Tier Aだけに集中します</p>'+svg(W,H,s)+
+    '<p class="csub" style="margin:12px 0 0"><b>Tier Cが最も重要です。</b>1人会社が自分の手だけで数を取るのは無理があります。社労士・税理士・ITベンダーの営業網に乗せてもらえれば、<b>御社が動かなくても案件が流れてくる</b>状態を作れます。ただしこれは実績が1本もない状態では組めません。<b>だからTier Aが先なのです。</b></p>';
+})();
+
+(function(){
+  var seg=document.getElementById("t-seg"), q=document.getElementById("t-q"), sort=document.getElementById("t-sort");
+  var list=document.getElementById("t-list"), cn=document.getElementById("t-n"), cs=document.getElementById("t-sum");
+  var cur="all";
+  function render(){
+    var kw=q.value.trim().toLowerCase();
+    var arr=TARGETS.filter(function(d){
+      if(cur!=="all"&&d.t!==cur) return false;
+      if(!kw) return true;
+      return (d.n+d.w+d.h).toLowerCase().indexOf(kw)>=0;
+    });
+    var mode=sort.value;
+    arr=arr.slice().sort(function(a,b){
+      if(mode==="cnt") return b.c-a.c;
+      if(mode==="cntA") return a.c-b.c;
+      return a.i-b.i;
+    });
+    list.innerHTML=arr.map(function(d,idx){
+      var m=TIER_META[d.t];
+      return '<article class="trow t'+d.t+'">'+
+        '<div class="rank">'+String(idx+1).padStart(2,"0")+'</div>'+
+        '<div class="head"><div class="name">'+esc(d.n)+'</div>'+
+        '<div class="meta"><span class="chip '+(d.t==="A"?"b":d.t==="B"?"c":"a")+'">Tier '+d.t+'・'+m.label+'</span>'+
+        '<span class="cnt">'+n(d.c)+'<span>件</span></span></div></div>'+
+        '<div class="why"><span class="fieldlabel">なぜ狙うか</span><div class="fieldbody">'+esc(d.w)+'</div></div>'+
+        '<div class="hook"><span class="fieldlabel">最初の一言</span><div class="fieldbody">'+esc(d.h)+'</div></div>'+
+        '</article>';
+    }).join("");
+    cn.textContent=arr.length;
+    cs.textContent=n(arr.reduce(function(a,b){return a+b.c;},0))+"件";
+  }
+  seg.addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    cur=b.dataset.t;
+    Array.prototype.forEach.call(seg.children,function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    render();
+  });
+  q.addEventListener("input",render);
+  sort.addEventListener("change",render);
+  render();
+})();
+
+/* ============ 07 在宅ワーカー ============ */
+var TASKS=[
+  {g:"営業の下支え",h:30,items:[
+    {n:"ターゲットリストの作成・企業情報の収集",h:10,k:1},
+    {n:"フォーム送信・メール配信の実行と管理",h:8,k:1},
+    {n:"返信の仕分け・優先度付け",h:6,k:1},
+    {n:"商談前の企業調査・ヒアリングシート作成",h:6,k:1}
+  ]},
+  {g:"提案・資料",h:24,items:[
+    {n:"提案書・見積書の作成（テンプレート運用）",h:10,k:1},
+    {n:"サービス紹介資料・事例集の更新",h:8,k:0},
+    {n:"助成金の申請様式・必要書類の下準備",h:6,k:1}
+  ]},
+  {g:"AI学習サービスの運用",h:26,items:[
+    {n:"受講者アカウントの発行・管理",h:6,k:0},
+    {n:"利用状況レポートの作成・送付",h:8,k:1},
+    {n:"教材コンテンツの更新・校正",h:8,k:0},
+    {n:"受講者からの問い合わせ一次対応",h:4,k:0}
+  ]},
+  {g:"広報",h:12,items:[
+    {n:"サイト・note・SNSの更新",h:8,k:0},
+    {n:"導入事例の記事化",h:4,k:1}
+  ]},
+  {g:"バックオフィス",h:8,items:[
+    {n:"請求・入金消込",h:4,k:0},
+    {n:"経費精算・記帳",h:4,k:0}
+  ]}
+];
+(function(){
+  document.getElementById("tasks").innerHTML=TASKS.map(function(g){
+    return '<div class="taskgroup"><header><h4>'+esc(g.g)+'</h4><span class="hh">'+g.h+' h/月</span></header><ul>'+
+      g.items.map(function(it){
+        return '<li'+(it.k?' class="key"':'')+'><span>'+esc(it.n)+'</span><b>'+it.h+'h</b></li>';
+      }).join("")+'</ul></div>';
+  }).join("");
+})();
+
+(function(){
+  var W=760,H=250,s="";
+  s+=box(268,16,224,54,"社長（1名）","営業も納品も開発も事務も全部","var(--s3)");
+  var now=[
+    ["リスト作成・メール送信","手動。件数が出ない"],
+    ["商談・提案書作成","毎回ゼロから"],
+    ["PM納品（月20h/社）","売上の源泉。最優先"],
+    ["教材・請求・記帳","後回しになり溜まる"]
+  ];
+  now.forEach(function(c,i){
+    var x=8+i*188;
+    s+='<path d="M 380 70 L 380 94 L '+(x+82)+' 94 L '+(x+82)+' 114" stroke="var(--rule-2)" stroke-width="1.3" fill="none"></path>';
+    s+='<rect x="'+x+'" y="114" width="166" height="54" rx="8" fill="var(--surface)" stroke="var(--rule-2)" stroke-width="1.3"></rect>';
+    s+=txt(x+12,136,c[0],{fill:"var(--ink)",size:11.5,weight:700,disp:true});
+    s+=txt(x+12,154,c[1],{fill:"var(--ink-3)",size:10});
+  });
+  s+='<rect x="8" y="188" width="744" height="46" rx="8" fill="var(--accent-soft)"></rect>';
+  s+=txt(22,210,"この構造の問題：PM納品が増えると、左の2つ（営業）が自動的に止まります。",{fill:"var(--accent)",size:12,weight:700,disp:true});
+  s+=txt(22,228,"つまり「儲かっている月ほど、次の種が蒔けない」。1人会社が伸び悩む最大の理由です。",{fill:"var(--ink-2)",size:10.5});
+  document.getElementById("c-org-now").innerHTML='<h4>いまの体制</h4><p class="csub">1本の線に全部がぶら下がっている</p>'+svg(W,H,s);
+})();
+
+(function(){
+  var W=760,H=274,s="";
+  s+=box(268,14,224,52,"社長（1名）","PMをやる・商談で決める","var(--s2)");
+  var cols=[
+    {t:"在宅ワーカーチーム",u:"2〜3名相当／月100時間",c:"var(--s1)"},
+    {t:"アイドマ 営業支援ユニット",u:"リスト〜アポイント（外付け）",c:"var(--s4)"},
+    {t:"AI学習サービス",u:"仕組みが勝手に動く",c:"var(--s2)"}
+  ];
+  cols.forEach(function(c,i){
+    var x=8+i*252;
+    s+='<path d="M 380 66 L 380 88 L '+(x+114)+' 88 L '+(x+114)+' 106" stroke="'+c.c+'" stroke-width="1.5" fill="none"></path>';
+    s+='<rect x="'+x+'" y="106" width="228" height="52" rx="8" fill="var(--surface-2)" stroke="'+c.c+'" stroke-width="1.6"></rect>';
+    s+=txt(x+13,128,c.t,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(x+13,146,c.u,{fill:"var(--ink-3)",size:10.5});
+  });
+  var subs=[
+    ["営業の下支え 30h","提案・資料 24h","サービス運用 26h","広報 12h","事務 8h"],
+    ["リスト作成","メール・フォーム送信","アポイント獲得まで"],
+    ["受講・進捗管理","年額で積み上がる","社長の時間を使わない"]
+  ];
+  subs.forEach(function(list,i){
+    var x=8+i*252;
+    list.forEach(function(t,j){ s+=txt(x+13,170+j*20,"・"+t,{fill:"var(--ink-2)",size:10.5}); });
+  });
+  s+='<rect x="8" y="240" width="744" height="28" rx="7" fill="var(--good-soft)"></rect>';
+  s+=txt(20,258,"到達点：社長の時間がPM納品と商談だけに集中し、空いた時間がそのまま売上余力になる。",{fill:"var(--good)",size:11.5,weight:700});
+  document.getElementById("c-org-next").innerHTML='<h4>在宅ワーカー活用後の体制</h4><p class="csub">社長の左右に、止まらない3つの機能を置く</p>'+svg(W,H,s);
+})();
+
+(function(){
+  var rows=[
+    {k:"PM納品（売上に直結）",a:20,b:80},
+    {k:"商談・クロージング",a:8,b:24},
+    {k:"リスト作成・メール送信",a:40,b:0},
+    {k:"提案書・見積の作成",a:24,b:6},
+    {k:"AI教材・受講者対応",a:22,b:6},
+    {k:"広報・サイト更新",a:16,b:4},
+    {k:"経理・事務",a:12,b:2},
+    {k:"自社サービスの開発",a:18,b:38}
+  ];
+  var W=760,H=330,padL=210,padR=100,padT=38,padB=44;
+  var plotW=W-padL-padR,plotH=H-padT-padB,rowH=plotH/rows.length;
+  var max=niceMax(84,4),s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(padT-10)+'" x2="'+x+'" y2="'+(padT+plotH)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,padT-18,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+28,padT-18,"h/月",{fill:"var(--ink-3)",size:10});
+  rows.forEach(function(r,i){
+    var y=padT+i*rowH+3, bh=(rowH-10)/2;
+    s+=txt(padL-12,y+bh,r.k,{fill:"var(--ink)",size:11.5,anchor:"end",baseline:"middle"});
+    s+=rrect(padL,y,(r.a/max)*plotW,bh,3,"var(--rule-2)");
+    s+=rrect(padL,y+bh+3,(r.b/max)*plotW,bh,3,r.b>=r.a?"var(--s2)":"var(--s3)");
+    s+=txt(padL+(r.b/max)*plotW+7,y+bh+3+bh/2,r.b+"h",{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+  });
+  s+=txt(padL,H-10,"上＝いま（推定）／下＝移管後。合計は月160時間で揃えています。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-time").innerHTML=
+    '<h4>社長の時間配分</h4><p class="csub">総量は変えず、売上に直結する時間を4倍にする</p>'+
+    '<div class="legend"><span><i style="background:var(--rule-2)"></i>いま</span><span><i style="background:var(--s2)"></i>移管後</span></div>'+svg(W,H,s);
+})();
+
+/* ============ 08 ROI ============ */
+var PRESETS={
+  cons:{app:600, appo:0.5,sfee:30,pmWin:6, pmh:20,rate:7000, pmKeep:60,aiWin:3, upsell:20,aiPrice:30,aiGm:85,aiKeep:50,avail:120,other:50,mtgh:3,ofee:6},
+  base:{app:1200,appo:1.0,sfee:30,pmWin:12,pmh:20,rate:10000,pmKeep:75,aiWin:7, upsell:40,aiPrice:50,aiGm:90,aiKeep:70,avail:140,other:20,mtgh:2,ofee:6},
+  bull:{app:2000,appo:1.6,sfee:40,pmWin:18,pmh:20,rate:14000,pmKeep:85,aiWin:12,upsell:60,aiPrice:80,aiGm:90,aiKeep:80,avail:160,other:15,mtgh:2,ofee:9}
+};
+var KEYS=["app","appo","sfee","pmWin","pmh","rate","pmKeep","aiWin","upsell","aiPrice","aiGm","aiKeep","avail","other","mtgh","ofee"];
+var DEC={appo:1,mtgh:1};
+
+function readInputs(){
+  var p={}; KEYS.forEach(function(k){ p[k]=parseFloat(document.getElementById("k-"+k).value); }); return p;
+}
+function setInputs(o){ KEYS.forEach(function(k){ document.getElementById("k-"+k).value=o[k]; }); }
+
+function calc(p){
+  var apposM=p.app*(p.appo/100);
+  var pmActive=0, aiActive=0;
+  var hist=[];
+  var pmMonthly=p.pmh*p.rate;              /* PM1社あたりの月売上 */
+  var aiMonthly=p.aiPrice*10000/12;        /* AI研修1社あたりの月売上 */
+  var monthCost=(p.sfee+p.ofee)*10000;
+  var cumGp=0,cumCost=0,cumGpArr=[],cumCostArr=[];
+  var everCapped=false;
+
+  for(var m=1;m<=36;m++){
+    /* 解約（年率を月割り） */
+    pmActive*=Math.pow(p.pmKeep/100,1/12);
+    aiActive*=Math.pow(p.aiKeep/100,1/12);
+
+    /* 時間配分：納品が最優先 → 商談 → 雑務 */
+    var deliverH=pmActive*p.pmh;
+    var freeH=Math.max(0,p.avail-deliverH-p.other);
+    var meetCap=freeH/p.mtgh;
+    var meets=Math.min(apposM,meetCap);
+    if(apposM>meetCap+1e-9) everCapped=true;
+
+    /* 受注（1ヶ月目は準備期間） */
+    var newPm=0,newAi=0;
+    if(m>1){
+      newPm=meets*(p.pmWin/100);
+      /* 追加のPMを受け入れる時間があるか */
+      var roomH=Math.max(0,p.avail-deliverH-p.other-meets*p.mtgh);
+      var maxNewPm=roomH/p.pmh;
+      newPm=Math.min(newPm,maxNewPm);
+      newAi=meets*(p.aiWin/100)+newPm*(p.upsell/100);
+    }
+    pmActive+=newPm; aiActive+=newAi;
+
+    var rev=pmActive*pmMonthly+aiActive*aiMonthly;
+    var gp=pmActive*pmMonthly+aiActive*aiMonthly*(p.aiGm/100);
+    cumGp+=gp; cumCost+=monthCost;
+    cumGpArr.push(cumGp); cumCostArr.push(cumCost);
+    hist.push({m:m,pm:pmActive,ai:aiActive,meets:meets,deliverH:deliverH,
+      meetH:meets*p.mtgh,otherH:p.other,freeH:Math.max(0,p.avail-deliverH-meets*p.mtgh-p.other),
+      rev:rev,gp:gp,newPm:newPm,newAi:newAi});
+  }
+  var y1=hist[11];
+  var y1Gp=cumGpArr[11], y1Cost=cumCostArr[11];
+  var roi=y1Cost>0?(y1Gp-y1Cost)/y1Cost*100:0;
+  var payback=null;
+  for(var i=0;i<36;i++){ if(payback===null&&cumGpArr[i]>=cumCostArr[i]) payback=i+1; }
+  var pmCeil=Math.max(0,(p.avail-p.other-y1.meetH)/p.pmh); /* 商談時間を差し引いた実効の天井 */
+
+  return {hist:hist,y1:y1,y1Gp:y1Gp,y1Cost:y1Cost,roi:roi,payback:payback,apposM:apposM,
+    cumGpArr:cumGpArr,cumCostArr:cumCostArr,everCapped:everCapped,pmCeil:pmCeil,
+    pmMonthly:pmMonthly,aiMonthly:aiMonthly,monthCost:monthCost,
+    y3Gp:cumGpArr[35],y3Cost:cumCostArr[35]};
+}
+function man(v){return n(v/10000);}
+
+function update(){
+  var p=readInputs();
+  KEYS.forEach(function(k){ document.getElementById("v-"+k).textContent=DEC[k]?p[k].toFixed(1):n(p[k]); });
+  var r=calc(p), y=r.y1;
+
+  document.getElementById("o-roi").innerHTML=(r.roi>=0?"+":"")+Math.round(r.roi)+'<small>%</small>';
+  document.getElementById("o-roi").parentElement.className="stat "+(r.roi>=0?"pos":"hot");
+  document.getElementById("o-pm").innerHTML=y.pm.toFixed(1)+'<small>社</small>';
+  document.getElementById("o-pmn").textContent="納品に月"+y.deliverH.toFixed(0)+"h／天井は"+r.pmCeil.toFixed(1)+"社";
+  document.getElementById("o-ai").innerHTML=y.ai.toFixed(1)+'<small>社</small>';
+  document.getElementById("o-ain").textContent="年額"+n(p.aiPrice)+"万円×"+y.ai.toFixed(1)+"社";
+  document.getElementById("o-mrr").innerHTML=man(y.rev)+'<small>万円</small>';
+  document.getElementById("o-mrrn").textContent="PM "+man(y.pm*r.pmMonthly)+"万円＋AI "+man(y.ai*r.aiMonthly)+"万円";
+
+  document.getElementById("f-app").textContent=n(p.app);
+  document.getElementById("f-appo").textContent=r.apposM.toFixed(1);
+  document.getElementById("f-appo-r").textContent="アポ率 "+p.appo.toFixed(1)+"%";
+  document.getElementById("f-meet").textContent=y.meets.toFixed(1);
+  document.getElementById("f-meet-r").textContent=(r.apposM>y.meets+0.05)?"時間が足りず頭打ち":"時間に余力あり";
+  document.getElementById("f-win").textContent=(y.newPm+y.newAi).toFixed(2);
+  document.getElementById("f-win-r").textContent="PM "+y.newPm.toFixed(2)+"／AI "+y.newAi.toFixed(2);
+
+  drawHours(r,p);
+  drawRevenue(r,p);
+  drawCum(r);
+
+  var v=document.getElementById("o-verdict");
+  if(r.roi>=0){
+    v.style.borderLeftColor="var(--good)";
+    v.innerHTML='<b>判定：</b> 1年目の粗利は <b>'+man(r.y1Gp)+'万円</b>、投資は <b>'+man(r.y1Cost)+
+      '万円</b>、ROIは <b>'+Math.round(r.roi)+'%</b>。'+(r.payback?'累積で投資を上回るのは <b>'+r.payback+'ヶ月目</b>です。':'')+
+      ' 12ヶ月後は PM '+y.pm.toFixed(1)+'社・AI研修 '+y.ai.toFixed(1)+'社で、月次売上 <b>'+man(y.rev)+
+      '万円</b>。3年累計では粗利 <b>'+man(r.y3Gp)+'万円</b>・投資 '+man(r.y3Cost)+'万円になります。';
+  } else {
+    v.style.borderLeftColor="var(--accent)";
+    v.innerHTML='<b style="color:var(--accent)">判定：</b> この前提では1年目に投資を回収できません（ROI '+Math.round(r.roi)+
+      '%）。12ヶ月後の月次売上は '+man(y.rev)+'万円で、月額費用 '+man(r.monthCost)+
+      '万円を'+(y.rev>=r.monthCost?'上回っています':'下回っています')+'。3年累計では粗利 <b style="color:var(--accent)">'+
+      man(r.y3Gp)+'万円</b>・投資 '+man(r.y3Cost)+'万円で、'+
+      (r.payback?'<b style="color:var(--accent)">'+r.payback+'ヶ月目</b>に累積で上回ります。':'36ヶ月以内には上回りません。')+
+      ' <b style="color:var(--accent)">時間単価とPM受注率</b>を実際の水準に置き換えてご確認ください。';
+  }
+  if(y.pm>=r.pmCeil-0.15){
+    v.innerHTML+='<br><span style="color:var(--warn)">※ PM支援が<b style="color:var(--warn)">天井（'+r.pmCeil.toFixed(1)+
+      '社）に到達</b>しています。これ以上は社長の時間が足りず受けられません。ここから先の成長は、<b style="color:var(--warn)">AI研修側でしか作れません</b>。</span>';
+  }
+  if(r.everCapped){
+    v.innerHTML+='<br><span style="color:var(--ink-3)">※ 納品に時間を取られ、獲得したアポイント（月'+r.apposM.toFixed(1)+
+      '件）のすべてには対応できていません。アプローチ数を増やしても、社長が商談に出られなければ受注は増えません。</span>';
+  }
+  if(p.other>=45){
+    v.innerHTML+='<br><span style="color:var(--ink-3)">※ 雑務に月'+p.other+'時間を残す設定です。これは<b>在宅ワーカーを入れない場合</b>に近い水準で、その分だけ商談と納品の時間が削られています。</span>';
+  }
+}
+
+function drawHours(r,p){
+  var W=700,H=290,padL=60,padR=104,padT=34,padB=46;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var max=niceMax(p.avail,4),s="";
+  for(var g=0;g<=4;g++){
+    var y=padT+plotH-(g/4)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(max*g/4),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-14,"時間/月",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  var bw=plotW/12*0.62;
+  for(var m=0;m<12;m++){
+    var h=r.hist[m],cx=padL+(m+0.5)*(plotW/12),base=padT+plotH;
+    var segs=[[h.deliverH,"var(--s1)"],[h.meetH,"var(--s4)"],[h.otherH,"var(--rule-2)"],[h.freeH,"var(--s2)"]];
+    var acc=0;
+    segs.forEach(function(sg){
+      var sh=(sg[0]/max)*plotH;
+      s+=rrect(cx-bw/2,base-acc-sh,bw,sh,1.5,sg[1]);
+      acc+=sh;
+    });
+    if(m%2===1||m===0) s+=txt(cx,base+17,(m+1)+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  }
+  var lastH=r.hist[11];
+  s+=txt(padL+plotW+8,padT+plotH-(lastH.deliverH/max)*plotH/2,"PM納品",{fill:"var(--s1)",size:10.5,weight:700,baseline:"middle"});
+  s+=txt(padL,H-6,"※ 納品が最優先、次に商談、残りが雑務と空き時間。納品が増えるほど商談の帯が細くなります。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-hours").innerHTML=
+    '<h4>社長の時間が、何に使われるか（1年目）</h4><p class="csub">このボードでいちばん重要なグラフです</p>'+
+    '<div class="legend"><span><i style="background:var(--s1)"></i>PM納品</span><span><i style="background:var(--s4)"></i>商談</span><span><i style="background:var(--rule-2)"></i>雑務</span><span><i style="background:var(--s2)"></i>空き（開発・営業に使える）</span></div>'+svg(W,H,s);
+}
+
+function drawRevenue(r,p){
+  var W=700,H=280,padL=62,padR=96,padT=32,padB=46;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var maxV=niceMax(r.hist[11].rev/10000*1.3,4),s="";
+  for(var g=0;g<=4;g++){
+    var y=padT+plotH-(g/4)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(maxV*g/4),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-12,"万円/月",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  var bw=plotW/12*0.6;
+  for(var m=0;m<12;m++){
+    var h=r.hist[m],cx=padL+(m+0.5)*(plotW/12),base=padT+plotH;
+    var pmv=(h.pm*r.pmMonthly/10000/maxV)*plotH;
+    var aiv=(h.ai*r.aiMonthly/10000/maxV)*plotH;
+    s+=rrect(cx-bw/2,base-pmv,bw,pmv,2,"var(--s1)");
+    s+=rrect(cx-bw/2,base-pmv-aiv,bw,aiv,2,"var(--s2)");
+    if(m%2===1||m===0) s+=txt(cx,base+17,(m+1)+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  }
+  var cy=padT+plotH-(r.monthCost/10000/maxV)*plotH;
+  s+='<line x1="'+padL+'" y1="'+cy+'" x2="'+(padL+plotW)+'" y2="'+cy+'" stroke="var(--s3)" stroke-width="1.6" stroke-dasharray="5 4"></line>';
+  s+=txt(padL+plotW+8,cy,"月額費用 "+man(r.monthCost)+"万円",{fill:"var(--s3)",size:10.5,weight:700,baseline:"middle"});
+  var lastTot=r.hist[11].rev/10000;
+  s+=txt(padL+plotW+8,padT+plotH-(lastTot/maxV)*plotH,man(r.hist[11].rev)+"万円",{fill:"var(--ink)",size:11,weight:700,mono:true,baseline:"middle"});
+  s+=txt(padL,H-6,"※ 棒が破線を超えた月から、営業支援の費用が事業の売上で払える状態になります。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-revenue").innerHTML=
+    '<h4>月次売上の積み上がり（1年目）</h4><p class="csub">PMが先に立ち、AI研修が後ろから積み上がる</p>'+
+    '<div class="legend"><span><i style="background:var(--s1)"></i>PM支援</span><span><i style="background:var(--s2)"></i>AI研修</span></div>'+svg(W,H,s);
+}
+
+function drawCum(r){
+  var W=700,H=250,padL=64,padR=82,padT=32,padB=46;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var maxV=niceMax(Math.max(r.cumGpArr[35],r.cumCostArr[35])*1.12/10000,4),s="";
+  for(var i=0;i<=4;i++){
+    var g=maxV*i/4,y=padT+plotH-(g/maxV)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-12,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+(m/35)*plotW;}
+  function py(v){return padT+plotH-(v/10000/maxV)*plotH;}
+  [["cumGpArr","var(--s2)"],["cumCostArr","var(--s3)"]].forEach(function(pair){
+    var d=r[pair[0]].map(function(v,i){return (i===0?"M ":"L ")+px(i)+" "+py(v);}).join(" ");
+    s+='<path d="'+d+'" fill="none" stroke="'+pair[1]+'" stroke-width="2.4"></path>';
+    s+='<circle cx="'+px(35)+'" cy="'+py(r[pair[0]][35])+'" r="3.6" fill="'+pair[1]+'"></circle>';
+    s+=txt(px(35)+8,py(r[pair[0]][35]),n(r[pair[0]][35]/10000),{fill:pair[1],size:11,weight:700,mono:true,baseline:"middle"});
+  });
+  if(r.payback){
+    var bx=px(r.payback-1);
+    s+='<line x1="'+bx+'" y1="'+padT+'" x2="'+bx+'" y2="'+(padT+plotH)+'" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"></line>';
+    s+=txt(bx+7,padT+13,"累積で上回る "+r.payback+"ヶ月目",{fill:"var(--s2)",size:11,weight:700});
+  }
+  for(var m=0;m<36;m+=6) s+=txt(px(m),padT+plotH+17,(m+1)+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  document.getElementById("c-cum").innerHTML=
+    '<h4>3年（36ヶ月）の累積</h4><p class="csub">累積粗利と累積投資</p>'+
+    '<div class="legend"><span><i style="background:var(--s2)"></i>累積 粗利</span><span><i style="background:var(--s3)"></i>累積 投資</span></div>'+svg(W,H,s);
+}
+
+(function(){
+  KEYS.forEach(function(k){
+    document.getElementById("k-"+k).addEventListener("input",function(){
+      Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(b){b.setAttribute("aria-pressed","false");});
+      update();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(b){
+    b.addEventListener("click",function(){
+      Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+      setInputs(PRESETS[b.dataset.preset]); update();
+    });
+  });
+  document.getElementById("r-reset").addEventListener("click",function(){
+    Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(x){x.setAttribute("aria-pressed",x.dataset.preset==="base"?"true":"false");});
+    setInputs(PRESETS.base); update();
+  });
+  setInputs(PRESETS.base);
+  update();
+})();
+
+})();
+</script>
