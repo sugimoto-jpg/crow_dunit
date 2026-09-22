@@ -592,10 +592,11 @@ window.UNIT_MASTER = [
       },
       roadmap: [
         { title: 'お申込み・契約締結', period: '', desc: '特別条件での枠確保とお手続きを迅速に完了します。', foot: '電子契約対応' },
-        { title: 'キックオフ・要件定義', period: '契約後 即時実施', desc: '専任チームと顔合わせを行い、ターゲットや方針を策定。', foot: '組織図・マニュアル着手' },
-        { title: '実動チーム稼働開始', period: '', desc: 'スカウト配信・選考代行・フィールド実動を開始します。', foot: '最短スピード立ち上げ' },
+        { title: 'キックオフ・要件定義', period: '', desc: '専任チームと顔合わせを行い、ターゲットや方針を策定。', foot: '組織図・マニュアル着手' },
+        { title: '実動チーム稼働開始', period: 'キックオフ後 順次開始', desc: 'スカウト配信・選考代行・フィールド実動を開始します。', foot: '最短スピード立ち上げ' },
         { title: '定例改善・成果創出', period: '週次／月次PDCA', desc: '数値検証を重ね、御社専任の最強体制を確立します。', foot: '継続的な成果最大化' }
       ],
+      schema: 2,
       pages: { cover: true, background: true, cost: true, org: true, basic: true, table: true, details: true, roadmap: true, closing: true },
       unitMaster: JSON.parse(JSON.stringify(window.UNIT_MASTER)),
       plans: {}
@@ -622,9 +623,11 @@ window.UNIT_MASTER = [
     try {
       var saved = JSON.parse(raw);
       var base = defaults();
+      var prev = N(saved.schema);
       state = merge(base, saved);
       mergeMaster();
       migrateAutoText();
+      if (prev < 2) { migrateRoadmap(); state.schema = 2; save(); }
     } catch (e) { defaults(); }
   }
 
@@ -657,6 +660,14 @@ window.UNIT_MASTER = [
         if (LEGACY_TEXT.indexOf(p[f]) >= 0) p[f] = '';
       });
     });
+  }
+
+  /* 旧版は契約開始時期をSTEP03に出していた。初期文のままならSTEP02へ移す */
+  function migrateRoadmap() {
+    var r = state.roadmap;
+    if (!r || r.length < 3) return;
+    if (r[1].period === '契約後 即時実施') r[1].period = '';
+    if (or(r[2].period, '') === '') r[2].period = 'キックオフ後 順次開始';
   }
 
   function mergeMaster() {
@@ -902,7 +913,7 @@ window.UNIT_MASTER = [
     state.roadmap.forEach(function (s, i) {
       rm.push('<div class="urow"><div class="un">STEP 0' + (i + 1) + '</div>' +
         fText('roadmap.' + i + '.title', '項目名', '') +
-        fText('roadmap.' + i + '.period', '時期', i === 0 ? '空欄なら申込期日' : (i === 2 ? '空欄なら契約開始時期' : '')) +
+        fText('roadmap.' + i + '.period', '時期', i === 0 ? '空欄なら申込期日' : (i === 1 ? '空欄なら契約開始時期' : '')) +
         fArea('roadmap.' + i + '.desc', '説明', '') +
         fText('roadmap.' + i + '.foot', '補足タグ', '') +
         '</div>');
@@ -1295,7 +1306,7 @@ window.UNIT_MASTER = [
     return '<section class="slide">' + head('ONBOARDING ROADMAP', 'ご契約から稼働・成果創出までのフロー') +
       '<div class="s-body"><div class="steps" style="width:100%">' +
       state.roadmap.map(function (s, i) {
-        var per = or(s.period, i === 0 ? or(m.deadline, '') : (i === 2 ? or(m.startPeriod, '') : ''));
+        var per = or(s.period, i === 0 ? or(m.deadline, '') : (i === 1 ? or(m.startPeriod, '') : ''));
         return '<div class="step' + (i === state.roadmap.length - 1 ? ' last' : '') + '">' +
           '<span class="sn">STEP 0' + (i + 1) + '</span>' +
           '<div class="st">' + esc(s.title) + '</div>' +
