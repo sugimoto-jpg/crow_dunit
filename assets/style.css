@@ -365,6 +365,26 @@ small{font-size:11.5px}
 .chr .s-legF{transform-box:view-box;transform-origin:35.5px 58px}
 .chr .s-legB{transform-box:view-box;transform-origin:28.5px 58px}
 .chr .s-head{transform-box:view-box;transform-origin:32px 34px}
+/* ===== 立体感 =====
+ * 体と頭をもう一度そのまま重ね、右側だけを暗く塗りつぶして影にする。
+ * 形を別に描かなくても、必ずシルエットどおりの影になる。
+ * （色は CSS 側で上書きするので、重ねる中身は本体と同じものでよい） */
+/* 切り取りを直線でやると、体を横切る線が見えてしまい不自然だった。
+ * ぼかした濃淡で覆い、右下ほど濃く、左上ほど薄くする。 */
+.chr .s-shade{
+  opacity:.26;pointer-events:none;
+  -webkit-mask-image:linear-gradient(108deg, transparent 30%, #000 82%);
+  mask-image:linear-gradient(108deg, transparent 30%, #000 82%);
+}
+.chr .s-shade *{fill:#1b1030 !important;stroke:#1b1030 !important;opacity:1 !important}
+/* 左上からの淡い光 */
+.chr .s-lit{
+  opacity:.13;pointer-events:none;
+  -webkit-mask-image:linear-gradient(108deg, #000 4%, transparent 34%);
+  mask-image:linear-gradient(108deg, #000 4%, transparent 34%);
+}
+.chr .s-lit *{fill:#fff !important;stroke:#fff !important;opacity:1 !important}
+
 .chr .s-cape{transform-box:view-box;transform-origin:32px 38px}
 .chr .s-wingF{transform-box:view-box;transform-origin:40px 46px}
 .chr .s-wingB{transform-box:view-box;transform-origin:24px 46px}

@@ -20,11 +20,11 @@ const SKIN_D = '#d9a87d';
 const LINE = '#241a38';
 
 G.SPRITE_PAL = {
-  villager: { main: '#c2b295', sub: '#8d7b5e', accent: '#7d9b5c', metal: '#b7b7c2', hair: '#7a5230' },
-  mage:     { main: '#5b3fa8', sub: '#3a2770', accent: '#c9a6ff', metal: '#e3d4ff', hair: '#4a3b6b' },
-  knight:   { main: '#7c8595', sub: '#4d5462', accent: '#d94f5c', metal: '#e4e9f2', hair: '#6b4a2f' },
-  cleric:   { main: '#f3ecdd', sub: '#cfc1a4', accent: '#f2c14e', metal: '#f7e6b8', hair: '#c8a45e' },
-  scout:    { main: '#3f6b53', sub: '#27402f', accent: '#8fd6a8', metal: '#cfd8d2', hair: '#4a4a5e' },
+  villager: { main: '#c2b295', sub: '#8d7b5e', accent: '#7d9b5c', metal: '#b7b7c2', hair: '#6b4426', eye: '#4a7a5c' },
+  mage:     { main: '#5b3fa8', sub: '#3a2770', accent: '#c9a6ff', metal: '#e3d4ff', hair: '#4a3b6b', eye: '#7c5ad6' },
+  knight:   { main: '#7c8595', sub: '#4d5462', accent: '#d94f5c', metal: '#e4e9f2', hair: '#6b4a2f', eye: '#3f6bbf' },
+  cleric:   { main: '#f3ecdd', sub: '#cfc1a4', accent: '#f2c14e', metal: '#f7e6b8', hair: '#c8a45e', eye: '#c9903a' },
+  scout:    { main: '#3f6b53', sub: '#27402f', accent: '#8fd6a8', metal: '#cfd8d2', hair: '#4a4a5e', eye: '#3f8f6b' },
 };
 
 /* ジョブ -> 見た目の系統（土台となる5系統） */
@@ -241,12 +241,67 @@ function weaponSvg(shape, pal) {
 /* ---------- 頭 ---------- */
 /* kind は見た目の型。既定では系統名と同じだが、
  * 職業ごとに別の型を指定できるようにしてある。 */
+/* 色を暗くする（髪の影用） */
+function darken(hex, amt) {
+  const n = parseInt(String(hex).slice(1), 16);
+  const ch = i => Math.max(0, Math.round(((n >> (16 - i * 8)) & 255) * (1 - amt)));
+  return '#' + [0, 1, 2].map(i => ch(i).toString(16).padStart(2, '0')).join('');
+}
+
+/* 髪。
+ * 以前は頭にかぶせた丸い帽子のような形だったため、
+ * どの職業も同じ輪郭に見えてしまっていた。
+ * 後ろ髪・横の毛束・前髪の3層に分け、毛先を尖らせて動きを出す。
+ *   back  … 顔より先に描く（後頭部と横の毛束）
+ *   front … 顔の上に描く（前髪と艶）
+ */
+function hairSvg(col) {
+  const d = darken(col, 0.26);
+  return {
+    back: `<g class="s-hairB">
+      <path d="M14 33 q-2 -30 18 -30 q20 0 18 30 q-2 5 -4 1 q3 -22 -14 -22 q-17 0 -14 22 q-2 4 -4 -1 z"
+            fill="${col}" stroke="${LINE}" stroke-width="1.3"/>
+      <path d="M16 25 q-4 11 -2 19 q5 -1 6 -5 q-3 -7 -1 -14 z"
+            fill="${d}" stroke="${LINE}" stroke-width="1.2"/>
+      <path d="M48 25 q4 11 2 19 q-5 -1 -6 -5 q3 -7 1 -14 z"
+            fill="${d}" stroke="${LINE}" stroke-width="1.2"/>
+    </g>`,
+    front: `<g class="s-hairF">
+      <path d="M18 21 q0 -18 14 -18 q14 0 14 18
+               q-3 -4 -6 -4 l-2 5 l-3 -6 l-4 7 l-3 -6 l-3 5 l-2 -4 q-3 0 -5 3 z"
+            fill="${col}" stroke="${LINE}" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M22 15 q4 -7 11 -7 q-6 3 -8 9 z" fill="#fff" opacity=".22"/>
+    </g>`,
+  };
+}
+
+/* 目。アニメ調に、白目・虹彩・瞳・光の点を重ねて描く。
+ * 点を2つ置くだけだった頃より、ぐっと表情が出る。
+ * 影やまつ毛も入れるが、線は最小限にして小さくても潰れないようにする。 */
+function eyeSvg(cx, col) {
+  return `
+    <ellipse cx="${cx}" cy="24.2" rx="3.1" ry="3.9" fill="#fff"/>
+    <ellipse cx="${cx}" cy="24.2" rx="3.1" ry="3.9" fill="${LINE}" opacity=".12"/>
+    <ellipse cx="${cx}" cy="24.9" rx="2.5" ry="3.1" fill="${col}"/>
+    <ellipse cx="${cx}" cy="25.4" rx="1.5" ry="2" fill="${LINE}"/>
+    <circle cx="${cx - 1}" cy="22.8" r="1.15" fill="#fff"/>
+    <circle cx="${cx + 1.1}" cy="26.4" r="0.55" fill="#fff" opacity=".7"/>
+    <path d="M${cx - 3.3} 21.6 q3.3 -2 6.6 0" stroke="${LINE}" stroke-width="1.5"
+          fill="none" stroke-linecap="round"/>`;
+}
+
 function headSvg(kind, pal, hair) {
+  const eye = pal.eye || '#5a3f8f';
+  const H = hairSvg(hair);
   const face = `
+    <path d="M25 33 h14 v5 h-14 z" fill="${SKIN_D}"/>
     <circle cx="32" cy="23" r="13" fill="${SKIN}" stroke="${LINE}" stroke-width="1.4"/>
-    <ellipse cx="26.5" cy="24" rx="1.6" ry="2.2" fill="${LINE}"/>
-    <ellipse cx="37.5" cy="24" rx="1.6" ry="2.2" fill="${LINE}"/>
-    <path d="M29 29 q3 2.5 6 0" stroke="${SKIN_D}" stroke-width="1.2" fill="none" stroke-linecap="round"/>`;
+    <path d="M32 10 a13 13 0 0 1 0 26 a13 13 0 0 0 0 -26 z" fill="${SKIN_D}" opacity=".28"/>
+    <ellipse cx="24.5" cy="28.5" rx="2.6" ry="1.5" fill="#ff9aa2" opacity=".42"/>
+    <ellipse cx="39.5" cy="28.5" rx="2.6" ry="1.5" fill="#ff9aa2" opacity=".42"/>
+    ${eyeSvg(26.2, eye)}
+    ${eyeSvg(37.8, eye)}
+    <path d="M30.4 30.6 q1.6 1.7 3.2 0" stroke="${LINE}" stroke-width="1.15" fill="none" stroke-linecap="round"/>`;
 
   /* ---- 魔術系：職業ごとの頭 ---- */
   /* 見習い：短い布の帽子。まだ飾りが無い */
@@ -272,9 +327,9 @@ function headSvg(kind, pal, hair) {
   /* 精霊術師：帽子を被らず、葉と羽根の冠 */
   if (kind === 'm_crown') {
     return `<g class="s-head">
+      ${H.back}
       ${face}
-      <path d="M18 22 q0 -19 14 -19 q14 0 14 19 q-5 -9 -14 -9 q-9 0 -14 9 z"
-            fill="${hair}" stroke="${LINE}" stroke-width="1.3"/>
+${H.front}
       <path d="M18 16 q6 -7 14 -7 q8 0 14 7" fill="none" stroke="${pal.accent}" stroke-width="2" stroke-linecap="round"/>
       <path d="M22 13 q-4 -6 1 -8 q3 5 -1 8 z" fill="${pal.accent}" stroke="${LINE}" stroke-width="1"/>
       <path d="M42 13 q4 -6 -1 -8 q-3 5 1 8 z" fill="${pal.accent}" stroke="${LINE}" stroke-width="1"/>
@@ -298,9 +353,9 @@ function headSvg(kind, pal, hair) {
     return `<g class="s-head">
       <path d="M15 30 q0 -27 17 -27 q17 0 17 27 q-7 5 -17 5 q-10 0 -17 -5 z"
             fill="${pal.metal}" stroke="${LINE}" stroke-width="1.2" opacity=".55"/>
+      ${H.back}
       ${face}
-      <path d="M18 22 q0 -19 14 -19 q14 0 14 19 q-5 -9 -14 -9 q-9 0 -14 9 z"
-            fill="${hair}" stroke="${LINE}" stroke-width="1.3"/>
+${H.front}
       <ellipse cx="32" cy="6" rx="12" ry="3.4" fill="none" stroke="${pal.accent}" stroke-width="2" opacity=".9"/>
       <circle cx="32" cy="14" r="2.2" fill="${pal.accent}" stroke="${LINE}" stroke-width="1"/>
     </g>`;
@@ -330,18 +385,18 @@ function headSvg(kind, pal, hair) {
   /* 見習いは兜をかぶらない。髪が見える */
   if (kind === 'k_bare') {
     return `<g class="s-head">
+      ${H.back}
       ${face}
-      <path d="M18 22 q0 -19 14 -19 q14 0 14 19 q-5 -9 -14 -9 q-9 0 -14 9 z"
-            fill="${hair}" stroke="${LINE}" stroke-width="1.3"/>
+${H.front}
       <path d="M19 19 q6 -6 13 -5" stroke="${pal.accent}" stroke-width="1.6" fill="none" opacity=".7"/>
     </g>`;
   }
   /* 剣士：額を守る鉢金 */
   if (kind === 'k_band') {
     return `<g class="s-head">
+      ${H.back}
       ${face}
-      <path d="M18 22 q0 -19 14 -19 q14 0 14 19 q-5 -9 -14 -9 q-9 0 -14 9 z"
-            fill="${hair}" stroke="${LINE}" stroke-width="1.3"/>
+${H.front}
       <rect x="18" y="15" width="28" height="5" rx="2" fill="${pal.metal}" stroke="${LINE}" stroke-width="1.3"/>
       <path d="M29 15 l3 -4 l3 4 z" fill="${pal.accent}" stroke="${LINE}" stroke-width="1"/>
     </g>`;
@@ -382,9 +437,9 @@ function headSvg(kind, pal, hair) {
   /* 剣聖：鉢巻。兜を捨てた者 */
   if (kind === 'k_ribbon') {
     return `<g class="s-head">
+      ${H.back}
       ${face}
-      <path d="M18 22 q0 -19 14 -19 q14 0 14 19 q-5 -9 -14 -9 q-9 0 -14 9 z"
-            fill="${hair}" stroke="${LINE}" stroke-width="1.3"/>
+${H.front}
       <rect x="17" y="14" width="30" height="4.4" rx="2" fill="${pal.accent}" stroke="${LINE}" stroke-width="1.2"/>
       <path d="M17 16 q-8 4 -10 12 q6 -2 9 -7 z" fill="${pal.accent}" stroke="${LINE}" stroke-width="1.1"/>
     </g>`;
@@ -401,9 +456,9 @@ function headSvg(kind, pal, hair) {
   /* 見習い：短いベール。髪がよく見える */
   if (kind === 'c_veil') {
     return `<g class="s-head">
+      ${H.back}
       ${face}
-      <path d="M18 22 q0 -19 14 -19 q14 0 14 19 q-5 -9 -14 -9 q-9 0 -14 9 z"
-            fill="${hair}" stroke="${LINE}" stroke-width="1.3"/>
+${H.front}
       <path d="M19 18 q1 -15 13 -15 q12 0 13 15 q-6 -6 -13 -6 q-7 0 -13 6 z"
             fill="${pal.main}" stroke="${LINE}" stroke-width="1.3"/>
     </g>`;
@@ -424,9 +479,9 @@ function headSvg(kind, pal, hair) {
   /* 祓魔師：目を隠す布。口元だけ見える */
   if (kind === 'c_blind') {
     return `<g class="s-head">
+      ${H.back}
       ${face}
-      <path d="M18 22 q0 -19 14 -19 q14 0 14 19 q-5 -9 -14 -9 q-9 0 -14 9 z"
-            fill="${hair}" stroke="${LINE}" stroke-width="1.3"/>
+${H.front}
       <rect x="18" y="19" width="28" height="7" rx="2" fill="${pal.sub}" stroke="${LINE}" stroke-width="1.3"/>
       <path d="M46 22 q7 3 8 11 q-6 -2 -9 -7 z" fill="${pal.sub}" stroke="${LINE}" stroke-width="1.2"/>
       <path d="M27 22.5 h4 M33 22.5 h4" stroke="${pal.accent}" stroke-width="1.4" opacity=".9"/>
@@ -503,9 +558,9 @@ function headSvg(kind, pal, hair) {
   /* 狩人：羽根を挿したつば帽 */
   if (kind === 's_feather') {
     return `<g class="s-head">
+      ${H.back}
       ${face}
-      <path d="M18 22 q0 -19 14 -19 q14 0 14 19 q-5 -9 -14 -9 q-9 0 -14 9 z"
-            fill="${hair}" stroke="${LINE}" stroke-width="1.3"/>
+${H.front}
       <path d="M20 17 q2 -14 12 -14 q10 0 12 14 q-12 -4 -24 0 z"
             fill="${pal.main}" stroke="${LINE}" stroke-width="1.4"/>
       <ellipse cx="32" cy="18" rx="17" ry="4" fill="${pal.sub}" stroke="${LINE}" stroke-width="1.3"/>
@@ -526,9 +581,9 @@ function headSvg(kind, pal, hair) {
   /* 狙撃手：つば広の帽子と片眼鏡 */
   if (kind === 's_scope') {
     return `<g class="s-head">
+      ${H.back}
       ${face}
-      <path d="M18 22 q0 -19 14 -19 q14 0 14 19 q-5 -9 -14 -9 q-9 0 -14 9 z"
-            fill="${hair}" stroke="${LINE}" stroke-width="1.3"/>
+${H.front}
       <path d="M21 16 q1 -13 11 -13 q10 0 11 13 q-11 -4 -22 0 z"
             fill="${pal.main}" stroke="${LINE}" stroke-width="1.4"/>
       <ellipse cx="32" cy="17" rx="21" ry="4.2" fill="${pal.sub}" stroke="${LINE}" stroke-width="1.3"/>
@@ -889,15 +944,18 @@ G.Sprite = {
         <circle cx="14" cy="62" r="1.5" fill="${pal.accent}" opacity=".6"/>
       </g>` : '';
 
+    /* 影と光は、本体と同じ中身をもう一度重ねて作る。
+     * 色は CSS 側で塗り替えるので、形を別に用意する必要がない。 */
+    const solid = `${bodySvg(bodyKind, pal, tier, hasCape)}${arms.back}`
+      + `${headSvg(headKind, pal, hair)}${arms.front}${look.deco ? look.deco(pal) : ''}`;
+
     return `<svg class="chr" viewBox="0 0 64 84" role="img" aria-label="${G.util.esc(c.name)}">
       <ellipse class="s-shadow" cx="32" cy="79" rx="15" ry="3.5" fill="#000" opacity=".3"/>
       <g class="s-body">
         ${aura}
-        ${bodySvg(bodyKind, pal, tier, hasCape)}
-        ${arms.back}
-        ${headSvg(headKind, pal, hair)}
-        ${arms.front}
-        ${look.deco ? look.deco(pal) : ''}
+        ${solid}
+        <g class="s-shade" aria-hidden="true">${solid}</g>
+        <g class="s-lit" aria-hidden="true">${solid}</g>
       </g>
     </svg>`;
   },
@@ -958,10 +1016,16 @@ G.Sprite = {
               fill="${c2}" stroke="${LINE}" stroke-width="1.4"/>
         <circle cx="32" cy="21" r="2" fill="#ffe58a" stroke="${LINE}" stroke-width="1"/>
       </g>` : '';
+    /* 味方と同じように、同じ形を重ねて影と光を作る */
+    const solid = `${svg}${crown}`;
     return `<svg class="chr foe ${big ? 'is-boss' : ''}" viewBox="0 0 64 84" role="img"
                  aria-label="${G.util.esc(u.name)}">
       <ellipse class="s-shadow" cx="32" cy="79" rx="${big ? 20 : 15}" ry="4" fill="#000" opacity=".32"/>
-      <g class="s-body">${svg}${crown}</g>
+      <g class="s-body">
+        ${solid}
+        <g class="s-shade" aria-hidden="true">${solid}</g>
+        <g class="s-lit" aria-hidden="true">${solid}</g>
+      </g>
     </svg>`;
   },
 
