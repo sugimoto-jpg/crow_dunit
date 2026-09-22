@@ -141,8 +141,14 @@ while (day < 400 && !G.State.d.graduated) {
 const d = G.State.d;
 
 /* --- 卒業後：S級を目指して依頼をこなす --- */
+/* 卒業後の目標レベル。
+ * 以前は 50 だったが、これは「ふつう」で卒業するとほぼ自動的に
+ * 超えている値で、実質「何もしない」条件になっていた。
+ * 魔王城の敵は Lv55〜60 なので、そこに見合う水準まで準備する。
+ * （やさしい・ふつうは卒業時点で既に超えているため、挙動は変わらない） */
+const POST_TARGET_LV = 58;
 let postDays = 0;
-while (postDays < 120 && (d.guild.rank < G.RANKS.length - 1 || d.player.level < 50)) {
+while (postDays < 120 && (d.guild.rank < G.RANKS.length - 1 || d.player.level < POST_TARGET_LV)) {
   postDays++;
   const promo = G.World.promotionInfo();
   if (promo.ok) {
