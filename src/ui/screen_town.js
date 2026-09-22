@@ -8,6 +8,7 @@ G.UI.register('town', {
 
     if (!shopKey) {
       return `
+        ${G.UI.placeHtml('town')}
         <div class="card">
           <div class="card-head">
             <div class="ico">🏪</div>

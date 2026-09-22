@@ -111,7 +111,9 @@ function boot(resume) {
     b.addEventListener('click', () => {
       if (!G.State.data) return;
       if (G.UI.current === 'battle') { G.UI.toast('戦闘中は移動できない', 'bad'); return; }
-      G.UI.show(b.dataset.nav);
+      const to = b.dataset.nav;
+      // 場所を移るときは歩いて向かう（状態画面などは即座に開く）
+      if (G.PLACES[to]) G.UI.walkTo(to); else G.UI.show(to);
     });
   });
 

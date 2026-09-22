@@ -7,6 +7,7 @@ G.UI.register('guild', {
 
     if (!d.guild.registered) {
       return `
+        ${G.UI.placeHtml('guild')}
         <div class="card">
           <div class="card-head">
             <div class="ico">⚖️</div>
@@ -29,6 +30,7 @@ G.UI.register('guild', {
     for (const q of quests) (byRank[q.rank] = byRank[q.rank] || []).push(q);
 
     return `
+      ${G.UI.placeHtml('guild')}
       <div class="card">
         <div class="card-head">
           <div class="ico">⚖️</div>

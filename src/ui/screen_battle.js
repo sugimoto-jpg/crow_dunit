@@ -1,4 +1,10 @@
-/* ===== 戦闘画面 ===== */
+/* ===== 戦闘画面 =====
+ * キャラクターはSVGで描き、CSSアニメで動かす。
+ * 毎回まるごと描き直すとアニメーションが途切れてしまうので、
+ *   mount() … 骨組みとキャラを一度だけ描く
+ *   sync()  … HPや状態など変化した部分だけ更新する
+ * に分けてある。
+ */
 window.G = window.G || {};
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -13,91 +19,171 @@ G.BattleUI = {
     return (G.BattleUI.SPEEDS[n] || G.BattleUI.SPEEDS[2]).mult;
   },
 
-  /* 戦闘を開始する。onEnd(out, result) が呼ばれる */
+  /* 戦闘を開始する。opts.onEnd(out) が呼ばれる */
   start(enemyIds, opts = {}) {
     const b = G.Battle.init(enemyIds, opts);
     b.log = [];
-    G.BattleUI.bs = { b, opts };
+    G.BattleUI.bs = { b, opts, activeUid: null };
     G.UI.current = 'battle';
     G.UI.currentArgs = null;
     G.UI.el('nav').classList.add('hidden');
 
+    G.BattleUI.mount();
     if (opts.intro) G.BattleUI.log(opts.intro, 'sys');
-    G.BattleUI.log(
-      `${b.enemies.map(e => e.name).join('、')} が現れた！`, 'hi');
-    G.BattleUI.render();
+    G.BattleUI.log(`${b.enemies.map(e => e.name).join('、')} が現れた！`, 'hi');
+    // 登場の動き
+    for (const u of b.enemies) G.BattleUI.animate(u.uid, 'is-enter', 500);
     G.BattleUI.run();
   },
 
-  log(text, cls = '') {
-    const b = G.BattleUI.bs.b;
-    b.log.push({ text, cls });
-    if (b.log.length > 60) b.log.shift();
-  },
-
-  /* ---------- 描画 ---------- */
-  render(mode) {
+  /* ---------- 骨組み ---------- */
+  mount() {
     const { b } = G.BattleUI.bs;
-    const host = G.UI.el('screen');
-    host.innerHTML = `
+    const spd = (G.State.data && G.State.data.battleSpeed) || 2;
+
+    G.UI.el('screen').innerHTML = `
       <div class="battle">
-        <div class="battle-field" id="field">
-          ${b.enemies.map(e => G.BattleUI.enemyHtml(e, mode)).join('')}
+        <div class="scene ${b.enemies.some(e => e.isBoss) ? 'boss' : ''}" id="scene">
+          <div class="scene-ground"></div>
+          <div class="scene-row scene-foes" id="field">
+            ${b.enemies.map(u => G.BattleUI.unitHtml(u, true)).join('')}
+          </div>
+          <div class="scene-row scene-heroes" id="party">
+            ${b.allies.map(u => G.BattleUI.unitHtml(u, false)).join('')}
+          </div>
         </div>
-        <div class="party-row" id="party">
-          ${b.allies.map(a => G.BattleUI.allyHtml(a, mode)).join('')}
+
+        <div class="party-row" id="cards">
+          ${b.allies.map(u => G.BattleUI.cardHtml(u)).join('')}
         </div>
+
         <div class="row" style="justify-content:flex-end;margin:-4px 0 -2px">
-          <button class="btn sm ghost" data-act="speed">⏩ 演出 ${
-            G.BattleUI.SPEEDS[(G.State.data && G.State.data.battleSpeed) || 2].label}</button>
+          <button class="btn sm ghost" data-act="speed">⏩ 演出 ${G.BattleUI.SPEEDS[spd].label}</button>
         </div>
-        <div class="battle-log" id="blog">
-          ${b.log.map(l => `<div class="${l.cls}">${G.util.esc(l.text)}</div>`).join('')}
-        </div>
+
+        <div class="battle-log" id="blog"></div>
         <div id="cmd"></div>
       </div>`;
-    const lg = G.UI.el('blog');
-    if (lg) lg.scrollTop = lg.scrollHeight;
+
     G.UI.on('speed', () => {
       const d = G.State.d;
       d.battleSpeed = d.battleSpeed >= 3 ? 1 : d.battleSpeed + 1;
       G.State.save();
-      G.BattleUI.render(mode);
+      const el = document.querySelector('#screen [data-act="speed"]');
+      if (el) el.textContent = `⏩ 演出 ${G.BattleUI.SPEEDS[d.battleSpeed].label}`;
     });
+
+    G.BattleUI.drawLog();
+    G.BattleUI.sync();
     G.UI.updateHud();
   },
 
-  enemyHtml(e, mode) {
-    const pct = G.util.clamp(e.hp / e.maxHp, 0, 1) * 100;
-    const st = Object.keys(e.status).map(s =>
-      `<span class="st-badge">${G.STATUS[s].icon}</span>`).join('');
-    const buffs = e.buffs.length ? '<span class="st-badge buff">▲</span>' : '';
-    return `<div class="enemy ${e.hp <= 0 ? 'dead' : ''} ${mode === 'enemy' ? 'selectable' : ''}"
-                 data-uid="${e.uid}" id="u-${e.uid}">
-      <span class="sprite">${e.icon}</span>
-      <div class="en-name">${G.util.esc(e.name)}</div>
-      <div class="hpbar"><i style="width:${pct}%"></i></div>
-      <div class="st-badges">${st}${buffs}</div>
+  /* シーン内のキャラ1体 */
+  unitHtml(u, isFoe) {
+    const svg = isFoe ? G.Sprite.enemy(u) : G.Sprite.hero(u.ref);
+    // 敵は名前とHPを上に、味方は下に置く。
+    // 敵の名前が味方の行動マーカーと同じ高さに来て読みにくくなるため。
+    const label = `<div class="unit-tag">${G.util.esc(u.name)}</div>
+      ${isFoe ? '<div class="unit-hp"><i></i></div>' : ''}
+      <div class="unit-st"></div>`;
+    return `<div class="unit ${isFoe ? 'foe' : 'hero'} ${u.isBoss ? 'big' : ''}"
+                 data-uid="${u.uid}" id="u-${u.uid}">
+      ${isFoe ? label : ''}
+      <div class="unit-sprite">${svg}</div>
+      ${isFoe ? '' : label}
     </div>`;
   },
 
-  allyHtml(a, mode) {
-    const hp = G.util.clamp(a.hp / a.maxHp, 0, 1) * 100;
-    const mp = G.util.clamp(a.mp / Math.max(1, a.maxMp), 0, 1) * 100;
-    const st = Object.keys(a.status).map(s =>
-      `<span class="st-badge">${G.STATUS[s].icon}</span>`).join('');
-    const buffs = a.buffs.length ? '<span class="st-badge buff">▲</span>' : '';
-    const act = G.BattleUI.bs.activeUid === a.uid ? 'active' : '';
-    const sel = (mode === 'ally' && a.hp > 0) || (mode === 'dead' && a.hp <= 0) ? 'selectable' : '';
-    return `<div class="ally ${a.hp <= 0 ? 'down' : ''} ${act} ${sel}" data-uid="${a.uid}" id="u-${a.uid}">
+  /* 味方のHP/MPカード */
+  cardHtml(a) {
+    return `<div class="ally-card" data-uid="${a.uid}" id="c-${a.uid}">
       <div class="an"><span class="em">${a.icon}</span>${G.util.esc(a.name)}</div>
       <div class="ab">
-        <div class="mini h"><i style="width:${hp}%"></i></div>
-        <div class="mini m"><i style="width:${mp}%"></i></div>
+        <div class="mini h"><i></i></div>
+        <div class="mini m"><i></i></div>
       </div>
-      <div class="nums"><span>HP ${Math.max(0, a.hp)}/${a.maxHp}</span><span>MP ${a.mp}/${a.maxMp}</span></div>
-      <div class="st-badges">${st}${buffs}</div>
+      <div class="nums"><span class="c-hp"></span><span class="c-mp"></span></div>
+      <div class="st-badges"></div>
     </div>`;
+  },
+
+  /* ---------- 変化した部分だけ更新 ---------- */
+  /* mode: 'enemy' | 'ally' | 'dead' のとき、その対象に選択可能の印を付ける */
+  sync(mode) {
+    const { b, activeUid } = G.BattleUI.bs;
+    const pct = (a, c) => (c > 0 ? G.util.clamp(a / c, 0, 1) : 0) * 100 + '%';
+    const badges = u => Object.keys(u.status)
+      .map(s => `<span class="st-badge">${G.STATUS[s].icon}</span>`).join('')
+      + (u.buffs.length ? '<span class="st-badge buff">▲</span>' : '');
+
+    for (const u of G.Battle.units(b)) {
+      const el = document.getElementById('u-' + u.uid);
+      if (!el) continue;
+      const dead = u.hp <= 0;
+      el.classList.toggle('dead', dead);
+      el.classList.toggle('acting', u.uid === activeUid && !dead);
+
+      const selectable =
+        (mode === 'enemy' && u.side === 'enemy' && !dead) ||
+        (mode === 'ally' && u.side === 'ally' && !dead) ||
+        (mode === 'dead' && u.side === 'ally' && dead);
+      el.classList.toggle('targetable', !!selectable);
+      el.classList.toggle('selectable', !!selectable);  // 検証用の目印
+
+      const bar = el.querySelector('.unit-hp i');
+      if (bar) bar.style.width = pct(u.hp, u.maxHp);
+      const st = el.querySelector('.unit-st');
+      if (st) st.innerHTML = badges(u);
+
+      const chr = el.querySelector('.chr');
+      if (chr) chr.classList.toggle('is-down', dead);
+    }
+
+    for (const a of b.allies) {
+      const c = document.getElementById('c-' + a.uid);
+      if (!c) continue;
+      c.classList.toggle('down', a.hp <= 0);
+      c.classList.toggle('active', a.uid === activeUid);
+      c.querySelector('.mini.h i').style.width = pct(a.hp, a.maxHp);
+      c.querySelector('.mini.m i').style.width = pct(a.mp, a.maxMp);
+      c.querySelector('.c-hp').textContent = `HP ${Math.max(0, a.hp)}/${a.maxHp}`;
+      c.querySelector('.c-mp').textContent = `MP ${a.mp}/${a.maxMp}`;
+      c.querySelector('.st-badges').innerHTML = badges(a);
+    }
+    G.UI.updateHud();
+  },
+
+  /* ---------- 戦闘ログ ---------- */
+  log(text, cls = '') {
+    const b = G.BattleUI.bs.b;
+    b.log.push({ text, cls });
+    if (b.log.length > 60) b.log.shift();
+    const host = G.UI.el('blog');
+    if (!host) return;
+    const div = document.createElement('div');
+    div.className = cls;
+    div.textContent = text;
+    host.appendChild(div);
+    while (host.children.length > 60) host.firstChild.remove();
+    host.scrollTop = host.scrollHeight;
+  },
+
+  drawLog() {
+    const host = G.UI.el('blog');
+    if (!host) return;
+    host.innerHTML = G.BattleUI.bs.b.log
+      .map(l => `<div class="${l.cls}">${G.util.esc(l.text)}</div>`).join('');
+    host.scrollTop = host.scrollHeight;
+  },
+
+  /* ---------- 動き ---------- */
+  animate(uid, cls, ms) {
+    const el = document.querySelector(`#u-${uid} .chr`);
+    if (!el) return;
+    el.classList.remove(cls);
+    void el.offsetWidth;            // 同じ動きを連続で出すために巻き戻す
+    el.classList.add(cls);
+    setTimeout(() => el.classList.remove(cls), ms);
   },
 
   /* ダメージ数値のポップアップ */
@@ -112,10 +198,8 @@ G.BattleUI = {
     f.textContent = text;
     f.style.color = color;
     f.style.left = (r.left - hr.left + r.width / 2 - 18) + 'px';
-    f.style.top = (r.top - hr.top + 8) + 'px';
+    f.style.top = (r.top - hr.top + 6) + 'px';
     host.appendChild(f);
-    el.classList.add('shake');
-    setTimeout(() => el.classList.remove('shake'), 340);
     setTimeout(() => f.remove(), 900);
   },
 
@@ -126,12 +210,21 @@ G.BattleUI = {
       if (ev.text) {
         const cls = ev.type === 'damage' || ev.type === 'dot' ? 'dmg'
           : ev.type === 'heal' || ev.type === 'revive' ? 'heal'
-          : ev.type === 'down' ? 'bad'
-          : ev.type === 'use' ? 'hi' : '';
+            : ev.type === 'down' ? 'bad'
+              : ev.type === 'use' ? 'hi' : '';
         G.BattleUI.log(ev.text, cls);
       }
-      G.BattleUI.render();
+
+      // 技を出す側の動き
+      if (ev.type === 'use' && ev.actor) {
+        const kind = ev.skill ? ev.skill.kind : 'phys';
+        const cast = ['mag', 'heal', 'buff', 'debuff', 'special'].includes(kind);
+        G.BattleUI.animate(ev.actor.uid, cast ? 'is-cast' : 'is-attack', cast ? 900 : 520);
+        await sleep((cast ? 260 : 170) * G.BattleUI.speed);
+      }
+
       if (ev.type === 'damage' && ev.amount > 0) {
+        G.BattleUI.animate(ev.target.uid, 'is-hurt', 420);
         G.BattleUI.popup(ev.target.uid, '-' + ev.amount, ev.crit ? '#ffd96b' : '#ff9a6d');
       } else if (ev.type === 'dot') {
         G.BattleUI.popup(ev.target.uid, '-' + ev.amount, '#b6ff8a');
@@ -139,7 +232,12 @@ G.BattleUI = {
         G.BattleUI.popup(ev.target.uid, '+' + ev.amount, '#7dffb0');
       } else if (ev.type === 'mp' && ev.amount > 0) {
         G.BattleUI.popup(ev.target.uid, '+' + ev.amount, '#7ad4ff');
+      } else if (ev.type === 'revive') {
+        G.BattleUI.animate(ev.target.uid, 'is-enter', 500);
       }
+
+      G.BattleUI.sync();
+
       // 多段ヒットの2発目以降は待ち時間を詰める（同じ演出が続くだけなので）
       const quick = ev.type === 'damage' && prev && prev.type === 'damage' && prev.target === ev.target;
       prev = ev;
@@ -160,6 +258,8 @@ G.BattleUI = {
         if (G.Battle.checkEnd(b)) break;
 
         bs.activeUid = u.uid;
+        G.BattleUI.sync();
+
         const bt = G.Battle.beginTurn(b, u);
         await G.BattleUI.playEvents(bt.events);
         if (G.Battle.checkEnd(b)) break;
@@ -185,7 +285,7 @@ G.BattleUI = {
       }
     }
     bs.activeUid = null;
-    G.BattleUI.render();
+    G.BattleUI.sync();
     await sleep(500);
     await G.BattleUI.finish();
   },
@@ -199,9 +299,13 @@ G.BattleUI = {
   askAction(u) {
     return new Promise(resolve => {
       const b = G.BattleUI.bs.b;
-      G.BattleUI.render();
+      let cleanup = () => {};
+
+      const done = act => { cleanup(); G.BattleUI.sync(); resolve(act); };
 
       const menu = () => {
+        cleanup();
+        G.BattleUI.sync();
         G.BattleUI.showCmd(`
           <div class="cmd-title">${G.util.esc(u.name)} は どうする？</div>
           <div class="btn-grid">
@@ -213,8 +317,8 @@ G.BattleUI = {
           <button class="btn ghost mt" data-act="flee">🏃 にげる</button>`);
 
         G.UI.on('atk', () => pickTarget({ type: 'attack' }, 'enemy'));
-        G.UI.on('guard', () => resolve({ type: 'guard' }));
-        G.UI.on('flee', () => resolve({ type: 'flee' }));
+        G.UI.on('guard', () => done({ type: 'guard' }));
+        G.UI.on('flee', () => done({ type: 'flee' }));
         G.UI.on('skill', skillList);
         G.UI.on('item', itemList);
       };
@@ -237,7 +341,7 @@ G.BattleUI = {
         G.UI.on('sk', ds => {
           const s = G.SKILLS[ds.id];
           const act = { type: 'skill', skillId: ds.id };
-          if (s.target === 'self' || s.target === 'all' || s.target === 'allies') resolve(act);
+          if (s.target === 'self' || s.target === 'all' || s.target === 'allies') done(act);
           else if (s.target === 'ally') pickTarget(act, s.revive ? 'dead' : 'ally');
           else pickTarget(act, 'enemy');
         });
@@ -257,7 +361,7 @@ G.BattleUI = {
         G.UI.on('it', ds => {
           const it = G.ITEMS[ds.id];
           const act = { type: 'item', itemId: ds.id };
-          if (it.use.escape) resolve(act);
+          if (it.use.escape) done(act);
           else if (it.use.revive) pickTarget(act, 'dead');
           else pickTarget(act, 'ally');
         });
@@ -268,21 +372,25 @@ G.BattleUI = {
         const pool = mode === 'enemy' ? G.Battle.livingEnemies(b)
           : mode === 'dead' ? b.allies.filter(a => a.hp <= 0)
             : G.Battle.livingAllies(b);
-        if (!pool.length) {
-          G.UI.toast('対象がいない', 'bad');
-          return menu();
-        }
-        if (pool.length === 1) { act.targetUid = pool[0].uid; return resolve(act); }
+        if (!pool.length) { G.UI.toast('対象がいない', 'bad'); return menu(); }
+        if (pool.length === 1) { act.targetUid = pool[0].uid; return done(act); }
 
-        G.BattleUI.render(mode);
+        G.BattleUI.sync(mode);
         G.BattleUI.showCmd(`
-          <div class="cmd-title">${mode === 'enemy' ? '相手' : '味方'}を選ぶ</div>
+          <div class="cmd-title">${mode === 'enemy' ? '相手' : '味方'}を選ぶ（キャラをタップ）</div>
           <button class="btn ghost" data-act="back">← もどる</button>`);
         G.UI.on('back', menu);
-        const sel = mode === 'enemy' ? '#field .enemy.selectable' : '#party .ally.selectable';
-        document.querySelectorAll(sel).forEach(el => {
-          el.addEventListener('click', () => { act.targetUid = el.dataset.uid; resolve(act); });
+
+        const handlers = [];
+        document.querySelectorAll('#scene .unit.targetable').forEach(el => {
+          const h = () => { act.targetUid = el.dataset.uid; done(act); };
+          el.addEventListener('click', h);
+          handlers.push([el, h]);
         });
+        cleanup = () => {
+          for (const [el, h] of handlers) el.removeEventListener('click', h);
+          cleanup = () => {};
+        };
       };
 
       menu();

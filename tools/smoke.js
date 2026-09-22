@@ -161,7 +161,7 @@ const step = s => { steps.push(s); console.log('  ' + s); };
 
   await click('[data-act="quest"]');
   await click('#modal-actions .btn');   // 受注する
-  await page.waitForSelector('.battle-field', { timeout: 6000 });
+  await page.waitForSelector('.scene', { timeout: 6000 });
   step('依頼を受注して戦闘に入った');
   await page.waitForTimeout(600);
   await shot('05-battle');
@@ -185,16 +185,24 @@ const step = s => { steps.push(s); console.log('  ' + s); };
       });
       if (chk) {
         hudChecked = true;
-        if (!chk.hud.startsWith(String(chk.unit))) {
-          errors.push(`戦闘中のHUDが更新されていない (戦闘=${chk.unit} HUD=${chk.hud})`);
-        } else step(`戦闘中のHUD表示を確認 (${chk.hud})`);
+        // ダメージは先に確定し、表示は演出に合わせて追従するので、
+        // 演出が落ち着いてから「追いついているか」を見る
+        await page.waitForTimeout(500);
+        const settled = await page.evaluate(() => {
+          const bs = G.BattleUI.bs;
+          const u = bs && bs.b.allies.find(a => a.ref === G.State.d.player);
+          return u ? { unit: u.hp, hud: document.getElementById('hud-hp-text').textContent } : null;
+        });
+        if (settled && !settled.hud.startsWith(String(settled.unit))) {
+          errors.push(`戦闘中のHUDが戦闘の値に追従していない (戦闘=${settled.unit} HUD=${settled.hud})`);
+        } else if (settled) step(`戦闘中のHUD表示を確認 (${settled.hud})`);
       }
     }
     if (await has('[data-act="atk"]')) {
       await page.click('[data-act="atk"]');
       await page.waitForTimeout(150);
-      if (await has('#field .enemy.selectable')) {
-        await page.locator('#field .enemy.selectable').first().click();
+      if (await has('#field .unit.selectable')) {
+        await page.locator('#field .unit.selectable').first().click();
       }
     }
     await page.waitForTimeout(260);

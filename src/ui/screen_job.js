@@ -11,16 +11,24 @@ G.UI.register('job', {
     const future = Object.entries(G.JOBS)
       .filter(([id, j]) => j.from && j.from.includes(p.jobId) && !opts.includes(id));
 
+    // そのジョブに就いたときの見た目を、選ぶ前に見せる
+    const preview = id => G.Sprite.hero(Object.assign({}, p, { jobId: id }));
+
     const card = (id, j, state) => {
       const learn = Object.entries(j.learn || {})
         .map(([lv, s]) => `Lv${lv} ${G.SKILLS[s] ? G.SKILLS[s].name : s}`).join('　');
       return `
         <div class="job-card ${state}" ${state === 'locked' ? '' : `data-act="pick" data-id="${id}"`}>
-          <div class="jn">${j.icon} ${j.name}
-            ${state === 'locked' ? `<span class="chip no">Lv${j.req}から</span>` : '<span class="chip ok">転職可能</span>'}</div>
-          <div class="jd">${G.util.esc(j.desc)}</div>
-          <div class="growth">
-            ${Object.entries(j.growth).map(([k, v]) => `<span>${G.STAT_LABEL[k]} +${v}</span>`).join('')}
+          <div class="job-row">
+            <div class="portrait sm">${preview(id)}</div>
+            <div style="flex:1;min-width:0">
+              <div class="jn">${j.icon} ${j.name}
+                ${state === 'locked' ? `<span class="chip no">Lv${j.req}から</span>` : '<span class="chip ok">転職可能</span>'}</div>
+              <div class="jd">${G.util.esc(j.desc)}</div>
+              <div class="growth">
+                ${Object.entries(j.growth).map(([k, v]) => `<span>${G.STAT_LABEL[k]} +${v}</span>`).join('')}
+              </div>
+            </div>
           </div>
           ${learn ? `<div class="jd" style="margin-top:6px">習得：${G.util.esc(learn)}</div>` : ''}
         </div>`;
@@ -33,7 +41,10 @@ G.UI.register('job', {
           <div><div class="ttl">適性審査室</div>
                <div class="sub">フィオナ教授が水晶を撫でている</div></div>
         </div>
-        <p>現在のジョブは <b class="gold">${cur.icon} ${cur.name}</b>（Lv.${p.level}）。</p>
+        <div class="job-row mb">
+          <div class="portrait">${G.Sprite.hero(p)}</div>
+          <p style="flex:1;margin:0">現在のジョブは <b class="gold">${cur.icon} ${cur.name}</b>（Lv.${p.level}）。</p>
+        </div>
         <p class="dim" style="margin-bottom:0">
           転職すると、そのジョブの成長率で伸びるようになります。これまでに覚えた技は失われません。</p>
       </div>
@@ -61,7 +72,9 @@ G.UI.register('job', {
       const p = G.State.d.player;
       const j = G.JOBS[ds.id];
       const ok = await G.UI.confirm(`${j.icon} ${j.name} になる`, `
-        <p>${G.util.esc(j.desc)}</p>
+        <div class="job-row mb"><div class="portrait">${
+          G.Sprite.hero(Object.assign({}, p, { jobId: ds.id }))}</div>
+          <p style="flex:1;margin:0">${G.util.esc(j.desc)}</p></div>
         <div class="divider"></div>
         <p class="dim">レベルアップ時の成長：</p>
         <div class="growth">${Object.entries(j.growth)

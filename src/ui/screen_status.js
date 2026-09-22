@@ -21,7 +21,7 @@ G.UI.register('status', {
 
       <div class="card">
         <div class="card-head">
-          <div class="ico">${c.icon}</div>
+          <div class="portrait">${G.Sprite.hero(c)}</div>
           <div style="flex:1">
             <div class="ttl">${G.util.esc(c.name)}
               <span class="tag">${job.icon} ${job.name}</span>

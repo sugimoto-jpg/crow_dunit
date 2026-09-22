@@ -117,16 +117,16 @@ const step = s => console.log('  ' + s);
     }
 
     // 対象選択が出たら選ぶ（蘇生対象は .down、それ以外は .selectable）
-    const downed = page.locator(`#party .ally[data-uid="${plan && plan.target}"]`);
+    const downed = page.locator(`#party .unit[data-uid="${plan && plan.target}"]`);
     if (plan && plan.item === 'phoenix_tail' && await downed.count()) {
       await tap(downed.first());
-    } else if (await has('#field .enemy.selectable')) {
-      await tap(page.locator('#field .enemy.selectable').first());
-    } else if (await has('#party .ally.selectable')) {
+    } else if (await has('#field .unit.selectable')) {
+      await tap(page.locator('#field .unit.selectable').first());
+    } else if (await has('#party .unit.selectable')) {
       const want = plan && plan.target
-        ? page.locator(`#party .ally.selectable[data-uid="${plan.target}"]`) : null;
+        ? page.locator(`#party .unit.selectable[data-uid="${plan.target}"]`) : null;
       if (want && await want.count()) await tap(want);
-      else await tap(page.locator('#party .ally.selectable').first());
+      else await tap(page.locator('#party .unit.selectable').first());
     }
     await page.waitForTimeout(90);
   };
@@ -139,7 +139,7 @@ const step = s => console.log('  ' + s);
       if (label && i % 25 === 0) {
         const w = await page.evaluate(() => {
           const m = document.getElementById('modal');
-          const inBattle = !!document.querySelector('.battle-field');
+          const inBattle = !!document.querySelector('.scene');
           return {
             screen: G.UI.current,
             modal: m && !m.classList.contains('hidden')
@@ -168,7 +168,7 @@ const step = s => console.log('  ' + s);
         continue;
       }
       if (await has('[data-act="next"]')) { await tap(page.locator('[data-act="next"]')); continue; }
-      if (await has('.battle-field')) { await battleStep(); continue; }
+      if (await has('.scene')) { await battleStep(); continue; }
       if (onIdle) { await onIdle(); continue; }
       await page.waitForTimeout(150);
     }
@@ -254,7 +254,7 @@ const step = s => console.log('  ' + s);
   await page.waitForTimeout(250);
   const b = page.locator('#modal-actions .btn', { hasText: '戦う' });
   if (await b.count()) await tap(b.first());
-  await page.waitForSelector('.battle-field', { timeout: 8000 });
+  await page.waitForSelector('.scene', { timeout: 8000 });
   const foe = await page.evaluate(() => G.BattleUI.bs.b.enemies[0].enemyId);
   if (foe !== 'demon_lord_2') {
     errors.push(`魔王を倒した後の再挑戦なのに ${foe} と戦わされている`);

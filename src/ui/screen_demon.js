@@ -8,6 +8,7 @@ G.UI.register('demon', {
     const cur = d.demon.floor;
 
     return `
+      ${G.UI.placeHtml('demon')}
       <div class="card">
         <div class="card-head">
           <div class="ico">🌑</div>

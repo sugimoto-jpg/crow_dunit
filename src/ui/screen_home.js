@@ -27,6 +27,7 @@ G.UI.register('home', {
     }
 
     return `
+      ${G.UI.placeHtml('home')}
       <div class="card">
         <div class="card-head">
           <div class="ico">🛏️</div>

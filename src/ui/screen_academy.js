@@ -7,6 +7,7 @@ G.UI.register('academy', {
 
     if (d.graduated) {
       return `
+        ${G.UI.placeHtml('academy')}
         <div class="card">
           <div class="card-head">
             <div class="ico">🎓</div>
@@ -30,6 +31,7 @@ G.UI.register('academy', {
     const opts = G.Char.jobOptions(d.player);
 
     return `
+      ${G.UI.placeHtml('academy')}
       <div class="card">
         <div class="card-head">
           <div class="ico">🏫</div>

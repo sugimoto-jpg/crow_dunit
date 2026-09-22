@@ -222,6 +222,56 @@ G.UI = {
     }
   },
 
+  /* ---------- 場所の見出し ---------- */
+  /* 背景の書き割りの前にパーティが立っている帯。
+   * どこに居るのかが文字だけでなく絵でも分かるようにする。 */
+  placeHtml(kind) {
+    const pl = G.PLACES[kind] || G.PLACES.home;
+    const party = (G.State.data && G.State.data.party) || [];
+    return `<div class="place">
+      <div class="place-sky" style="background:${pl.sky}"></div>
+      <div class="place-props">${G.Sprite.placeProps(kind)}</div>
+      <div class="place-ground"></div>
+      <div class="place-party">
+        ${party.map(c => `<div class="unit">
+          <div class="unit-sprite">${G.Sprite.hero(c)}</div>
+        </div>`).join('')}
+      </div>
+      <div class="place-title">${G.util.esc(pl.name)}
+        <span class="sub">${G.util.esc(pl.sub)}</span></div>
+    </div>`;
+  },
+
+  /* 場所を移る。歩いている様子を挟んでから画面を切り替える。 */
+  walkTo(name) {
+    const d = G.State.data;
+    if (!d || G.UI.current === name || !G.PLACES[name]) { G.UI.show(name); return; }
+
+    const ov = document.createElement('div');
+    ov.className = 'walk-over';
+    ov.innerHTML = `
+      <div class="walk-ground"></div>
+      <div class="walk-label">${G.util.esc(G.PLACES[name].name)} へ</div>
+      <div class="walk-party">
+        ${d.party.map(c => `<div class="unit">
+          <div class="unit-sprite">${G.Sprite.hero(c)}</div>
+        </div>`).join('')}
+      </div>`;
+    document.body.appendChild(ov);
+    ov.querySelectorAll('.chr').forEach(el => el.classList.add('is-walk'));
+
+    let finished = false;
+    const done = () => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timer);
+      ov.remove();
+      G.UI.show(name);
+    };
+    const timer = setTimeout(done, 700);
+    ov.addEventListener('click', done);   // 待ちたくない人はタップで飛ばせる
+  },
+
   /* ---------- 小さな部品 ---------- */
   bar(cur, max, cls = '') {
     const pct = max > 0 ? G.util.clamp(cur / max, 0, 1) * 100 : 0;
