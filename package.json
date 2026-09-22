@@ -5,7 +5,7 @@
   "description": "転生魔法学院譚 〜村人から始まる魔王討伐〜（依存ライブラリなしのブラウザRPG）",
   "scripts": {
     "lint": "node tools/lint-text.js",
-    "test": "node tools/lint-text.js && node tools/test-rules.js && node tools/smoke.js && node tools/build-single.js && ENTRY=dist/tensei-arcana.html FILE=1 node tools/smoke.js",
+    "test": "node tools/lint-text.js && node tools/globals.js && node tools/snapshot.js --check && node tools/test-rules.js && node tools/smoke.js && node tools/build-single.js && ENTRY=dist/tensei-arcana.html FILE=1 node tools/smoke.js",
     "test:rules": "node tools/test-rules.js",
     "test:late": "node tools/smoke-late.js",
     "balance": "node tools/balance.js",
@@ -14,7 +14,8 @@
     "build": "node tools/build-single.js",
     "deps": "node tools/deps.js",
     "snapshot": "node tools/snapshot.js --save",
-    "verify": "node tools/snapshot.js --check && node tools/deps.js"
+    "verify": "node tools/snapshot.js --check && node tools/globals.js && node tools/deps.js",
+    "globals": "node tools/globals.js"
   },
   "devDependencies": {
     "playwright": "^1.63.0"

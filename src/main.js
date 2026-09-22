@@ -1,4 +1,10 @@
 /* ===== 起動とストーリー進行 ===== */
+(function () {
+'use strict';
+/* ↑ このファイル内で作った名前を、他のファイルから見えないように閉じ込めている。
+   全ファイルは1つのスクリプトに連結されるため、包まないと名前が衝突しうる。
+   中身のインデントは変えていない（差分を小さく保つため）。 */
+
 window.G = window.G || {};
 
 G.Story = {
@@ -145,3 +151,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if (hot && hot.ready) hot.ready(boot);
   else boot((hot && hot.data) || null);
 });
+
+/* ↓ 閉じ込めここまで */
+})();
