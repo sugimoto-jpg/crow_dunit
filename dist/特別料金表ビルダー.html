@@ -1,0 +1,1346 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>特別料金表ビルダー</title>
+<style id="app-css">
+/* ============ アプリUI ============ */
+:root{
+  --navy:#102a45; --navy2:#1b3c5c; --blue:#1583d4; --blue-d:#0b6cb3; --blue-l:#4cb3f2;
+  --ink:#16202c; --muted:#6b7a8d; --line:#e2e8f0; --soft:#f5f9fd; --tint:#eef7ff;
+  --red:#e0342a; --green:#1f9d63; --amber:#e89a17;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",YuGothic,Meiryo,system-ui,sans-serif;
+  color:var(--ink);background:#eef1f5;font-size:13px;-webkit-font-smoothing:antialiased;
+}
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* --- 左パネル --- */
+.panel{width:390px;min-width:390px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column}
+.panel-head{padding:16px 18px 12px;background:var(--navy);color:#fff}
+.panel-head h1{margin:0;font-size:16px;letter-spacing:.02em}
+.panel-head p{margin:4px 0 0;font-size:11px;color:#a8c4dd}
+#form{overflow-y:auto;padding:14px 16px 60px;flex:1}
+
+.sec{border:1px solid var(--line);border-radius:10px;margin-bottom:12px;overflow:hidden;background:#fff}
+.sec>summary{
+  cursor:pointer;padding:10px 12px;font-weight:700;font-size:12.5px;background:var(--soft);
+  list-style:none;display:flex;align-items:center;gap:8px;user-select:none;
+}
+.sec>summary::-webkit-details-marker{display:none}
+.sec>summary::before{content:"▸";color:var(--blue);font-size:11px;transition:transform .15s}
+.sec[open]>summary::before{transform:rotate(90deg)}
+.sec>summary .tag{margin-left:auto;font-size:10px;font-weight:600;color:var(--muted)}
+.sec-body{padding:12px;border-top:1px solid var(--line)}
+
+.field{margin-bottom:10px}
+.field>label{display:block;font-size:11px;font-weight:700;color:#3d4a5a;margin-bottom:4px}
+.field .hint{font-weight:400;color:var(--muted);font-size:10px;margin-left:4px}
+input[type=text],input[type=number],textarea,select{
+  width:100%;padding:7px 9px;border:1px solid #cfd8e3;border-radius:7px;font:inherit;font-size:12px;background:#fff;color:var(--ink);
+}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(21,131,212,.12)}
+textarea{resize:vertical;min-height:58px;line-height:1.6}
+.row{display:flex;gap:8px}
+.row>*{flex:1;min-width:0}
+.chk{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;cursor:pointer}
+.chk input{width:15px;height:15px;accent-color:var(--blue);margin:0;flex:none}
+.note{font-size:10.5px;color:var(--muted);line-height:1.6;margin:6px 0 0}
+
+.plan-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.plan-head .badge{font-size:11px;font-weight:800;color:#fff;background:var(--navy);border-radius:5px;padding:3px 8px}
+.plan-off{opacity:.45}
+.unit-pick{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px;margin:2px 0 10px}
+.unit-pick label{display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;color:#3d4a5a}
+.unit-pick input{width:13px;height:13px;accent-color:var(--blue);margin:0;flex:none}
+.urow{border:1px solid var(--line);border-radius:8px;padding:8px;margin-bottom:7px;background:var(--soft)}
+.urow .un{font-size:11.5px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.urow .un .k{margin-left:auto;font-size:10px;color:var(--muted);font-weight:500}
+.mini{font-size:10px;font-weight:700;color:#54637a;margin-bottom:3px;display:block}
+.calc{background:var(--tint);border:1px solid #cfe6fb;border-radius:8px;padding:8px 10px;font-size:11px;line-height:1.8;color:#0e4f85}
+.calc b{font-size:12px}
+.empty{font-size:11px;color:var(--muted);padding:6px 0}
+
+/* --- 右エリア --- */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.toolbar{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--line);flex-wrap:wrap;
+}
+.toolbar .sp{flex:1}
+button,.file-btn{
+  font:inherit;font-size:12px;font-weight:700;padding:7px 13px;border-radius:7px;border:1px solid var(--blue-d);
+  background:var(--blue);color:#fff;cursor:pointer;white-space:nowrap;
+}
+button:hover,.file-btn:hover{filter:brightness(1.06)}
+button.ghost,.file-btn{background:#fff;color:#33475e;border-color:#cfd8e3}
+.file-btn{display:inline-block;position:relative;overflow:hidden}
+.file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.zoom{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-weight:600}
+.zoom input{width:110px;accent-color:var(--blue)}
+#preview{flex:1;overflow:auto;padding:20px 0 60px;background:#eef1f5}
+#measure{position:fixed;left:-20000px;top:0;width:960px;height:540px;overflow:hidden;visibility:hidden;pointer-events:none}
+.stage{margin:0 auto 20px;box-shadow:0 4px 20px rgba(16,42,69,.16);background:#fff;position:relative}
+.stage .pno{
+  position:absolute;right:-1px;top:-21px;font-size:10px;font-weight:700;color:var(--muted);
+}
+</style>
+
+<style id="slide-css">
+/* ============ スライド（提案書本体 960x540） ============ */
+.slide{
+  width:960px;height:540px;background:#fff;color:#16202c;position:relative;overflow:hidden;
+  font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",YuGothic,Meiryo,system-ui,sans-serif;
+  padding:34px 42px;display:flex;flex-direction:column;
+  -webkit-font-smoothing:antialiased;
+}
+.slide *{box-sizing:border-box}
+
+/* 共通ヘッダー */
+.s-head{position:relative;margin-bottom:18px;flex:none}
+.s-head .eyebrow{margin:0;font-size:11px;font-weight:800;letter-spacing:.12em;color:#1583d4}
+.s-head h2{margin:3px 0 0;font-size:27px;font-weight:800;color:#102a45;letter-spacing:.01em}
+.s-head .tax{position:absolute;right:0;bottom:4px;font-size:10.5px;color:#93a1b2}
+.s-body{flex:1;min-height:0;display:flex;gap:18px}
+
+/* 表紙・裏表紙 */
+.s-cover,.s-closing{
+  background:linear-gradient(135deg,#0d2340 0%,#163b5e 100%);
+  color:#fff;align-items:center;justify-content:center;text-align:center;padding:40px 60px;
+}
+.cover-badge{margin:0 0 14px;font-size:13px;font-weight:800;color:#5fbdf5;letter-spacing:.08em}
+.cover-client{margin:0;font-size:36px;font-weight:800;letter-spacing:.02em;line-height:1.3}
+.cover-title{margin:10px 0 0;font-size:38px;font-weight:800;letter-spacing:.02em;line-height:1.25}
+.cover-sub{margin:14px 0 0;font-size:14px;color:#cfe2f4;line-height:1.7}
+.cover-rule{width:520px;height:1px;background:rgba(255,255,255,.22);margin:26px auto 0}
+.cover-meta{margin-top:18px;display:flex;justify-content:center;gap:28px;flex-wrap:wrap}
+.cover-meta span{font-size:12.5px;color:#dbe8f5;display:flex;align-items:center;gap:7px}
+.cover-meta span::before{content:"";width:7px;height:7px;background:#4cb3f2;border-radius:2px;display:block}
+.s-closing .cl-kicker{margin:0 0 18px;font-size:12px;font-weight:800;letter-spacing:.16em;color:#5fbdf5}
+.s-closing h1{margin:0;font-size:33px;font-weight:800;line-height:1.5}
+.s-closing .cl-dead{
+  margin:28px 0 0;font-size:14.5px;font-weight:700;color:#fff;background:rgba(224,52,42,.9);
+  border-radius:999px;padding:9px 24px;display:inline-block;
+}
+.s-closing .cl-foot{margin:30px 0 0;display:flex;gap:26px;font-size:12px;color:#b9cde0}
+
+/* カード基本 */
+.card{border:1px solid #e2e8f0;border-radius:12px;background:#fff;padding:16px 18px;display:flex;flex-direction:column;min-width:0}
+.card.soft{background:#f7fafd}
+.card.tint{background:#eef7ff;border-color:#cfe6fb}
+.card.warn{background:#fff5f4;border-color:#f9d9d5}
+.card-ttl{margin:0 0 12px;font-size:14px;font-weight:800;color:#102a45;display:flex;align-items:center;gap:7px}
+.card-ttl::before{content:"";width:4px;height:15px;background:#1583d4;border-radius:2px;display:block}
+.card.warn .card-ttl::before{background:#e0342a}
+
+/* P2 背景 */
+.bg-body{flex-direction:column;gap:16px;padding-bottom:4px}
+.lead{margin:0;font-size:15px;line-height:1.95;color:#25364a;white-space:pre-wrap;flex:none;overflow:hidden}
+.info3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;flex:1;min-height:0}
+.info3 .ic{border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;background:#f7fafd;display:flex;flex-direction:column;min-height:96px}
+.info3 .ic .no{font-size:26px;font-weight:800;color:#cfe0ee;letter-spacing:.04em;line-height:1}
+.info3 .ic .lb{margin-top:auto}
+.info3 .ic .dsc{margin-top:auto;font-size:11px;color:#7b8b9d;line-height:1.7;border-top:1px solid #e6edf4;padding-top:9px}
+.info3 .ic .lb{font-size:11px;font-weight:800;color:#1583d4;letter-spacing:.04em}
+.info3 .ic .vl{margin-top:7px;font-size:20px;font-weight:800;color:#102a45;line-height:1.45}
+.pills{display:flex;gap:12px;margin-top:0}
+.pill{background:#102a45;color:#fff;border-radius:999px;padding:8px 20px;font-size:12.5px;font-weight:700}
+.pill.alt{background:#1583d4}
+
+/* P3 コスト */
+.cost-total{font-size:13px;font-weight:800;color:#c02a20;letter-spacing:.02em}
+.cost-num{margin:4px 0 6px;font-size:52px;font-weight:800;color:#e0342a;letter-spacing:-.01em;line-height:1.05}
+.cost-desc{margin:0;font-size:11.5px;color:#7a5c58;line-height:1.7}
+.cost-break{margin-top:auto;border:1px solid #f4ddd9;background:#fff;border-radius:10px;padding:6px 12px}
+.cost-break div{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:12.5px;border-bottom:1px dashed #f0e0dd}
+.cost-break div:last-child{border-bottom:none}
+.cost-break b{font-weight:800}
+.risks{display:flex;flex-direction:column;gap:8px;flex:1;justify-content:center;min-height:0;overflow:hidden}
+.risk{border:1px solid #e2e8f0;border-radius:9px;padding:9px 12px;background:#fff;flex:none}
+.risk .rt{font-size:12.5px;font-weight:800;color:#102a45}
+.risk .rd{font-size:11px;color:#6b7a8d;margin-top:2px;line-height:1.55}
+.risks .more{font-size:11px;color:#93a1b2;font-weight:700;text-align:center;flex:none}
+
+/* 三角形組織図 */
+.tri{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;flex:1;min-height:0;overflow:hidden;width:100%}
+.tri .bar{
+  color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:11.5px;font-weight:700;text-align:center;padding:0 8px;line-height:1.3;white-space:nowrap;
+  flex:0 1 auto;min-height:0;width:100%;overflow:hidden;
+}
+.tri .bar.l0{background:#102a45}
+.tri .bar.l1{background:#1372bd}
+.tri .bar.l2{background:#2196e3}
+.tri .bar.l3{background:#4cb3f2}
+.tri .bar.l4{background:#7cc9f7}
+.tri .bar.l5{background:#a5dbfa;color:#0d3f66}
+.tri-empty{font-size:11.5px;color:#93a1b2}
+
+/* P4 組織図一覧 */
+.orgs{display:grid;gap:14px;flex:1;min-height:0}
+.org{border:1px solid #e2e8f0;border-radius:12px;padding:14px;display:flex;flex-direction:column;background:#fff;min-width:0;min-height:0;overflow:hidden}
+.org.hl{border-color:#1583d4;background:#f4faff;box-shadow:0 0 0 1px #cfe6fb inset}
+.org .oh{text-align:center;border-bottom:2px solid #102a45;padding-bottom:9px;margin-bottom:10px}
+.org.hl .oh{border-bottom-color:#1583d4}
+.org .oh .os{font-size:10.5px;color:#6b7a8d;font-weight:700}
+.org.hl .oh .os{color:#1583d4}
+.org .oh .on{font-size:17px;font-weight:800;color:#102a45;margin-top:2px}
+.org .of{margin-top:10px;border:1px solid #e2e8f0;border-radius:9px;background:#f7fafd;padding:8px;text-align:center}
+.org.hl .of{background:#fff;border-color:#cfe6fb}
+.org .of .r1{font-size:12.5px;font-weight:800;color:#102a45}
+.org.hl .of .r1{color:#0b6cb3}
+.org .of .r2{font-size:10.5px;color:#6b7a8d;margin-top:3px;line-height:1.5}
+
+/* P5 料金表 */
+.ptable{display:grid;gap:12px;flex:1;min-height:0}
+.pcol{border:1px solid #e2e8f0;border-radius:12px;background:#fff;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.pcol.self{background:#f7fafd}
+.pcol.hl{border-color:#1583d4;background:#f4faff}
+.pcol .ph{text-align:center;padding:12px 10px 10px;border-bottom:2px solid #102a45;margin:0 12px}
+.pcol.hl .ph{border-bottom-color:#1583d4}
+.pcol .ph .pn{font-size:17px;font-weight:800;color:#102a45;line-height:1.25}
+.pcol.hl .ph .pn{color:#0b6cb3}
+.pcol .ph .pu{font-size:10px;color:#6b7a8d;margin-top:4px;line-height:1.45}
+.pcol .pp{text-align:center;padding:12px 10px}
+.pcol .pp .nm{font-size:10.5px;color:#93a1b2}
+.pcol .pp .sp{font-size:23px;font-weight:800;color:#0b6cb3;line-height:1.25;margin-top:3px}
+.pcol.self .pp .sp{color:#e0342a;font-size:30px}
+.pcol .pp .tt{font-size:12.5px;font-weight:700;color:#102a45;margin-top:3px}
+.pcol .pf{margin:0 12px;border:1px solid #e2e8f0;border-radius:9px;background:#f7fafd;padding:9px 10px;flex:1;overflow:hidden;min-height:0}
+.pcol.hl .pf{background:#fff;border-color:#cfe6fb}
+.pcol.self .pf{background:#fff;border-color:#f4ddd9}
+.pcol .pf li{list-style:none;font-size:11px;line-height:1.55;color:#33475e;margin:0 0 5px;padding-left:10px;position:relative}
+.pcol .pf li:last-child{margin-bottom:0}
+.pcol .pf li::before{content:"・";position:absolute;left:0;color:#1583d4}
+.pcol.self .pf li::before{color:#c9a9a4}
+.pcol .pf li.st{font-weight:800;color:#0b6cb3}
+.pcol .pf li.st::before{content:"◆";font-size:8px;top:1px}
+.pcol .pf li.rk{color:#e0342a;font-weight:700}
+.pcol .pl{text-align:center;padding:10px}
+.pcol .pl .ll{font-size:10.5px;color:#6b7a8d;font-weight:700}
+.pcol .pl .lv{font-size:23px;font-weight:800;color:#e0342a;line-height:1.3;margin-top:2px}
+.pcol .pl .ld{font-size:10px;color:#93a1b2;margin-top:2px}
+.ptable.c5{gap:10px}
+.ptable.c5 .pcol .ph{margin:0 9px;padding:11px 4px 9px}
+.ptable.c5 .pcol .ph .pn{font-size:14px}
+.ptable.c5 .pcol .ph .pu{font-size:9.5px}
+.ptable.c5 .pcol .pp{padding:11px 6px}
+.ptable.c5 .pcol .pp .nm{font-size:9.5px}
+.ptable.c5 .pcol .pp .sp{font-size:17px}
+.ptable.c5 .pcol .pp .tt{font-size:11.5px}
+.ptable.c5 .pcol.self .pp .sp{font-size:23px}
+.ptable.c5 .pcol .pf{margin:0 9px;padding:8px}
+.ptable.c5 .pcol .pf li{font-size:10px}
+.ptable.c5 .pcol .pl .lv{font-size:18px}
+
+/* P6+ プラン詳細 */
+.dl{width:350px;min-width:350px}
+.dl .dtri{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.price-box{border:1px solid #e2e8f0;border-radius:10px;background:#fff;padding:11px 14px;margin-top:10px;text-align:center;flex:none;display:flex;flex-direction:column;min-height:0}
+.price-box .nm{font-size:11px;color:#93a1b2}
+.price-box .sp{font-size:20px;font-weight:800;color:#0b6cb3;margin:3px 0}
+.price-box .tt{font-size:11.5px;color:#54637a}
+.price-box .hr{height:1px;background:#e2e8f0;margin:9px 0}
+.price-box .lp{font-size:12.5px;font-weight:700;color:#33475e}
+.price-box .lp b{font-size:20px;color:#e0342a;margin-left:4px}
+.ubk{margin-top:9px;border-top:1px dashed #d8e2ec;padding-top:7px;overflow:hidden;min-height:0;flex:0 1 auto}
+.ubk div{display:flex;justify-content:space-between;gap:8px;font-size:10.5px;color:#54637a;line-height:1.75}
+.ubk div span:last-child{font-weight:700;color:#102a45;white-space:nowrap}
+.ubk div span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ubk div.more{color:#93a1b2;font-weight:700;justify-content:center}
+.dr{flex:1;min-width:0}
+.feats{display:grid;gap:3px 18px;align-content:start;flex:1;overflow:hidden;margin:0;padding:0;min-height:0}
+.feats li{list-style:none;font-size:12.5px;line-height:1.75;color:#33475e;padding-left:13px;position:relative}
+.feats li::before{content:"❯";position:absolute;left:0;color:#1583d4;font-size:9px;top:4px}
+.feats li.st{color:#0b6cb3;font-weight:800}
+.feats li.st::before{content:"★";color:#e89a17;font-size:10px;top:3px}
+.feats li.more{color:#93a1b2;font-weight:700}
+.feats li.more::before{content:"＋";color:#93a1b2}
+.feats.sm li{font-size:11.5px;line-height:1.65}
+.feats.xs li{font-size:10.5px;line-height:1.55}
+.summary{
+  margin-top:auto;background:#f7fafd;border-left:3px solid #1583d4;border-radius:0 8px 8px 0;
+  padding:9px 13px;font-size:11.5px;color:#54637a;line-height:1.65;
+}
+
+/* P9 ロードマップ */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;flex:1;min-height:0}
+.step{border:1px solid #e2e8f0;border-radius:12px;padding:14px;display:flex;flex-direction:column;background:#fff;min-width:0}
+.step.last{background:#f3fbf6;border-color:#cfeadd}
+.step .sn{font-size:10.5px;font-weight:800;color:#0b6cb3;background:#eef7ff;border-radius:5px;padding:3px 9px;align-self:flex-start;letter-spacing:.06em}
+.step.last .sn{color:#17794a;background:#e4f5ec}
+.step .st{font-size:15px;font-weight:800;color:#102a45;margin-top:11px;line-height:1.35}
+.step .sp{font-size:11.5px;font-weight:800;color:#e0342a;margin-top:6px}
+.step.last .sp{color:#17794a}
+.step .sd{font-size:11.5px;color:#6b7a8d;line-height:1.7;margin-top:8px}
+.step .sf{margin-top:auto;border-top:1px solid #eef1f5;padding-top:8px;font-size:10.5px;color:#54637a}
+.step.last .sf{color:#17794a}
+
+/* ============ 印刷 ============ */
+@page{size:960px 540px;margin:0}
+@media print{
+  html,body{background:#fff;height:auto;overflow:visible}
+  .app{display:block;height:auto;overflow:visible}
+  .panel,.toolbar{display:none !important}
+  .main{display:block}
+  #preview{padding:0;overflow:visible;background:#fff}
+  .stage{margin:0 !important;box-shadow:none !important;width:960px !important;height:539px !important;overflow:hidden !important;break-after:auto;page-break-after:auto}
+  .stage+.stage{break-before:page;page-break-before:always}
+  .stage>.slide{transform:none !important}
+  .stage .pno{display:none}
+  #measure{display:none !important}
+  .slide{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="panel">
+    <div class="panel-head">
+      <h1>特別料金表ビルダー</h1>
+      <p>入力するだけでご提案書（全ページ）が完成します</p>
+    </div>
+    <div id="form"></div>
+  </aside>
+  <main class="main">
+    <div class="toolbar">
+      <button id="btn-print">PDF / 印刷</button>
+      <button id="btn-html" class="ghost">HTMLで書き出し</button>
+      <button id="btn-save" class="ghost">入力内容を保存</button>
+      <label class="file-btn">入力内容を読込<input type="file" id="file-load" accept="application/json,.json"></label>
+      <button id="btn-reset" class="ghost">初期化</button>
+      <span class="sp"></span>
+      <span class="zoom">表示 <input type="range" id="zoom" min="40" max="140" step="5" value="100"><b id="zoom-v">100%</b></span>
+    </div>
+    <div id="preview"></div>
+  </main>
+</div>
+<div id="measure"></div>
+<script>
+/* ユニットマスタ
+ * price  : 標準の月額（万円）
+ * months : 標準の支援期間（ヶ月）
+ * members: 標準の稼働人数（組織図・総稼働リソースに使用）
+ * short  : 組織図に表示する短縮名
+ * items  : 実施内容・提供機能
+ */
+window.UNIT_MASTER = [
+  {
+    key: 'sales-support', name: '営業支援ユニット', short: '営業支援',
+    price: 20, months: 13, members: 4,
+    items: [
+      '営業戦略の立案',
+      'アプローチリスト作成',
+      '電話/メール/フォーム台本作成',
+      '営業システムの提供',
+      '電話200件/月',
+      'オートフォーム機能10,000件/月',
+      'リストDL60,000件',
+      '決裁者マッチングプラットフォーム'
+    ]
+  },
+  {
+    key: 'sales', name: 'セールスユニット', short: 'セールス',
+    price: 10, months: 13, members: 2,
+    items: ['商談台本作成', '料金表作成', '営業研修', 'オンライン商談']
+  },
+  {
+    key: 'crapro', name: 'クラプロユニット', short: 'クラプロ',
+    price: 20, months: 13, members: 4,
+    items: [
+      'Webマーケティング戦略立案',
+      'HP・LP・ECサイト作成',
+      'SEO・MEO対策',
+      'SNS制作運用',
+      'メルマガ'
+    ]
+  },
+  {
+    key: 'productivity', name: '生産性向上支援ユニット', short: '生産性向上',
+    price: 12.5, months: 15, members: 6,
+    items: [
+      '組織図作成',
+      'ワークフローマニュアル作成',
+      '業務委託書作成',
+      '報酬のアドバイザリー',
+      '求人執筆',
+      'スカウト配信',
+      '書類選考',
+      '1次面接',
+      '面接フィードバック'
+    ]
+  },
+  {
+    key: 'management', name: 'マネジメント代行ユニット', short: 'マネジメント',
+    price: 17.5, months: 15, members: 4,
+    items: ['運用のマネジメント代行', 'ワークフローマニュアル改善']
+  },
+  {
+    key: 'fieldwork', name: 'フィールドワークユニット', short: 'フィールドワーク',
+    price: 10, months: 13, members: 42000,
+    items: ['現場業務マニュアル作成', '47都道府県42,000人現地スタッフ']
+  },
+  {
+    key: 'sales-system', name: '営業システムの提供', short: '営業システム',
+    price: 15, months: 13, members: 2,
+    items: [
+      '決裁権お持ちの経営者との直面談20件',
+      'フォームアプローチ2万件',
+      '営業資料作成',
+      'Webページ作成'
+    ]
+  },
+  {
+    key: 'hr', name: 'HRユニット', short: 'HR',
+    price: 15, months: 13, members: 4,
+    items: [
+      '母集団形成',
+      '求人SNS、HP、LP作成',
+      '求人ライティング',
+      'オンライン面接',
+      '退職防止策',
+      '人事評価制度',
+      '各種人事労務書作成'
+    ]
+  },
+  {
+    key: 'media', name: 'メディアユニット', short: 'メディア',
+    price: 10, months: 13, members: 2,
+    items: ['For Japan出演', 'BS放送＋TVer配信', '公式SNSでの切り抜き配信']
+  },
+  {
+    key: 'secretary', name: '秘書ユニット', short: '秘書',
+    price: 10, months: 13, members: 2,
+    items: [
+      '役員秘書',
+      '営業事務',
+      '各種連絡業務',
+      'リサーチ業務',
+      '法務',
+      'マニュアル・カリキュラム作成',
+      '月次レポート作成'
+    ]
+  },
+  {
+    key: 'ai', name: 'AIユニット', short: 'AI',
+    price: 15, months: 13, members: 3,
+    items: [
+      'フレームワーク構築',
+      'AIツールの選定',
+      'AIオリエンテーション',
+      'ワークフロー構築',
+      'データ整理',
+      'マニュアル・カリキュラム作成'
+    ]
+  },
+  {
+    key: 'backoffice', name: 'バックオフィスユニット', short: 'バックオフィス',
+    price: 15, months: 13, members: 4,
+    items: [
+      'ワークフロー構築',
+      '労務業務',
+      '経理',
+      '採用事務',
+      '営業事務',
+      'コスト管理',
+      '見積もり作成',
+      '月次レポート作成',
+      'マニュアル・カリキュラム作成'
+    ]
+  },
+  {
+    key: 'cfo', name: 'CFOユニット', short: 'CFO',
+    price: 20, months: 13, members: 2,
+    items: [
+      '財務支援',
+      '出口戦略の策定',
+      '月次決算化',
+      '試算表策定',
+      '事業計画策定',
+      'ビジネスマッチング',
+      '業務支援',
+      'IPO支援',
+      'M＆A支援',
+      '後継者支援',
+      'マニュアル・カリキュラム作成'
+    ]
+  }
+];
+
+</script>
+<script>
+/* 特別料金表ビルダー ------------------------------------------------------- */
+(function () {
+  'use strict';
+
+  var STORE = 'tokubetsu-ryokin-v1';
+  var PLAN_KEYS = ['A', 'B', 'C', 'D'];
+
+  /* ---------- 初期値 ---------- */
+  function defaultPlan(key) {
+    var d = {
+      A: {
+        nickname: 'フルスペック実行支援', structureTop: '全国現場実行完結',
+        structureNote: '管理から全国現地稼働までフルカバー',
+        summary: '企画・採用・管理代行に加え、全国現地での実動まで全てを外部化できる最上位包括プランです。',
+        units: ['productivity', 'management', 'fieldwork'], unitMonths: 13, normalMonthly: 120, recommended: true
+      },
+      B: {
+        nickname: '組織構築＋運用マネジメント代行', structureTop: 'マネジメント連動',
+        structureNote: '運用管理代行＋基盤構築の2層体制',
+        summary: '社内の管理負担をゼロにし、プロのマネージャーが実動部隊の品質と進捗を徹底コントロールします。',
+        units: ['productivity', 'management'], unitMonths: 15, normalMonthly: 80, recommended: false
+      },
+      C: {
+        nickname: '生産性向上・採用基盤構築', structureTop: '単独機能特化',
+        structureNote: 'マニュアル作成・採用基盤の構築',
+        summary: 'ミニマムコストで採用マニュアルの標準化と優秀な人材の確保基盤を一気に構築します。',
+        units: ['productivity'], unitMonths: 15, normalMonthly: 40, recommended: false
+      },
+      D: {
+        nickname: 'スモールスタート', structureTop: 'ピンポイント支援',
+        structureNote: '必要な機能のみを厳選',
+        summary: '課題が明確な領域にリソースを集中投下する、ピンポイント型の特別プランです。',
+        units: [], normalMonthly: '', recommended: false
+      }
+    }[key];
+    return {
+      enabled: key !== 'D',
+      label: 'プラン' + key,
+      nickname: d.nickname,
+      structureTop: d.structureTop,
+      structureNote: d.structureNote,
+      unitsCaption: '',
+      summary: d.summary,
+      recommended: d.recommended,
+      normalMonthly: d.normalMonthly,
+      normalMonths: 13,
+      monthly: '', months: '', total: '', lumpSum: '',
+      units: d.units.map(function (k) {
+        var m = master(k);
+        return { key: k, price: m.price, months: d.unitMonths || m.months, members: m.members };
+      })
+    };
+  }
+
+  function defaults() {
+    var s = {
+      meta: {
+        badge: '期首限定・特別営業推進パートナーシップ',
+        company: '', contact: '',
+        planTitle: '営業組織構築 特別料金ご提案書',
+        subtitle: '自社雇用リスクを極小化し、即戦力チームで成果を最大化する特別プラン',
+        deadline: '', startPeriod: '',
+        provider: '株式会社アイドマ・ホールディングス',
+        taxNote: '※表記の金額はすべて税抜き価格です',
+        lead: '通常は月額40万円〜の包括サポートを、御社の事業拡大に合わせスモールスタート可能な特別枠として設計しました。\n採用費や教育期間、退職リスクを負うことなく、初月から複数名規模の即戦力プロチームが稼働する盤石な体制を提供します。',
+        scopeLabel: '専用枠',
+        closing: '事業成長を強固な組織力で支え続けます'
+      },
+      hire: {
+        recruit: 150, salary: 314, side: 100,
+        risks: '教育・育成の工数コスト|戦力化までに既存社員の業務時間が大幅に奪われる\n成果創出の不確実性|多額の投資を行っても期待通りの成果が出るかは未知数\n早期退職・離職リスク|投資回収前に退職された場合、採用・教育費が完全損失に\n労務管理・雇用維持トラブル|業績に左右されず給与支払い義務と管理負担が継続'
+      },
+      roadmap: [
+        { title: 'お申込み・契約締結', period: '', desc: '特別条件での枠確保とお手続きを迅速に完了します。', foot: '電子契約対応' },
+        { title: 'キックオフ・要件定義', period: '契約後 即時実施', desc: '専任チームと顔合わせを行い、ターゲットや方針を策定。', foot: '組織図・マニュアル着手' },
+        { title: '実動チーム稼働開始', period: '', desc: 'スカウト配信・選考代行・フィールド実動を開始します。', foot: '最短スピード立ち上げ' },
+        { title: '定例改善・成果創出', period: '週次／月次PDCA', desc: '数値検証を重ね、御社専任の最強体制を確立します。', foot: '継続的な成果最大化' }
+      ],
+      pages: { cover: true, background: true, cost: true, org: true, table: true, details: true, roadmap: true, closing: true },
+      unitMaster: JSON.parse(JSON.stringify(window.UNIT_MASTER)),
+      plans: {}
+    };
+    state = s; /* master() から参照するため先に代入 */
+    PLAN_KEYS.forEach(function (k) { s.plans[k] = defaultPlan(k); });
+    return s;
+  }
+
+  /* ---------- 状態 ---------- */
+  var state = { unitMaster: JSON.parse(JSON.stringify(window.UNIT_MASTER)) };
+
+  function master(key) {
+    var list = state.unitMaster || window.UNIT_MASTER;
+    for (var i = 0; i < list.length; i++) if (list[i].key === key) return list[i];
+    for (var j = 0; j < window.UNIT_MASTER.length; j++) if (window.UNIT_MASTER[j].key === key) return window.UNIT_MASTER[j];
+    return { key: key, name: key, short: key, price: 0, months: 13, members: 0, items: [] };
+  }
+
+  function load() {
+    var raw = null;
+    try { raw = localStorage.getItem(STORE); } catch (e) { }
+    if (!raw) { defaults(); return; }
+    try {
+      var saved = JSON.parse(raw);
+      var base = defaults();
+      state = merge(base, saved);
+      mergeMaster();
+    } catch (e) { defaults(); }
+  }
+
+  function merge(base, over) {
+    if (Array.isArray(base)) return Array.isArray(over) ? over : base;
+    if (base && typeof base === 'object' && over && typeof over === 'object') {
+      var out = {};
+      Object.keys(base).forEach(function (k) { out[k] = merge(base[k], over[k]); });
+      Object.keys(over).forEach(function (k) { if (!(k in out)) out[k] = over[k]; });
+      return out;
+    }
+    return over === undefined ? base : over;
+  }
+
+  function mergeMaster() {
+    if (!Array.isArray(state.unitMaster)) state.unitMaster = [];
+    window.UNIT_MASTER.forEach(function (m) {
+      if (!state.unitMaster.some(function (u) { return u.key === m.key; })) {
+        state.unitMaster.push(JSON.parse(JSON.stringify(m)));
+      }
+    });
+  }
+
+  function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { } }
+
+  /* ---------- ユーティリティ ---------- */
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function nl2br(v) { return esc(v).replace(/\n/g, '<br>'); }
+  function N(v) { var n = parseFloat(v); return isNaN(n) ? 0 : n; }
+  function or(v, alt) { return (v == null || String(v).trim() === '') ? alt : v; }
+  function num(v) { return N(v).toLocaleString('ja-JP', { maximumFractionDigits: 2 }); }
+  function man(v) { return num(v) + '万円'; }
+
+  function get(path) {
+    return path.split('.').reduce(function (o, k) { return o == null ? o : o[k]; }, state);
+  }
+  function set(path, val) {
+    var parts = path.split('.'), o = state;
+    for (var i = 0; i < parts.length - 1; i++) o = o[parts[i]];
+    o[parts[parts.length - 1]] = val;
+  }
+
+  /* ---------- 計算 ---------- */
+  function autoMonthly(p) {
+    return p.units.reduce(function (s, u) { return s + N(u.price); }, 0);
+  }
+  function autoMonths(p) {
+    var a = p.units.map(function (u) { return N(u.months); }).filter(function (x) { return x > 0; });
+    return a.length ? Math.max.apply(null, a) : 13;
+  }
+  function monthly(p) { return p.monthly !== '' && p.monthly != null ? N(p.monthly) : autoMonthly(p); }
+  function months(p) { return p.months !== '' && p.months != null ? N(p.months) : autoMonths(p); }
+  function autoTotal(p) {
+    if ((p.monthly !== '' && p.monthly != null) || (p.months !== '' && p.months != null) || !p.units.length) {
+      return monthly(p) * months(p);
+    }
+    return p.units.reduce(function (s, u) { return s + N(u.price) * N(u.months); }, 0);
+  }
+  function total(p) { return p.total !== '' && p.total != null ? N(p.total) : autoTotal(p); }
+  function autoLump(p) { return Math.max(0, total(p) - monthly(p)); }
+  function lump(p) { return p.lumpSum !== '' && p.lumpSum != null ? N(p.lumpSum) : autoLump(p); }
+  function normalTotal(p) { return N(p.normalMonthly) * N(p.normalMonths || 13); }
+  function members(p) { return p.units.reduce(function (s, u) { return s + N(u.members); }, 0); }
+  function mixedMonths(p) {
+    var a = p.units.map(function (u) { return N(u.months); });
+    return a.length > 1 && a.some(function (x) { return x !== a[0]; });
+  }
+  function hireTotal() { return N(state.hire.recruit) + N(state.hire.salary) + N(state.hire.side); }
+
+  function livePlans() {
+    return PLAN_KEYS.filter(function (k) { return state.plans[k].enabled; });
+  }
+  /* 安い順（料金表・組織図の並び） */
+  function planOrderByPrice() {
+    return livePlans().slice().sort(function (a, b) { return total(state.plans[a]) - total(state.plans[b]); });
+  }
+  /* 下位プラン（自プランのユニットを完全に含まれる側で最大のもの） */
+  function basePlan(key) {
+    var p = state.plans[key], keys = p.units.map(function (u) { return u.key; }), best = null;
+    livePlans().forEach(function (k) {
+      if (k === key) return;
+      var q = state.plans[k], qk = q.units.map(function (u) { return u.key; });
+      if (!qk.length || qk.length >= keys.length) return;
+      var sub = qk.every(function (x) { return keys.indexOf(x) >= 0; });
+      if (sub && (!best || state.plans[best].units.length < qk.length)) best = k;
+    });
+    return best;
+  }
+  function unitItems(p) {
+    var out = [];
+    p.units.forEach(function (u) {
+      master(u.key).items.forEach(function (it) { if (out.indexOf(it) < 0) out.push(it); });
+    });
+    return out;
+  }
+  function captionOf(p) {
+    if (or(p.unitsCaption, '') !== '') return p.unitsCaption;
+    if (!p.units.length) return '';
+    if (p.units.length <= 2) {
+      return p.units.map(function (u) {
+        return master(u.key).short + num(u.members) + '名';
+      }).join(' ＋ ');
+    }
+    return p.units.length + 'ユニット構成 / 総稼働 ' + num(members(p)) + '名';
+  }
+
+  /* ====================================================================== */
+  /*  フォーム                                                              */
+  /* ====================================================================== */
+  function fText(path, label, ph, hint) {
+    return '<div class="field"><label>' + esc(label) +
+      (hint ? '<span class="hint">' + esc(hint) + '</span>' : '') + '</label>' +
+      '<input type="text" data-path="' + path + '" data-type="text" value="' + esc(get(path)) +
+      '" placeholder="' + esc(ph || '') + '"></div>';
+  }
+  function fArea(path, label, ph, hint) {
+    return '<div class="field"><label>' + esc(label) +
+      (hint ? '<span class="hint">' + esc(hint) + '</span>' : '') + '</label>' +
+      '<textarea data-path="' + path + '" data-type="text" placeholder="' + esc(ph || '') + '">' +
+      esc(get(path)) + '</textarea></div>';
+  }
+  function fNum(path, label, ph, hint) {
+    return '<div class="field"><label>' + esc(label) +
+      (hint ? '<span class="hint">' + esc(hint) + '</span>' : '') + '</label>' +
+      '<input type="number" step="any" min="0" data-path="' + path + '" data-type="num" data-ph="' + path +
+      '" value="' + esc(get(path)) + '" placeholder="' + esc(ph || '') + '"></div>';
+  }
+  function fChk(path, label, rerender) {
+    return '<label class="chk"><input type="checkbox" data-path="' + path + '" data-type="bool"' +
+      (get(path) ? ' checked' : '') + (rerender ? ' data-rerender="1"' : '') + '>' + esc(label) + '</label>';
+  }
+
+  function renderForm() {
+    var h = [];
+
+    /* 使い方 */
+    h.push('<details class="sec"><summary>使い方 / PDFの作り方</summary><div class="sec-body">' +
+      '<p class="note">1. 下の項目を入力すると、右のプレビューが自動で更新されます。<br>' +
+      '2. 「PDF / 印刷」を押し、送信先を「PDFに保存」、用紙を横向き、<b>余白を「なし」</b>、' +
+      '<b>「背景のグラフィック」にチェック</b>を入れて保存してください。<br>' +
+      '3. 「HTMLで書き出し」を使うと、そのまま送れる1枚のHTMLファイルになります。<br>' +
+      '4. 入力内容はこのブラウザに自動保存されます。別のPCで使う場合は「入力内容を保存」でJSONを持ち出してください。</p>' +
+      '</div></details>');
+
+    /* 基本情報 */
+    h.push('<details class="sec" open><summary>1. 基本情報</summary><div class="sec-body">' +
+      fText('meta.company', '会社名', '例）シンジホーム株式会社') +
+      fText('meta.contact', '先方名', '例）山田 太郎（空欄可）') +
+      fText('meta.planTitle', '特別プラン名', '例）営業組織構築 特別料金ご提案書') +
+      '<div class="row">' +
+      '<div class="field"><label>申込期日</label><input type="text" data-path="meta.deadline" data-type="text" value="' + esc(state.meta.deadline) + '" placeholder="例）9月1日〜9月18日"></div>' +
+      '<div class="field"><label>契約開始時期</label><input type="text" data-path="meta.startPeriod" data-type="text" value="' + esc(state.meta.startPeriod) + '" placeholder="例）9月14日〜10月15日"></div>' +
+      '</div>' +
+      fText('meta.badge', '表紙リード（小見出し）', '例）期首限定・特別営業推進パートナーシップ') +
+      fText('meta.subtitle', '表紙サブタイトル', '') +
+      fText('meta.provider', '提案元（自社名）', '') +
+      fArea('meta.lead', '特別提案の背景・趣旨', '', '2ページ目に表示') +
+      fText('meta.closing', '最終ページのメッセージ', '') +
+      fText('meta.taxNote', '注記', '') +
+      '</div></details>');
+
+    /* 自社雇用コスト */
+    h.push('<details class="sec"><summary>2. 自社雇用コストの比較<span class="tag">合計 ' + man(hireTotal()) + '</span></summary><div class="sec-body">' +
+      '<div class="row">' +
+      '<div class="field"><label>採用経費<span class="hint">万円</span></label><input type="number" step="any" data-path="hire.recruit" data-type="num" value="' + esc(state.hire.recruit) + '"></div>' +
+      '<div class="field"><label>給料報酬<span class="hint">万円</span></label><input type="number" step="any" data-path="hire.salary" data-type="num" value="' + esc(state.hire.salary) + '"></div>' +
+      '<div class="field"><label>側面経費<span class="hint">万円</span></label><input type="number" step="any" data-path="hire.side" data-type="num" value="' + esc(state.hire.side) + '"></div>' +
+      '</div>' +
+      fArea('hire.risks', '雇用リスク項目', 'タイトル|説明 を1行ずつ', '「|」で区切り') +
+      '</div></details>');
+
+    /* プラン */
+    PLAN_KEYS.forEach(function (k, i) { h.push(planForm(k, i)); });
+
+    /* ロードマップ */
+    var rm = ['<details class="sec"><summary>7. 導入までのフロー</summary><div class="sec-body">'];
+    state.roadmap.forEach(function (s, i) {
+      rm.push('<div class="urow"><div class="un">STEP 0' + (i + 1) + '</div>' +
+        fText('roadmap.' + i + '.title', '項目名', '') +
+        fText('roadmap.' + i + '.period', '時期', i === 0 ? '空欄なら申込期日' : (i === 2 ? '空欄なら契約開始時期' : '')) +
+        fArea('roadmap.' + i + '.desc', '説明', '') +
+        fText('roadmap.' + i + '.foot', '補足タグ', '') +
+        '</div>');
+    });
+    rm.push('</div></details>');
+    h.push(rm.join(''));
+
+    /* ページ構成 */
+    h.push('<details class="sec"><summary>8. ページ構成</summary><div class="sec-body">' +
+      [['cover', '表紙'], ['background', '特別提案の背景'], ['cost', '自社雇用コスト'], ['org', 'プラン別 組織図'],
+      ['table', '特別料金表'], ['details', 'プラン詳細'], ['roadmap', '導入フロー'], ['closing', '最終ページ']]
+        .map(function (p) { return '<div style="margin-bottom:6px">' + fChk('pages.' + p[0], p[1], true) + '</div>'; }).join('') +
+      '</div></details>');
+
+    /* ユニットマスタ */
+    var um = ['<details class="sec"><summary>9. ユニットマスタ編集<span class="tag">' + state.unitMaster.length + 'ユニット</span></summary><div class="sec-body">' +
+      '<p class="note">標準の料金・期間・人数・実施内容を変更できます。ここでの変更は次に選択したときの初期値になります。</p>'];
+    state.unitMaster.forEach(function (u, i) {
+      um.push('<details class="sec" style="margin-bottom:8px"><summary>' + esc(u.name) + '</summary><div class="sec-body">' +
+        '<div class="row">' +
+        fText('unitMaster.' + i + '.name', 'ユニット名', '') +
+        fText('unitMaster.' + i + '.short', '短縮名', '') +
+        '</div><div class="row">' +
+        '<div class="field"><label>標準月額<span class="hint">万円</span></label><input type="number" step="any" data-path="unitMaster.' + i + '.price" data-type="num" value="' + esc(u.price) + '"></div>' +
+        '<div class="field"><label>標準期間<span class="hint">ヶ月</span></label><input type="number" step="any" data-path="unitMaster.' + i + '.months" data-type="num" value="' + esc(u.months) + '"></div>' +
+        '<div class="field"><label>標準人数<span class="hint">名</span></label><input type="number" step="any" data-path="unitMaster.' + i + '.members" data-type="num" value="' + esc(u.members) + '"></div>' +
+        '</div>' +
+        '<div class="field"><label>実施内容<span class="hint">1行1項目</span></label><textarea data-path="unitMaster.' + i + '.items" data-type="lines" style="min-height:120px">' + esc(u.items.join('\n')) + '</textarea></div>' +
+        '</div></details>');
+    });
+    um.push('</div></details>');
+    h.push(um.join(''));
+
+    document.getElementById('form').innerHTML = h.join('');
+  }
+
+  function planForm(k, i) {
+    var p = state.plans[k], n = i + 3;
+    var h = ['<details class="sec"' + (p.enabled ? ' open' : '') + '><summary>' + n + '. ' + esc(p.label) +
+      '<span class="tag">' + (p.enabled ? man(monthly(p)) + ' × ' + num(months(p)) + 'ヶ月' : '未使用') + '</span></summary>' +
+      '<div class="sec-body' + (p.enabled ? '' : ' plan-off') + '">'];
+
+    h.push('<div style="margin-bottom:10px">' + fChk('plans.' + k + '.enabled', 'このプランを料金表に表示する', true) +
+      (k === 'D' ? '<p class="note">Dプランを活用しない場合はチェックを外してください（料金表に一切表示されません）。</p>' : '') +
+      '</div>');
+
+    h.push('<div class="row">' + fText('plans.' + k + '.label', 'プラン表示名', 'プラン' + k) +
+      fText('plans.' + k + '.nickname', 'プラン副題', '例）フルスペック実行支援') + '</div>');
+
+    /* ユニット選択 */
+    h.push('<div class="field"><label>このプランに入れるユニット</label><div class="unit-pick">');
+    state.unitMaster.forEach(function (u) {
+      var on = p.units.some(function (x) { return x.key === u.key; });
+      h.push('<label><input type="checkbox" data-plan="' + k + '" data-unit="' + u.key + '"' + (on ? ' checked' : '') + '>' + esc(u.name.replace('ユニット', '')) + '</label>');
+    });
+    h.push('</div></div>');
+
+    /* ユニットごとの料金・期間 */
+    if (!p.units.length) {
+      h.push('<p class="empty">ユニットを選択すると、料金と支援期間を入力できます。</p>');
+    } else {
+      p.units.forEach(function (u, ui) {
+        var base = 'plans.' + k + '.units.' + ui + '.';
+        h.push('<div class="urow"><div class="un">' + esc(master(u.key).name) +
+          '<span class="k">' + master(u.key).items.length + '項目</span></div>' +
+          '<div class="row">' +
+          '<div><span class="mini">料金（万円/月）</span><input type="number" step="any" min="0" data-path="' + base + 'price" data-type="num" value="' + esc(u.price) + '"></div>' +
+          '<div><span class="mini">支援期間（ヶ月）</span><input type="number" step="any" min="0" data-path="' + base + 'months" data-type="num" value="' + esc(u.months) + '"></div>' +
+          '<div><span class="mini">人数（名）</span><input type="number" step="any" min="0" data-path="' + base + 'members" data-type="num" value="' + esc(u.members) + '"></div>' +
+          '</div></div>');
+      });
+    }
+
+    /* 価格設定 */
+    h.push('<div class="row">' +
+      '<div class="field"><label>通常月額<span class="hint">万円・空欄で非表示</span></label><input type="number" step="any" data-path="plans.' + k + '.normalMonthly" data-type="num" value="' + esc(p.normalMonthly) + '"></div>' +
+      '<div class="field"><label>通常期間<span class="hint">ヶ月</span></label><input type="number" step="any" data-path="plans.' + k + '.normalMonths" data-type="num" value="' + esc(p.normalMonths) + '"></div>' +
+      '</div>');
+    h.push('<div class="row">' +
+      fNum('plans.' + k + '.monthly', '特別月額', '自動: ' + num(autoMonthly(p)), '万円') +
+      fNum('plans.' + k + '.months', '支援期間', '自動: ' + num(autoMonths(p)), 'ヶ月') +
+      '</div>');
+    h.push('<div class="row">' +
+      fNum('plans.' + k + '.total', '分割総額', '自動: ' + num(autoTotal(p)), '万円') +
+      fNum('plans.' + k + '.lumpSum', '一括特別価格', '自動: ' + num(autoLump(p)), '万円') +
+      '</div>');
+    h.push('<div class="calc" data-calc="' + k + '">' + calcHtml(k) + '</div>');
+
+    /* 文言 */
+    h.push('<div style="margin-top:10px">' +
+      fText('plans.' + k + '.structureTop', '体制キャッチ', '例）全国現場実行完結') +
+      fText('plans.' + k + '.unitsCaption', '構成メモ', '自動: ' + (captionOf(p) || '—')) +
+      fText('plans.' + k + '.structureNote', '組織図の補足', '') +
+      fArea('plans.' + k + '.summary', 'プラン説明文', '') +
+      '<div style="margin-top:4px">' + fChk('plans.' + k + '.recommended', 'おすすめプランとして強調表示', false) + '</div>' +
+      '</div>');
+
+    h.push('</div></details>');
+    return h.join('');
+  }
+
+  function calcHtml(k) {
+    var p = state.plans[k];
+    if (!p.enabled) return 'このプランは表示されません。';
+    var out = '特別月額 <b>' + man(monthly(p)) + '</b> × <b>' + num(months(p)) + 'ヶ月</b>' +
+      '／分割総額 <b>' + man(total(p)) + '</b><br>' +
+      '一括特別価格 <b>' + man(lump(p)) + '</b>（' + man(Math.max(0, total(p) - lump(p))) + ' お得）<br>' +
+      '総稼働リソース <b>' + num(members(p)) + '名</b>／実施内容 <b>' + unitItems(p).length + '項目</b>';
+    if (N(p.normalMonthly) > 0) {
+      out += '<br>通常価格 ' + man(N(p.normalMonthly)) + ' × ' + num(p.normalMonths || 13) + 'ヶ月 = ' + man(normalTotal(p));
+    }
+    if (mixedMonths(p)) out += '<br>※ユニットごとに支援期間が異なります（総額は各期間で計算）';
+    return out;
+  }
+
+  function refreshCalc() {
+    PLAN_KEYS.forEach(function (k) {
+      var box = document.querySelector('[data-calc="' + k + '"]');
+      if (box) box.innerHTML = calcHtml(k);
+      var p = state.plans[k], phs = {
+        monthly: autoMonthly(p), months: autoMonths(p), total: autoTotal(p), lumpSum: autoLump(p)
+      };
+      Object.keys(phs).forEach(function (f) {
+        var el = document.querySelector('[data-ph="plans.' + k + '.' + f + '"]');
+        if (el) el.placeholder = '自動: ' + num(phs[f]);
+      });
+    });
+  }
+
+  /* ====================================================================== */
+  /*  スライド                                                              */
+  /* ====================================================================== */
+  function head(eyebrow, title) {
+    return '<header class="s-head"><p class="eyebrow">' + esc(eyebrow) + '</p><h2>' + esc(title) + '</h2>' +
+      '<span class="tax">' + esc(state.meta.taxNote) + '</span></header>';
+  }
+  function clientName() {
+    var c = or(state.meta.company, '御社名'), n = or(state.meta.contact, '');
+    return n ? c + ' ' + n + ' 様' : c + ' 様';
+  }
+
+  function slideCover() {
+    var m = state.meta, meta = [];
+    if (or(m.deadline, '')) meta.push('申込期日: ' + m.deadline);
+    if (or(m.startPeriod, '')) meta.push('開始時期: ' + m.startPeriod);
+    if (or(m.provider, '')) meta.push(m.provider);
+    return '<section class="slide s-cover"><div>' +
+      (or(m.badge, '') ? '<p class="cover-badge">' + esc(m.badge) + '</p>' : '') +
+      '<h1 class="cover-client">' + esc(clientName()) + '</h1>' +
+      '<h2 class="cover-title">' + esc(or(m.planTitle, '特別料金ご提案書')) + '</h2>' +
+      (or(m.subtitle, '') ? '<p class="cover-sub">' + esc(m.subtitle) + '</p>' : '') +
+      '<div class="cover-rule"></div>' +
+      '<div class="cover-meta">' + meta.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' +
+      '</div></section>';
+  }
+
+  function infoCard(no, label, value, desc) {
+    return '<div class="ic"><div class="no">' + no + '</div>' +
+      '<div class="lb">' + esc(label) + '</div><div class="vl">' + esc(value) + '</div>' +
+      '<div class="dsc">' + esc(desc) + '</div></div>';
+  }
+
+  function slideBackground() {
+    var m = state.meta;
+    return '<section class="slide">' + head('BACKGROUND & OBJECTIVE', '特別ご提案の背景と趣旨') +
+      '<div class="s-body bg-body">' +
+      '<p class="lead">' + nl2br(or(m.lead, '')) + '</p>' +
+      '<div class="info3">' +
+      infoCard('01', 'お申込み受付期間', or(m.deadline, '個別にご案内'), 'この期間内のご契約に限り、特別価格を適用いたします。') +
+      infoCard('02', '稼働開始スケジュール', or(m.startPeriod, '個別にご案内'), 'ご契約後すぐにキックオフ、最短で実動チームが稼働します。') +
+      infoCard('03', '適用対象', or(m.company, '御社') + ' ' + or(m.scopeLabel, '専用枠'), '本ご提案の条件は、' + or(m.company, '御社') + '専用にご用意したものです。') +
+      '</div>' +
+      '<div class="pills"><span class="pill">特別枠のご提供</span><span class="pill alt">雇用リスクの極小化</span></div>' +
+      '</div></section>';
+  }
+
+  function slideCost() {
+    var h = state.hire, t = hireTotal();
+    var risks = String(h.risks || '').split('\n').filter(function (l) { return l.trim(); }).map(function (l) {
+      var p = l.split('|');
+      return '<div class="risk"><div class="rt">' + esc(p[0].trim()) + '</div>' +
+        (p[1] ? '<div class="rd">' + esc(p[1].trim()) + '</div>' : '') + '</div>';
+    }).join('');
+    return '<section class="slide">' + head('COST & RISK ANALYSIS', '自社で社員を1名採用・雇用する場合の実態') +
+      '<div class="s-body">' +
+      '<div class="card warn" style="flex:1">' +
+      '<div class="cost-total">社員1名あたりの年間総コスト</div>' +
+      '<div class="cost-num">約' + num(t) + '万円</div>' +
+      '<p class="cost-desc">固定給与に加え、初期採用費や社会保険・インフラ費が必須。<br>月額換算で約' + num(Math.round(t / 12 * 10) / 10) + '万円の固定負担となります。</p>' +
+      '<div class="cost-break">' +
+      '<div><span>採用経費（求人広告・エージェント）</span><b>' + man(h.recruit) + '</b></div>' +
+      '<div><span>給料報酬（基本給・賞与）</span><b>' + man(h.salary) + '</b></div>' +
+      '<div><span>側面経費（社会保険・PC・交通費）</span><b>' + man(h.side) + '</b></div>' +
+      '</div></div>' +
+      '<div class="card" style="flex:1"><h3 class="card-ttl">見落とされがちな雇用リスク</h3>' +
+      '<div class="risks">' + risks + '</div></div>' +
+      '</div></section>';
+  }
+
+  function triangle(p) {
+    if (!p.units.length) return '<div class="tri"><span class="tri-empty">ユニット未設定</span></div>';
+    var us = p.units.slice().sort(function (a, b) { return N(a.members) - N(b.members); });
+    var n = us.length;
+    var hgt = n <= 3 ? 42 : (n === 4 ? 36 : (n === 5 ? 31 : (n <= 7 ? 27 : 23)));
+    var fs = n <= 5 ? 11.5 : (n <= 7 ? 10.5 : 9.5);
+    return '<div class="tri" style="gap:' + (n > 6 ? 5 : 7) + 'px">' + us.map(function (u, i) {
+      var w = n === 1 ? 70 : 48 + i * (92 - 48) / (n - 1);
+      return '<div class="bar l' + (n === 1 ? 1 : Math.min(i, 5)) + '" style="width:' + w.toFixed(1) +
+        '%;max-height:' + hgt + 'px;font-size:' + fs + 'px">' +
+        esc(master(u.key).short) + ' ' + num(u.members) + '名</div>';
+    }).join('') + '</div>';
+  }
+
+  function slideOrg() {
+    var order = planOrderByPrice();
+    if (!order.length) return '';
+    return '<section class="slide">' + head('ORGANIZATION STRUCTURE', '導入プラン別 組織図（サポート体制の構造）') +
+      '<div class="s-body"><div class="orgs" style="grid-template-columns:repeat(' + order.length + ',1fr);width:100%">' +
+      order.map(function (k) {
+        var p = state.plans[k];
+        return '<div class="org' + (p.recommended ? ' hl' : '') + '">' +
+          '<div class="oh">' + (or(p.structureTop, '') ? '<div class="os">' + esc(p.structureTop) + '</div>' : '') +
+          '<div class="on">' + esc(p.label) + ' 体制</div></div>' +
+          triangle(p) +
+          '<div class="of"><div class="r1">総稼働リソース: ' + num(members(p)) + '名</div>' +
+          (or(p.structureNote, '') ? '<div class="r2">' + esc(p.structureNote) + '</div>' : '') + '</div></div>';
+      }).join('') + '</div></div></section>';
+  }
+
+  function tableBullets(k) {
+    var p = state.plans[k], base = basePlan(k), out = [];
+    if (base) {
+      var bp = state.plans[base];
+      out.push({ t: bp.label + 'の全支援機能', st: true });
+      var delta = p.units.filter(function (u) {
+        return !bp.units.some(function (v) { return v.key === u.key; });
+      });
+      var picks = [];
+      if (delta.length && delta.length <= 2) {
+        delta.forEach(function (u) { master(u.key).items.slice(0, 2).forEach(function (i) { picks.push(i); }); });
+      } else {
+        picks = delta.map(function (u) { return master(u.key).name; });
+      }
+      picks.slice(0, 3).forEach(function (t) { out.push({ t: t }); });
+      return out;
+    }
+    if (p.units.length === 1) {
+      return master(p.units[0].key).items.slice(0, 4).map(function (t) { return { t: t }; });
+    }
+    return p.units.slice(0, 4).map(function (u) { return { t: master(u.key).name }; });
+  }
+
+  function slideTable() {
+    var order = planOrderByPrice();
+    if (!order.length) return '';
+    var t = hireTotal(), cols = order.length + 1;
+    var self = '<div class="pcol self">' +
+      '<div class="ph"><div class="pn">自社で社員1名雇用</div><div class="pu">一般的な中途採用</div></div>' +
+      '<div class="pp"><div class="tt" style="font-size:11px;color:#93a1b2;font-weight:400">年間目安総額</div>' +
+      '<div class="sp">約' + num(t) + '万円</div>' +
+      '<div class="tt" style="font-weight:400;color:#6b7a8d;font-size:11px">月額換算: 約' + num(Math.round(t / 12 * 10) / 10) + '万円</div></div>' +
+      '<ul class="pf"><li>採用費: ' + man(state.hire.recruit) + '</li><li>給料: ' + man(state.hire.salary) +
+      '</li><li>側面経費: ' + man(state.hire.side) + '</li><li class="rk">※退職・教育リスク有</li></ul>' +
+      '<div class="pl"><div class="ll">一括支払い設定</div><div class="lv" style="font-size:17px;color:#54637a">該当なし</div></div>' +
+      '</div>';
+
+    var plans = order.map(function (k) {
+      var p = state.plans[k], nm = N(p.normalMonthly) > 0
+        ? '<div class="nm">通常: ' + num(p.normalMonthly) + '万×' + num(p.normalMonths || 13) + 'ヶ月 (' + num(normalTotal(p)) + '万)</div>' : '';
+      return '<div class="pcol' + (p.recommended ? ' hl' : '') + '">' +
+        '<div class="ph"><div class="pn">' + esc(p.label) + '</div>' +
+        (captionOf(p) ? '<div class="pu">' + esc(captionOf(p)) + '</div>' : '') + '</div>' +
+        '<div class="pp">' + nm +
+        '<div class="sp">' + num(monthly(p)) + '万×' + num(months(p)) + 'ヶ月</div>' +
+        '<div class="tt">総額 ' + man(total(p)) + '</div></div>' +
+        '<ul class="pf">' + tableBullets(k).map(function (b) {
+          return '<li' + (b.st ? ' class="st"' : '') + '>' + esc(b.t) + '</li>';
+        }).join('') + '</ul>' +
+        '<div class="pl"><div class="ll">ご一括特別価格</div><div class="lv">' + man(lump(p)) + '</div>' +
+        '<div class="ld">（' + man(Math.max(0, total(p) - lump(p))) + ' お得）</div></div>' +
+        '</div>';
+    }).join('');
+
+    return '<section class="slide">' + head('SPECIAL PRICING TABLE', '【特別料金表】プラン別機能・価格比較') +
+      '<div class="s-body"><div class="ptable' + (cols >= 5 ? ' c5' : '') +
+      '" style="grid-template-columns:repeat(' + cols + ',1fr);width:100%">' + self + plans + '</div></div></section>';
+  }
+
+  function slideDetail(k) {
+    var p = state.plans[k], items = unitItems(p), base = basePlan(k);
+    var baseItems = base ? unitItems(state.plans[base]) : [];
+    var deltaN = base ? items.filter(function (it) { return baseItems.indexOf(it) < 0; }).length : 0;
+    var starOn = base && deltaN > 0 && deltaN <= 6;
+    var nI = items.length, cls, colN, cap;
+    if (nI <= 12) { cls = 'feats'; colN = 2; cap = 12; }
+    else if (nI <= 18) { cls = 'feats sm'; colN = 2; cap = 18; }
+    else if (nI <= 30) { cls = 'feats sm'; colN = 3; cap = 30; }
+    else if (nI <= 45) { cls = 'feats xs'; colN = 3; cap = 45; }
+    else { cls = 'feats xs'; colN = 4; cap = 60; }
+    var rest = Math.max(0, nI - cap);
+    var shown = rest ? items.slice(0, cap - 1) : items;
+    var nm = N(p.normalMonthly) > 0
+      ? '<div class="nm">通常: ' + num(p.normalMonthly) + '万円×' + num(p.normalMonths || 13) + 'ヶ月 (' + num(normalTotal(p)) + '万円)</div>' : '';
+    var bk = p.units.length > 1 ? '<div class="ubk">' + p.units.map(function (u) {
+      return '<div><span>' + esc(master(u.key).short) + '</span><span>' + num(u.price) + '万円 × ' + num(u.months) + 'ヶ月</span></div>';
+    }).join('') + '</div>' : '';
+    var showTri = p.units.length > 0 && p.units.length <= 6;
+
+    return '<section class="slide">' +
+      head('PLAN DETAILS', p.label + '：詳細' + (or(p.nickname, '') ? '（' + p.nickname + '）' : '')) +
+      '<div class="s-body">' +
+      '<div class="card tint dl"><h3 class="card-ttl">' + esc(p.label) + (showTri ? ' 組織図' : ' 構成・特別価格') + '</h3>' +
+      (showTri ? '<div class="dtri">' + triangle(p) + '</div>' : '') +
+      '<div class="price-box">' + nm +
+      '<div class="sp">特別月額: ' + num(monthly(p)) + '万円×' + num(months(p)) + 'ヶ月</div>' +
+      '<div class="tt">分割総額: ' + man(total(p)) + '</div>' +
+      '<div class="hr"></div>' +
+      '<div class="lp">ご一括特別価格:<b>' + man(lump(p)) + '</b></div>' +
+      bk + '</div></div>' +
+      '<div class="card dr"><h3 class="card-ttl">' + esc(p.label) + ' 実施内容・提供機能（' + items.length + '項目）</h3>' +
+      '<ul class="' + cls + '" style="grid-template-columns:repeat(' + colN + ',1fr)">' +
+      shown.map(function (it) {
+        var isNew = starOn && baseItems.indexOf(it) < 0;
+        return '<li' + (isNew ? ' class="st"' : '') + '>' + esc(it) + '</li>';
+      }).join('') + (rest ? '<li class="more">ほか ' + (rest + 1) + '項目</li>' : '') + '</ul>' +
+      (or(p.summary, '') ? '<div class="summary">' + nl2br(p.summary) + '</div>' : '') +
+      '</div></div></section>';
+  }
+
+  function slideRoadmap() {
+    var m = state.meta;
+    return '<section class="slide">' + head('ONBOARDING ROADMAP', 'ご契約から稼働・成果創出までのフロー') +
+      '<div class="s-body"><div class="steps" style="width:100%">' +
+      state.roadmap.map(function (s, i) {
+        var per = or(s.period, i === 0 ? or(m.deadline, '') : (i === 2 ? or(m.startPeriod, '') : ''));
+        return '<div class="step' + (i === state.roadmap.length - 1 ? ' last' : '') + '">' +
+          '<span class="sn">STEP 0' + (i + 1) + '</span>' +
+          '<div class="st">' + esc(s.title) + '</div>' +
+          (per ? '<div class="sp">' + esc(per) + '</div>' : '') +
+          '<div class="sd">' + nl2br(s.desc) + '</div>' +
+          (or(s.foot, '') ? '<div class="sf">' + esc(s.foot) + '</div>' : '') +
+          '</div>';
+      }).join('') + '</div></div></section>';
+  }
+
+  function slideClosing() {
+    var m = state.meta;
+    return '<section class="slide s-closing"><div>' +
+      '<p class="cl-kicker">PARTNERSHIP FOR SUCCESS</p>' +
+      '<h1>' + esc(clientName()) + 'の<br>' + esc(or(m.closing, '事業成長を支え続けます')) + '</h1>' +
+      (or(m.deadline, '') ? '<div class="cl-dead">特別枠のお申込み期日は【 ' + esc(m.deadline) + ' 】までです</div>' : '') +
+      '<div class="cl-foot"><span>担当コンサルタント直通窓口</span><span>' + esc(or(m.provider, '')) + '</span></div>' +
+      '</div></section>';
+  }
+
+  function buildSlides() {
+    var pg = state.pages, out = [];
+    if (pg.cover) out.push(slideCover());
+    if (pg.background) out.push(slideBackground());
+    if (pg.cost) out.push(slideCost());
+    if (pg.org) out.push(slideOrg());
+    if (pg.table) out.push(slideTable());
+    if (pg.details) PLAN_KEYS.forEach(function (k) { if (state.plans[k].enabled) out.push(slideDetail(k)); });
+    if (pg.roadmap) out.push(slideRoadmap());
+    if (pg.closing) out.push(slideClosing());
+    return out.filter(function (s) { return s; });
+  }
+
+
+  /* ---------- はみ出し自動調整 ---------- */
+  function moreRow(box, tag, label, n) {
+    var el = box.querySelector(tag + '.more');
+    if (!el) {
+      el = document.createElement(tag === 'li' ? 'li' : 'div');
+      el.className = 'more';
+      box.appendChild(el);
+    }
+    el.textContent = 'ほか ' + n + label;
+    return el;
+  }
+  function trimLast(box, tag, label) {
+    var rows = [], i;
+    for (i = 0; i < box.children.length; i++) {
+      if (!box.children[i].classList.contains('more')) rows.push(box.children[i]);
+    }
+    if (rows.length <= 1) return false;
+    var cur = box.querySelector('.more'), n = cur ? N(cur.getAttribute('data-n')) : 0;
+    rows[rows.length - 1].remove();
+    n += 1;
+    var el = moreRow(box, tag, label, n);
+    el.setAttribute('data-n', n);
+    return true;
+  }
+  function fitBox(box, tag, label) {
+    var guard = 0;
+    while (box.scrollHeight > box.clientHeight + 1 && guard++ < 120) {
+      if (!trimLast(box, tag, label)) break;
+    }
+  }
+  function fitTri(tri) {
+    var card = tri.closest('.dl'), guard = 0;
+    /* 横方向: ラベルがバー幅を超える場合は文字を縮小 */
+    Array.prototype.forEach.call(tri.querySelectorAll('.bar'), function (b) {
+      var g = 0, fs = parseFloat(getComputedStyle(b).fontSize);
+      while (b.scrollWidth > b.clientWidth + 1 && fs > 6.5 && g++ < 24) {
+        fs -= 0.5; b.style.fontSize = fs + 'px';
+      }
+    });
+    while (tri.scrollHeight > tri.clientHeight + 1 && guard++ < 60) {
+      var ubk = card ? card.querySelector('.ubk') : null;
+      if (ubk && trimLast(ubk, 'div', 'ユニット')) continue;
+      var bars = tri.querySelectorAll('.bar');
+      if (!bars.length) break;
+      var fs = parseFloat(getComputedStyle(bars[0]).fontSize);
+      if (fs <= 7.5) break;
+      Array.prototype.forEach.call(bars, function (b) {
+        b.style.fontSize = (fs - 0.5) + 'px';
+        var mh = parseFloat(b.style.maxHeight) || 24;
+        b.style.maxHeight = Math.max(11, mh - 1.5) + 'px';
+      });
+      var g = parseFloat(getComputedStyle(tri).rowGap || getComputedStyle(tri).gap) || 7;
+      tri.style.gap = Math.max(2, g - 1) + 'px';
+    }
+  }
+  function shrinkText(el, sel, floor) {
+    var list = el.querySelectorAll(sel), guard = 0;
+    if (!list.length) return;
+    while (el.scrollHeight > el.clientHeight + 1 && guard++ < 40) {
+      var changed = false;
+      Array.prototype.forEach.call(list, function (t) {
+        var fs = parseFloat(getComputedStyle(t).fontSize);
+        if (fs > floor) { t.style.fontSize = Math.max(floor, fs - 1.5) + 'px'; changed = true; }
+      });
+      if (!changed) break;
+    }
+  }
+  function fitSlide(el) {
+    Array.prototype.forEach.call(el.querySelectorAll('.feats'), function (u) { fitBox(u, 'li', '項目'); });
+    Array.prototype.forEach.call(el.querySelectorAll('.pf'), function (u) { fitBox(u, 'li', '項目'); });
+    Array.prototype.forEach.call(el.querySelectorAll('.risks'), function (u) { fitBox(u, 'div', '件'); });
+    Array.prototype.forEach.call(el.querySelectorAll('.ubk'), function (u) { fitBox(u, 'div', 'ユニット'); });
+    Array.prototype.forEach.call(el.querySelectorAll('.tri'), function (u) { fitTri(u); });
+    /* 最終手段: スライド全体がはみ出す場合は見出し・本文を縮小 */
+    shrinkText(el, '.cover-client, .cover-title, .s-closing h1', 15);
+    shrinkText(el, '.lead', 11);
+    shrinkText(el, '.s-head h2', 17);
+  }
+  /* 計測用コンテナで実寸レイアウトを確定させてから書き出す */
+  function fittedSlides() {
+    var box = document.getElementById('measure');
+    if (!box) return buildSlides();
+    var out = buildSlides().map(function (html) {
+      box.innerHTML = html;
+      if (box.firstElementChild) fitSlide(box.firstElementChild);
+      return box.innerHTML;
+    });
+    box.innerHTML = '';
+    return out;
+  }
+
+  /* ---------- プレビュー ---------- */
+  var zoom = 100;
+  function renderPreview() {
+    var wrap = document.getElementById('preview');
+    var slides = fittedSlides();
+    var avail = wrap.clientWidth - 48;
+    var scale = Math.min(1, avail / 960) * (zoom / 100);
+    if (!isFinite(scale) || scale <= 0) scale = 1;
+    wrap.innerHTML = slides.map(function (s, i) {
+      return '<div class="stage" style="width:' + (960 * scale) + 'px;height:' + (540 * scale) + 'px">' +
+        '<span class="pno">' + (i + 1) + ' / ' + slides.length + '</span>' +
+        s.replace('<section class="slide', '<section style="transform:scale(' + scale + ');transform-origin:top left" class="slide') +
+        '</div>';
+    }).join('');
+    refreshCalc();
+  }
+  function renderAll() { renderForm(); renderPreview(); }
+
+  /* ---------- 入出力 ---------- */
+  function fileName(ext) {
+    var c = or(state.meta.company, '料金表').replace(/[\\/:*?"<>|]/g, '');
+    return c + '_特別料金表.' + ext;
+  }
+  function download(text, name, mime) {
+    var b = new Blob([text], { type: mime + ';charset=utf-8' }), a = document.createElement('a');
+    a.href = URL.createObjectURL(b); a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  function exportHtml() {
+    var css = document.getElementById('slide-css').textContent;
+    var body = fittedSlides().map(function (s) { return '<div class="stage">' + s + '</div>'; }).join('\n');
+    download('<!doctype html>\n<html lang="ja"><head><meta charset="utf-8"><title>' +
+      esc(clientName() + ' ' + or(state.meta.planTitle, '特別料金ご提案書')) + '</title><style>\n' +
+      'body{margin:0;background:#eef1f5;display:flex;flex-direction:column;align-items:center;padding:24px 0;gap:24px}\n' +
+      '.stage{box-shadow:0 4px 20px rgba(16,42,69,.16);width:960px;height:540px}\n' +
+      '@media print{html,body{background:#fff;padding:0;gap:0;margin:0;display:block}\n' +
+      '.stage{box-shadow:none;margin:0 auto;height:539px;overflow:hidden;break-after:auto;page-break-after:auto}\n' +
+      '.stage+.stage{break-before:page;page-break-before:always}}\n' +
+      css + '\n</style></head><body>\n' + body + '\n</body></html>', fileName('html'), 'text/html');
+  }
+
+  /* ---------- イベント ---------- */
+  function onFieldChange(el) {
+    var path = el.getAttribute('data-path'), type = el.getAttribute('data-type');
+    if (!path) return;
+    var v;
+    if (type === 'bool') v = el.checked;
+    else if (type === 'num') v = el.value === '' ? '' : N(el.value);
+    else if (type === 'lines') v = el.value.split('\n').map(function (s) { return s.trim(); }).filter(function (s) { return s; });
+    else v = el.value;
+    set(path, v);
+    save();
+    if (el.getAttribute('data-rerender')) renderAll(); else renderPreview();
+  }
+
+  function onUnitToggle(el) {
+    var k = el.getAttribute('data-plan'), key = el.getAttribute('data-unit'), p = state.plans[k];
+    if (el.checked) {
+      if (!p.units.some(function (u) { return u.key === key; })) {
+        var m = master(key);
+        p.units.push({ key: key, price: m.price, months: m.months, members: m.members });
+        p.units.sort(function (a, b) {
+          var oa = state.unitMaster.findIndex(function (u) { return u.key === a.key; });
+          var ob = state.unitMaster.findIndex(function (u) { return u.key === b.key; });
+          return oa - ob;
+        });
+      }
+    } else {
+      p.units = p.units.filter(function (u) { return u.key !== key; });
+    }
+    save(); renderAll();
+  }
+
+  document.addEventListener('input', function (e) {
+    var el = e.target;
+    if (el.closest && el.closest('#form') && el.getAttribute('data-path')) onFieldChange(el);
+  });
+  document.addEventListener('change', function (e) {
+    var el = e.target;
+    if (!el.closest || !el.closest('#form')) return;
+    if (el.getAttribute('data-unit')) onUnitToggle(el);
+    else if (el.getAttribute('data-path')) onFieldChange(el);
+  });
+
+  window.addEventListener('DOMContentLoaded', function () {
+    load();
+    renderAll();
+
+    document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
+    document.getElementById('btn-html').addEventListener('click', exportHtml);
+    document.getElementById('btn-save').addEventListener('click', function () {
+      download(JSON.stringify(state, null, 2), fileName('json'), 'application/json');
+    });
+    document.getElementById('file-load').addEventListener('change', function (e) {
+      var f = e.target.files[0]; if (!f) return;
+      var r = new FileReader();
+      r.onload = function () {
+        try {
+          state = merge(defaults(), JSON.parse(r.result));
+          mergeMaster(); save(); renderAll();
+        } catch (err) { alert('読み込めませんでした: ' + err.message); }
+        e.target.value = '';
+      };
+      r.readAsText(f, 'utf-8');
+    });
+    document.getElementById('btn-reset').addEventListener('click', function () {
+      if (!confirm('入力内容をすべて初期状態に戻します。よろしいですか？')) return;
+      defaults(); save(); renderAll();
+    });
+    var z = document.getElementById('zoom');
+    z.addEventListener('input', function () {
+      zoom = N(z.value); document.getElementById('zoom-v').textContent = zoom + '%'; renderPreview();
+    });
+    var t;
+    window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(renderPreview, 120); });
+  });
+})();
+
+</script>
+</body>
+</html>
