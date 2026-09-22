@@ -32,7 +32,17 @@ G.UI = {
   },
 
   /* ---------- イベント ---------- */
-  /* data-act="名前" の要素にハンドラを結び付ける */
+  /* data-act="名前" の要素にハンドラを結び付ける。
+   *
+   * 【重要】リスナーを付けてよいのは #screen の中の要素だけ。
+   * 画面を切り替えると #screen の中身は innerHTML で丸ごと作り直され、
+   * 古い要素ごとリスナーも破棄されるため、ここで付ける分は溜まらない。
+   *
+   * 逆に window / document / #hud / #nav / #modal のような
+   * 「ずっと残り続ける要素」に画面側からリスナーを付けると、
+   * 画面を開くたびに増え続けて戻せなくなる。
+   * どうしても必要になったら、解除する仕組みとセットで実装すること。
+   * （蓄積していないことは tools/listeners.js が毎回のテストで確認している） */
   on(act, handler) {
     document.querySelectorAll(`#screen [data-act="${act}"]`).forEach(el => {
       el.addEventListener('click', ev => {
@@ -125,6 +135,10 @@ G.UI = {
         settled = true;
         m.classList.add('hidden');
         m.removeEventListener('click', onBg);
+        // 閉じた後も中身が残っていると、その分のDOMが居座り続ける。
+        // 表示は display:none なので、ここで消しても見た目には影響しない。
+        G.UI.el('modal-body').innerHTML = '';
+        G.UI.el('modal-actions').innerHTML = '';
         resolve(value);
       };
 
