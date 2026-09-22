@@ -1,0 +1,7131 @@
+{
+ "data": {
+  "skills": {
+   "strike": {
+    "name": "渾身の一撃",
+    "kind": "phys",
+    "mp": 2,
+    "power": 130,
+    "target": "one",
+    "el": "none",
+    "desc": "力を込めて殴りつける。"
+   },
+   "throw_rock": {
+    "name": "投石",
+    "kind": "phys",
+    "mp": 1,
+    "power": 90,
+    "target": "one",
+    "el": "none",
+    "acc": 1,
+    "desc": "石を投げる。村人の知恵。"
+   },
+   "first_aid": {
+    "name": "手当て",
+    "kind": "heal",
+    "mp": 3,
+    "power": 55,
+    "target": "ally",
+    "desc": "小さな傷を手当てする。"
+   },
+   "focus": {
+    "name": "集中",
+    "kind": "buff",
+    "mp": 3,
+    "target": "self",
+    "buff": {
+     "crit": 0.45
+    },
+    "turns": 3,
+    "desc": "3ターンの間、会心率が大きく上がる。"
+   },
+   "guard_up": {
+    "name": "身構える",
+    "kind": "buff",
+    "mp": 3,
+    "target": "self",
+    "buff": {
+     "def": 0.45
+    },
+    "turns": 3,
+    "desc": "3ターンの間、守備が上がる。"
+   },
+   "encourage": {
+    "name": "鼓舞",
+    "kind": "buff",
+    "mp": 6,
+    "target": "allies",
+    "buff": {
+     "atk": 0.2
+    },
+    "turns": 4,
+    "desc": "味方全体の腕力を上げる。"
+   },
+   "fire_bolt": {
+    "name": "ファイアボルト",
+    "kind": "mag",
+    "mp": 4,
+    "power": 125,
+    "target": "one",
+    "el": "fire",
+    "desc": "小さな火の矢を放つ。"
+   },
+   "ice_needle": {
+    "name": "アイスニードル",
+    "kind": "mag",
+    "mp": 4,
+    "power": 125,
+    "target": "one",
+    "el": "water",
+    "desc": "氷の針を射出する。"
+   },
+   "wind_edge": {
+    "name": "ウィンドエッジ",
+    "kind": "mag",
+    "mp": 4,
+    "power": 115,
+    "target": "one",
+    "el": "wind",
+    "desc": "風の刃で切り裂く。素早い詠唱。"
+   },
+   "stone_blast": {
+    "name": "ストーンブラスト",
+    "kind": "mag",
+    "mp": 5,
+    "power": 140,
+    "target": "one",
+    "el": "earth",
+    "desc": "岩塊を撃ち出す。"
+   },
+   "mana_dart": {
+    "name": "マナダート",
+    "kind": "mag",
+    "mp": 3,
+    "power": 105,
+    "target": "one",
+    "el": "none",
+    "hits": 2,
+    "desc": "無属性の魔力弾を2発撃つ。"
+   },
+   "fire_ball": {
+    "name": "ファイアボール",
+    "kind": "mag",
+    "mp": 11,
+    "power": 115,
+    "target": "all",
+    "el": "fire",
+    "desc": "爆炎が敵全体を包む。"
+   },
+   "blizzard": {
+    "name": "ブリザード",
+    "kind": "mag",
+    "mp": 15,
+    "power": 130,
+    "target": "all",
+    "el": "water",
+    "desc": "吹雪が敵全体を凍てつかせる。"
+   },
+   "thunder_storm": {
+    "name": "サンダーストーム",
+    "kind": "mag",
+    "mp": 17,
+    "power": 140,
+    "target": "all",
+    "el": "wind",
+    "inflict": {
+     "type": "paralyze",
+     "rate": 0.25,
+     "turns": 3
+    },
+    "desc": "雷雲を呼ぶ。稀に麻痺。"
+   },
+   "gaia_press": {
+    "name": "ガイアプレス",
+    "kind": "mag",
+    "mp": 18,
+    "power": 150,
+    "target": "all",
+    "el": "earth",
+    "desc": "大地が敵を押し潰す。"
+   },
+   "arcane_burst": {
+    "name": "アルケインバースト",
+    "kind": "mag",
+    "mp": 24,
+    "power": 215,
+    "target": "one",
+    "el": "none",
+    "pierce": 0.35,
+    "desc": "魔防を一部無視する純粋魔力の奔流。"
+   },
+   "meteor": {
+    "name": "メテオ",
+    "kind": "mag",
+    "mp": 42,
+    "power": 265,
+    "target": "all",
+    "el": "fire",
+    "desc": "天から隕石を降らせる禁呪。"
+   },
+   "absolute_zero": {
+    "name": "アブソリュートゼロ",
+    "kind": "mag",
+    "mp": 44,
+    "power": 270,
+    "target": "all",
+    "el": "water",
+    "inflict": {
+     "type": "paralyze",
+     "rate": 0.3,
+     "turns": 2
+    },
+    "desc": "万物を凍結させる極致。"
+   },
+   "gravity": {
+    "name": "グラビティ",
+    "kind": "special",
+    "mp": 20,
+    "target": "all",
+    "fixedRatio": 0.25,
+    "desc": "敵全体の現在HPの25%を削る。"
+   },
+   "drain": {
+    "name": "ドレイン",
+    "kind": "mag",
+    "mp": 10,
+    "power": 110,
+    "target": "one",
+    "el": "dark",
+    "drain": 0.6,
+    "desc": "与えたダメージの60%を吸収する。"
+   },
+   "mana_drain": {
+    "name": "マナドレイン",
+    "kind": "special",
+    "mp": 0,
+    "target": "one",
+    "stealMp": 0.25,
+    "desc": "敵のMPを吸い取る。"
+   },
+   "meditate": {
+    "name": "瞑想",
+    "kind": "special",
+    "mp": 0,
+    "target": "self",
+    "restoreMp": 0.22,
+    "desc": "精神を統一し最大MPの22%を回復する。"
+   },
+   "magic_up": {
+    "name": "魔力増幅",
+    "kind": "buff",
+    "mp": 7,
+    "target": "self",
+    "buff": {
+     "mag": 0.4
+    },
+    "turns": 4,
+    "desc": "自身の魔力を大きく高める。"
+   },
+   "barrier": {
+    "name": "マジックバリア",
+    "kind": "buff",
+    "mp": 9,
+    "target": "allies",
+    "buff": {
+     "res": 0.35
+    },
+    "turns": 4,
+    "desc": "味方全体の魔防を上げる。"
+   },
+   "silence_sp": {
+    "name": "サイレス",
+    "kind": "debuff",
+    "mp": 8,
+    "target": "one",
+    "inflict": {
+     "type": "silence",
+     "rate": 0.75,
+     "turns": 3
+    },
+    "desc": "敵の詠唱を封じる。"
+   },
+   "slow_sp": {
+    "name": "スロウ",
+    "kind": "debuff",
+    "mp": 7,
+    "target": "one",
+    "buff": {
+     "spd": -0.35
+    },
+    "turns": 4,
+    "desc": "敵の敏捷を下げる。"
+   },
+   "power_slash": {
+    "name": "パワースラッシュ",
+    "kind": "phys",
+    "mp": 6,
+    "power": 170,
+    "target": "one",
+    "desc": "渾身の袈裟斬り。"
+   },
+   "double_slash": {
+    "name": "二段斬り",
+    "kind": "phys",
+    "mp": 8,
+    "power": 95,
+    "hits": 2,
+    "target": "one",
+    "desc": "素早く2回斬りつける。"
+   },
+   "shield_bash": {
+    "name": "シールドバッシュ",
+    "kind": "phys",
+    "mp": 7,
+    "power": 110,
+    "target": "one",
+    "useDefAsAtk": true,
+    "inflict": {
+     "type": "paralyze",
+     "rate": 0.35,
+     "turns": 2
+    },
+    "desc": "盾で殴る。守備が高いほど強い。"
+   },
+   "whirlwind": {
+    "name": "旋風斬り",
+    "kind": "phys",
+    "mp": 13,
+    "power": 115,
+    "target": "all",
+    "el": "wind",
+    "desc": "身を回転させ敵全体を薙ぐ。"
+   },
+   "pierce": {
+    "name": "貫き突き",
+    "kind": "phys",
+    "mp": 11,
+    "power": 165,
+    "target": "one",
+    "pierce": 0.45,
+    "desc": "守備の一部を無視して突く。"
+   },
+   "provoke": {
+    "name": "挑発",
+    "kind": "buff",
+    "mp": 4,
+    "target": "self",
+    "buff": {
+     "def": 0.3,
+     "taunt": 1
+    },
+    "turns": 3,
+    "desc": "敵の攻撃を引きつけ、守備を上げる。"
+   },
+   "iron_wall": {
+    "name": "鉄壁",
+    "kind": "buff",
+    "mp": 9,
+    "target": "allies",
+    "buff": {
+     "def": 0.35
+    },
+    "turns": 4,
+    "desc": "味方全体の守備を上げる。"
+   },
+   "armor_break": {
+    "name": "鎧砕き",
+    "kind": "debuff",
+    "mp": 9,
+    "power": 80,
+    "target": "one",
+    "buff": {
+     "def": -0.38
+    },
+    "turns": 4,
+    "desc": "ダメージを与え守備を下げる。"
+   },
+   "brave_slash": {
+    "name": "勇気の一閃",
+    "kind": "phys",
+    "mp": 18,
+    "power": 235,
+    "target": "one",
+    "desc": "渾身の力を込めた必殺の斬撃。"
+   },
+   "mana_blade": {
+    "name": "マナブレード",
+    "kind": "hybrid",
+    "mp": 14,
+    "power": 180,
+    "target": "one",
+    "el": "none",
+    "desc": "剣に魔力を纏わせて斬る。"
+   },
+   "flame_sword": {
+    "name": "フレイムソード",
+    "kind": "hybrid",
+    "mp": 17,
+    "power": 195,
+    "target": "one",
+    "el": "fire",
+    "inflict": {
+     "type": "burn",
+     "rate": 0.5,
+     "turns": 3
+    },
+    "desc": "炎を纏った刃で焼き斬る。"
+   },
+   "holy_blade": {
+    "name": "聖剣技",
+    "kind": "hybrid",
+    "mp": 20,
+    "power": 205,
+    "target": "one",
+    "el": "light",
+    "desc": "聖なる光を刃に宿す。"
+   },
+   "dragon_fang": {
+    "name": "竜牙閃",
+    "kind": "phys",
+    "mp": 28,
+    "power": 290,
+    "target": "one",
+    "desc": "竜すら断つと伝わる大技。"
+   },
+   "nine_slash": {
+    "name": "九頭龍閃",
+    "kind": "phys",
+    "mp": 40,
+    "power": 80,
+    "hits": 5,
+    "target": "one",
+    "desc": "残像を残す五連撃。"
+   },
+   "last_stand": {
+    "name": "不屈",
+    "kind": "buff",
+    "mp": 12,
+    "target": "self",
+    "buff": {
+     "atk": 0.35,
+     "def": 0.35
+    },
+    "turns": 5,
+    "desc": "限界を超え、腕力と守備を高める。"
+   },
+   "heal": {
+    "name": "ヒール",
+    "kind": "heal",
+    "mp": 5,
+    "power": 85,
+    "target": "ally",
+    "desc": "傷を癒す初歩の神聖術。"
+   },
+   "cure": {
+    "name": "キュア",
+    "kind": "heal",
+    "mp": 11,
+    "power": 165,
+    "target": "ally",
+    "desc": "深い傷を癒す。"
+   },
+   "mega_heal": {
+    "name": "メガヒール",
+    "kind": "heal",
+    "mp": 22,
+    "power": 300,
+    "target": "ally",
+    "desc": "瀕死の傷をも癒す高位神聖術。"
+   },
+   "group_heal": {
+    "name": "グループヒール",
+    "kind": "heal",
+    "mp": 20,
+    "power": 120,
+    "target": "allies",
+    "desc": "味方全体を癒す。"
+   },
+   "holy_rain": {
+    "name": "ホーリーレイン",
+    "kind": "heal",
+    "mp": 38,
+    "power": 240,
+    "target": "allies",
+    "desc": "聖なる雨が味方全体を包む。"
+   },
+   "refresh": {
+    "name": "リフレッシュ",
+    "kind": "special",
+    "mp": 8,
+    "target": "ally",
+    "cureStatus": true,
+    "desc": "状態異常をすべて取り除く。"
+   },
+   "revive": {
+    "name": "リザレクション",
+    "kind": "special",
+    "mp": 30,
+    "target": "ally",
+    "revive": 0.5,
+    "desc": "戦闘不能の味方を最大HPの50%で復活させる。"
+   },
+   "holy_ray": {
+    "name": "ホーリーレイ",
+    "kind": "mag",
+    "mp": 12,
+    "power": 155,
+    "target": "one",
+    "el": "light",
+    "desc": "裁きの光を放つ。"
+   },
+   "judgment": {
+    "name": "ジャッジメント",
+    "kind": "mag",
+    "mp": 46,
+    "power": 300,
+    "target": "all",
+    "el": "light",
+    "desc": "天の裁きが敵全体を焼く。"
+   },
+   "sanctuary": {
+    "name": "サンクチュアリ",
+    "kind": "buff",
+    "mp": 16,
+    "target": "allies",
+    "buff": {
+     "def": 0.28,
+     "res": 0.28
+    },
+    "turns": 5,
+    "desc": "聖域を展開し守備と魔防を上げる。"
+   },
+   "bless": {
+    "name": "ブレス",
+    "kind": "buff",
+    "mp": 10,
+    "target": "allies",
+    "buff": {
+     "atk": 0.25,
+     "mag": 0.25
+    },
+    "turns": 4,
+    "desc": "神の祝福で攻撃力と魔力を高める。"
+   },
+   "curse": {
+    "name": "カース",
+    "kind": "debuff",
+    "mp": 10,
+    "target": "one",
+    "buff": {
+     "mag": -0.35,
+     "res": -0.35
+    },
+    "turns": 4,
+    "desc": "呪いで魔力と魔防を下げる。"
+   },
+   "dark_pulse": {
+    "name": "ダークパルス",
+    "kind": "mag",
+    "mp": 13,
+    "power": 160,
+    "target": "one",
+    "el": "dark",
+    "desc": "闇の奔流で打ち据える。"
+   },
+   "abyss_gate": {
+    "name": "アビスゲート",
+    "kind": "mag",
+    "mp": 46,
+    "power": 300,
+    "target": "all",
+    "el": "dark",
+    "desc": "深淵の門を開き、全てを飲み込む。"
+   },
+   "exorcise": {
+    "name": "祓魔",
+    "kind": "mag",
+    "mp": 18,
+    "power": 200,
+    "target": "one",
+    "el": "light",
+    "vsUndead": 2,
+    "desc": "不死・魔族に絶大な効果を持つ。"
+   },
+   "quick_stab": {
+    "name": "クイックスタブ",
+    "kind": "phys",
+    "mp": 3,
+    "power": 100,
+    "target": "one",
+    "acc": 1,
+    "critBonus": 0.15,
+    "desc": "決して外れない素早い刺突。会心が出やすい。"
+   },
+   "steal": {
+    "name": "盗む",
+    "kind": "special",
+    "mp": 4,
+    "target": "one",
+    "steal": true,
+    "desc": "敵から道具を盗む。"
+   },
+   "mug": {
+    "name": "かすめ取り",
+    "kind": "phys",
+    "mp": 8,
+    "power": 110,
+    "target": "one",
+    "stealGold": true,
+    "desc": "斬りつけながら金を奪う。"
+   },
+   "poison_edge": {
+    "name": "ポイズンエッジ",
+    "kind": "phys",
+    "mp": 7,
+    "power": 115,
+    "target": "one",
+    "inflict": {
+     "type": "poison",
+     "rate": 0.75,
+     "turns": 5
+    },
+    "desc": "毒を塗った刃で斬る。"
+   },
+   "smoke_bomb": {
+    "name": "煙玉",
+    "kind": "debuff",
+    "mp": 9,
+    "target": "all",
+    "inflict": {
+     "type": "blind",
+     "rate": 0.7,
+     "turns": 3
+    },
+    "desc": "敵全体を暗闇に陥れる。"
+   },
+   "rapid_fire": {
+    "name": "速射",
+    "kind": "phys",
+    "mp": 10,
+    "power": 72,
+    "hits": 3,
+    "target": "one",
+    "desc": "矢を3連射する。"
+   },
+   "haste": {
+    "name": "ヘイスト",
+    "kind": "buff",
+    "mp": 9,
+    "target": "allies",
+    "buff": {
+     "spd": 0.4
+    },
+    "turns": 4,
+    "desc": "味方全体の敏捷を上げる。"
+   },
+   "assassinate": {
+    "name": "暗殺",
+    "kind": "phys",
+    "mp": 20,
+    "power": 250,
+    "target": "one",
+    "critBonus": 0.4,
+    "desc": "急所を突く。会心が出やすい。"
+   },
+   "shadow_step": {
+    "name": "シャドウステップ",
+    "kind": "buff",
+    "mp": 11,
+    "target": "self",
+    "buff": {
+     "spd": 0.5,
+     "eva": 0.35
+    },
+    "turns": 4,
+    "desc": "影に紛れ、敏捷と回避を高める。"
+   },
+   "kunai_storm": {
+    "name": "手裏剣乱舞",
+    "kind": "phys",
+    "mp": 16,
+    "power": 95,
+    "target": "all",
+    "desc": "無数の刃を敵全体にばら撒く。"
+   },
+   "shadow_flurry": {
+    "name": "影乱舞",
+    "kind": "phys",
+    "mp": 34,
+    "power": 105,
+    "hits": 5,
+    "target": "one",
+    "desc": "影分身による五連撃。"
+   },
+   "death_scythe": {
+    "name": "デスサイズ",
+    "kind": "phys",
+    "mp": 30,
+    "power": 210,
+    "target": "one",
+    "instantKill": 0.12,
+    "desc": "稀に敵を即死させる。"
+   },
+   "analyze": {
+    "name": "看破",
+    "kind": "special",
+    "mp": 2,
+    "target": "one",
+    "analyze": true,
+    "desc": "敵のステータスと弱点を調べる。"
+   },
+   "e_bite": {
+    "name": "噛みつく",
+    "kind": "phys",
+    "mp": 0,
+    "power": 120,
+    "target": "one",
+    "desc": ""
+   },
+   "e_claw": {
+    "name": "爪の連撃",
+    "kind": "phys",
+    "mp": 0,
+    "power": 80,
+    "hits": 2,
+    "target": "one",
+    "desc": ""
+   },
+   "e_howl": {
+    "name": "咆哮",
+    "kind": "buff",
+    "mp": 0,
+    "target": "self",
+    "buff": {
+     "atk": 0.35
+    },
+    "turns": 3,
+    "desc": ""
+   },
+   "e_fire": {
+    "name": "火炎の息",
+    "kind": "mag",
+    "mp": 0,
+    "power": 130,
+    "target": "all",
+    "el": "fire",
+    "desc": ""
+   },
+   "e_ice": {
+    "name": "氷の息",
+    "kind": "mag",
+    "mp": 0,
+    "power": 130,
+    "target": "all",
+    "el": "water",
+    "desc": ""
+   },
+   "e_poison": {
+    "name": "毒霧",
+    "kind": "debuff",
+    "mp": 0,
+    "target": "all",
+    "inflict": {
+     "type": "poison",
+     "rate": 0.6,
+     "turns": 4
+    },
+    "desc": ""
+   },
+   "e_paralyze": {
+    "name": "痺れ粉",
+    "kind": "debuff",
+    "mp": 0,
+    "target": "one",
+    "inflict": {
+     "type": "paralyze",
+     "rate": 0.7,
+     "turns": 3
+    },
+    "desc": ""
+   },
+   "e_sleep": {
+    "name": "子守唄",
+    "kind": "debuff",
+    "mp": 0,
+    "target": "all",
+    "inflict": {
+     "type": "sleep",
+     "rate": 0.5,
+     "turns": 3
+    },
+    "desc": ""
+   },
+   "e_drain": {
+    "name": "生命吸収",
+    "kind": "mag",
+    "mp": 0,
+    "power": 120,
+    "target": "one",
+    "el": "dark",
+    "drain": 1,
+    "desc": ""
+   },
+   "e_heal": {
+    "name": "自己再生",
+    "kind": "heal",
+    "mp": 0,
+    "power": 140,
+    "target": "self",
+    "desc": ""
+   },
+   "e_dark": {
+    "name": "暗黒波動",
+    "kind": "mag",
+    "mp": 0,
+    "power": 150,
+    "target": "all",
+    "el": "dark",
+    "desc": ""
+   },
+   "e_quake": {
+    "name": "大地震",
+    "kind": "mag",
+    "mp": 0,
+    "power": 160,
+    "target": "all",
+    "el": "earth",
+    "desc": ""
+   },
+   "e_holy": {
+    "name": "聖光",
+    "kind": "mag",
+    "mp": 0,
+    "power": 150,
+    "target": "all",
+    "el": "light",
+    "desc": ""
+   },
+   "e_crush": {
+    "name": "叩き潰す",
+    "kind": "phys",
+    "mp": 0,
+    "power": 185,
+    "target": "one",
+    "desc": ""
+   },
+   "e_allslash": {
+    "name": "薙ぎ払い",
+    "kind": "phys",
+    "mp": 0,
+    "power": 125,
+    "target": "all",
+    "desc": ""
+   },
+   "e_curse": {
+    "name": "呪詛",
+    "kind": "debuff",
+    "mp": 0,
+    "target": "all",
+    "buff": {
+     "atk": -0.3,
+     "mag": -0.3
+    },
+    "turns": 4,
+    "desc": ""
+   },
+   "e_meteor": {
+    "name": "魔王のメテオ",
+    "kind": "mag",
+    "mp": 0,
+    "power": 230,
+    "target": "all",
+    "el": "fire",
+    "desc": ""
+   },
+   "e_despair": {
+    "name": "絶望の波動",
+    "kind": "mag",
+    "mp": 0,
+    "power": 210,
+    "target": "all",
+    "el": "dark",
+    "inflict": {
+     "type": "silence",
+     "rate": 0.4,
+     "turns": 3
+    },
+    "desc": ""
+   },
+   "e_endgame": {
+    "name": "終焉の宣告",
+    "kind": "special",
+    "mp": 0,
+    "target": "all",
+    "fixedRatio": 0.45,
+    "desc": ""
+   }
+  },
+  "jobs": {
+   "villager": {
+    "name": "村人",
+    "icon": "🧑‍🌾",
+    "tier": 0,
+    "req": 1,
+    "from": null,
+    "desc": "何者でもない者。だが、全ての可能性がここから始まる。",
+    "growth": {
+     "hp": 5,
+     "mp": 2,
+     "atk": 1.2,
+     "def": 1.1,
+     "mag": 1,
+     "res": 1,
+     "spd": 1.1
+    },
+    "learn": {
+     "1": "strike",
+     "2": "throw_rock",
+     "3": "first_aid",
+     "4": "guard_up"
+    }
+   },
+   "apprentice_mage": {
+    "name": "魔術師見習い",
+    "icon": "🪄",
+    "tier": 1,
+    "req": 5,
+    "from": [
+     "villager"
+    ],
+    "desc": "アルカナ魔法学院の基礎課程。杖と詠唱を学ぶ者。",
+    "growth": {
+     "hp": 4,
+     "mp": 6,
+     "atk": 0.8,
+     "def": 0.9,
+     "mag": 2.6,
+     "res": 1.9,
+     "spd": 1.2
+    },
+    "learn": {
+     "5": "fire_bolt",
+     "6": "ice_needle",
+     "8": "meditate",
+     "10": "wind_edge",
+     "12": "mana_dart"
+    }
+   },
+   "apprentice_knight": {
+    "name": "剣士見習い",
+    "icon": "🗡️",
+    "tier": 1,
+    "req": 5,
+    "from": [
+     "villager"
+    ],
+    "desc": "剣術実習の優等生。まっすぐな刃に己を託す。",
+    "growth": {
+     "hp": 8.5,
+     "mp": 2,
+     "atk": 2.4,
+     "def": 2.1,
+     "mag": 0.6,
+     "res": 1,
+     "spd": 1.3
+    },
+    "learn": {
+     "5": "power_slash",
+     "7": "provoke",
+     "9": "double_slash",
+     "12": "armor_break"
+    }
+   },
+   "apprentice_cleric": {
+    "name": "神官見習い",
+    "icon": "⛪",
+    "tier": 1,
+    "req": 5,
+    "from": [
+     "villager"
+    ],
+    "desc": "神聖学の徒。癒やしの光を人に向ける者。",
+    "growth": {
+     "hp": 6,
+     "mp": 4.5,
+     "atk": 1.1,
+     "def": 1.6,
+     "mag": 2.1,
+     "res": 2.4,
+     "spd": 1
+    },
+    "learn": {
+     "5": "heal",
+     "7": "holy_ray",
+     "9": "refresh",
+     "12": "bless"
+    }
+   },
+   "apprentice_scout": {
+    "name": "斥候見習い",
+    "icon": "🗺️",
+    "tier": 1,
+    "req": 5,
+    "from": [
+     "villager"
+    ],
+    "desc": "影と地図を読む者。ギルドで最も重宝される才。",
+    "growth": {
+     "hp": 5.5,
+     "mp": 3,
+     "atk": 1.9,
+     "def": 1.3,
+     "mag": 1.1,
+     "res": 1.2,
+     "spd": 2.6
+    },
+    "learn": {
+     "5": "quick_stab",
+     "6": "analyze",
+     "8": "steal",
+     "10": "poison_edge",
+     "12": "haste"
+    }
+   },
+   "sorcerer": {
+    "name": "魔道士",
+    "icon": "🔮",
+    "tier": 2,
+    "req": 15,
+    "from": [
+     "apprentice_mage"
+    ],
+    "desc": "攻性魔術を極める道。一撃で戦場を変える。",
+    "growth": {
+     "hp": 6,
+     "mp": 9,
+     "atk": 1,
+     "def": 1.3,
+     "mag": 4.2,
+     "res": 2.8,
+     "spd": 1.6
+    },
+    "learn": {
+     "15": "fire_ball",
+     "18": "magic_up",
+     "21": "blizzard",
+     "25": "drain"
+    }
+   },
+   "elementalist": {
+    "name": "精霊術師",
+    "icon": "🧚",
+    "tier": 2,
+    "req": 15,
+    "from": [
+     "apprentice_mage"
+    ],
+    "desc": "精霊と契約し、自然そのものを借り受ける。",
+    "growth": {
+     "hp": 6.5,
+     "mp": 8.5,
+     "atk": 1.1,
+     "def": 1.5,
+     "mag": 3.8,
+     "res": 3.4,
+     "spd": 1.8
+    },
+    "learn": {
+     "15": "stone_blast",
+     "17": "barrier",
+     "20": "thunder_storm",
+     "24": "gaia_press"
+    }
+   },
+   "swordsman": {
+    "name": "剣士",
+    "icon": "⚔️",
+    "tier": 2,
+    "req": 15,
+    "from": [
+     "apprentice_knight"
+    ],
+    "desc": "速さと手数で押し切る前衛の花形。",
+    "growth": {
+     "hp": 12,
+     "mp": 3,
+     "atk": 4,
+     "def": 3,
+     "mag": 0.8,
+     "res": 1.4,
+     "spd": 2.2
+    },
+    "learn": {
+     "15": "whirlwind",
+     "18": "pierce",
+     "22": "focus",
+     "26": "brave_slash"
+    }
+   },
+   "guardian": {
+    "name": "重騎士",
+    "icon": "🛡️",
+    "tier": 2,
+    "req": 15,
+    "from": [
+     "apprentice_knight"
+    ],
+    "desc": "仲間の盾となる者。決して退かぬ意志。",
+    "growth": {
+     "hp": 15,
+     "mp": 3,
+     "atk": 3,
+     "def": 4.4,
+     "mag": 0.8,
+     "res": 2.4,
+     "spd": 1.2
+    },
+    "learn": {
+     "15": "shield_bash",
+     "17": "iron_wall",
+     "21": "last_stand",
+     "26": "encourage"
+    }
+   },
+   "priest": {
+    "name": "僧侶",
+    "icon": "📿",
+    "tier": 2,
+    "req": 15,
+    "from": [
+     "apprentice_cleric"
+    ],
+    "desc": "癒やしを極める道。パーティの生命線。",
+    "growth": {
+     "hp": 8,
+     "mp": 7.5,
+     "atk": 1.3,
+     "def": 2.2,
+     "mag": 3.4,
+     "res": 3.8,
+     "spd": 1.3
+    },
+    "learn": {
+     "15": "cure",
+     "18": "group_heal",
+     "22": "sanctuary",
+     "26": "revive"
+    }
+   },
+   "exorcist": {
+    "name": "祓魔師",
+    "icon": "🕯️",
+    "tier": 2,
+    "req": 15,
+    "from": [
+     "apprentice_cleric"
+    ],
+    "desc": "魔を祓う戦う聖職者。魔族に対し無類の強さ。",
+    "growth": {
+     "hp": 9,
+     "mp": 6.5,
+     "atk": 2.2,
+     "def": 2.4,
+     "mag": 3.2,
+     "res": 3.4,
+     "spd": 1.6
+    },
+    "learn": {
+     "15": "exorcise",
+     "18": "curse",
+     "21": "dark_pulse",
+     "26": "sanctuary"
+    }
+   },
+   "thief": {
+    "name": "盗賊",
+    "icon": "🗝️",
+    "tier": 2,
+    "req": 15,
+    "from": [
+     "apprentice_scout"
+    ],
+    "desc": "戦場の実利主義者。奪い、躱し、生き延びる。",
+    "growth": {
+     "hp": 9,
+     "mp": 4.5,
+     "atk": 3.2,
+     "def": 2,
+     "mag": 1.4,
+     "res": 1.8,
+     "spd": 4.2
+    },
+    "learn": {
+     "15": "mug",
+     "17": "smoke_bomb",
+     "21": "shadow_step",
+     "25": "assassinate"
+    }
+   },
+   "ranger": {
+    "name": "狩人",
+    "icon": "🏹",
+    "tier": 2,
+    "req": 15,
+    "from": [
+     "apprentice_scout"
+    ],
+    "desc": "遠く、確実に。魔物の生態を知り尽くす射手。",
+    "growth": {
+     "hp": 10,
+     "mp": 4.5,
+     "atk": 3.4,
+     "def": 2.2,
+     "mag": 1.8,
+     "res": 2,
+     "spd": 3.6
+    },
+    "learn": {
+     "15": "rapid_fire",
+     "18": "haste",
+     "22": "poison_edge",
+     "26": "kunai_storm"
+    }
+   },
+   "archmage": {
+    "name": "大魔道士",
+    "icon": "🌌",
+    "tier": 3,
+    "req": 30,
+    "from": [
+     "sorcerer"
+    ],
+    "desc": "学院が百年に一人と認める到達点。",
+    "growth": {
+     "hp": 9,
+     "mp": 13,
+     "atk": 1.4,
+     "def": 2,
+     "mag": 6.2,
+     "res": 4.2,
+     "spd": 2.2
+    },
+    "learn": {
+     "30": "arcane_burst",
+     "34": "gravity",
+     "38": "mana_drain",
+     "44": "meteor"
+    }
+   },
+   "spirit_lord": {
+    "name": "精霊王の巫子",
+    "icon": "🌿",
+    "tier": 3,
+    "req": 30,
+    "from": [
+     "elementalist"
+    ],
+    "desc": "四大精霊の王に名を呼ばれた者。",
+    "growth": {
+     "hp": 10,
+     "mp": 12,
+     "atk": 1.5,
+     "def": 2.4,
+     "mag": 5.6,
+     "res": 5.2,
+     "spd": 2.6
+    },
+    "learn": {
+     "30": "absolute_zero",
+     "33": "barrier",
+     "37": "gravity",
+     "44": "holy_rain"
+    }
+   },
+   "magic_swordsman": {
+    "name": "魔法剣士",
+    "icon": "🔥",
+    "tier": 3,
+    "req": 30,
+    "from": [
+     "swordsman",
+     "sorcerer"
+    ],
+    "desc": "剣と魔の両道。学院とギルド双方の誇り。",
+    "growth": {
+     "hp": 16,
+     "mp": 7,
+     "atk": 5,
+     "def": 4,
+     "mag": 4,
+     "res": 3,
+     "spd": 3.2
+    },
+    "learn": {
+     "30": "mana_blade",
+     "33": "flame_sword",
+     "37": "magic_up",
+     "43": "dragon_fang"
+    }
+   },
+   "paladin": {
+    "name": "聖騎士",
+    "icon": "✝️",
+    "tier": 3,
+    "req": 30,
+    "from": [
+     "guardian",
+     "apprentice_cleric",
+     "priest"
+    ],
+    "desc": "誓いを鎧とする者。倒れる者を決して見捨てない。",
+    "growth": {
+     "hp": 20,
+     "mp": 6,
+     "atk": 4.6,
+     "def": 6,
+     "mag": 3,
+     "res": 4.4,
+     "spd": 2
+    },
+    "learn": {
+     "30": "holy_blade",
+     "33": "sanctuary",
+     "37": "cure",
+     "43": "last_stand"
+    }
+   },
+   "bishop": {
+    "name": "司祭",
+    "icon": "👑",
+    "tier": 3,
+    "req": 30,
+    "from": [
+     "priest"
+    ],
+    "desc": "大聖堂に名を連ねる高位聖職者。",
+    "growth": {
+     "hp": 12,
+     "mp": 11,
+     "atk": 1.8,
+     "def": 3.2,
+     "mag": 5.2,
+     "res": 5.6,
+     "spd": 1.8
+    },
+    "learn": {
+     "30": "mega_heal",
+     "33": "revive",
+     "37": "bless",
+     "44": "holy_rain"
+    }
+   },
+   "inquisitor": {
+    "name": "審問官",
+    "icon": "⚖️",
+    "tier": 3,
+    "req": 30,
+    "from": [
+     "exorcist"
+    ],
+    "desc": "魔王軍を追う教会の刃。慈悲なき正義。",
+    "growth": {
+     "hp": 14,
+     "mp": 9,
+     "atk": 3.6,
+     "def": 3.6,
+     "mag": 5,
+     "res": 5,
+     "spd": 2.6
+    },
+    "learn": {
+     "30": "judgment",
+     "34": "curse",
+     "38": "abyss_gate",
+     "43": "mega_heal"
+    }
+   },
+   "ninja": {
+    "name": "忍者",
+    "icon": "🥷",
+    "tier": 3,
+    "req": 30,
+    "from": [
+     "thief"
+    ],
+    "desc": "影の技を極めし者。誰よりも速く、誰よりも静かに。",
+    "growth": {
+     "hp": 14,
+     "mp": 7,
+     "atk": 5,
+     "def": 3,
+     "mag": 3,
+     "res": 2.8,
+     "spd": 6.4
+    },
+    "learn": {
+     "30": "kunai_storm",
+     "33": "shadow_step",
+     "37": "shadow_flurry",
+     "43": "death_scythe"
+    }
+   },
+   "sniper": {
+    "name": "狙撃手",
+    "icon": "🎯",
+    "tier": 3,
+    "req": 30,
+    "from": [
+     "ranger"
+    ],
+    "desc": "一矢必中。魔王城の尖塔からでも心臓を射抜く。",
+    "growth": {
+     "hp": 15,
+     "mp": 6,
+     "atk": 5.4,
+     "def": 3.2,
+     "mag": 2.6,
+     "res": 2.8,
+     "spd": 5.2
+    },
+    "learn": {
+     "30": "assassinate",
+     "33": "focus",
+     "38": "rapid_fire",
+     "43": "death_scythe"
+    }
+   },
+   "sage": {
+    "name": "賢者",
+    "icon": "📚",
+    "tier": 4,
+    "req": 50,
+    "from": [
+     "archmage",
+     "spirit_lord"
+    ],
+    "desc": "全ての魔術を統べ、癒やしすら操る。学院史上の頂点。",
+    "growth": {
+     "hp": 14,
+     "mp": 18,
+     "atk": 2.2,
+     "def": 3.4,
+     "mag": 8.4,
+     "res": 6.4,
+     "spd": 3.4
+    },
+    "learn": {
+     "50": "meteor",
+     "52": "holy_rain",
+     "55": "absolute_zero",
+     "58": "judgment"
+    }
+   },
+   "sword_saint": {
+    "name": "剣聖",
+    "icon": "🌟",
+    "tier": 4,
+    "req": 50,
+    "from": [
+     "magic_swordsman",
+     "paladin"
+    ],
+    "desc": "刃の理に至った者。その一閃は世界を分かつ。",
+    "growth": {
+     "hp": 26,
+     "mp": 9,
+     "atk": 7.6,
+     "def": 6.4,
+     "mag": 4,
+     "res": 4.4,
+     "spd": 4.6
+    },
+    "learn": {
+     "50": "nine_slash",
+     "53": "holy_blade",
+     "56": "last_stand",
+     "59": "dragon_fang"
+    }
+   },
+   "saint": {
+    "name": "聖者",
+    "icon": "🕊️",
+    "tier": 4,
+    "req": 50,
+    "from": [
+     "bishop",
+     "inquisitor"
+    ],
+    "desc": "死の淵から幾度でも仲間を呼び戻す、生命の体現者。",
+    "growth": {
+     "hp": 18,
+     "mp": 15,
+     "atk": 3,
+     "def": 4.6,
+     "mag": 7.2,
+     "res": 7.6,
+     "spd": 3
+    },
+    "learn": {
+     "50": "holy_rain",
+     "52": "revive",
+     "55": "judgment",
+     "58": "sanctuary"
+    }
+   },
+   "shadow_emperor": {
+    "name": "影皇",
+    "icon": "♠️",
+    "tier": 4,
+    "req": 50,
+    "from": [
+     "ninja",
+     "sniper"
+    ],
+    "desc": "影の頂に立つ者。魔王ですらその位置を掴めない。",
+    "growth": {
+     "hp": 20,
+     "mp": 10,
+     "atk": 7.2,
+     "def": 4.4,
+     "mag": 4,
+     "res": 4,
+     "spd": 8.4
+    },
+    "learn": {
+     "50": "shadow_flurry",
+     "53": "death_scythe",
+     "56": "assassinate",
+     "59": "kunai_storm"
+    }
+   }
+  },
+  "items": {
+   "herb": {
+    "name": "薬草",
+    "type": "consume",
+    "icon": "🌿",
+    "price": 30,
+    "desc": "HPを60回復する。",
+    "use": {
+     "hp": 60
+    }
+   },
+   "potion": {
+    "name": "ポーション",
+    "type": "consume",
+    "icon": "🧪",
+    "price": 120,
+    "desc": "HPを220回復する。",
+    "use": {
+     "hp": 220
+    }
+   },
+   "hi_potion": {
+    "name": "ハイポーション",
+    "type": "consume",
+    "icon": "⚗️",
+    "price": 420,
+    "desc": "HPを700回復する。",
+    "use": {
+     "hp": 700
+    }
+   },
+   "elixir": {
+    "name": "エリクサー",
+    "type": "consume",
+    "icon": "🏺",
+    "price": 2600,
+    "desc": "HPとMPを全回復する。",
+    "use": {
+     "hp": 9999,
+     "mp": 9999
+    }
+   },
+   "ether": {
+    "name": "エーテル",
+    "type": "consume",
+    "icon": "💠",
+    "price": 260,
+    "desc": "MPを50回復する。",
+    "use": {
+     "mp": 50
+    }
+   },
+   "hi_ether": {
+    "name": "ハイエーテル",
+    "type": "consume",
+    "icon": "🔷",
+    "price": 900,
+    "desc": "MPを150回復する。",
+    "use": {
+     "mp": 150
+    }
+   },
+   "antidote": {
+    "name": "解毒草",
+    "type": "consume",
+    "icon": "🍀",
+    "price": 50,
+    "desc": "状態異常を1つ治す。",
+    "use": {
+     "cure": true
+    }
+   },
+   "phoenix_tail": {
+    "name": "不死鳥の尾",
+    "type": "consume",
+    "icon": "🪶",
+    "price": 800,
+    "desc": "戦闘不能の味方をHP50%で復活させる。",
+    "use": {
+     "revive": 0.5
+    }
+   },
+   "smoke": {
+    "name": "煙玉",
+    "type": "consume",
+    "icon": "💨",
+    "price": 90,
+    "desc": "戦闘から確実に逃走する。",
+    "use": {
+     "escape": true
+    }
+   },
+   "tonic_atk": {
+    "name": "力の水",
+    "type": "consume",
+    "icon": "🥃",
+    "price": 1500,
+    "desc": "腕力が永続的に+3される。",
+    "use": {
+     "perm": {
+      "atk": 3
+     }
+    }
+   },
+   "tonic_mag": {
+    "name": "知の雫",
+    "type": "consume",
+    "icon": "🫙",
+    "price": 1500,
+    "desc": "魔力が永続的に+3される。",
+    "use": {
+     "perm": {
+      "mag": 3
+     }
+    }
+   },
+   "tonic_hp": {
+    "name": "生命の実",
+    "type": "consume",
+    "icon": "🍎",
+    "price": 1800,
+    "desc": "最大HPが永続的に+25される。",
+    "use": {
+     "perm": {
+      "hp": 25
+     }
+    }
+   },
+   "wood_stick": {
+    "name": "木の枝",
+    "type": "weapon",
+    "shape": "stick",
+    "icon": "🪵",
+    "price": 0,
+    "mods": {
+     "atk": 2
+    },
+    "desc": "村を出る時に拾った枝。"
+   },
+   "bronze_sword": {
+    "name": "ブロンズソード",
+    "type": "weapon",
+    "shape": "sword",
+    "icon": "🗡️",
+    "price": 320,
+    "mods": {
+     "atk": 12
+    },
+    "desc": "新人冒険者の定番。"
+   },
+   "iron_sword": {
+    "name": "アイアンソード",
+    "type": "weapon",
+    "shape": "sword",
+    "icon": "⚔️",
+    "price": 1400,
+    "mods": {
+     "atk": 30
+    },
+    "desc": "手入れさえすれば長く使える。"
+   },
+   "silver_sword": {
+    "name": "シルバーソード",
+    "type": "weapon",
+    "shape": "sword",
+    "icon": "🤍",
+    "price": 5200,
+    "mods": {
+     "atk": 58,
+     "res": 8
+    },
+    "desc": "魔物に特効を持つ銀の刃。"
+   },
+   "mithril_blade": {
+    "name": "ミスリルブレード",
+    "type": "weapon",
+    "shape": "sword",
+    "icon": "💎",
+    "price": 16000,
+    "mods": {
+     "atk": 95,
+     "spd": 10
+    },
+    "desc": "軽く、硬く、折れない。"
+   },
+   "flame_tongue": {
+    "name": "フレイムタン",
+    "type": "weapon",
+    "shape": "sword",
+    "icon": "🔥",
+    "price": 32000,
+    "mods": {
+     "atk": 130,
+     "mag": 25
+    },
+    "el": "fire",
+    "desc": "刀身が常に燃えている。"
+   },
+   "excalibur": {
+    "name": "聖剣エクスカリバー",
+    "type": "weapon",
+    "shape": "sword",
+    "icon": "🌟",
+    "price": 0,
+    "mods": {
+     "atk": 210,
+     "mag": 60,
+     "res": 30
+    },
+    "el": "light",
+    "desc": "魔王を討つために鍛えられた選ばれし刃。",
+    "noShop": true,
+    "unique": true
+   },
+   "oak_staff": {
+    "name": "樫の杖",
+    "type": "weapon",
+    "shape": "staff",
+    "icon": "🪄",
+    "price": 300,
+    "mods": {
+     "mag": 12,
+     "mp": 10
+    },
+    "desc": "学院の入学時に配られる杖。"
+   },
+   "apprentice_wand": {
+    "name": "見習いの魔杖",
+    "type": "weapon",
+    "shape": "staff",
+    "icon": "✨",
+    "price": 1300,
+    "mods": {
+     "mag": 28,
+     "mp": 22
+    },
+    "desc": "魔力の通りが良い。"
+   },
+   "crystal_rod": {
+    "name": "クリスタルロッド",
+    "type": "weapon",
+    "shape": "staff",
+    "icon": "🔮",
+    "price": 5000,
+    "mods": {
+     "mag": 55,
+     "mp": 45,
+     "res": 10
+    },
+    "desc": "結晶が詠唱を増幅する。"
+   },
+   "arch_staff": {
+    "name": "大魔道の杖",
+    "type": "weapon",
+    "shape": "staff",
+    "icon": "🌌",
+    "price": 15500,
+    "mods": {
+     "mag": 92,
+     "mp": 80,
+     "res": 20
+    },
+    "desc": "大魔道士に許される杖。"
+   },
+   "world_tree_staff": {
+    "name": "世界樹の杖",
+    "type": "weapon",
+    "shape": "staff",
+    "icon": "🌳",
+    "price": 31000,
+    "mods": {
+     "mag": 135,
+     "mp": 130,
+     "res": 38
+    },
+    "desc": "尽きぬ魔力が宿る。"
+   },
+   "cleric_mace": {
+    "name": "僧兵の錫杖",
+    "type": "weapon",
+    "shape": "mace",
+    "icon": "📿",
+    "price": 1200,
+    "mods": {
+     "atk": 18,
+     "mag": 16
+    },
+    "desc": "祈りと打撃を兼ねる。"
+   },
+   "holy_scepter": {
+    "name": "聖別の錫杖",
+    "type": "weapon",
+    "shape": "mace",
+    "icon": "🕯️",
+    "price": 6000,
+    "mods": {
+     "atk": 34,
+     "mag": 52,
+     "res": 16
+    },
+    "desc": "不死を退ける聖具。"
+   },
+   "bronze_dagger": {
+    "name": "ブロンズダガー",
+    "type": "weapon",
+    "shape": "dagger",
+    "icon": "🔪",
+    "price": 280,
+    "mods": {
+     "atk": 9,
+     "spd": 6
+    },
+    "desc": "素早さ重視の短刀。"
+   },
+   "assassin_edge": {
+    "name": "アサシンエッジ",
+    "type": "weapon",
+    "shape": "dagger",
+    "icon": "🗝️",
+    "price": 4800,
+    "mods": {
+     "atk": 48,
+     "spd": 18
+    },
+    "desc": "刃に薄く毒が残っている。"
+   },
+   "shadow_fang": {
+    "name": "影牙",
+    "type": "weapon",
+    "shape": "dagger",
+    "icon": "♠️",
+    "price": 18000,
+    "mods": {
+     "atk": 100,
+     "spd": 34
+    },
+    "desc": "影そのものを固めた双刃。"
+   },
+   "hunting_bow": {
+    "name": "ハンティングボウ",
+    "type": "weapon",
+    "shape": "bow",
+    "icon": "🏹",
+    "price": 1250,
+    "mods": {
+     "atk": 26,
+     "spd": 10
+    },
+    "desc": "狩人の相棒。"
+   },
+   "storm_bow": {
+    "name": "ストームボウ",
+    "type": "weapon",
+    "shape": "bow",
+    "icon": "🌪️",
+    "price": 14000,
+    "mods": {
+     "atk": 88,
+     "spd": 26
+    },
+    "el": "wind",
+    "desc": "放った矢が風を裂く。"
+   },
+   "cloth": {
+    "name": "布の服",
+    "type": "armor",
+    "icon": "👕",
+    "price": 0,
+    "mods": {
+     "def": 2
+    },
+    "desc": "村で着ていた普段着。"
+   },
+   "academy_robe": {
+    "name": "学院の制服",
+    "type": "armor",
+    "icon": "🎓",
+    "price": 400,
+    "mods": {
+     "def": 10,
+     "res": 12,
+     "mp": 15
+    },
+    "desc": "アルカナ魔法学院の正装。"
+   },
+   "leather_armor": {
+    "name": "レザーアーマー",
+    "type": "armor",
+    "icon": "🥋",
+    "price": 900,
+    "mods": {
+     "def": 20,
+     "spd": 4
+    },
+    "desc": "動きを妨げない革鎧。"
+   },
+   "chain_mail": {
+    "name": "チェインメイル",
+    "type": "armor",
+    "icon": "⛓️",
+    "price": 3200,
+    "mods": {
+     "def": 42,
+     "res": 10
+    },
+    "desc": "鎖を編んだ鎧。"
+   },
+   "mage_robe": {
+    "name": "魔道士のローブ",
+    "type": "armor",
+    "icon": "🧥",
+    "price": 3600,
+    "mods": {
+     "def": 24,
+     "res": 40,
+     "mp": 45
+    },
+    "desc": "魔力の循環を助ける。"
+   },
+   "plate_armor": {
+    "name": "プレートアーマー",
+    "type": "armor",
+    "icon": "🛡️",
+    "price": 11000,
+    "mods": {
+     "def": 82,
+     "res": 24,
+     "spd": -6
+    },
+    "desc": "重いが、堅い。"
+   },
+   "holy_vestment": {
+    "name": "聖衣",
+    "type": "armor",
+    "icon": "🕊️",
+    "price": 13500,
+    "mods": {
+     "def": 60,
+     "res": 80,
+     "mp": 70
+    },
+    "desc": "聖別された法衣。"
+   },
+   "shadow_garb": {
+    "name": "影装束",
+    "type": "armor",
+    "icon": "🥷",
+    "price": 12500,
+    "mods": {
+     "def": 56,
+     "res": 40,
+     "spd": 24
+    },
+    "desc": "気配を消す黒の装束。"
+   },
+   "dragon_mail": {
+    "name": "ドラゴンメイル",
+    "type": "armor",
+    "icon": "🐉",
+    "price": 29000,
+    "mods": {
+     "def": 135,
+     "res": 60
+    },
+    "desc": "竜鱗を鍛え直した最高峰の鎧。"
+   },
+   "star_robe": {
+    "name": "星辰のローブ",
+    "type": "armor",
+    "icon": "🌠",
+    "price": 30000,
+    "mods": {
+     "def": 70,
+     "res": 140,
+     "mp": 160
+    },
+    "desc": "星の光を織り込んだ法衣。"
+   },
+   "leather_band": {
+    "name": "革の腕輪",
+    "type": "accessory",
+    "icon": "📿",
+    "price": 250,
+    "mods": {
+     "atk": 5,
+     "def": 5
+    },
+    "desc": "ささやかな守り。"
+   },
+   "power_ring": {
+    "name": "力の指輪",
+    "type": "accessory",
+    "icon": "💍",
+    "price": 2800,
+    "mods": {
+     "atk": 24
+    },
+    "desc": "腕力を高める指輪。"
+   },
+   "wisdom_ring": {
+    "name": "知恵の指輪",
+    "type": "accessory",
+    "icon": "💎",
+    "price": 2800,
+    "mods": {
+     "mag": 24
+    },
+    "desc": "魔力を高める指輪。"
+   },
+   "guard_ring": {
+    "name": "守りの指輪",
+    "type": "accessory",
+    "icon": "🔰",
+    "price": 2800,
+    "mods": {
+     "def": 20,
+     "res": 20
+    },
+    "desc": "守備と魔防を高める。"
+   },
+   "swift_boots": {
+    "name": "疾風のブーツ",
+    "type": "accessory",
+    "icon": "👢",
+    "price": 3400,
+    "mods": {
+     "spd": 28
+    },
+    "desc": "足取りが驚くほど軽くなる。"
+   },
+   "mana_pendant": {
+    "name": "魔力のペンダント",
+    "type": "accessory",
+    "icon": "🔵",
+    "price": 4200,
+    "mods": {
+     "mp": 120,
+     "mag": 14
+    },
+    "desc": "MPの上限が大きく伸びる。"
+   },
+   "life_amulet": {
+    "name": "生命のお守り",
+    "type": "accessory",
+    "icon": "❤️",
+    "price": 4200,
+    "mods": {
+     "hp": 220,
+     "def": 10
+    },
+    "desc": "最大HPが大きく伸びる。"
+   },
+   "scholar_glasses": {
+    "name": "学者の眼鏡",
+    "type": "accessory",
+    "icon": "👓",
+    "price": 2000,
+    "mods": {
+     "mag": 10
+    },
+    "study": 0.35,
+    "desc": "授業での習熟度が35%上がる。"
+   },
+   "lucky_coin": {
+    "name": "幸運の金貨",
+    "type": "accessory",
+    "icon": "🪙",
+    "price": 3600,
+    "mods": {},
+    "goldBonus": 0.35,
+    "desc": "クエスト報酬が35%増える。"
+   },
+   "hero_proof": {
+    "name": "勇者の証",
+    "type": "accessory",
+    "icon": "🏅",
+    "price": 0,
+    "mods": {
+     "atk": 40,
+     "def": 40,
+     "mag": 40,
+     "res": 40,
+     "spd": 20,
+     "hp": 400
+    },
+    "noShop": true,
+    "unique": true,
+    "desc": "魔王に挑む資格を持つ者の証。"
+   },
+   "slime_gel": {
+    "name": "スライムゼリー",
+    "type": "material",
+    "icon": "🫧",
+    "price": 18,
+    "desc": "錬金術の基礎素材。"
+   },
+   "wolf_pelt": {
+    "name": "狼の毛皮",
+    "type": "material",
+    "icon": "🐺",
+    "price": 55,
+    "desc": "防具屋が高く買う。"
+   },
+   "goblin_fang": {
+    "name": "ゴブリンの牙",
+    "type": "material",
+    "icon": "🦷",
+    "price": 40,
+    "desc": "討伐証明にもなる。"
+   },
+   "mana_crystal": {
+    "name": "魔力結晶",
+    "type": "material",
+    "icon": "💠",
+    "price": 230,
+    "desc": "魔道具の核になる。"
+   },
+   "dragon_scale": {
+    "name": "竜の鱗",
+    "type": "material",
+    "icon": "🐲",
+    "price": 1400,
+    "desc": "極めて硬い。"
+   },
+   "dark_ore": {
+    "name": "魔鉱石",
+    "type": "material",
+    "icon": "🪨",
+    "price": 680,
+    "desc": "魔王領でのみ採れる鉱石。"
+   },
+   "demon_horn": {
+    "name": "魔族の角",
+    "type": "material",
+    "icon": "😈",
+    "price": 2200,
+    "desc": "上位魔族の証。"
+   }
+  },
+  "shops": {
+   "weapon": {
+    "name": "武具屋「鋼の梟」",
+    "icon": "⚒️",
+    "lines": [
+     {
+      "id": "bronze_sword",
+      "rank": 0
+     },
+     {
+      "id": "bronze_dagger",
+      "rank": 0
+     },
+     {
+      "id": "oak_staff",
+      "rank": 0
+     },
+     {
+      "id": "iron_sword",
+      "rank": 1
+     },
+     {
+      "id": "apprentice_wand",
+      "rank": 1
+     },
+     {
+      "id": "cleric_mace",
+      "rank": 1
+     },
+     {
+      "id": "hunting_bow",
+      "rank": 1
+     },
+     {
+      "id": "silver_sword",
+      "rank": 3
+     },
+     {
+      "id": "crystal_rod",
+      "rank": 3
+     },
+     {
+      "id": "assassin_edge",
+      "rank": 3
+     },
+     {
+      "id": "holy_scepter",
+      "rank": 3
+     },
+     {
+      "id": "mithril_blade",
+      "rank": 4
+     },
+     {
+      "id": "arch_staff",
+      "rank": 4
+     },
+     {
+      "id": "storm_bow",
+      "rank": 4
+     },
+     {
+      "id": "flame_tongue",
+      "rank": 5
+     },
+     {
+      "id": "world_tree_staff",
+      "rank": 5
+     },
+     {
+      "id": "shadow_fang",
+      "rank": 5
+     }
+    ]
+   },
+   "armor": {
+    "name": "防具屋「銀の裁縫室」",
+    "icon": "🛡️",
+    "lines": [
+     {
+      "id": "academy_robe",
+      "rank": 0
+     },
+     {
+      "id": "leather_armor",
+      "rank": 0
+     },
+     {
+      "id": "chain_mail",
+      "rank": 2
+     },
+     {
+      "id": "mage_robe",
+      "rank": 2
+     },
+     {
+      "id": "plate_armor",
+      "rank": 4
+     },
+     {
+      "id": "holy_vestment",
+      "rank": 4
+     },
+     {
+      "id": "shadow_garb",
+      "rank": 4
+     },
+     {
+      "id": "dragon_mail",
+      "rank": 5
+     },
+     {
+      "id": "star_robe",
+      "rank": 5
+     }
+    ]
+   },
+   "item": {
+    "name": "道具屋「まどろみ亭」",
+    "icon": "🧪",
+    "lines": [
+     {
+      "id": "herb",
+      "rank": 0
+     },
+     {
+      "id": "antidote",
+      "rank": 0
+     },
+     {
+      "id": "smoke",
+      "rank": 0
+     },
+     {
+      "id": "potion",
+      "rank": 1
+     },
+     {
+      "id": "ether",
+      "rank": 1
+     },
+     {
+      "id": "hi_potion",
+      "rank": 3
+     },
+     {
+      "id": "hi_ether",
+      "rank": 3
+     },
+     {
+      "id": "phoenix_tail",
+      "rank": 3
+     },
+     {
+      "id": "elixir",
+      "rank": 5
+     }
+    ]
+   },
+   "accessory": {
+    "name": "魔道具店「月の抽斗」",
+    "icon": "💍",
+    "lines": [
+     {
+      "id": "leather_band",
+      "rank": 0
+     },
+     {
+      "id": "scholar_glasses",
+      "rank": 0
+     },
+     {
+      "id": "power_ring",
+      "rank": 2
+     },
+     {
+      "id": "wisdom_ring",
+      "rank": 2
+     },
+     {
+      "id": "guard_ring",
+      "rank": 2
+     },
+     {
+      "id": "lucky_coin",
+      "rank": 2
+     },
+     {
+      "id": "swift_boots",
+      "rank": 3
+     },
+     {
+      "id": "mana_pendant",
+      "rank": 4
+     },
+     {
+      "id": "life_amulet",
+      "rank": 4
+     }
+    ]
+   }
+  },
+  "enemies": {
+   "slime": {
+    "name": "スライム",
+    "icon": "🫧",
+    "lv": 1,
+    "hp": 31,
+    "mp": 0,
+    "atk": 12,
+    "def": 4,
+    "mag": 11,
+    "res": 4,
+    "spd": 4,
+    "exp": 23,
+    "gold": 11,
+    "weak": [
+     "fire"
+    ],
+    "resist": [],
+    "skills": [],
+    "drops": [
+     {
+      "id": "slime_gel",
+      "rate": 0.55
+     }
+    ]
+   },
+   "rat": {
+    "name": "大ネズミ",
+    "icon": "🐀",
+    "lv": 2,
+    "hp": 31,
+    "mp": 0,
+    "atk": 10,
+    "def": 5,
+    "mag": 10,
+    "res": 5,
+    "spd": 9,
+    "exp": 23,
+    "gold": 11,
+    "weak": [
+     "fire"
+    ],
+    "resist": [],
+    "skills": [
+     {
+      "id": "e_bite",
+      "w": 2
+     }
+    ],
+    "drops": [
+     {
+      "id": "herb",
+      "rate": 0.3
+     }
+    ]
+   },
+   "goblin": {
+    "name": "ゴブリン",
+    "icon": "👺",
+    "lv": 4,
+    "hp": 38,
+    "mp": 6,
+    "atk": 13,
+    "def": 10,
+    "mag": 12,
+    "res": 10,
+    "spd": 8,
+    "exp": 23,
+    "gold": 11,
+    "weak": [],
+    "resist": [],
+    "skills": [
+     {
+      "id": "e_claw",
+      "w": 2
+     }
+    ],
+    "drops": [
+     {
+      "id": "goblin_fang",
+      "rate": 0.5
+     }
+    ]
+   },
+   "wild_wolf": {
+    "name": "荒野の狼",
+    "icon": "🐺",
+    "lv": 6,
+    "hp": 126,
+    "mp": 0,
+    "atk": 31,
+    "def": 17,
+    "mag": 31,
+    "res": 12,
+    "spd": 16,
+    "exp": 54,
+    "gold": 25,
+    "weak": [
+     "fire"
+    ],
+    "resist": [
+     "wind"
+    ],
+    "skills": [
+     {
+      "id": "e_bite",
+      "w": 3
+     },
+     {
+      "id": "e_howl",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "wolf_pelt",
+      "rate": 0.5
+     }
+    ]
+   },
+   "giant_bee": {
+    "name": "大蜂",
+    "icon": "🐝",
+    "lv": 7,
+    "hp": 163,
+    "mp": 10,
+    "atk": 48,
+    "def": 18,
+    "mag": 48,
+    "res": 19,
+    "spd": 22,
+    "exp": 67,
+    "gold": 31,
+    "weak": [
+     "wind"
+    ],
+    "resist": [],
+    "skills": [
+     {
+      "id": "e_poison",
+      "w": 2
+     }
+    ],
+    "drops": [
+     {
+      "id": "antidote",
+      "rate": 0.3
+     }
+    ]
+   },
+   "treant": {
+    "name": "トレント",
+    "icon": "🌳",
+    "lv": 8,
+    "hp": 222,
+    "mp": 14,
+    "atk": 27,
+    "def": 28,
+    "mag": 27,
+    "res": 22,
+    "spd": 4,
+    "exp": 95,
+    "gold": 45,
+    "weak": [
+     "fire"
+    ],
+    "resist": [
+     "water",
+     "earth"
+    ],
+    "skills": [
+     {
+      "id": "e_crush",
+      "w": 2
+     }
+    ],
+    "drops": [
+     {
+      "id": "herb",
+      "rate": 0.6
+     }
+    ]
+   },
+   "kobold": {
+    "name": "コボルト",
+    "icon": "🐕",
+    "lv": 10,
+    "hp": 278,
+    "mp": 12,
+    "atk": 114,
+    "def": 26,
+    "mag": 93,
+    "res": 26,
+    "spd": 14,
+    "exp": 122,
+    "gold": 57,
+    "weak": [],
+    "resist": [],
+    "skills": [
+     {
+      "id": "e_claw",
+      "w": 3
+     },
+     {
+      "id": "e_howl",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "goblin_fang",
+      "rate": 0.4
+     },
+     {
+      "id": "potion",
+      "rate": 0.15
+     }
+    ]
+   },
+   "skeleton": {
+    "name": "スケルトン",
+    "icon": "💀",
+    "lv": 12,
+    "hp": 323,
+    "mp": 10,
+    "atk": 51,
+    "def": 33,
+    "mag": 41,
+    "res": 29,
+    "spd": 12,
+    "tags": [
+     "undead"
+    ],
+    "exp": 122,
+    "gold": 57,
+    "weak": [
+     "light"
+    ],
+    "resist": [
+     "dark",
+     "water"
+    ],
+    "skills": [
+     {
+      "id": "e_crush",
+      "w": 2
+     }
+    ],
+    "drops": [
+     {
+      "id": "mana_crystal",
+      "rate": 0.2
+     }
+    ]
+   },
+   "bat_swarm": {
+    "name": "吸血蝙蝠",
+    "icon": "🦇",
+    "lv": 13,
+    "hp": 269,
+    "mp": 20,
+    "atk": 68,
+    "def": 24,
+    "mag": 56,
+    "res": 33,
+    "spd": 28,
+    "exp": 122,
+    "gold": 57,
+    "weak": [
+     "light",
+     "wind"
+    ],
+    "resist": [
+     "dark"
+    ],
+    "skills": [
+     {
+      "id": "e_drain",
+      "w": 3
+     }
+    ],
+    "drops": [
+     {
+      "id": "ether",
+      "rate": 0.2
+     }
+    ]
+   },
+   "orc": {
+    "name": "オーク",
+    "icon": "🐗",
+    "lv": 15,
+    "hp": 529,
+    "mp": 8,
+    "atk": 107,
+    "def": 47,
+    "mag": 87,
+    "res": 37,
+    "spd": 10,
+    "exp": 184,
+    "gold": 86,
+    "weak": [
+     "wind"
+    ],
+    "resist": [
+     "earth"
+    ],
+    "skills": [
+     {
+      "id": "e_crush",
+      "w": 3
+     },
+     {
+      "id": "e_howl",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "iron_sword",
+      "rate": 0.05
+     },
+     {
+      "id": "potion",
+      "rate": 0.25
+     }
+    ]
+   },
+   "harpy": {
+    "name": "ハーピー",
+    "icon": "🦅",
+    "lv": 16,
+    "hp": 522,
+    "mp": 30,
+    "atk": 168,
+    "def": 39,
+    "mag": 129,
+    "res": 58,
+    "spd": 34,
+    "exp": 196,
+    "gold": 92,
+    "weak": [
+     "wind"
+    ],
+    "resist": [],
+    "skills": [
+     {
+      "id": "e_sleep",
+      "w": 2
+     },
+     {
+      "id": "e_claw",
+      "w": 3
+     }
+    ],
+    "drops": [
+     {
+      "id": "ether",
+      "rate": 0.25
+     }
+    ]
+   },
+   "golem": {
+    "name": "ストーンゴーレム",
+    "icon": "🗿",
+    "lv": 19,
+    "hp": 556,
+    "mp": 0,
+    "atk": 40,
+    "def": 68,
+    "mag": 31,
+    "res": 46,
+    "spd": 5,
+    "exp": 196,
+    "gold": 92,
+    "weak": [
+     "water"
+    ],
+    "resist": [
+     "earth",
+     "fire",
+     "wind"
+    ],
+    "skills": [
+     {
+      "id": "e_quake",
+      "w": 2
+     },
+     {
+      "id": "e_crush",
+      "w": 3
+     }
+    ],
+    "drops": [
+     {
+      "id": "mana_crystal",
+      "rate": 0.45
+     }
+    ]
+   },
+   "dark_mage": {
+    "name": "闇術士",
+    "icon": "🧙",
+    "lv": 20,
+    "hp": 356,
+    "mp": 120,
+    "atk": 48,
+    "def": 39,
+    "mag": 37,
+    "res": 57,
+    "spd": 22,
+    "exp": 230,
+    "gold": 107,
+    "weak": [
+     "light"
+    ],
+    "resist": [
+     "dark"
+    ],
+    "skills": [
+     {
+      "id": "e_dark",
+      "w": 3
+     },
+     {
+      "id": "e_curse",
+      "w": 1
+     },
+     {
+      "id": "e_drain",
+      "w": 2
+     }
+    ],
+    "drops": [
+     {
+      "id": "mana_crystal",
+      "rate": 0.4
+     },
+     {
+      "id": "mage_robe",
+      "rate": 0.04
+     }
+    ]
+   },
+   "minotaur": {
+    "name": "ミノタウロス",
+    "icon": "🐂",
+    "lv": 24,
+    "hp": 1385,
+    "mp": 20,
+    "atk": 258,
+    "def": 57,
+    "mag": 218,
+    "res": 40,
+    "spd": 20,
+    "exp": 578,
+    "gold": 270,
+    "weak": [
+     "wind"
+    ],
+    "resist": [],
+    "skills": [
+     {
+      "id": "e_crush",
+      "w": 3
+     },
+     {
+      "id": "e_allslash",
+      "w": 2
+     },
+     {
+      "id": "e_howl",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "power_ring",
+      "rate": 0.06
+     },
+     {
+      "id": "hi_potion",
+      "rate": 0.3
+     }
+    ]
+   },
+   "wraith": {
+    "name": "レイス",
+    "icon": "👻",
+    "lv": 26,
+    "hp": 677,
+    "mp": 180,
+    "atk": 99,
+    "def": 43,
+    "mag": 84,
+    "res": 68,
+    "spd": 38,
+    "tags": [
+     "undead"
+    ],
+    "exp": 385,
+    "gold": 180,
+    "weak": [
+     "light"
+    ],
+    "resist": [
+     "dark",
+     "earth"
+    ],
+    "skills": [
+     {
+      "id": "e_drain",
+      "w": 3
+     },
+     {
+      "id": "e_dark",
+      "w": 2
+     },
+     {
+      "id": "e_curse",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "mana_crystal",
+      "rate": 0.5
+     },
+     {
+      "id": "hi_ether",
+      "rate": 0.2
+     }
+    ]
+   },
+   "chimera": {
+    "name": "キマイラ",
+    "icon": "🦁",
+    "lv": 30,
+    "hp": 2558,
+    "mp": 120,
+    "atk": 421,
+    "def": 94,
+    "mag": 356,
+    "res": 54,
+    "spd": 34,
+    "exp": 1155,
+    "gold": 539,
+    "weak": [],
+    "resist": [
+     "fire"
+    ],
+    "skills": [
+     {
+      "id": "e_fire",
+      "w": 2
+     },
+     {
+      "id": "e_claw",
+      "w": 3
+     },
+     {
+      "id": "e_poison",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "dragon_scale",
+      "rate": 0.25
+     },
+     {
+      "id": "hi_potion",
+      "rate": 0.4
+     }
+    ]
+   },
+   "ice_queen": {
+    "name": "氷結の魔女",
+    "icon": "❄️",
+    "lv": 33,
+    "hp": 1534,
+    "mp": 300,
+    "atk": 158,
+    "def": 52,
+    "mag": 168,
+    "res": 80,
+    "spd": 44,
+    "exp": 898,
+    "gold": 419,
+    "weak": [
+     "fire"
+    ],
+    "resist": [
+     "water"
+    ],
+    "skills": [
+     {
+      "id": "e_ice",
+      "w": 3
+     },
+     {
+      "id": "e_curse",
+      "w": 1
+     },
+     {
+      "id": "e_drain",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "crystal_rod",
+      "rate": 0.08
+     },
+     {
+      "id": "mana_crystal",
+      "rate": 0.6
+     }
+    ]
+   },
+   "young_dragon": {
+    "name": "幼竜ワイバーン",
+    "icon": "🐉",
+    "lv": 36,
+    "hp": 2024,
+    "mp": 160,
+    "atk": 157,
+    "def": 91,
+    "mag": 167,
+    "res": 74,
+    "spd": 38,
+    "exp": 898,
+    "gold": 419,
+    "weak": [
+     "water"
+    ],
+    "resist": [
+     "fire",
+     "earth"
+    ],
+    "skills": [
+     {
+      "id": "e_fire",
+      "w": 3
+     },
+     {
+      "id": "e_crush",
+      "w": 2
+     },
+     {
+      "id": "e_allslash",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "dragon_scale",
+      "rate": 0.7
+     }
+    ]
+   },
+   "demon_soldier": {
+    "name": "魔族の兵士",
+    "icon": "😈",
+    "lv": 38,
+    "hp": 1097,
+    "mp": 200,
+    "atk": 112,
+    "def": 81,
+    "mag": 118,
+    "res": 84,
+    "spd": 48,
+    "tags": [
+     "demon"
+    ],
+    "exp": 598,
+    "gold": 279,
+    "weak": [
+     "light"
+    ],
+    "resist": [
+     "dark"
+    ],
+    "skills": [
+     {
+      "id": "e_allslash",
+      "w": 3
+     },
+     {
+      "id": "e_dark",
+      "w": 2
+     },
+     {
+      "id": "e_curse",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "demon_horn",
+      "rate": 0.35
+     },
+     {
+      "id": "dark_ore",
+      "rate": 0.4
+     }
+    ]
+   },
+   "hell_hound": {
+    "name": "ヘルハウンド",
+    "icon": "🔥",
+    "lv": 42,
+    "hp": 1787,
+    "mp": 180,
+    "atk": 323,
+    "def": 96,
+    "mag": 342,
+    "res": 107,
+    "spd": 72,
+    "tags": [
+     "demon"
+    ],
+    "exp": 898,
+    "gold": 419,
+    "weak": [
+     "water"
+    ],
+    "resist": [
+     "fire",
+     "dark"
+    ],
+    "skills": [
+     {
+      "id": "e_fire",
+      "w": 3
+     },
+     {
+      "id": "e_bite",
+      "w": 3
+     },
+     {
+      "id": "e_howl",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "dark_ore",
+      "rate": 0.5
+     }
+    ]
+   },
+   "lich": {
+    "name": "リッチ",
+    "icon": "☠️",
+    "lv": 45,
+    "hp": 1467,
+    "mp": 600,
+    "atk": 264,
+    "def": 103,
+    "mag": 276,
+    "res": 138,
+    "spd": 56,
+    "tags": [
+     "undead",
+     "demon"
+    ],
+    "exp": 850,
+    "gold": 397,
+    "weak": [
+     "light"
+    ],
+    "resist": [
+     "dark",
+     "water"
+    ],
+    "skills": [
+     {
+      "id": "e_dark",
+      "w": 3
+     },
+     {
+      "id": "e_drain",
+      "w": 2
+     },
+     {
+      "id": "e_curse",
+      "w": 2
+     },
+     {
+      "id": "e_heal",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "demon_horn",
+      "rate": 0.5
+     },
+     {
+      "id": "hi_ether",
+      "rate": 0.6
+     }
+    ]
+   },
+   "demon_knight": {
+    "name": "魔騎士",
+    "icon": "⚫",
+    "lv": 48,
+    "hp": 1726,
+    "mp": 260,
+    "atk": 288,
+    "def": 110,
+    "mag": 300,
+    "res": 83,
+    "spd": 66,
+    "tags": [
+     "demon"
+    ],
+    "exp": 850,
+    "gold": 397,
+    "weak": [
+     "light"
+    ],
+    "resist": [
+     "dark",
+     "fire"
+    ],
+    "skills": [
+     {
+      "id": "e_allslash",
+      "w": 3
+     },
+     {
+      "id": "e_crush",
+      "w": 3
+     },
+     {
+      "id": "e_dark",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "demon_horn",
+      "rate": 0.6
+     },
+     {
+      "id": "dark_ore",
+      "rate": 0.6
+     }
+    ]
+   },
+   "archdemon": {
+    "name": "上級魔族",
+    "icon": "👹",
+    "lv": 52,
+    "hp": 2201,
+    "mp": 500,
+    "atk": 303,
+    "def": 118,
+    "mag": 317,
+    "res": 118,
+    "spd": 78,
+    "tags": [
+     "demon"
+    ],
+    "exp": 1275,
+    "gold": 595,
+    "weak": [
+     "light"
+    ],
+    "resist": [
+     "dark"
+    ],
+    "skills": [
+     {
+      "id": "e_despair",
+      "w": 2
+     },
+     {
+      "id": "e_dark",
+      "w": 3
+     },
+     {
+      "id": "e_allslash",
+      "w": 2
+     },
+     {
+      "id": "e_heal",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "demon_horn",
+      "rate": 0.9
+     }
+    ]
+   },
+   "boss_goblin_lord": {
+    "name": "ゴブリンロード",
+    "icon": "👺",
+    "boss": true,
+    "lv": 9,
+    "hp": 360,
+    "mp": 40,
+    "atk": 29,
+    "def": 24,
+    "mag": 29,
+    "res": 24,
+    "spd": 14,
+    "exp": 1086,
+    "gold": 398,
+    "weak": [
+     "fire"
+    ],
+    "resist": [],
+    "skills": [
+     {
+      "id": "e_allslash",
+      "w": 2
+     },
+     {
+      "id": "e_howl",
+      "w": 1
+     },
+     {
+      "id": "e_claw",
+      "w": 3
+     }
+    ],
+    "drops": [
+     {
+      "id": "leather_armor",
+      "rate": 1
+     }
+    ],
+    "intro": "洞窟の奥、ひときわ大きな影が立ち上がる。"
+   },
+   "boss_cave_guardian": {
+    "name": "遺跡の守護者",
+    "icon": "🗿",
+    "boss": true,
+    "lv": 18,
+    "hp": 1800,
+    "mp": 60,
+    "atk": 82,
+    "def": 44,
+    "mag": 63,
+    "res": 44,
+    "spd": 12,
+    "exp": 5886,
+    "gold": 2158,
+    "weak": [
+     "water"
+    ],
+    "resist": [
+     "earth",
+     "fire"
+    ],
+    "skills": [
+     {
+      "id": "e_quake",
+      "w": 3
+     },
+     {
+      "id": "e_crush",
+      "w": 3
+     }
+    ],
+    "drops": [
+     {
+      "id": "chain_mail",
+      "rate": 1
+     }
+    ],
+    "intro": "遺跡の最奥。石像が、ゆっくりと目を開けた。"
+   },
+   "boss_swamp_hydra": {
+    "name": "沼のヒュドラ",
+    "icon": "🐍",
+    "boss": true,
+    "lv": 28,
+    "hp": 5536,
+    "mp": 200,
+    "atk": 384,
+    "def": 66,
+    "mag": 406,
+    "res": 66,
+    "spd": 30,
+    "exp": 16430,
+    "gold": 6024,
+    "weak": [
+     "fire"
+    ],
+    "resist": [
+     "water",
+     "earth"
+    ],
+    "skills": [
+     {
+      "id": "e_poison",
+      "w": 2
+     },
+     {
+      "id": "e_bite",
+      "w": 3
+     },
+     {
+      "id": "e_allslash",
+      "w": 2
+     }
+    ],
+    "drops": [
+     {
+      "id": "swift_boots",
+      "rate": 1
+     }
+    ],
+    "intro": "水面が割れ、三つの首が同時に持ち上がった。"
+   },
+   "boss_flame_dragon": {
+    "name": "紅蓮竜イグナート",
+    "icon": "🐲",
+    "boss": true,
+    "lv": 40,
+    "hp": 6069,
+    "mp": 400,
+    "atk": 537,
+    "def": 67,
+    "mag": 560,
+    "res": 74,
+    "spd": 52,
+    "exp": 23732,
+    "gold": 8702,
+    "weak": [
+     "water"
+    ],
+    "resist": [
+     "fire"
+    ],
+    "skills": [
+     {
+      "id": "e_fire",
+      "w": 3
+     },
+     {
+      "id": "e_crush",
+      "w": 3
+     },
+     {
+      "id": "e_allslash",
+      "w": 2
+     },
+     {
+      "id": "e_howl",
+      "w": 1
+     }
+    ],
+    "drops": [
+     {
+      "id": "dragon_mail",
+      "rate": 1
+     },
+     {
+      "id": "dragon_scale",
+      "rate": 1
+     }
+    ],
+    "intro": "山が吼えた。――否、山だと思っていたものが、翼を広げた。"
+   },
+   "gate_keeper": {
+    "name": "門番ガルヴァス",
+    "icon": "🚪",
+    "boss": true,
+    "lv": 46,
+    "hp": 8456,
+    "mp": 300,
+    "atk": 813,
+    "def": 105,
+    "mag": 849,
+    "res": 105,
+    "spd": 50,
+    "tags": [
+     "demon"
+    ],
+    "exp": 25505,
+    "gold": 9352,
+    "weak": [
+     "light"
+    ],
+    "resist": [
+     "dark",
+     "earth"
+    ],
+    "skills": [
+     {
+      "id": "e_crush",
+      "w": 3
+     },
+     {
+      "id": "e_allslash",
+      "w": 3
+     },
+     {
+      "id": "e_curse",
+      "w": 1
+     }
+    ],
+    "drops": [],
+    "intro": "「学院の小僧が。門をくぐる資格があるか、試してやろう」"
+   },
+   "four_general_1": {
+    "name": "四天王・氷刃のセレス",
+    "icon": "🧊",
+    "boss": true,
+    "lv": 50,
+    "hp": 10291,
+    "mp": 800,
+    "atk": 1030,
+    "def": 95,
+    "mag": 1234,
+    "res": 114,
+    "spd": 88,
+    "tags": [
+     "demon"
+    ],
+    "exp": 28268,
+    "gold": 10365,
+    "weak": [
+     "fire"
+    ],
+    "resist": [
+     "water",
+     "dark"
+    ],
+    "skills": [
+     {
+      "id": "e_ice",
+      "w": 3
+     },
+     {
+      "id": "e_despair",
+      "w": 1
+     },
+     {
+      "id": "e_curse",
+      "w": 1
+     },
+     {
+      "id": "e_heal",
+      "w": 1
+     }
+    ],
+    "drops": [],
+    "intro": "「あなたの温度、ここで止めてあげる」"
+   },
+   "four_general_2": {
+    "name": "四天王・業火のバルガ",
+    "icon": "🌋",
+    "boss": true,
+    "lv": 52,
+    "hp": 13224,
+    "mp": 500,
+    "atk": 1200,
+    "def": 118,
+    "mag": 1426,
+    "res": 97,
+    "spd": 62,
+    "tags": [
+     "demon"
+    ],
+    "exp": 30176,
+    "gold": 11064,
+    "weak": [
+     "water"
+    ],
+    "resist": [
+     "fire",
+     "dark"
+    ],
+    "skills": [
+     {
+      "id": "e_fire",
+      "w": 3
+     },
+     {
+      "id": "e_crush",
+      "w": 3
+     },
+     {
+      "id": "e_allslash",
+      "w": 2
+     }
+    ],
+    "drops": [],
+    "intro": "「燃えろ。何もかも、灰になれば平等だ」"
+   },
+   "demon_lord_1": {
+    "name": "魔王ヴァルドレア",
+    "icon": "😈",
+    "boss": true,
+    "lv": 55,
+    "hp": 15654,
+    "mp": 1200,
+    "atk": 606,
+    "def": 125,
+    "mag": 749,
+    "res": 125,
+    "spd": 90,
+    "tags": [
+     "demon"
+    ],
+    "exp": 32136,
+    "gold": 11783,
+    "weak": [
+     "light"
+    ],
+    "resist": [
+     "dark",
+     "fire",
+     "water"
+    ],
+    "skills": [
+     {
+      "id": "e_meteor",
+      "w": 2
+     },
+     {
+      "id": "e_despair",
+      "w": 2
+     },
+     {
+      "id": "e_allslash",
+      "w": 2
+     },
+     {
+      "id": "e_dark",
+      "w": 2
+     },
+     {
+      "id": "e_heal",
+      "w": 1
+     }
+    ],
+    "drops": [],
+    "intro": "「よく来た、転生者よ。……お前の“前の世界”の話を、少し聞かせてくれ」"
+   },
+   "demon_lord_2": {
+    "name": "真魔王ヴァルドレア",
+    "icon": "👑",
+    "boss": true,
+    "lv": 60,
+    "hp": 20127,
+    "mp": 2000,
+    "atk": 629,
+    "def": 136,
+    "mag": 766,
+    "res": 136,
+    "spd": 105,
+    "tags": [
+     "demon"
+    ],
+    "exp": 35174,
+    "gold": 12897,
+    "weak": [
+     "light"
+    ],
+    "resist": [
+     "dark",
+     "fire",
+     "water",
+     "wind",
+     "earth"
+    ],
+    "skills": [
+     {
+      "id": "e_endgame",
+      "w": 1
+     },
+     {
+      "id": "e_meteor",
+      "w": 3
+     },
+     {
+      "id": "e_despair",
+      "w": 3
+     },
+     {
+      "id": "e_dark",
+      "w": 2
+     },
+     {
+      "id": "e_allslash",
+      "w": 2
+     },
+     {
+      "id": "e_heal",
+      "w": 1
+     }
+    ],
+    "drops": [],
+    "intro": "「――ならば見せてみろ。お前が選び取ってきた、その全てを」"
+   }
+  },
+  "areas": {
+   "plains": {
+    "name": "ラヴィン近郊の草原",
+    "icon": "🌾",
+    "lvRange": [
+     1,
+     8
+    ],
+    "pool": [
+     "slime",
+     "rat",
+     "goblin",
+     "wild_wolf"
+    ]
+   },
+   "forest": {
+    "name": "ささやきの森",
+    "icon": "🌲",
+    "lvRange": [
+     5,
+     14
+    ],
+    "pool": [
+     "wild_wolf",
+     "giant_bee",
+     "treant",
+     "goblin"
+    ]
+   },
+   "cave": {
+    "name": "風鳴りの洞窟",
+    "icon": "🕳️",
+    "lvRange": [
+     9,
+     18
+    ],
+    "pool": [
+     "kobold",
+     "skeleton",
+     "bat_swarm",
+     "orc"
+    ]
+   },
+   "ruins": {
+    "name": "古代遺跡ヴェルナ",
+    "icon": "🏛️",
+    "lvRange": [
+     15,
+     24
+    ],
+    "pool": [
+     "skeleton",
+     "golem",
+     "harpy",
+     "dark_mage"
+    ]
+   },
+   "highland": {
+    "name": "嘆きの高原",
+    "icon": "⛰️",
+    "lvRange": [
+     22,
+     32
+    ],
+    "pool": [
+     "minotaur",
+     "wraith",
+     "chimera",
+     "golem"
+    ]
+   },
+   "frostpeak": {
+    "name": "氷牙山脈",
+    "icon": "🏔️",
+    "lvRange": [
+     30,
+     40
+    ],
+    "pool": [
+     "ice_queen",
+     "chimera",
+     "young_dragon",
+     "wraith"
+    ]
+   },
+   "borderland": {
+    "name": "魔王領境界",
+    "icon": "🌑",
+    "lvRange": [
+     36,
+     46
+    ],
+    "pool": [
+     "demon_soldier",
+     "hell_hound",
+     "young_dragon",
+     "lich"
+    ]
+   },
+   "demon_realm": {
+    "name": "魔界・黒曜の荒野",
+    "icon": "🔥",
+    "lvRange": [
+     44,
+     55
+    ],
+    "pool": [
+     "demon_knight",
+     "lich",
+     "archdemon",
+     "hell_hound"
+    ]
+   }
+  },
+  "quests": [
+   {
+    "id": "q_slime",
+    "rank": 0,
+    "kind": "subjugate",
+    "name": "スライムの駆除",
+    "icon": "🫧",
+    "desc": "麦畑にスライムが湧いた。2匹ほど減らしてほしい。",
+    "area": "plains",
+    "enemies": [
+     "slime",
+     "slime"
+    ],
+    "gold": 90,
+    "exp": 44,
+    "ap": 1
+   },
+   {
+    "id": "q_herb",
+    "rank": 0,
+    "kind": "gather",
+    "name": "薬草の採取",
+    "icon": "🌿",
+    "desc": "道具屋の在庫が心もとない。草原で薬草を摘んできて。",
+    "area": "plains",
+    "enemies": [
+     "rat",
+     "slime"
+    ],
+    "gold": 70,
+    "exp": 41,
+    "ap": 1,
+    "reward": [
+     {
+      "id": "herb",
+      "n": 3
+     }
+    ]
+   },
+   {
+    "id": "q_rat",
+    "rank": 0,
+    "kind": "subjugate",
+    "name": "倉庫のネズミ退治",
+    "icon": "🐀",
+    "desc": "学院の食糧庫に大ネズミが出た。生徒諸君、頼む。",
+    "area": "plains",
+    "enemies": [
+     "rat",
+     "rat"
+    ],
+    "gold": 110,
+    "exp": 47,
+    "ap": 1
+   },
+   {
+    "id": "q_goblin1",
+    "rank": 0,
+    "kind": "subjugate",
+    "name": "ゴブリンの物見",
+    "icon": "👺",
+    "desc": "街道沿いにゴブリンの偵察。小さな群れのうちに叩く。",
+    "area": "plains",
+    "enemies": [
+     "goblin",
+     "goblin"
+    ],
+    "gold": 150,
+    "exp": 52,
+    "ap": 1
+   },
+   {
+    "id": "q_wolf",
+    "rank": 1,
+    "kind": "subjugate",
+    "name": "狼の群れ",
+    "icon": "🐺",
+    "desc": "牧場が襲われている。群れのリーダーごと。",
+    "area": "forest",
+    "enemies": [
+     "wild_wolf",
+     "wild_wolf",
+     "wild_wolf"
+    ],
+    "gold": 280,
+    "exp": 160,
+    "ap": 1
+   },
+   {
+    "id": "q_bee",
+    "rank": 1,
+    "kind": "gather",
+    "name": "蜂蜜の確保",
+    "icon": "🐝",
+    "desc": "学院の菓子職人からの依頼。……大蜂付きだが。",
+    "area": "forest",
+    "enemies": [
+     "giant_bee",
+     "giant_bee"
+    ],
+    "gold": 240,
+    "exp": 153,
+    "ap": 1,
+    "reward": [
+     {
+      "id": "antidote",
+      "n": 2
+     }
+    ]
+   },
+   {
+    "id": "q_treant",
+    "rank": 1,
+    "kind": "subjugate",
+    "name": "歩く樹の噂",
+    "icon": "🌳",
+    "desc": "森の木が動いていると木こりが怯えている。",
+    "area": "forest",
+    "enemies": [
+     "treant",
+     "giant_bee"
+    ],
+    "gold": 350,
+    "exp": 214,
+    "ap": 2
+   },
+   {
+    "id": "q_cave1",
+    "rank": 2,
+    "kind": "subjugate",
+    "name": "洞窟の掃除",
+    "icon": "🕳️",
+    "desc": "風鳴りの洞窟に魔物が住み着いた。入口付近だけでいい。",
+    "area": "cave",
+    "enemies": [
+     "kobold",
+     "kobold",
+     "bat_swarm"
+    ],
+    "gold": 520,
+    "exp": 443,
+    "ap": 2
+   },
+   {
+    "id": "q_bone",
+    "rank": 2,
+    "kind": "subjugate",
+    "name": "墓地の異変",
+    "icon": "💀",
+    "desc": "夜ごと骨が歩く。神官科の実習も兼ねている。",
+    "area": "cave",
+    "enemies": [
+     "skeleton",
+     "skeleton",
+     "skeleton"
+    ],
+    "gold": 600,
+    "exp": 462,
+    "ap": 2
+   },
+   {
+    "id": "q_ore",
+    "rank": 2,
+    "kind": "gather",
+    "name": "魔力結晶の採掘",
+    "icon": "💠",
+    "desc": "錬金術教室から。結晶を採ってきてくれれば単位もつく。",
+    "area": "cave",
+    "enemies": [
+     "kobold",
+     "skeleton"
+    ],
+    "gold": 450,
+    "exp": 427,
+    "ap": 2,
+    "reward": [
+     {
+      "id": "mana_crystal",
+      "n": 2
+     }
+    ]
+   },
+   {
+    "id": "q_orc",
+    "rank": 2,
+    "kind": "subjugate",
+    "name": "オークの野営地",
+    "icon": "🐗",
+    "desc": "街道を塞ぐオークたち。早めに散らしておきたい。",
+    "area": "cave",
+    "enemies": [
+     "orc",
+     "orc"
+    ],
+    "gold": 780,
+    "exp": 504,
+    "ap": 2
+   },
+   {
+    "id": "q_ruins1",
+    "rank": 3,
+    "kind": "subjugate",
+    "name": "遺跡の調査護衛",
+    "icon": "🏛️",
+    "desc": "学院の調査隊に同行し、遺跡の魔物を退ける。",
+    "area": "ruins",
+    "enemies": [
+     "harpy",
+     "golem",
+     "skeleton"
+    ],
+    "gold": 1140,
+    "exp": 830,
+    "ap": 2
+   },
+   {
+    "id": "q_darkmage",
+    "rank": 3,
+    "kind": "subjugate",
+    "name": "闇術士の捕縛",
+    "icon": "🧙",
+    "desc": "禁呪に手を出した元学院生。……できれば生きて連れ帰れ。",
+    "area": "ruins",
+    "enemies": [
+     "dark_mage",
+     "skeleton",
+     "skeleton"
+    ],
+    "gold": 1425,
+    "exp": 887,
+    "ap": 2
+   },
+   {
+    "id": "q_golem",
+    "rank": 3,
+    "kind": "subjugate",
+    "name": "石像の暴走",
+    "icon": "🗿",
+    "desc": "遺跡の守護機構が暴れている。止めてくれ。",
+    "area": "ruins",
+    "enemies": [
+     "golem",
+     "golem"
+    ],
+    "gold": 1330,
+    "exp": 868,
+    "ap": 2
+   },
+   {
+    "id": "q_minotaur",
+    "rank": 4,
+    "kind": "subjugate",
+    "name": "迷宮の牛鬼",
+    "icon": "🐂",
+    "desc": "高原の迷宮で行方不明者が続出している。",
+    "area": "highland",
+    "enemies": [
+     "minotaur",
+     "minotaur"
+    ],
+    "gold": 2132,
+    "exp": 1413,
+    "ap": 2
+   },
+   {
+    "id": "q_wraith",
+    "rank": 4,
+    "kind": "subjugate",
+    "name": "嘆きの亡霊",
+    "icon": "👻",
+    "desc": "夜通し泣き声が響く。聖職者の同行を推奨。",
+    "area": "highland",
+    "enemies": [
+     "wraith",
+     "wraith",
+     "skeleton"
+    ],
+    "gold": 2296,
+    "exp": 1444,
+    "ap": 2
+   },
+   {
+    "id": "q_chimera",
+    "rank": 4,
+    "kind": "subjugate",
+    "name": "キマイラ討伐",
+    "icon": "🦁",
+    "desc": "合成獣が檻を破った。錬金術ギルドの不始末だ。",
+    "area": "highland",
+    "enemies": [
+     "chimera"
+    ],
+    "gold": 2460,
+    "exp": 1475,
+    "ap": 2
+   },
+   {
+    "id": "q_icequeen",
+    "rank": 5,
+    "kind": "subjugate",
+    "name": "氷結の魔女",
+    "icon": "❄️",
+    "desc": "氷牙山脈の村が丸ごと凍りついた。",
+    "area": "frostpeak",
+    "enemies": [
+     "ice_queen",
+     "wraith"
+    ],
+    "gold": 3224,
+    "exp": 2154,
+    "ap": 2
+   },
+   {
+    "id": "q_dragon",
+    "rank": 5,
+    "kind": "subjugate",
+    "name": "幼竜の間引き",
+    "icon": "🐉",
+    "desc": "竜が増えすぎた。心苦しいが、数を減らす。",
+    "area": "frostpeak",
+    "enemies": [
+     "young_dragon",
+     "young_dragon"
+    ],
+    "gold": 3720,
+    "exp": 2244,
+    "ap": 2
+   },
+   {
+    "id": "q_border",
+    "rank": 5,
+    "kind": "subjugate",
+    "name": "境界線の偵察",
+    "icon": "🌑",
+    "desc": "魔王領との境で魔族の動きがある。生きて帰れ。",
+    "area": "borderland",
+    "enemies": [
+     "demon_soldier",
+     "hell_hound"
+    ],
+    "gold": 4216,
+    "exp": 2334,
+    "ap": 2
+   },
+   {
+    "id": "q_lich",
+    "rank": 6,
+    "kind": "subjugate",
+    "name": "不死王の討滅",
+    "icon": "☠️",
+    "desc": "死者の軍勢を率いるリッチ。国からの正式な指名依頼。",
+    "area": "borderland",
+    "enemies": [
+     "lich",
+     "skeleton",
+     "skeleton"
+    ],
+    "gold": 5760,
+    "exp": 2964,
+    "ap": 2
+   },
+   {
+    "id": "q_knight",
+    "rank": 6,
+    "kind": "subjugate",
+    "name": "魔騎士の撃退",
+    "icon": "⚫",
+    "desc": "魔王軍先遣隊。ここを抜かれれば王都まで一直線だ。",
+    "area": "demon_realm",
+    "enemies": [
+     "demon_knight",
+     "demon_soldier",
+     "demon_soldier"
+    ],
+    "gold": 7200,
+    "exp": 3147,
+    "ap": 2
+   },
+   {
+    "id": "q_archdemon",
+    "rank": 6,
+    "kind": "subjugate",
+    "name": "上級魔族の排除",
+    "icon": "👹",
+    "desc": "魔王城の目前。ここを制すれば、いよいよだ。",
+    "area": "demon_realm",
+    "enemies": [
+     "archdemon",
+     "hell_hound"
+    ],
+    "gold": 9600,
+    "exp": 3453,
+    "ap": 2
+   }
+  ],
+  "ranks": [
+   {
+    "key": "F",
+    "name": "F級",
+    "clears": 0,
+    "minLv": 1,
+    "color": "#a79ecb",
+    "desc": "登録したての見習い冒険者。"
+   },
+   {
+    "key": "E",
+    "name": "E級",
+    "clears": 3,
+    "minLv": 7,
+    "color": "#8fd6a8",
+    "promo": "boss_goblin_lord",
+    "desc": "一人で薬草採取に行ける程度。"
+   },
+   {
+    "key": "D",
+    "name": "D級",
+    "clears": 6,
+    "minLv": 12,
+    "color": "#6aa9ff",
+    "promo": null,
+    "desc": "常設依頼を任せられる。"
+   },
+   {
+    "key": "C",
+    "name": "C級",
+    "clears": 10,
+    "minLv": 19,
+    "color": "#59d8e6",
+    "promo": "boss_cave_guardian",
+    "desc": "一人前。ギルドの主力層。"
+   },
+   {
+    "key": "B",
+    "name": "B級",
+    "clears": 15,
+    "minLv": 27,
+    "color": "#9a6bff",
+    "promo": null,
+    "desc": "指名依頼が来るようになる。"
+   },
+   {
+    "key": "A",
+    "name": "A級",
+    "clears": 21,
+    "minLv": 36,
+    "color": "#f2c14e",
+    "promo": "boss_swamp_hydra",
+    "desc": "国が動く案件を任される。"
+   },
+   {
+    "key": "S",
+    "name": "S級",
+    "clears": 28,
+    "minLv": 45,
+    "color": "#ff5f6d",
+    "promo": "boss_flame_dragon",
+    "desc": "大陸に十人といない最高位。"
+   }
+  ],
+  "academy": {
+   "name": "王立アルカナ魔法学院",
+   "TERM_DAYS": 15,
+   "TERMS_PER_YEAR": 3,
+   "TOTAL_TERMS": 9,
+   "passLine": [
+    18,
+    28,
+    38,
+    48,
+    56,
+    64,
+    72,
+    78,
+    84
+   ],
+   "tuition": [
+    600,
+    600,
+    600,
+    1200,
+    1200,
+    1200,
+    2400,
+    2400,
+    2400
+   ],
+   "examReward": [
+    300,
+    400,
+    550,
+    900,
+    1200,
+    1500,
+    2600,
+    3200,
+    5000
+   ]
+  },
+  "subjects": {
+   "magic_theory": {
+    "name": "魔術理論",
+    "icon": "📘",
+    "teacher": "フィオナ教授",
+    "desc": "魔力の流れと詠唱構文を学ぶ。魔力が伸びる。",
+    "gain": {
+     "mag": 0.9,
+     "mp": 2.2
+    },
+    "rate": 12,
+    "masterSkill": "arcane_burst",
+    "masterTitle": "魔術理論首席"
+   },
+   "swordsmanship": {
+    "name": "剣術実習",
+    "icon": "🤺",
+    "teacher": "ガルド教官",
+    "desc": "木剣を振り続ける地味な時間。腕力と体力が伸びる。",
+    "gain": {
+     "atk": 0.9,
+     "hp": 3
+    },
+    "rate": 12,
+    "masterSkill": "brave_slash",
+    "masterTitle": "剣術首席"
+   },
+   "theology": {
+    "name": "神聖学",
+    "icon": "⛪",
+    "teacher": "シスター・エルマ",
+    "desc": "祈りと加護の理論。魔防が伸びる。",
+    "gain": {
+     "res": 0.9,
+     "mp": 1.6
+    },
+    "rate": 12,
+    "masterSkill": "sanctuary",
+    "masterTitle": "神聖学首席"
+   },
+   "alchemy": {
+    "name": "錬金術",
+    "icon": "⚗️",
+    "teacher": "ドロテア講師",
+    "desc": "調合と魔道具作り。受講するたび素材や薬が手に入る。",
+    "gain": {
+     "mag": 0.4,
+     "res": 0.4
+    },
+    "rate": 12,
+    "drop": [
+     "herb",
+     "potion",
+     "mana_crystal",
+     "ether"
+    ],
+    "masterSkill": "refresh",
+    "masterTitle": "錬金術首席"
+   },
+   "monsterology": {
+    "name": "魔物学",
+    "icon": "🐾",
+    "teacher": "ヴァン講師",
+    "desc": "魔物の生態と弱点。戦闘で得る経験値とドロップ率が上がる。",
+    "gain": {
+     "spd": 0.5,
+     "def": 0.5
+    },
+    "rate": 12,
+    "bonusExp": true,
+    "masterSkill": "analyze",
+    "masterTitle": "魔物学首席"
+   },
+   "athletics": {
+    "name": "体術",
+    "icon": "🏃",
+    "teacher": "ガルド教官",
+    "desc": "走り込みと受け身。体力と敏捷が伸びる。",
+    "gain": {
+     "hp": 3.4,
+     "spd": 0.9,
+     "def": 0.4
+    },
+    "rate": 12,
+    "masterSkill": "focus",
+    "masterTitle": "体術首席"
+   }
+  },
+  "story": {
+   "prologue": [
+    {
+     "who": null,
+     "text": "――三十二歳。会社からの帰り道だった。"
+    },
+    {
+     "who": null,
+     "text": "横断歩道に飛び出した子供と、止まりきれないトラック。体が勝手に動いていた。子供を突き飛ばした感触だけは、確かに覚えている。"
+    },
+    {
+     "who": null,
+     "text": "そして、光。"
+    },
+    {
+     "who": "？？？",
+     "text": "――よく、割り込んだものです。"
+    },
+    {
+     "who": null,
+     "text": "白い場所に、誰かが立っていた。輪郭は曖昧なのに、目だけがはっきりと見える。"
+    },
+    {
+     "who": "女神リュミエル",
+     "text": "わたくしはリュミエル。世界の理を預かる者。あなたの魂は、本来あと四十年ここに来る予定ではありませんでした。"
+    },
+    {
+     "who": "女神リュミエル",
+     "text": "……代わりに、ひとつ頼まれてくれませんか。わたくしの世界に、魔王が生まれました。"
+    },
+    {
+     "who": "女神リュミエル",
+     "text": "勇者としてではなく、ただの赤子として生まれ直してもらいます。力も、記憶以外は何も差し上げられない。"
+    },
+    {
+     "who": "女神リュミエル",
+     "text": "それでも――あなたなら、選び取れるでしょう。何になるかを。"
+    },
+    {
+     "who": null,
+     "text": "視界が溶ける。最後に聞こえたのは、赤ん坊の泣き声だった。自分の声だと気づくのに、しばらくかかった。"
+    }
+   ],
+   "village": [
+    {
+     "who": null,
+     "text": "辺境の村ラヴィン。麦と羊と、年に二度の市。それが世界のすべてだった。"
+    },
+    {
+     "who": null,
+     "text": "十五年が過ぎた。前世の記憶は薄れず、けれど何の役にも立たなかった。スマートフォンも、電気も、ここにはない。"
+    },
+    {
+     "who": null,
+     "text": "あるのは、畑と、木の枝と――なぜか手のひらに灯る、小さな火だけ。"
+    },
+    {
+     "who": "リィナ",
+     "text": "また出てる。ねえ、それ、ほんとに誰にも習ってないの？"
+    },
+    {
+     "who": null,
+     "text": "幼馴染のリィナが覗き込んでくる。村の教会で手伝いをしている、面倒見のいい少女だ。"
+    },
+    {
+     "who": "リィナ",
+     "text": "……村長さんが言ってた。王都から、魔法学院の人が来るって。素質のある子を探してるんだって。"
+    },
+    {
+     "who": "リィナ",
+     "text": "わたし、受けてみる。あなたも来なよ。ひとりだと、心細いもの。"
+    }
+   ],
+   "academy_enter": [
+    {
+     "who": null,
+     "text": "王立アルカナ魔法学院。白亜の尖塔が七本、空に向かって伸びている。"
+    },
+    {
+     "who": null,
+     "text": "入学試験はあっけなかった。水晶に手をかざしただけ。だが試験官の顔色が変わった。"
+    },
+    {
+     "who": "フィオナ教授",
+     "text": "……村人の子、でしたね。魔力量は申し分ない。ただ、系統がどれにも偏っていない。"
+    },
+    {
+     "who": "フィオナ教授",
+     "text": "珍しいことです。あなたは、まだ「何者でもない」。裏を返せば――何にでもなれる。"
+    },
+    {
+     "who": "フィオナ教授",
+     "text": "学院へようこそ。授業に出なさい。試験に受かりなさい。そして、学費を払いなさい。"
+    },
+    {
+     "who": null,
+     "text": "……最後のひとことが、いちばん重く響いた。"
+    },
+    {
+     "who": "リィナ",
+     "text": "わたしも受かった！ 神官科だって。一緒の寮だよ、よろしくね。"
+    },
+    {
+     "who": null,
+     "text": "こうして、村人の学院生活が始まった。"
+    }
+   ],
+   "guild_intro": [
+    {
+     "who": null,
+     "text": "学費は、学院が出してくれるわけではない。"
+    },
+    {
+     "who": null,
+     "text": "掲示板の前で途方に暮れていると、上級生らしき男が声をかけてきた。"
+    },
+    {
+     "who": "ヴェルト",
+     "text": "新入りか。金なら、ギルドで稼げ。学院の生徒はだいたいそうしてる。"
+    },
+    {
+     "who": "ヴェルト",
+     "text": "冒険者ギルド「暁の天秤」。街の東門の近くだ。登録は無料、依頼は自己責任。"
+    },
+    {
+     "who": "ヴェルト",
+     "text": "……死ぬなよ。同じ学院の人間が減るのは、寝覚めが悪い。"
+    }
+   ],
+   "awaken": [
+    {
+     "who": "フィオナ教授",
+     "text": "適性審査の時間です。あなたの魔力は、そろそろ形を選びたがっている。"
+    },
+    {
+     "who": "フィオナ教授",
+     "text": "四つの基礎課程――魔術師、剣士、神官、斥候。どれを選んでも構いません。"
+    },
+    {
+     "who": "フィオナ教授",
+     "text": "ただし覚えておきなさい。この選択は、積み重なります。あなたが振り続けた剣は、いつか剣聖の形になる。"
+    },
+    {
+     "who": "フィオナ教授",
+     "text": "さあ、何になりますか。"
+    }
+   ],
+   "velt_join": [
+    {
+     "who": "ヴェルト",
+     "text": "よう。最初の試験、通ったらしいな。"
+    },
+    {
+     "who": "ヴェルト",
+     "text": "……実はな、俺もそろそろパーティを組みたかった。剣は振れる。前は任せろ。"
+    },
+    {
+     "who": "ヴェルト",
+     "text": "断ってもいいが、その場合は俺が一人で寂しく依頼を受ける。"
+    },
+    {
+     "who": null,
+     "text": "ヴェルトが仲間に加わった。"
+    }
+   ],
+   "noa_join": [
+    {
+     "who": null,
+     "text": "ギルドの隅で、小柄な人影がこちらをじっと見ていた。"
+    },
+    {
+     "who": "ノア",
+     "text": "……あんた、有名。村人から始めて、ここまで来たって。"
+    },
+    {
+     "who": "ノア",
+     "text": "ボク、ノア。斥候。罠も鍵も、気配も読める。荷物持ちでもいい。連れてって。"
+    },
+    {
+     "who": null,
+     "text": "ノアが仲間に加わった。"
+    }
+   ],
+   "graduation": [
+    {
+     "who": null,
+     "text": "三年。長かったようで、振り返れば一瞬だった。"
+    },
+    {
+     "who": "フィオナ教授",
+     "text": "卒業、おめでとう。……正直に言えば、あなたが一年で辞めると思っていました。"
+    },
+    {
+     "who": "フィオナ教授",
+     "text": "村人から始めて、ここまで来た生徒は学院史上あなたが初めてです。"
+    },
+    {
+     "who": "フィオナ教授",
+     "text": "そして、これを。学院と冒険者ギルド、両方の連名で発行された「勇者の証」。"
+    },
+    {
+     "who": "フィオナ教授",
+     "text": "魔王領の封印門を開く鍵でもあります。……行くのですね。"
+    },
+    {
+     "who": "リィナ",
+     "text": "行くよ。みんなで。ね？"
+    },
+    {
+     "who": "ヴェルト",
+     "text": "今さら聞くことか。"
+    },
+    {
+     "who": "ノア",
+     "text": "……荷物、持つ。"
+    }
+   ],
+   "demon_castle": [
+    {
+     "who": null,
+     "text": "魔王城。空は紫に淀み、地面は脈打つように熱い。"
+    },
+    {
+     "who": null,
+     "text": "門の前に立つと、内側から声が響いた。"
+    },
+    {
+     "who": "？？？",
+     "text": "――来たか。転生者よ。"
+    },
+    {
+     "who": "？？？",
+     "text": "私はお前を知っている。女神が世界に落とした、異物。"
+    },
+    {
+     "who": "？？？",
+     "text": "登ってくるがいい。最上階で待っている。"
+    }
+   ],
+   "goddess_blessing": [
+    {
+     "who": null,
+     "text": "膝が折れる。剣が重い。仲間たちの息も上がっている。"
+    },
+    {
+     "who": null,
+     "text": "――そのとき、頭の奥で、ずっと昔に聞いた声が響いた。"
+    },
+    {
+     "who": "女神リュミエル",
+     "text": "よく、ここまで来ましたね。"
+    },
+    {
+     "who": "女神リュミエル",
+     "text": "わたくしが差し上げられるのは、これが最後です。……どうか、生きて帰ってきて。"
+    },
+    {
+     "who": null,
+     "text": "温かい光が全身を満たす。傷が塞がり、魔力が戻ってくる。"
+    },
+    {
+     "who": null,
+     "text": "顔を上げる。目の前には、膨れ上がった闇があった。"
+    }
+   ],
+   "ending": [
+    {
+     "who": null,
+     "text": "魔王ヴァルドレアは、崩れ落ちる瞬間、確かに笑っていた。"
+    },
+    {
+     "who": "ヴァルドレア",
+     "text": "……よい選択だった。村人。"
+    },
+    {
+     "who": "ヴァルドレア",
+     "text": "お前は与えられた力で勝ったのではない。選び続けて、ここまで来た。"
+    },
+    {
+     "who": "ヴァルドレア",
+     "text": "それは……女神にも、私にも、ついぞできなかったことだ。"
+    },
+    {
+     "who": null,
+     "text": "紫の空が晴れていく。遠く、学院の尖塔が七本、光を返しているのが見えた。"
+    },
+    {
+     "who": "リィナ",
+     "text": "……終わった、の？"
+    },
+    {
+     "who": "ヴェルト",
+     "text": "終わった。帰るぞ。"
+    },
+    {
+     "who": "ノア",
+     "text": "……ごはん。"
+    },
+    {
+     "who": null,
+     "text": "前世では、誰かを助けて死んだ。今生では、誰かと一緒に生き延びた。"
+    },
+    {
+     "who": null,
+     "text": "悪くない二周目だったと、心から思う。"
+    }
+   ]
+  },
+  "companions": {
+   "riina": {
+    "name": "リィナ",
+    "icon": "👧",
+    "jobPath": [
+     "villager",
+     "apprentice_cleric",
+     "priest",
+     "bishop",
+     "saint"
+    ],
+    "role": "healer",
+    "desc": "幼馴染。村の教会育ちで、神官科に進んだ。",
+    "growthBonus": {
+     "mag": 1.1,
+     "res": 1.1
+    }
+   },
+   "velt": {
+    "name": "ヴェルト",
+    "icon": "🧑‍🦰",
+    "jobPath": [
+     "villager",
+     "apprentice_knight",
+     "swordsman",
+     "magic_swordsman",
+     "sword_saint"
+    ],
+    "role": "attacker",
+    "desc": "一つ上の先輩。ぶっきらぼうだが面倒見がいい。",
+    "growthBonus": {
+     "atk": 1.1,
+     "hp": 1.1
+    }
+   },
+   "noa": {
+    "name": "ノア",
+    "icon": "🧒",
+    "jobPath": [
+     "villager",
+     "apprentice_scout",
+     "thief",
+     "ninja",
+     "shadow_emperor"
+    ],
+    "role": "speed",
+    "desc": "ギルドで声をかけてきた小柄な斥候。口数は少ない。",
+    "growthBonus": {
+     "spd": 1.15,
+     "atk": 1.05
+    }
+   }
+  },
+  "elements": {
+   "none": {
+    "name": "無",
+    "color": "#a79ecb",
+    "icon": "✴️"
+   },
+   "fire": {
+    "name": "火",
+    "color": "#ff7a4d",
+    "icon": "🔥"
+   },
+   "water": {
+    "name": "水",
+    "color": "#5fa8ff",
+    "icon": "💧"
+   },
+   "wind": {
+    "name": "風",
+    "color": "#7de8b0",
+    "icon": "🌪️"
+   },
+   "earth": {
+    "name": "土",
+    "color": "#c9a36a",
+    "icon": "🪨"
+   },
+   "light": {
+    "name": "光",
+    "color": "#ffe27a",
+    "icon": "✨"
+   },
+   "dark": {
+    "name": "闇",
+    "color": "#b07aff",
+    "icon": "🌑"
+   }
+  },
+  "status": {
+   "poison": {
+    "name": "毒",
+    "icon": "🟢",
+    "dotRate": 0.07,
+    "desc": "毎ターン最大HPの7%のダメージ"
+   },
+   "burn": {
+    "name": "火傷",
+    "icon": "🔥",
+    "dotRate": 0.1,
+    "desc": "毎ターン最大HPの10%のダメージ"
+   },
+   "sleep": {
+    "name": "睡眠",
+    "icon": "💤",
+    "skip": true,
+    "wakeOnHit": true,
+    "desc": "行動不能。攻撃を受けると解除"
+   },
+   "paralyze": {
+    "name": "麻痺",
+    "icon": "⚡",
+    "skipRate": 0.5,
+    "desc": "50%の確率で行動できない"
+   },
+   "silence": {
+    "name": "沈黙",
+    "icon": "🔇",
+    "noSkill": true,
+    "desc": "魔法・スキルが使えない"
+   },
+   "blind": {
+    "name": "暗闇",
+    "icon": "🌫️",
+    "missRate": 0.45,
+    "desc": "物理攻撃が外れやすくなる"
+   }
+  },
+  "difficulty": {
+   "easy": {
+    "name": "やさしい",
+    "hp": 0.78,
+    "atk": 0.78
+   },
+   "normal": {
+    "name": "ふつう",
+    "hp": 1,
+    "atk": 1
+   },
+   "hard": {
+    "name": "むずかしい",
+    "hp": 1.35,
+    "atk": 1.22
+   }
+  },
+  "demonFloors": [
+   {
+    "name": "第一層 黒曜の回廊",
+    "enemies": [
+     [
+      "demon_soldier",
+      "hell_hound"
+     ],
+     [
+      "demon_knight"
+     ],
+     [
+      "hell_hound",
+      "hell_hound"
+     ]
+    ]
+   },
+   {
+    "name": "第二層 慟哭の広間",
+    "enemies": [
+     [
+      "lich",
+      "demon_soldier"
+     ],
+     [
+      "demon_knight",
+      "hell_hound"
+     ]
+    ]
+   },
+   {
+    "name": "第三層 門番の間",
+    "boss": "gate_keeper"
+   },
+   {
+    "name": "第四層 氷の玉座",
+    "boss": "four_general_1"
+   },
+   {
+    "name": "第五層 業火の闘技場",
+    "boss": "four_general_2"
+   },
+   {
+    "name": "最上階 魔王の間",
+    "boss": "demon_lord_1",
+    "second": "demon_lord_2"
+   }
+  ]
+ },
+ "enemyUnits": {
+  "easy": {
+   "slime": {
+    "hp": 24,
+    "mp": 0,
+    "atk": 9,
+    "def": 4,
+    "mag": 8,
+    "res": 4,
+    "spd": 4,
+    "exp": 23,
+    "gold": 11
+   },
+   "rat": {
+    "hp": 24,
+    "mp": 0,
+    "atk": 7,
+    "def": 5,
+    "mag": 7,
+    "res": 5,
+    "spd": 9,
+    "exp": 23,
+    "gold": 11
+   },
+   "goblin": {
+    "hp": 29,
+    "mp": 6,
+    "atk": 10,
+    "def": 10,
+    "mag": 9,
+    "res": 10,
+    "spd": 8,
+    "exp": 23,
+    "gold": 11
+   },
+   "wild_wolf": {
+    "hp": 98,
+    "mp": 0,
+    "atk": 24,
+    "def": 17,
+    "mag": 24,
+    "res": 12,
+    "spd": 16,
+    "exp": 54,
+    "gold": 25
+   },
+   "giant_bee": {
+    "hp": 127,
+    "mp": 10,
+    "atk": 37,
+    "def": 18,
+    "mag": 37,
+    "res": 19,
+    "spd": 22,
+    "exp": 67,
+    "gold": 31
+   },
+   "treant": {
+    "hp": 173,
+    "mp": 14,
+    "atk": 21,
+    "def": 28,
+    "mag": 21,
+    "res": 22,
+    "spd": 4,
+    "exp": 95,
+    "gold": 45
+   },
+   "kobold": {
+    "hp": 216,
+    "mp": 12,
+    "atk": 88,
+    "def": 26,
+    "mag": 72,
+    "res": 26,
+    "spd": 14,
+    "exp": 122,
+    "gold": 57
+   },
+   "skeleton": {
+    "hp": 251,
+    "mp": 10,
+    "atk": 39,
+    "def": 33,
+    "mag": 31,
+    "res": 29,
+    "spd": 12,
+    "exp": 122,
+    "gold": 57
+   },
+   "bat_swarm": {
+    "hp": 209,
+    "mp": 20,
+    "atk": 53,
+    "def": 24,
+    "mag": 43,
+    "res": 33,
+    "spd": 28,
+    "exp": 122,
+    "gold": 57
+   },
+   "orc": {
+    "hp": 412,
+    "mp": 8,
+    "atk": 83,
+    "def": 47,
+    "mag": 67,
+    "res": 37,
+    "spd": 10,
+    "exp": 184,
+    "gold": 86
+   },
+   "harpy": {
+    "hp": 407,
+    "mp": 30,
+    "atk": 131,
+    "def": 39,
+    "mag": 100,
+    "res": 58,
+    "spd": 34,
+    "exp": 196,
+    "gold": 92
+   },
+   "golem": {
+    "hp": 433,
+    "mp": 0,
+    "atk": 31,
+    "def": 68,
+    "mag": 24,
+    "res": 46,
+    "spd": 5,
+    "exp": 196,
+    "gold": 92
+   },
+   "dark_mage": {
+    "hp": 277,
+    "mp": 120,
+    "atk": 37,
+    "def": 39,
+    "mag": 28,
+    "res": 57,
+    "spd": 22,
+    "exp": 230,
+    "gold": 107
+   },
+   "minotaur": {
+    "hp": 1080,
+    "mp": 20,
+    "atk": 201,
+    "def": 57,
+    "mag": 170,
+    "res": 40,
+    "spd": 20,
+    "exp": 578,
+    "gold": 270
+   },
+   "wraith": {
+    "hp": 528,
+    "mp": 180,
+    "atk": 77,
+    "def": 43,
+    "mag": 65,
+    "res": 68,
+    "spd": 38,
+    "exp": 385,
+    "gold": 180
+   },
+   "chimera": {
+    "hp": 1995,
+    "mp": 120,
+    "atk": 328,
+    "def": 94,
+    "mag": 277,
+    "res": 54,
+    "spd": 34,
+    "exp": 1155,
+    "gold": 539
+   },
+   "ice_queen": {
+    "hp": 1196,
+    "mp": 300,
+    "atk": 123,
+    "def": 52,
+    "mag": 131,
+    "res": 80,
+    "spd": 44,
+    "exp": 898,
+    "gold": 419
+   },
+   "young_dragon": {
+    "hp": 1578,
+    "mp": 160,
+    "atk": 122,
+    "def": 91,
+    "mag": 130,
+    "res": 74,
+    "spd": 38,
+    "exp": 898,
+    "gold": 419
+   },
+   "demon_soldier": {
+    "hp": 855,
+    "mp": 200,
+    "atk": 87,
+    "def": 81,
+    "mag": 92,
+    "res": 84,
+    "spd": 48,
+    "exp": 598,
+    "gold": 279
+   },
+   "hell_hound": {
+    "hp": 1393,
+    "mp": 180,
+    "atk": 251,
+    "def": 96,
+    "mag": 266,
+    "res": 107,
+    "spd": 72,
+    "exp": 898,
+    "gold": 419
+   },
+   "lich": {
+    "hp": 1144,
+    "mp": 600,
+    "atk": 205,
+    "def": 103,
+    "mag": 215,
+    "res": 138,
+    "spd": 56,
+    "exp": 850,
+    "gold": 397
+   },
+   "demon_knight": {
+    "hp": 1346,
+    "mp": 260,
+    "atk": 224,
+    "def": 110,
+    "mag": 234,
+    "res": 83,
+    "spd": 66,
+    "exp": 850,
+    "gold": 397
+   },
+   "archdemon": {
+    "hp": 1716,
+    "mp": 500,
+    "atk": 236,
+    "def": 118,
+    "mag": 247,
+    "res": 118,
+    "spd": 78,
+    "exp": 1275,
+    "gold": 595
+   },
+   "boss_goblin_lord": {
+    "hp": 280,
+    "mp": 40,
+    "atk": 22,
+    "def": 24,
+    "mag": 22,
+    "res": 24,
+    "spd": 14,
+    "exp": 1086,
+    "gold": 398
+   },
+   "boss_cave_guardian": {
+    "hp": 1404,
+    "mp": 60,
+    "atk": 63,
+    "def": 44,
+    "mag": 49,
+    "res": 44,
+    "spd": 12,
+    "exp": 5886,
+    "gold": 2158
+   },
+   "boss_swamp_hydra": {
+    "hp": 4318,
+    "mp": 200,
+    "atk": 299,
+    "def": 66,
+    "mag": 316,
+    "res": 66,
+    "spd": 30,
+    "exp": 16430,
+    "gold": 6024
+   },
+   "boss_flame_dragon": {
+    "hp": 4733,
+    "mp": 400,
+    "atk": 418,
+    "def": 67,
+    "mag": 436,
+    "res": 74,
+    "spd": 52,
+    "exp": 23732,
+    "gold": 8702
+   },
+   "gate_keeper": {
+    "hp": 6595,
+    "mp": 300,
+    "atk": 634,
+    "def": 105,
+    "mag": 662,
+    "res": 105,
+    "spd": 50,
+    "exp": 25505,
+    "gold": 9352
+   },
+   "four_general_1": {
+    "hp": 8026,
+    "mp": 800,
+    "atk": 803,
+    "def": 95,
+    "mag": 962,
+    "res": 114,
+    "spd": 88,
+    "exp": 28268,
+    "gold": 10365
+   },
+   "four_general_2": {
+    "hp": 10314,
+    "mp": 500,
+    "atk": 936,
+    "def": 118,
+    "mag": 1112,
+    "res": 97,
+    "spd": 62,
+    "exp": 30176,
+    "gold": 11064
+   },
+   "demon_lord_1": {
+    "hp": 12210,
+    "mp": 1200,
+    "atk": 472,
+    "def": 125,
+    "mag": 584,
+    "res": 125,
+    "spd": 90,
+    "exp": 32136,
+    "gold": 11783
+   },
+   "demon_lord_2": {
+    "hp": 15699,
+    "mp": 2000,
+    "atk": 490,
+    "def": 136,
+    "mag": 597,
+    "res": 136,
+    "spd": 105,
+    "exp": 35174,
+    "gold": 12897
+   }
+  },
+  "normal": {
+   "slime": {
+    "hp": 31,
+    "mp": 0,
+    "atk": 12,
+    "def": 4,
+    "mag": 11,
+    "res": 4,
+    "spd": 4,
+    "exp": 23,
+    "gold": 11
+   },
+   "rat": {
+    "hp": 31,
+    "mp": 0,
+    "atk": 10,
+    "def": 5,
+    "mag": 10,
+    "res": 5,
+    "spd": 9,
+    "exp": 23,
+    "gold": 11
+   },
+   "goblin": {
+    "hp": 38,
+    "mp": 6,
+    "atk": 13,
+    "def": 10,
+    "mag": 12,
+    "res": 10,
+    "spd": 8,
+    "exp": 23,
+    "gold": 11
+   },
+   "wild_wolf": {
+    "hp": 126,
+    "mp": 0,
+    "atk": 31,
+    "def": 17,
+    "mag": 31,
+    "res": 12,
+    "spd": 16,
+    "exp": 54,
+    "gold": 25
+   },
+   "giant_bee": {
+    "hp": 163,
+    "mp": 10,
+    "atk": 48,
+    "def": 18,
+    "mag": 48,
+    "res": 19,
+    "spd": 22,
+    "exp": 67,
+    "gold": 31
+   },
+   "treant": {
+    "hp": 222,
+    "mp": 14,
+    "atk": 27,
+    "def": 28,
+    "mag": 27,
+    "res": 22,
+    "spd": 4,
+    "exp": 95,
+    "gold": 45
+   },
+   "kobold": {
+    "hp": 278,
+    "mp": 12,
+    "atk": 114,
+    "def": 26,
+    "mag": 93,
+    "res": 26,
+    "spd": 14,
+    "exp": 122,
+    "gold": 57
+   },
+   "skeleton": {
+    "hp": 323,
+    "mp": 10,
+    "atk": 51,
+    "def": 33,
+    "mag": 41,
+    "res": 29,
+    "spd": 12,
+    "exp": 122,
+    "gold": 57
+   },
+   "bat_swarm": {
+    "hp": 269,
+    "mp": 20,
+    "atk": 68,
+    "def": 24,
+    "mag": 56,
+    "res": 33,
+    "spd": 28,
+    "exp": 122,
+    "gold": 57
+   },
+   "orc": {
+    "hp": 529,
+    "mp": 8,
+    "atk": 107,
+    "def": 47,
+    "mag": 87,
+    "res": 37,
+    "spd": 10,
+    "exp": 184,
+    "gold": 86
+   },
+   "harpy": {
+    "hp": 522,
+    "mp": 30,
+    "atk": 168,
+    "def": 39,
+    "mag": 129,
+    "res": 58,
+    "spd": 34,
+    "exp": 196,
+    "gold": 92
+   },
+   "golem": {
+    "hp": 556,
+    "mp": 0,
+    "atk": 40,
+    "def": 68,
+    "mag": 31,
+    "res": 46,
+    "spd": 5,
+    "exp": 196,
+    "gold": 92
+   },
+   "dark_mage": {
+    "hp": 356,
+    "mp": 120,
+    "atk": 48,
+    "def": 39,
+    "mag": 37,
+    "res": 57,
+    "spd": 22,
+    "exp": 230,
+    "gold": 107
+   },
+   "minotaur": {
+    "hp": 1385,
+    "mp": 20,
+    "atk": 258,
+    "def": 57,
+    "mag": 218,
+    "res": 40,
+    "spd": 20,
+    "exp": 578,
+    "gold": 270
+   },
+   "wraith": {
+    "hp": 677,
+    "mp": 180,
+    "atk": 99,
+    "def": 43,
+    "mag": 84,
+    "res": 68,
+    "spd": 38,
+    "exp": 385,
+    "gold": 180
+   },
+   "chimera": {
+    "hp": 2558,
+    "mp": 120,
+    "atk": 421,
+    "def": 94,
+    "mag": 356,
+    "res": 54,
+    "spd": 34,
+    "exp": 1155,
+    "gold": 539
+   },
+   "ice_queen": {
+    "hp": 1534,
+    "mp": 300,
+    "atk": 158,
+    "def": 52,
+    "mag": 168,
+    "res": 80,
+    "spd": 44,
+    "exp": 898,
+    "gold": 419
+   },
+   "young_dragon": {
+    "hp": 2024,
+    "mp": 160,
+    "atk": 157,
+    "def": 91,
+    "mag": 167,
+    "res": 74,
+    "spd": 38,
+    "exp": 898,
+    "gold": 419
+   },
+   "demon_soldier": {
+    "hp": 1097,
+    "mp": 200,
+    "atk": 112,
+    "def": 81,
+    "mag": 118,
+    "res": 84,
+    "spd": 48,
+    "exp": 598,
+    "gold": 279
+   },
+   "hell_hound": {
+    "hp": 1787,
+    "mp": 180,
+    "atk": 323,
+    "def": 96,
+    "mag": 342,
+    "res": 107,
+    "spd": 72,
+    "exp": 898,
+    "gold": 419
+   },
+   "lich": {
+    "hp": 1467,
+    "mp": 600,
+    "atk": 264,
+    "def": 103,
+    "mag": 276,
+    "res": 138,
+    "spd": 56,
+    "exp": 850,
+    "gold": 397
+   },
+   "demon_knight": {
+    "hp": 1726,
+    "mp": 260,
+    "atk": 288,
+    "def": 110,
+    "mag": 300,
+    "res": 83,
+    "spd": 66,
+    "exp": 850,
+    "gold": 397
+   },
+   "archdemon": {
+    "hp": 2201,
+    "mp": 500,
+    "atk": 303,
+    "def": 118,
+    "mag": 317,
+    "res": 118,
+    "spd": 78,
+    "exp": 1275,
+    "gold": 595
+   },
+   "boss_goblin_lord": {
+    "hp": 360,
+    "mp": 40,
+    "atk": 29,
+    "def": 24,
+    "mag": 29,
+    "res": 24,
+    "spd": 14,
+    "exp": 1086,
+    "gold": 398
+   },
+   "boss_cave_guardian": {
+    "hp": 1800,
+    "mp": 60,
+    "atk": 82,
+    "def": 44,
+    "mag": 63,
+    "res": 44,
+    "spd": 12,
+    "exp": 5886,
+    "gold": 2158
+   },
+   "boss_swamp_hydra": {
+    "hp": 5536,
+    "mp": 200,
+    "atk": 384,
+    "def": 66,
+    "mag": 406,
+    "res": 66,
+    "spd": 30,
+    "exp": 16430,
+    "gold": 6024
+   },
+   "boss_flame_dragon": {
+    "hp": 6069,
+    "mp": 400,
+    "atk": 537,
+    "def": 67,
+    "mag": 560,
+    "res": 74,
+    "spd": 52,
+    "exp": 23732,
+    "gold": 8702
+   },
+   "gate_keeper": {
+    "hp": 8456,
+    "mp": 300,
+    "atk": 813,
+    "def": 105,
+    "mag": 849,
+    "res": 105,
+    "spd": 50,
+    "exp": 25505,
+    "gold": 9352
+   },
+   "four_general_1": {
+    "hp": 10291,
+    "mp": 800,
+    "atk": 1030,
+    "def": 95,
+    "mag": 1234,
+    "res": 114,
+    "spd": 88,
+    "exp": 28268,
+    "gold": 10365
+   },
+   "four_general_2": {
+    "hp": 13224,
+    "mp": 500,
+    "atk": 1200,
+    "def": 118,
+    "mag": 1426,
+    "res": 97,
+    "spd": 62,
+    "exp": 30176,
+    "gold": 11064
+   },
+   "demon_lord_1": {
+    "hp": 15654,
+    "mp": 1200,
+    "atk": 606,
+    "def": 125,
+    "mag": 749,
+    "res": 125,
+    "spd": 90,
+    "exp": 32136,
+    "gold": 11783
+   },
+   "demon_lord_2": {
+    "hp": 20127,
+    "mp": 2000,
+    "atk": 629,
+    "def": 136,
+    "mag": 766,
+    "res": 136,
+    "spd": 105,
+    "exp": 35174,
+    "gold": 12897
+   }
+  },
+  "hard": {
+   "slime": {
+    "hp": 41,
+    "mp": 0,
+    "atk": 14,
+    "def": 4,
+    "mag": 13,
+    "res": 4,
+    "spd": 4,
+    "exp": 23,
+    "gold": 11
+   },
+   "rat": {
+    "hp": 41,
+    "mp": 0,
+    "atk": 12,
+    "def": 5,
+    "mag": 12,
+    "res": 5,
+    "spd": 9,
+    "exp": 23,
+    "gold": 11
+   },
+   "goblin": {
+    "hp": 51,
+    "mp": 6,
+    "atk": 15,
+    "def": 10,
+    "mag": 14,
+    "res": 10,
+    "spd": 8,
+    "exp": 23,
+    "gold": 11
+   },
+   "wild_wolf": {
+    "hp": 170,
+    "mp": 0,
+    "atk": 37,
+    "def": 17,
+    "mag": 37,
+    "res": 12,
+    "spd": 16,
+    "exp": 54,
+    "gold": 25
+   },
+   "giant_bee": {
+    "hp": 220,
+    "mp": 10,
+    "atk": 58,
+    "def": 18,
+    "mag": 58,
+    "res": 19,
+    "spd": 22,
+    "exp": 67,
+    "gold": 31
+   },
+   "treant": {
+    "hp": 299,
+    "mp": 14,
+    "atk": 32,
+    "def": 28,
+    "mag": 32,
+    "res": 22,
+    "spd": 4,
+    "exp": 95,
+    "gold": 45
+   },
+   "kobold": {
+    "hp": 375,
+    "mp": 12,
+    "atk": 139,
+    "def": 26,
+    "mag": 113,
+    "res": 26,
+    "spd": 14,
+    "exp": 122,
+    "gold": 57
+   },
+   "skeleton": {
+    "hp": 436,
+    "mp": 10,
+    "atk": 62,
+    "def": 33,
+    "mag": 50,
+    "res": 29,
+    "spd": 12,
+    "exp": 122,
+    "gold": 57
+   },
+   "bat_swarm": {
+    "hp": 363,
+    "mp": 20,
+    "atk": 82,
+    "def": 24,
+    "mag": 68,
+    "res": 33,
+    "spd": 28,
+    "exp": 122,
+    "gold": 57
+   },
+   "orc": {
+    "hp": 714,
+    "mp": 8,
+    "atk": 130,
+    "def": 47,
+    "mag": 106,
+    "res": 37,
+    "spd": 10,
+    "exp": 184,
+    "gold": 86
+   },
+   "harpy": {
+    "hp": 704,
+    "mp": 30,
+    "atk": 204,
+    "def": 39,
+    "mag": 157,
+    "res": 58,
+    "spd": 34,
+    "exp": 196,
+    "gold": 92
+   },
+   "golem": {
+    "hp": 750,
+    "mp": 0,
+    "atk": 48,
+    "def": 68,
+    "mag": 37,
+    "res": 46,
+    "spd": 5,
+    "exp": 196,
+    "gold": 92
+   },
+   "dark_mage": {
+    "hp": 480,
+    "mp": 120,
+    "atk": 58,
+    "def": 39,
+    "mag": 45,
+    "res": 57,
+    "spd": 22,
+    "exp": 230,
+    "gold": 107
+   },
+   "minotaur": {
+    "hp": 1869,
+    "mp": 20,
+    "atk": 314,
+    "def": 57,
+    "mag": 265,
+    "res": 40,
+    "spd": 20,
+    "exp": 578,
+    "gold": 270
+   },
+   "wraith": {
+    "hp": 913,
+    "mp": 180,
+    "atk": 120,
+    "def": 43,
+    "mag": 102,
+    "res": 68,
+    "spd": 38,
+    "exp": 385,
+    "gold": 180
+   },
+   "chimera": {
+    "hp": 3453,
+    "mp": 120,
+    "atk": 513,
+    "def": 94,
+    "mag": 434,
+    "res": 54,
+    "spd": 34,
+    "exp": 1155,
+    "gold": 539
+   },
+   "ice_queen": {
+    "hp": 2070,
+    "mp": 300,
+    "atk": 192,
+    "def": 52,
+    "mag": 204,
+    "res": 80,
+    "spd": 44,
+    "exp": 898,
+    "gold": 419
+   },
+   "young_dragon": {
+    "hp": 2732,
+    "mp": 160,
+    "atk": 191,
+    "def": 91,
+    "mag": 203,
+    "res": 74,
+    "spd": 38,
+    "exp": 898,
+    "gold": 419
+   },
+   "demon_soldier": {
+    "hp": 1480,
+    "mp": 200,
+    "atk": 136,
+    "def": 81,
+    "mag": 143,
+    "res": 84,
+    "spd": 48,
+    "exp": 598,
+    "gold": 279
+   },
+   "hell_hound": {
+    "hp": 2412,
+    "mp": 180,
+    "atk": 394,
+    "def": 96,
+    "mag": 417,
+    "res": 107,
+    "spd": 72,
+    "exp": 898,
+    "gold": 419
+   },
+   "lich": {
+    "hp": 1980,
+    "mp": 600,
+    "atk": 322,
+    "def": 103,
+    "mag": 336,
+    "res": 138,
+    "spd": 56,
+    "exp": 850,
+    "gold": 397
+   },
+   "demon_knight": {
+    "hp": 2330,
+    "mp": 260,
+    "atk": 351,
+    "def": 110,
+    "mag": 366,
+    "res": 83,
+    "spd": 66,
+    "exp": 850,
+    "gold": 397
+   },
+   "archdemon": {
+    "hp": 2971,
+    "mp": 500,
+    "atk": 369,
+    "def": 118,
+    "mag": 386,
+    "res": 118,
+    "spd": 78,
+    "exp": 1275,
+    "gold": 595
+   },
+   "boss_goblin_lord": {
+    "hp": 486,
+    "mp": 40,
+    "atk": 35,
+    "def": 24,
+    "mag": 35,
+    "res": 24,
+    "spd": 14,
+    "exp": 1086,
+    "gold": 398
+   },
+   "boss_cave_guardian": {
+    "hp": 2430,
+    "mp": 60,
+    "atk": 100,
+    "def": 44,
+    "mag": 76,
+    "res": 44,
+    "spd": 12,
+    "exp": 5886,
+    "gold": 2158
+   },
+   "boss_swamp_hydra": {
+    "hp": 7473,
+    "mp": 200,
+    "atk": 468,
+    "def": 66,
+    "mag": 495,
+    "res": 66,
+    "spd": 30,
+    "exp": 16430,
+    "gold": 6024
+   },
+   "boss_flame_dragon": {
+    "hp": 8193,
+    "mp": 400,
+    "atk": 655,
+    "def": 67,
+    "mag": 683,
+    "res": 74,
+    "spd": 52,
+    "exp": 23732,
+    "gold": 8702
+   },
+   "gate_keeper": {
+    "hp": 11415,
+    "mp": 300,
+    "atk": 991,
+    "def": 105,
+    "mag": 1035,
+    "res": 105,
+    "spd": 50,
+    "exp": 25505,
+    "gold": 9352
+   },
+   "four_general_1": {
+    "hp": 13892,
+    "mp": 800,
+    "atk": 1256,
+    "def": 95,
+    "mag": 1505,
+    "res": 114,
+    "spd": 88,
+    "exp": 28268,
+    "gold": 10365
+   },
+   "four_general_2": {
+    "hp": 17852,
+    "mp": 500,
+    "atk": 1464,
+    "def": 118,
+    "mag": 1739,
+    "res": 97,
+    "spd": 62,
+    "exp": 30176,
+    "gold": 11064
+   },
+   "demon_lord_1": {
+    "hp": 21132,
+    "mp": 1200,
+    "atk": 739,
+    "def": 125,
+    "mag": 913,
+    "res": 125,
+    "spd": 90,
+    "exp": 32136,
+    "gold": 11783
+   },
+   "demon_lord_2": {
+    "hp": 27171,
+    "mp": 2000,
+    "atk": 767,
+    "def": 136,
+    "mag": 934,
+    "res": 136,
+    "spd": 105,
+    "exp": 35174,
+    "gold": 12897
+   }
+  }
+ },
+ "growth": {
+  "villager": {
+   "job": "villager",
+   "hp": 337,
+   "mp": 130,
+   "atk": 81,
+   "def": 73,
+   "mag": 66,
+   "res": 65,
+   "spd": 71,
+   "skills": [
+    "first_aid",
+    "guard_up",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "apprentice_mage": {
+   "job": "apprentice_mage",
+   "hp": 294,
+   "mp": 356,
+   "atk": 61,
+   "def": 64,
+   "mag": 155,
+   "res": 116,
+   "spd": 78,
+   "skills": [
+    "fire_bolt",
+    "first_aid",
+    "guard_up",
+    "ice_needle",
+    "mana_dart",
+    "meditate",
+    "strike",
+    "throw_rock",
+    "wind_edge"
+   ]
+  },
+  "apprentice_knight": {
+   "job": "apprentice_knight",
+   "hp": 541,
+   "mp": 136,
+   "atk": 149,
+   "def": 130,
+   "mag": 46,
+   "res": 67,
+   "spd": 84,
+   "skills": [
+    "armor_break",
+    "double_slash",
+    "first_aid",
+    "guard_up",
+    "power_slash",
+    "provoke",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "apprentice_cleric": {
+   "job": "apprentice_cleric",
+   "hp": 404,
+   "mp": 273,
+   "atk": 78,
+   "def": 103,
+   "mag": 128,
+   "res": 144,
+   "spd": 67,
+   "skills": [
+    "bless",
+    "first_aid",
+    "guard_up",
+    "heal",
+    "holy_ray",
+    "refresh",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "apprentice_scout": {
+   "job": "apprentice_scout",
+   "hp": 376,
+   "mp": 191,
+   "atk": 122,
+   "def": 86,
+   "mag": 73,
+   "res": 78,
+   "spd": 155,
+   "skills": [
+    "analyze",
+    "first_aid",
+    "guard_up",
+    "haste",
+    "poison_edge",
+    "quick_stab",
+    "steal",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "sorcerer": {
+   "job": "sorcerer",
+   "hp": 418,
+   "mp": 463,
+   "atk": 78,
+   "def": 88,
+   "mag": 215,
+   "res": 152,
+   "spd": 98,
+   "skills": [
+    "blizzard",
+    "drain",
+    "fire_ball",
+    "fire_bolt",
+    "first_aid",
+    "guard_up",
+    "ice_needle",
+    "magic_up",
+    "mana_dart",
+    "meditate",
+    "strike",
+    "throw_rock",
+    "wind_edge"
+   ]
+  },
+  "elementalist": {
+   "job": "elementalist",
+   "hp": 440,
+   "mp": 440,
+   "atk": 83,
+   "def": 97,
+   "mag": 198,
+   "res": 179,
+   "spd": 107,
+   "skills": [
+    "barrier",
+    "fire_bolt",
+    "first_aid",
+    "gaia_press",
+    "guard_up",
+    "ice_needle",
+    "mana_dart",
+    "meditate",
+    "stone_blast",
+    "strike",
+    "throw_rock",
+    "thunder_storm",
+    "wind_edge"
+   ]
+  },
+  "swordsman": {
+   "job": "swordsman",
+   "hp": 688,
+   "mp": 193,
+   "atk": 213,
+   "def": 165,
+   "mag": 62,
+   "res": 89,
+   "spd": 125,
+   "skills": [
+    "armor_break",
+    "brave_slash",
+    "double_slash",
+    "first_aid",
+    "focus",
+    "guard_up",
+    "pierce",
+    "power_slash",
+    "provoke",
+    "strike",
+    "throw_rock",
+    "whirlwind"
+   ]
+  },
+  "guardian": {
+   "job": "guardian",
+   "hp": 823,
+   "mp": 193,
+   "atk": 168,
+   "def": 228,
+   "mag": 62,
+   "res": 134,
+   "spd": 80,
+   "skills": [
+    "armor_break",
+    "double_slash",
+    "encourage",
+    "first_aid",
+    "guard_up",
+    "iron_wall",
+    "last_stand",
+    "power_slash",
+    "provoke",
+    "shield_bash",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "priest": {
+   "job": "priest",
+   "hp": 508,
+   "mp": 395,
+   "atk": 92,
+   "def": 129,
+   "mag": 180,
+   "res": 197,
+   "spd": 85,
+   "skills": [
+    "bless",
+    "cure",
+    "first_aid",
+    "group_heal",
+    "guard_up",
+    "heal",
+    "holy_ray",
+    "refresh",
+    "revive",
+    "sanctuary",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "exorcist": {
+   "job": "exorcist",
+   "hp": 553,
+   "mp": 350,
+   "atk": 132,
+   "def": 138,
+   "mag": 170,
+   "res": 179,
+   "spd": 98,
+   "skills": [
+    "bless",
+    "curse",
+    "dark_pulse",
+    "exorcise",
+    "first_aid",
+    "guard_up",
+    "heal",
+    "holy_ray",
+    "refresh",
+    "sanctuary",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "thief": {
+   "job": "thief",
+   "hp": 553,
+   "mp": 260,
+   "atk": 177,
+   "def": 120,
+   "mag": 90,
+   "res": 106,
+   "spd": 215,
+   "skills": [
+    "analyze",
+    "assassinate",
+    "first_aid",
+    "guard_up",
+    "haste",
+    "mug",
+    "poison_edge",
+    "quick_stab",
+    "shadow_step",
+    "smoke_bomb",
+    "steal",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "ranger": {
+   "job": "ranger",
+   "hp": 598,
+   "mp": 260,
+   "atk": 186,
+   "def": 129,
+   "mag": 107,
+   "res": 116,
+   "spd": 188,
+   "skills": [
+    "analyze",
+    "first_aid",
+    "guard_up",
+    "haste",
+    "kunai_storm",
+    "poison_edge",
+    "quick_stab",
+    "rapid_fire",
+    "steal",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "archmage": {
+   "job": "archmage",
+   "hp": 529,
+   "mp": 496,
+   "atk": 99,
+   "def": 112,
+   "mag": 233,
+   "res": 172,
+   "spd": 113,
+   "skills": [
+    "arcane_burst",
+    "blizzard",
+    "drain",
+    "fire_ball",
+    "fire_bolt",
+    "first_aid",
+    "gravity",
+    "guard_up",
+    "ice_needle",
+    "magic_up",
+    "mana_dart",
+    "mana_drain",
+    "meditate",
+    "meteor",
+    "strike",
+    "throw_rock",
+    "wind_edge"
+   ]
+  },
+  "spirit_lord": {
+   "job": "spirit_lord",
+   "hp": 559,
+   "mp": 466,
+   "atk": 102,
+   "def": 124,
+   "mag": 215,
+   "res": 202,
+   "spd": 125,
+   "skills": [
+    "absolute_zero",
+    "barrier",
+    "fire_bolt",
+    "first_aid",
+    "gaia_press",
+    "gravity",
+    "guard_up",
+    "holy_rain",
+    "ice_needle",
+    "mana_dart",
+    "meditate",
+    "stone_blast",
+    "strike",
+    "throw_rock",
+    "thunder_storm",
+    "wind_edge"
+   ]
+  },
+  "magic_swordsman": {
+   "job": "magic_swordsman",
+   "hp": 739,
+   "mp": 316,
+   "atk": 207,
+   "def": 172,
+   "mag": 168,
+   "res": 137,
+   "spd": 143,
+   "skills": [
+    "armor_break",
+    "brave_slash",
+    "double_slash",
+    "dragon_fang",
+    "first_aid",
+    "flame_sword",
+    "focus",
+    "guard_up",
+    "magic_up",
+    "mana_blade",
+    "pierce",
+    "power_slash",
+    "provoke",
+    "strike",
+    "throw_rock",
+    "whirlwind"
+   ]
+  },
+  "paladin": {
+   "job": "paladin",
+   "hp": 859,
+   "mp": 286,
+   "atk": 195,
+   "def": 232,
+   "mag": 138,
+   "res": 179,
+   "spd": 107,
+   "skills": [
+    "armor_break",
+    "cure",
+    "double_slash",
+    "encourage",
+    "first_aid",
+    "guard_up",
+    "holy_blade",
+    "iron_wall",
+    "last_stand",
+    "power_slash",
+    "provoke",
+    "sanctuary",
+    "shield_bash",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "bishop": {
+   "job": "bishop",
+   "hp": 619,
+   "mp": 436,
+   "atk": 111,
+   "def": 148,
+   "mag": 203,
+   "res": 214,
+   "spd": 101,
+   "skills": [
+    "bless",
+    "cure",
+    "first_aid",
+    "group_heal",
+    "guard_up",
+    "heal",
+    "holy_rain",
+    "holy_ray",
+    "mega_heal",
+    "refresh",
+    "revive",
+    "sanctuary",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "inquisitor": {
+   "job": "inquisitor",
+   "hp": 679,
+   "mp": 376,
+   "atk": 165,
+   "def": 160,
+   "mag": 198,
+   "res": 197,
+   "spd": 125,
+   "skills": [
+    "abyss_gate",
+    "bless",
+    "curse",
+    "dark_pulse",
+    "exorcise",
+    "first_aid",
+    "guard_up",
+    "heal",
+    "holy_ray",
+    "judgment",
+    "mega_heal",
+    "refresh",
+    "sanctuary",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "ninja": {
+   "job": "ninja",
+   "hp": 679,
+   "mp": 316,
+   "atk": 207,
+   "def": 142,
+   "mag": 138,
+   "res": 130,
+   "spd": 239,
+   "skills": [
+    "analyze",
+    "assassinate",
+    "death_scythe",
+    "first_aid",
+    "guard_up",
+    "haste",
+    "kunai_storm",
+    "mug",
+    "poison_edge",
+    "quick_stab",
+    "shadow_flurry",
+    "shadow_step",
+    "smoke_bomb",
+    "steal",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "sniper": {
+   "job": "sniper",
+   "hp": 709,
+   "mp": 286,
+   "atk": 219,
+   "def": 148,
+   "mag": 125,
+   "res": 130,
+   "spd": 203,
+   "skills": [
+    "analyze",
+    "assassinate",
+    "death_scythe",
+    "first_aid",
+    "focus",
+    "guard_up",
+    "haste",
+    "kunai_storm",
+    "poison_edge",
+    "quick_stab",
+    "rapid_fire",
+    "steal",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "sage": {
+   "job": "sage",
+   "hp": 547,
+   "mp": 350,
+   "atk": 111,
+   "def": 116,
+   "mag": 160,
+   "res": 139,
+   "spd": 109,
+   "skills": [
+    "absolute_zero",
+    "arcane_burst",
+    "blizzard",
+    "drain",
+    "fire_ball",
+    "fire_bolt",
+    "first_aid",
+    "gravity",
+    "guard_up",
+    "holy_rain",
+    "ice_needle",
+    "judgment",
+    "magic_up",
+    "mana_dart",
+    "mana_drain",
+    "meditate",
+    "meteor",
+    "strike",
+    "throw_rock",
+    "wind_edge"
+   ]
+  },
+  "sword_saint": {
+   "job": "sword_saint",
+   "hp": 667,
+   "mp": 260,
+   "atk": 165,
+   "def": 146,
+   "mag": 116,
+   "res": 119,
+   "spd": 121,
+   "skills": [
+    "armor_break",
+    "brave_slash",
+    "double_slash",
+    "dragon_fang",
+    "first_aid",
+    "flame_sword",
+    "focus",
+    "guard_up",
+    "holy_blade",
+    "last_stand",
+    "magic_up",
+    "mana_blade",
+    "nine_slash",
+    "pierce",
+    "power_slash",
+    "provoke",
+    "strike",
+    "throw_rock",
+    "whirlwind"
+   ]
+  },
+  "saint": {
+   "job": "saint",
+   "hp": 587,
+   "mp": 320,
+   "atk": 119,
+   "def": 128,
+   "mag": 148,
+   "res": 150,
+   "spd": 105,
+   "skills": [
+    "bless",
+    "cure",
+    "first_aid",
+    "group_heal",
+    "guard_up",
+    "heal",
+    "holy_rain",
+    "holy_ray",
+    "judgment",
+    "mega_heal",
+    "refresh",
+    "revive",
+    "sanctuary",
+    "strike",
+    "throw_rock"
+   ]
+  },
+  "shadow_emperor": {
+   "job": "shadow_emperor",
+   "hp": 607,
+   "mp": 270,
+   "atk": 161,
+   "def": 126,
+   "mag": 116,
+   "res": 115,
+   "spd": 159,
+   "skills": [
+    "analyze",
+    "assassinate",
+    "death_scythe",
+    "first_aid",
+    "guard_up",
+    "haste",
+    "kunai_storm",
+    "mug",
+    "poison_edge",
+    "quick_stab",
+    "shadow_flurry",
+    "shadow_step",
+    "smoke_bomb",
+    "steal",
+    "strike",
+    "throw_rock"
+   ]
+  }
+ },
+ "expTable": [
+  44,
+  112,
+  201,
+  307,
+  430,
+  570,
+  724,
+  892,
+  1075,
+  1272,
+  1481,
+  1704,
+  1940,
+  2187,
+  2447,
+  2720,
+  3003,
+  3299,
+  3606,
+  3924,
+  4254,
+  4594,
+  4946,
+  5308,
+  5681,
+  6064,
+  6458,
+  6862,
+  7277,
+  7702,
+  8136,
+  8581,
+  9036,
+  9501,
+  9975,
+  10459,
+  10953,
+  11456,
+  11969,
+  12491,
+  13023,
+  13564,
+  14114,
+  14674,
+  15243,
+  15821,
+  16408,
+  17003,
+  17608,
+  18222,
+  18845,
+  19477,
+  20117,
+  20766,
+  21424,
+  22090,
+  22766,
+  23449,
+  24142,
+  24842,
+  25552,
+  26270,
+  26996,
+  27730,
+  28473,
+  29224,
+  29984,
+  30752,
+  31528,
+  32312
+ ],
+ "shopStock": {
+  "F": [
+   [
+    "weapon",
+    [
+     "bronze_sword",
+     "bronze_dagger",
+     "oak_staff"
+    ]
+   ],
+   [
+    "armor",
+    [
+     "academy_robe",
+     "leather_armor"
+    ]
+   ],
+   [
+    "item",
+    [
+     "herb",
+     "antidote",
+     "smoke"
+    ]
+   ],
+   [
+    "accessory",
+    [
+     "leather_band",
+     "scholar_glasses"
+    ]
+   ]
+  ],
+  "E": [
+   [
+    "weapon",
+    [
+     "bronze_sword",
+     "bronze_dagger",
+     "oak_staff",
+     "iron_sword",
+     "apprentice_wand",
+     "cleric_mace",
+     "hunting_bow"
+    ]
+   ],
+   [
+    "armor",
+    [
+     "academy_robe",
+     "leather_armor"
+    ]
+   ],
+   [
+    "item",
+    [
+     "herb",
+     "antidote",
+     "smoke",
+     "potion",
+     "ether"
+    ]
+   ],
+   [
+    "accessory",
+    [
+     "leather_band",
+     "scholar_glasses"
+    ]
+   ]
+  ],
+  "D": [
+   [
+    "weapon",
+    [
+     "bronze_sword",
+     "bronze_dagger",
+     "oak_staff",
+     "iron_sword",
+     "apprentice_wand",
+     "cleric_mace",
+     "hunting_bow"
+    ]
+   ],
+   [
+    "armor",
+    [
+     "academy_robe",
+     "leather_armor",
+     "chain_mail",
+     "mage_robe"
+    ]
+   ],
+   [
+    "item",
+    [
+     "herb",
+     "antidote",
+     "smoke",
+     "potion",
+     "ether"
+    ]
+   ],
+   [
+    "accessory",
+    [
+     "leather_band",
+     "scholar_glasses",
+     "power_ring",
+     "wisdom_ring",
+     "guard_ring",
+     "lucky_coin"
+    ]
+   ]
+  ],
+  "C": [
+   [
+    "weapon",
+    [
+     "bronze_sword",
+     "bronze_dagger",
+     "oak_staff",
+     "iron_sword",
+     "apprentice_wand",
+     "cleric_mace",
+     "hunting_bow",
+     "silver_sword",
+     "crystal_rod",
+     "assassin_edge",
+     "holy_scepter"
+    ]
+   ],
+   [
+    "armor",
+    [
+     "academy_robe",
+     "leather_armor",
+     "chain_mail",
+     "mage_robe"
+    ]
+   ],
+   [
+    "item",
+    [
+     "herb",
+     "antidote",
+     "smoke",
+     "potion",
+     "ether",
+     "hi_potion",
+     "hi_ether",
+     "phoenix_tail"
+    ]
+   ],
+   [
+    "accessory",
+    [
+     "leather_band",
+     "scholar_glasses",
+     "power_ring",
+     "wisdom_ring",
+     "guard_ring",
+     "lucky_coin",
+     "swift_boots"
+    ]
+   ]
+  ],
+  "B": [
+   [
+    "weapon",
+    [
+     "bronze_sword",
+     "bronze_dagger",
+     "oak_staff",
+     "iron_sword",
+     "apprentice_wand",
+     "cleric_mace",
+     "hunting_bow",
+     "silver_sword",
+     "crystal_rod",
+     "assassin_edge",
+     "holy_scepter",
+     "mithril_blade",
+     "arch_staff",
+     "storm_bow"
+    ]
+   ],
+   [
+    "armor",
+    [
+     "academy_robe",
+     "leather_armor",
+     "chain_mail",
+     "mage_robe",
+     "plate_armor",
+     "holy_vestment",
+     "shadow_garb"
+    ]
+   ],
+   [
+    "item",
+    [
+     "herb",
+     "antidote",
+     "smoke",
+     "potion",
+     "ether",
+     "hi_potion",
+     "hi_ether",
+     "phoenix_tail"
+    ]
+   ],
+   [
+    "accessory",
+    [
+     "leather_band",
+     "scholar_glasses",
+     "power_ring",
+     "wisdom_ring",
+     "guard_ring",
+     "lucky_coin",
+     "swift_boots",
+     "mana_pendant",
+     "life_amulet"
+    ]
+   ]
+  ],
+  "A": [
+   [
+    "weapon",
+    [
+     "bronze_sword",
+     "bronze_dagger",
+     "oak_staff",
+     "iron_sword",
+     "apprentice_wand",
+     "cleric_mace",
+     "hunting_bow",
+     "silver_sword",
+     "crystal_rod",
+     "assassin_edge",
+     "holy_scepter",
+     "mithril_blade",
+     "arch_staff",
+     "storm_bow",
+     "flame_tongue",
+     "world_tree_staff",
+     "shadow_fang"
+    ]
+   ],
+   [
+    "armor",
+    [
+     "academy_robe",
+     "leather_armor",
+     "chain_mail",
+     "mage_robe",
+     "plate_armor",
+     "holy_vestment",
+     "shadow_garb",
+     "dragon_mail",
+     "star_robe"
+    ]
+   ],
+   [
+    "item",
+    [
+     "herb",
+     "antidote",
+     "smoke",
+     "potion",
+     "ether",
+     "hi_potion",
+     "hi_ether",
+     "phoenix_tail",
+     "elixir"
+    ]
+   ],
+   [
+    "accessory",
+    [
+     "leather_band",
+     "scholar_glasses",
+     "power_ring",
+     "wisdom_ring",
+     "guard_ring",
+     "lucky_coin",
+     "swift_boots",
+     "mana_pendant",
+     "life_amulet"
+    ]
+   ]
+  ],
+  "S": [
+   [
+    "weapon",
+    [
+     "bronze_sword",
+     "bronze_dagger",
+     "oak_staff",
+     "iron_sword",
+     "apprentice_wand",
+     "cleric_mace",
+     "hunting_bow",
+     "silver_sword",
+     "crystal_rod",
+     "assassin_edge",
+     "holy_scepter",
+     "mithril_blade",
+     "arch_staff",
+     "storm_bow",
+     "flame_tongue",
+     "world_tree_staff",
+     "shadow_fang"
+    ]
+   ],
+   [
+    "armor",
+    [
+     "academy_robe",
+     "leather_armor",
+     "chain_mail",
+     "mage_robe",
+     "plate_armor",
+     "holy_vestment",
+     "shadow_garb",
+     "dragon_mail",
+     "star_robe"
+    ]
+   ],
+   [
+    "item",
+    [
+     "herb",
+     "antidote",
+     "smoke",
+     "potion",
+     "ether",
+     "hi_potion",
+     "hi_ether",
+     "phoenix_tail",
+     "elixir"
+    ]
+   ],
+   [
+    "accessory",
+    [
+     "leather_band",
+     "scholar_glasses",
+     "power_ring",
+     "wisdom_ring",
+     "guard_ring",
+     "lucky_coin",
+     "swift_boots",
+     "mana_pendant",
+     "life_amulet"
+    ]
+   ]
+  ]
+ },
+ "damage": {
+  "検証/strike/slime": 70,
+  "検証/fire_bolt/slime": 87,
+  "検証/power_slash/slime": 92,
+  "検証/heal/slime": 47,
+  "リィナ/strike/slime": 68,
+  "リィナ/fire_bolt/slime": 93,
+  "リィナ/power_slash/slime": 89,
+  "リィナ/heal/slime": 49,
+  "ヴェルト/strike/slime": 74,
+  "ヴェルト/fire_bolt/slime": 87,
+  "ヴェルト/power_slash/slime": 97,
+  "ヴェルト/heal/slime": 47,
+  "ノア/strike/slime": 71,
+  "ノア/fire_bolt/slime": 87,
+  "ノア/power_slash/slime": 93,
+  "ノア/heal/slime": 47,
+  "検証/strike/orc": 46,
+  "検証/fire_bolt/orc": 39,
+  "検証/power_slash/orc": 61,
+  "検証/heal/orc": 47,
+  "リィナ/strike/orc": 45,
+  "リィナ/fire_bolt/orc": 41,
+  "リィナ/power_slash/orc": 58,
+  "リィナ/heal/orc": 49,
+  "ヴェルト/strike/orc": 49,
+  "ヴェルト/fire_bolt/orc": 39,
+  "ヴェルト/power_slash/orc": 64,
+  "ヴェルト/heal/orc": 47,
+  "ノア/strike/orc": 47,
+  "ノア/fire_bolt/orc": 39,
+  "ノア/power_slash/orc": 62,
+  "ノア/heal/orc": 47,
+  "検証/strike/chimera": 34,
+  "検証/fire_bolt/chimera": 17,
+  "検証/power_slash/chimera": 44,
+  "検証/heal/chimera": 47,
+  "リィナ/strike/chimera": 32,
+  "リィナ/fire_bolt/chimera": 18,
+  "リィナ/power_slash/chimera": 42,
+  "リィナ/heal/chimera": 49,
+  "ヴェルト/strike/chimera": 35,
+  "ヴェルト/fire_bolt/chimera": 17,
+  "ヴェルト/power_slash/chimera": 46,
+  "ヴェルト/heal/chimera": 47,
+  "ノア/strike/chimera": 34,
+  "ノア/fire_bolt/chimera": 17,
+  "ノア/power_slash/chimera": 45,
+  "ノア/heal/chimera": 47,
+  "検証/strike/demon_lord_1": 28,
+  "検証/fire_bolt/demon_lord_1": 11,
+  "検証/power_slash/demon_lord_1": 37,
+  "検証/heal/demon_lord_1": 47,
+  "リィナ/strike/demon_lord_1": 27,
+  "リィナ/fire_bolt/demon_lord_1": 11,
+  "リィナ/power_slash/demon_lord_1": 36,
+  "リィナ/heal/demon_lord_1": 49,
+  "ヴェルト/strike/demon_lord_1": 30,
+  "ヴェルト/fire_bolt/demon_lord_1": 11,
+  "ヴェルト/power_slash/demon_lord_1": 39,
+  "ヴェルト/heal/demon_lord_1": 47,
+  "ノア/strike/demon_lord_1": 29,
+  "ノア/fire_bolt/demon_lord_1": 11,
+  "ノア/power_slash/demon_lord_1": 38,
+  "ノア/heal/demon_lord_1": 47
+ },
+ "academy": {
+  "passLine": [
+   18,
+   28,
+   38,
+   48,
+   56,
+   64,
+   72,
+   78,
+   84
+  ],
+  "tuition": [
+   600,
+   600,
+   600,
+   1200,
+   1200,
+   1200,
+   2400,
+   2400,
+   2400
+  ],
+  "reward": [
+   300,
+   400,
+   550,
+   900,
+   1200,
+   1500,
+   2600,
+   3200,
+   5000
+  ],
+  "scoreAt": [
+   0,
+   25,
+   50,
+   75,
+   100
+  ]
+ },
+ "promotion": [
+  {
+   "key": "F",
+   "clears": 0,
+   "minLv": 1,
+   "promo": null
+  },
+  {
+   "key": "E",
+   "clears": 3,
+   "minLv": 7,
+   "promo": "boss_goblin_lord"
+  },
+  {
+   "key": "D",
+   "clears": 6,
+   "minLv": 12,
+   "promo": null
+  },
+  {
+   "key": "C",
+   "clears": 10,
+   "minLv": 19,
+   "promo": "boss_cave_guardian"
+  },
+  {
+   "key": "B",
+   "clears": 15,
+   "minLv": 27,
+   "promo": null
+  },
+  {
+   "key": "A",
+   "clears": 21,
+   "minLv": 36,
+   "promo": "boss_swamp_hydra"
+  },
+  {
+   "key": "S",
+   "clears": 28,
+   "minLv": 45,
+   "promo": "boss_flame_dragon"
+  }
+ ]
+}

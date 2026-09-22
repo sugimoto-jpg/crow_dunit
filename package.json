@@ -11,7 +11,10 @@
     "balance": "node tools/balance.js",
     "playthrough": "node tools/playthrough.js",
     "retune": "node tools/measure-party.js && node tools/retune-enemies.js",
-    "build": "node tools/build-single.js"
+    "build": "node tools/build-single.js",
+    "deps": "node tools/deps.js",
+    "snapshot": "node tools/snapshot.js --save",
+    "verify": "node tools/snapshot.js --check && node tools/deps.js"
   },
   "devDependencies": {
     "playwright": "^1.63.0"

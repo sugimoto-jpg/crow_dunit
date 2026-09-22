@@ -145,22 +145,12 @@ G.DIFFICULTY = {
   hard:   { name:'むずかしい', hp: 1.35, atk: 1.22 },
 };
 
-G.enemyScale = function () {
-  const key = (G.State && G.State.data && G.State.data.difficulty) || 'normal';
-  const d = G.DIFFICULTY[key] || G.DIFFICULTY.normal;
+/* 難易度キーを受け取って補正値を返す。
+ * データ層はゲームの進行状態を知らないので、難易度は呼び出し側から渡す。
+ * （以前は G.State を直接読んでいたが、data → core の逆流になるため改めた） */
+G.enemyScale = function (difficultyKey) {
+  const d = G.DIFFICULTY[difficultyKey] || G.DIFFICULTY.normal;
   return { hp: d.hp, atk: d.atk, mag: d.atk };
 };
 
 G.enemy = id => G.ENEMIES[id];
-
-/* エリア定義（クエスト／探索で使う） */
-G.AREAS = {
-  plains:   { name:'ラヴィン近郊の草原', icon:'🌾', lvRange:[1,8],   pool:['slime','rat','goblin','wild_wolf'] },
-  forest:   { name:'ささやきの森',       icon:'🌲', lvRange:[5,14],  pool:['wild_wolf','giant_bee','treant','goblin'] },
-  cave:     { name:'風鳴りの洞窟',       icon:'🕳️', lvRange:[9,18],  pool:['kobold','skeleton','bat_swarm','orc'] },
-  ruins:    { name:'古代遺跡ヴェルナ',   icon:'🏛️', lvRange:[15,24], pool:['skeleton','golem','harpy','dark_mage'] },
-  highland: { name:'嘆きの高原',         icon:'⛰️', lvRange:[22,32], pool:['minotaur','wraith','chimera','golem'] },
-  frostpeak:{ name:'氷牙山脈',           icon:'🏔️', lvRange:[30,40], pool:['ice_queen','chimera','young_dragon','wraith'] },
-  borderland:{name:'魔王領境界',         icon:'🌑', lvRange:[36,46], pool:['demon_soldier','hell_hound','young_dragon','lich'] },
-  demon_realm:{name:'魔界・黒曜の荒野',  icon:'🔥', lvRange:[44,55], pool:['demon_knight','lich','archdemon','hell_hound'] },
-};

@@ -25,7 +25,7 @@ G.Battle = {
   /* 敵ID → 戦闘ユニット（同名が複数いるときは A/B/C を付ける） */
   enemyUnit(id, index, suffix) {
     const e = G.ENEMIES[id];
-    const sc = G.enemyScale(e.lv, !!e.boss);
+    const sc = G.enemyScale(G.State.d.difficulty);
     const shp  = Math.floor(e.hp * sc.hp);
     const satk = Math.floor(e.atk * sc.atk);
     const smag = Math.floor(e.mag * sc.mag);
