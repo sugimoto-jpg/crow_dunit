@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#120d1c">
+<title>転生魔法学院譚 〜村人から始まる魔王討伐〜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ヘッダー（ステータスバー） -->
+  <header id="hud" class="hud hidden">
+    <div class="hud-main">
+      <div class="hud-name">
+        <span id="hud-player">―</span>
+        <span id="hud-job" class="tag">村人</span>
+        <span id="hud-lv" class="tag lv">Lv.1</span>
+      </div>
+      <div class="hud-bars">
+        <div class="bar hp"><i id="hud-hp-fill"></i><span id="hud-hp-text">0/0</span></div>
+        <div class="bar mp"><i id="hud-mp-fill"></i><span id="hud-mp-text">0/0</span></div>
+        <div class="bar xp"><i id="hud-xp-fill"></i><span id="hud-xp-text">EXP</span></div>
+      </div>
+    </div>
+    <div class="hud-side">
+      <div class="hud-cell"><b id="hud-gold">0</b><small>G</small></div>
+      <div class="hud-cell"><b id="hud-day">1</b><small>日目</small></div>
+      <div class="hud-cell"><b id="hud-ap">3</b><small>AP</small></div>
+    </div>
+  </header>
+
+  <!-- 画面本体 -->
+  <main id="screen" class="screen"></main>
+
+  <!-- フッターナビ -->
+  <nav id="nav" class="nav hidden">
+    <button data-nav="home"><span>🏰</span>拠点</button>
+    <button data-nav="academy"><span>📖</span>学院</button>
+    <button data-nav="guild"><span>⚔️</span>ギルド</button>
+    <button data-nav="town"><span>🏪</span>街</button>
+    <button data-nav="status"><span>🧙</span>状態</button>
+  </nav>
+
+</div>
+
+<!-- トースト -->
+<div id="toast-wrap" class="toast-wrap"></div>
+
+<!-- モーダル -->
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+    <h3 id="modal-title"></h3>
+    <div id="modal-body"></div>
+    <div id="modal-actions" class="modal-actions"></div>
+  </div>
+</div>
+
+<script src="src/core/util.js"></script>
+<script src="src/data/skills.js"></script>
+<script src="src/data/jobs.js"></script>
+<script src="src/data/items.js"></script>
+<script src="src/data/enemies.js"></script>
+<script src="src/data/quests.js"></script>
+<script src="src/data/academy.js"></script>
+<script src="src/data/story.js"></script>
+<script src="src/core/character.js"></script>
+<script src="src/core/state.js"></script>
+<script src="src/core/world.js"></script>
+<script src="src/core/battle.js"></script>
+<script src="src/ui/ui.js"></script>
+<script src="src/ui/screen_title.js"></script>
+<script src="src/ui/screen_home.js"></script>
+<script src="src/ui/screen_academy.js"></script>
+<script src="src/ui/screen_guild.js"></script>
+<script src="src/ui/screen_town.js"></script>
+<script src="src/ui/screen_status.js"></script>
+<script src="src/ui/screen_job.js"></script>
+<script src="src/ui/screen_battle.js"></script>
+<script src="src/ui/screen_demon.js"></script>
+<script src="src/main.js"></script>
+</body>
+</html>
