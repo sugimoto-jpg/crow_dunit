@@ -71,21 +71,21 @@ body{
 .bar i{position:absolute;inset:0;width:0;transition:width .35s ease;border-radius:999px}
 .bar span{
   position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;
-  padding-right:8px;font-size:9.5px;font-weight:700;letter-spacing:.3px;
+  padding-right:8px;font-size:11px;font-weight:700;letter-spacing:.3px;
   text-shadow:0 1px 2px rgba(0,0,0,.9);color:#fff;
 }
 .bar.hp i{background:linear-gradient(90deg,#ff5f6d,#ff9a6d)}
 .bar.mp i{background:linear-gradient(90deg,#4e7fff,#59d8e6)}
 .bar.xp i{background:linear-gradient(90deg,#b58f2e,#f2c14e)}
 .bar.xp{height:11px}
-.bar.xp span{font-size:8.5px;padding-right:6px}
+.bar.xp span{font-size:10.5px;padding-right:6px}
 .hud-side{display:flex;gap:6px;flex:0 0 auto}
 .hud-cell{
   min-width:50px;text-align:center;padding:4px 6px;border-radius:10px;
   background:rgba(255,255,255,.04);border:1px solid var(--line);
 }
 .hud-cell b{display:block;font-size:14px;color:var(--gold);line-height:1.2}
-.hud-cell small{font-size:9px;color:var(--ink-dim)}
+.hud-cell small{font-size:11px;color:var(--ink-dim)}
 
 /* ---------- 画面 ---------- */
 .screen{
@@ -99,7 +99,11 @@ body{
 
 /* ---------- ナビ ---------- */
 .nav{
+  /* 一覧の最後の項目とタブが 1px しか離れておらず、
+     スクロールして指を離した位置がずれると別の画面に移ってしまっていた。
+     上に押しても反応しない帯を作って、誤タップを防ぐ。 */
   flex:0 0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;
+  padding-top:8px;
   background:linear-gradient(0deg,#1a1430,#241a42);
   border-top:1px solid var(--line);
   z-index:20;
@@ -147,7 +151,10 @@ small{font-size:11.5px}
   border:1px solid var(--line);border-radius:11px;
   background:linear-gradient(180deg,#332957,#26204a);
   color:var(--ink);font-weight:700;font-size:14px;
-  padding:11px 14px;transition:transform .08s, filter .15s, border-color .15s;
+  /* 指で押す領域は 44px 以上にする（Appleの指針。Googleは48dp）。
+     14px + 文字19px + 14px = 47px */
+  padding:14px 14px;min-height:47px;
+  transition:transform .08s, filter .15s, border-color .15s;
   text-align:left;width:100%;display:block;
 }
 .btn:hover{filter:brightness(1.18);border-color:var(--purple)}
@@ -159,7 +166,8 @@ small{font-size:11.5px}
 .btn.gold{background:linear-gradient(180deg,#a8811f,#7d5f12);border-color:var(--gold);color:#fff5d6}
 .btn.danger{background:linear-gradient(180deg,#a3323f,#7a2430);border-color:#ff5f6d}
 .btn.ghost{background:transparent}
-.btn.sm{padding:7px 11px;font-size:12.5px;border-radius:9px;width:auto;display:inline-block}
+.btn.sm{padding:12px 14px;font-size:13px;border-radius:9px;width:auto;display:inline-block;
+  min-height:44px}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap}
 .btn-row .btn{width:auto;flex:1 1 auto;min-width:120px;margin-top:0}
 .btn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -184,9 +192,9 @@ small{font-size:11.5px}
   background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:10px;
   padding:7px 9px;text-align:center;
 }
-.stat-box .lbl{font-size:10px;color:var(--ink-dim);letter-spacing:.06em}
+.stat-box .lbl{font-size:11px;color:var(--ink-dim);letter-spacing:.06em}
 .stat-box .val{font-size:17px;font-weight:800;color:var(--ink)}
-.stat-box .plus{font-size:10px;color:var(--green);font-weight:700}
+.stat-box .plus{font-size:11px;color:var(--green);font-weight:700}
 
 .meter{height:8px;border-radius:999px;background:#150f26;border:1px solid #372c58;overflow:hidden;margin-top:4px}
 .meter i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--purple),var(--cyan));transition:width .4s}
@@ -250,7 +258,7 @@ small{font-size:11.5px}
 .ally-card .mini i{position:absolute;inset:0;width:0;transition:width .3s}
 .ally-card .mini.h i{background:linear-gradient(90deg,#ff5f6d,#ff9a6d)}
 .ally-card .mini.m i{background:linear-gradient(90deg,#4e7fff,#59d8e6)}
-.ally-card .nums{font-size:9.5px;color:var(--ink-dim);display:flex;justify-content:space-between}
+.ally-card .nums{font-size:11px;color:var(--ink-dim);display:flex;justify-content:space-between}
 
 .battle-log{
   height:122px;overflow-y:auto;border:1px solid var(--line);border-radius:11px;
@@ -330,7 +338,7 @@ small{font-size:11.5px}
 .job-card .jn{font-weight:800;font-size:14.5px;display:flex;align-items:center;gap:7px}
 .job-card .jd{font-size:11.5px;color:var(--ink-dim);margin-top:2px}
 .growth{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
-.growth span{font-size:10px;padding:1px 6px;border-radius:5px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.growth span{font-size:11px;padding:1px 6px;border-radius:5px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
 
 @media (max-width:400px){
   body{font-size:14px}

@@ -59,7 +59,11 @@ G.UI = {
     const nav = G.UI.el('nav');
     if (!d) { hud.classList.add('hidden'); nav.classList.add('hidden'); return; }
     hud.classList.remove('hidden');
-    nav.classList.remove('hidden');
+    // 戦闘中は下部タブを出さない。
+    // screen_battle.js が隠しているのに、ここが毎回戻してしまっていた。
+    // （押しても「戦闘中は移動できない」と出るだけの帯が、
+    //   コマンドのすぐ下に並んで誤タップの原因になっていた）
+    if (G.UI.current !== 'battle') nav.classList.remove('hidden');
 
     const p = d.player;
     const der = G.Char.derived(p);
@@ -101,6 +105,30 @@ G.UI = {
     G.UI.el('nav').classList.toggle('hidden', !v);
   },
 
+  /* ---------- 戻る操作 ---------- */
+  /* Androidの戻るボタン（とブラウザの戻る）から呼ばれる。
+   * 戻り値 true = このアプリで処理した / false = 何もしていない
+   *
+   * 「閉じてよいもの」だけを閉じる。
+   * 名前入力や難易度選択のように、値を返さないと話が進まないモーダルは
+   * 閉じてしまうとゲームが壊れるため、対象にしない。 */
+  handleBack() {
+    // 1. 閉じてよいモーダルが開いていれば、それを閉じる
+    if (G.UI.openModal) {
+      if (G.UI.openModal.dismissable) { G.UI.openModal.close(); return true; }
+      return true;                       // 閉じられないが、画面も移らない
+    }
+    // 2. 物語の再生中・戦闘中は動かさない
+    if (G.UI.storyPlaying) return true;
+    if (G.UI.current === 'battle') return true;
+    // 3. 拠点以外にいるなら拠点へ戻る
+    if (G.State.data && G.UI.current && G.UI.current !== 'home' && G.UI.current !== 'title') {
+      G.UI.show('home');
+      return true;
+    }
+    return false;                        // ここでは何もしない（アプリを閉じてよい）
+  },
+
   /* ---------- トースト ---------- */
   toast(msg, type = '') {
     const wrap = G.UI.el('toast-wrap');
@@ -121,6 +149,10 @@ G.UI = {
   /* actions: [{label, cls, value}] / 戻り値は選ばれた value の Promise */
   /* bind(done) を渡すと、本文に置いた要素からも結果を返せる。
    * done(value) を呼べばモーダルが閉じて、その値で解決する。 */
+  /* いま開いているモーダルの情報。戻る操作の判断に使う。
+   * dismissable なものだけ、戻るで閉じてよい。 */
+  openModal: null,
+
   modal({ title, body, actions = [{ label: G.T('common.close'), value: true }], dismissable = false, bind = null }) {
     return new Promise(resolve => {
       const m = G.UI.el('modal');
@@ -133,6 +165,7 @@ G.UI = {
       const done = value => {
         if (settled) return;
         settled = true;
+        G.UI.openModal = null;
         m.classList.add('hidden');
         m.removeEventListener('click', onBg);
         // 閉じた後も中身が残っていると、その分のDOMが居座り続ける。
@@ -151,6 +184,7 @@ G.UI = {
       }
       const onBg = ev => { if (dismissable && ev.target === m) done(null); };
       m.addEventListener('click', onBg);
+      G.UI.openModal = { dismissable, close: () => done(null) };
       m.classList.remove('hidden');
       if (bind) bind(done);
     });
@@ -170,6 +204,7 @@ G.UI = {
   /* ---------- ストーリー再生 ---------- */
   /* scene: [{who, text}] を1つずつ送る。終わったら onDone。 */
   playStory(scene, onDone) {
+    G.UI.storyPlaying = true;
     let i = 0;
     const host = G.UI.el('screen');
     G.UI.setChromeVisible(false);
@@ -190,7 +225,7 @@ G.UI = {
       host.scrollTop = host.scrollHeight;
       G.UI.on('next', () => {
         if (i < scene.length - 1) { i++; draw(); }
-        else { G.UI.setChromeVisible(!!G.State.data); onDone && onDone(); }
+        else { G.UI.storyPlaying = false; G.UI.setChromeVisible(!!G.State.data); onDone && onDone(); }
       });
     };
     draw();

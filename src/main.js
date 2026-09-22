@@ -123,6 +123,32 @@ function boot(resume) {
     });
   });
 
+  /* ---------- 戻る操作（Androidの戻るボタン／ブラウザの戻る） ----------
+   * Android では、戻るボタンで何も起きないとアプリがそのまま終了する。
+   * 「モーダルを閉じる」「拠点へ戻る」を先に処理し、
+   * 処理することが無くなったときだけ、本当に戻る（＝閉じる）ようにする。
+   *
+   * 仕掛けを常に張ったままにすると、ブラウザでページから出られなくなる。
+   * そのため、処理したときだけ張り直す。 */
+  let backArmed = false;
+  const armBack = () => {
+    if (backArmed) return;
+    try { history.pushState({ ta: 1 }, ''); backArmed = true; } catch (e) { /* 使えない環境 */ }
+  };
+  window.addEventListener('popstate', () => {
+    backArmed = false;
+    if (G.Err.guard('戻る操作', () => G.UI.handleBack(), false)) armBack();
+  });
+  // 拠点以外の画面に移ったときと、モーダルを開いたときに仕掛けを張る
+  const origShow = G.UI.show;
+  G.UI.show = function (name, args) {
+    const r = origShow.call(G.UI, name, args);
+    if (name !== 'home' && name !== 'title') armBack();
+    return r;
+  };
+  const origModal = G.UI.modal;
+  G.UI.modal = function (opts) { armBack(); return origModal.call(G.UI, opts); };
+
   // 画面を離れるときに自動セーブ
   window.addEventListener('beforeunload', () => { if (G.State.data) G.State.save(); });
   document.addEventListener('visibilitychange', () => {
