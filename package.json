@@ -5,7 +5,7 @@
   "description": "転生魔法学院譚 〜村人から始まる魔王討伐〜（依存ライブラリなしのブラウザRPG）",
   "scripts": {
     "lint": "node tools/lint-text.js",
-    "test": "node tools/lint-text.js && node tools/globals.js && node tools/snapshot.js --check && node tools/test-rules.js && node tools/smoke.js && node tools/errors-test.js && node tools/strings.js && node tools/text-test.js && node tools/sprite-check.js --check && node tools/back-test.js && node tools/build-single.js && ENTRY=dist/tensei-arcana.html FILE=1 node tools/smoke.js && node tools/listeners.js",
+    "test": "node tools/lint-text.js && node tools/globals.js && node tools/snapshot.js --check && node tools/test-rules.js && node tools/smoke.js && node tools/errors-test.js && node tools/strings.js && node tools/text-test.js && node tools/sprite-check.js --check && node tools/back-test.js && node tools/build-single.js && node tools/build-pwa.js && node tools/pwa-test.js && ENTRY=dist/tensei-arcana.html FILE=1 node tools/smoke.js && node tools/listeners.js",
     "test:rules": "node tools/test-rules.js",
     "test:errors": "node tools/errors-test.js",
     "test:back": "node tools/back-test.js",
@@ -22,6 +22,9 @@
     "playthrough:hard": "DIFF=hard node tools/playthrough.js",
     "retune": "node tools/measure-party.js && node tools/retune-enemies.js",
     "build": "node tools/build-single.js",
+    "build:pwa": "node tools/build-single.js && node tools/build-pwa.js",
+    "icons": "node tools/make-icons.js",
+    "test:pwa": "node tools/pwa-test.js",
     "deps": "node tools/deps.js",
     "snapshot": "node tools/snapshot.js --save",
     "verify": "node tools/snapshot.js --check && node tools/globals.js && node tools/deps.js",

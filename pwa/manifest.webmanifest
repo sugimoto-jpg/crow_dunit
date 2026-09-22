@@ -1,0 +1,18 @@
+{
+  "name": "転生魔法学院譚 〜村人から始まる魔王討伐〜",
+  "short_name": "転生魔法学院譚",
+  "description": "転生した主人公が魔法学院に通いながらレベルを上げ、冒険者ギルドで稼ぎ、やがて魔王に挑むRPG。",
+  "lang": "ja",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#120d1c",
+  "theme_color": "#120d1c",
+  "categories": ["games"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
