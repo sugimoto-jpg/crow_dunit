@@ -66,6 +66,19 @@
         scopeLabel: '専用枠',
         closing: '事業成長を強固な組織力で支え続けます'
       },
+      basic: {
+        title: '料金プラン',
+        note: '貴社には、じっくり関係を築く「通常プラン」を推奨いたします。',
+        badge: '推奨',
+        recommend: 1,
+        rows: [
+          { name: 'システムプラン', months: 13, price: 25 },
+          { name: '通常プラン', months: 13, price: 40 },
+          { name: '通常マルチチャネル', months: 13, price: 60 },
+          { name: '快速プラン', months: 7, price: 80 },
+          { name: '特急プラン', months: 4, price: 150 }
+        ]
+      },
       hire: {
         recruit: 150, salary: 314, side: 100,
         risks: '教育・育成の工数コスト|戦力化までに既存社員の業務時間が大幅に奪われる\n成果創出の不確実性|多額の投資を行っても期待通りの成果が出るかは未知数\n早期退職・離職リスク|投資回収前に退職された場合、採用・教育費が完全損失に\n労務管理・雇用維持トラブル|業績に左右されず給与支払い義務と管理負担が継続'
@@ -76,7 +89,7 @@
         { title: '実動チーム稼働開始', period: '', desc: 'スカウト配信・選考代行・フィールド実動を開始します。', foot: '最短スピード立ち上げ' },
         { title: '定例改善・成果創出', period: '週次／月次PDCA', desc: '数値検証を重ね、御社専任の最強体制を確立します。', foot: '継続的な成果最大化' }
       ],
-      pages: { cover: true, background: true, cost: true, org: true, table: true, details: true, roadmap: true, closing: true },
+      pages: { cover: true, background: true, cost: true, org: true, basic: true, table: true, details: true, roadmap: true, closing: true },
       unitMaster: JSON.parse(JSON.stringify(window.UNIT_MASTER)),
       plans: {}
     };
@@ -279,11 +292,14 @@
       fArea('hire.risks', '雇用リスク項目', 'タイトル|説明 を1行ずつ', '「|」で区切り') +
       '</div></details>');
 
+    /* 基本プラン表 */
+    h.push(basicForm());
+
     /* プラン */
     PLAN_KEYS.forEach(function (k, i) { h.push(planForm(k, i)); });
 
     /* ロードマップ */
-    var rm = ['<details class="sec"><summary>7. 導入までのフロー</summary><div class="sec-body">'];
+    var rm = ['<details class="sec"><summary>8. 導入までのフロー</summary><div class="sec-body">'];
     state.roadmap.forEach(function (s, i) {
       rm.push('<div class="urow"><div class="un">STEP 0' + (i + 1) + '</div>' +
         fText('roadmap.' + i + '.title', '項目名', '') +
@@ -296,14 +312,15 @@
     h.push(rm.join(''));
 
     /* ページ構成 */
-    h.push('<details class="sec"><summary>8. ページ構成</summary><div class="sec-body">' +
+    h.push('<details class="sec"><summary>9. ページ構成</summary><div class="sec-body">' +
       [['cover', '表紙'], ['background', '特別提案の背景'], ['cost', '自社雇用コスト'], ['org', 'プラン別 組織図'],
-      ['table', '特別料金表'], ['details', 'プラン詳細'], ['roadmap', '導入フロー'], ['closing', '最終ページ']]
+      ['basic', '基本プラン表'], ['table', '特別料金表'], ['details', 'プラン詳細'],
+      ['roadmap', '導入フロー'], ['closing', '最終ページ']]
         .map(function (p) { return '<div style="margin-bottom:6px">' + fChk('pages.' + p[0], p[1], true) + '</div>'; }).join('') +
       '</div></details>');
 
     /* ユニットマスタ */
-    var um = ['<details class="sec"><summary>9. ユニットマスタ編集<span class="tag">' + state.unitMaster.length + 'ユニット</span></summary><div class="sec-body">' +
+    var um = ['<details class="sec"><summary>10. ユニットマスタ編集<span class="tag">' + state.unitMaster.length + 'ユニット</span></summary><div class="sec-body">' +
       '<p class="note">標準の料金・期間・人数・実施内容を変更できます。ここでの変更は次に選択したときの初期値になります。</p>'];
     state.unitMaster.forEach(function (u, i) {
       um.push('<details class="sec" style="margin-bottom:8px"><summary>' + esc(u.name) + '</summary><div class="sec-body">' +
@@ -324,8 +341,37 @@
     document.getElementById('form').innerHTML = h.join('');
   }
 
+  function basicForm() {
+    var b = state.basic, rows = b.rows || [];
+    var h = ['<details class="sec"><summary>3. 基本プラン表<span class="tag">' + rows.length + 'プラン</span></summary><div class="sec-body">' +
+      '<p class="note">アイドマ・ホールディングスの基本プラン表（組織図の次のページ）です。</p>' +
+      fText('basic.title', 'ページ見出し', '料金プラン') +
+      fArea('basic.note', '前置きの一文', '', '推奨プランを変えたら文章も見直してください') +
+      fText('basic.badge', '推奨バッジの文字', '推奨') +
+      '<div class="field"><label>プラン<span class="hint">推奨したいプランを選択</span></label>'];
+    rows.forEach(function (r, i) {
+      var base = 'basic.rows.' + i + '.';
+      h.push('<div class="urow"><div class="un">' +
+        '<label class="chk" style="font-size:11px;gap:5px"><input type="radio" name="bp-rec" data-act="basic-rec" data-i="' + i + '"' +
+        (i === N(b.recommend) ? ' checked' : '') + '>推奨</label>' +
+        '<span class="k">総額 ' + man(N(r.price) * N(r.months)) + '</span>' +
+        '<button type="button" class="ghost mini-btn" data-act="basic-del" data-i="' + i + '">削除</button></div>' +
+        '<div style="margin-bottom:6px"><span class="mini">プラン名</span>' +
+        '<input type="text" data-path="' + base + 'name" data-type="text" value="' + esc(r.name) + '"></div>' +
+        '<div class="row">' +
+        '<div><span class="mini">月額（万円）</span><input type="number" step="any" min="0" data-path="' + base + 'price" data-type="num" value="' + esc(r.price) + '"></div>' +
+        '<div><span class="mini">期間（ヶ月）</span><input type="number" step="any" min="0" data-path="' + base + 'months" data-type="num" value="' + esc(r.months) + '"></div>' +
+        '</div></div>');
+    });
+    h.push('<button type="button" class="ghost" data-act="basic-add">＋ プランを追加</button>');
+    h.push('<label class="chk" style="margin-top:10px"><input type="radio" name="bp-rec" data-act="basic-rec" data-i="-1"' +
+      (N(b.recommend) < 0 ? ' checked' : '') + '>推奨なし（全プランを同じ体裁で表示）</label>');
+    h.push('</div></div></details>');
+    return h.join('');
+  }
+
   function planForm(k, i) {
-    var p = state.plans[k], n = i + 3;
+    var p = state.plans[k], n = i + 4;
     var h = ['<details class="sec"' + (p.enabled ? ' open' : '') + '><summary>' + n + '. ' + esc(p.label) +
       '<span class="tag">' + (p.enabled ? man(monthly(p)) + ' × ' + num(months(p)) + 'ヶ月' : '未使用') + '</span></summary>' +
       '<div class="sec-body' + (p.enabled ? '' : ' plan-off') + '">'];
@@ -517,6 +563,27 @@
       }).join('') + '</div></div></section>';
   }
 
+  function slideBasic() {
+    var b = state.basic, rows = b.rows || [];
+    if (!rows.length) return '';
+    var cards = rows.map(function (r, i) {
+      var rec = i === N(b.recommend);
+      return '<div class="bp-card' + (rec ? ' rec' : '') + '">' +
+        (rec && or(b.badge, '') ? '<div class="bp-badge">' + esc(b.badge) + '</div>' : '') +
+        '<div class="bp-name">' + esc(r.name) + '</div>' +
+        '<div class="bp-mon">' + num(r.months) + 'ヶ月</div>' +
+        '<div class="bp-price">' + man(r.price) + '</div>' +
+        '<div class="bp-per">／月</div>' +
+        '<div class="bp-total">総額 ' + man(N(r.price) * N(r.months)) + '</div>' +
+        '</div>';
+    }).join('');
+    return '<section class="slide">' + head('STANDARD PRICE PLAN', or(b.title, '料金プラン')) +
+      '<div class="s-body" style="flex-direction:column;gap:0">' +
+      (or(b.note, '') ? '<p class="bp-note">' + nl2br(b.note) + '</p>' : '') +
+      '<div class="bp-cards" style="grid-template-columns:repeat(' + rows.length + ',1fr)">' + cards + '</div>' +
+      '</div></section>';
+  }
+
   function tableBullets(k) {
     var p = state.plans[k], base = basePlan(k), out = [];
     if (base) {
@@ -649,6 +716,7 @@
     if (pg.background) out.push(slideBackground());
     if (pg.cost) out.push(slideCost());
     if (pg.org) out.push(slideOrg());
+    if (pg.basic) out.push(slideBasic());
     if (pg.table) out.push(slideTable());
     if (pg.details) PLAN_KEYS.forEach(function (k) { if (state.plans[k].enabled) out.push(slideDetail(k)); });
     if (pg.roadmap) out.push(slideRoadmap());
@@ -731,6 +799,12 @@
     Array.prototype.forEach.call(el.querySelectorAll('.ubk'), function (u) { fitBox(u, 'div', 'ユニット'); });
     Array.prototype.forEach.call(el.querySelectorAll('.tri'), function (u) { fitTri(u); });
     /* 最終手段: スライド全体がはみ出す場合は見出し・本文を縮小 */
+    Array.prototype.forEach.call(el.querySelectorAll('.bp-price'), function (t) {
+      var g = 0, fs = parseFloat(getComputedStyle(t).fontSize);
+      while (t.scrollWidth > t.clientWidth + 1 && fs > 14 && g++ < 30) {
+        fs -= 1; t.style.fontSize = fs + 'px';
+      }
+    });
     shrinkText(el, '.cover-client, .cover-title, .s-closing h1', 15);
     shrinkText(el, '.lead', 11);
     shrinkText(el, '.s-head h2', 17);
@@ -822,6 +896,27 @@
     save(); renderAll();
   }
 
+  function onAction(el) {
+    var act = el.getAttribute('data-act'), i = parseInt(el.getAttribute('data-i'), 10);
+    if (act === 'basic-add') {
+      state.basic.rows.push({ name: '新しいプラン', months: 13, price: 0 });
+    } else if (act === 'basic-del') {
+      if (state.basic.rows.length <= 1) { alert('プランは1つ以上必要です。'); return; }
+      state.basic.rows.splice(i, 1);
+      var r = N(state.basic.recommend);
+      state.basic.recommend = r === i ? -1 : (r > i ? r - 1 : r);
+    } else if (act === 'basic-rec') {
+      state.basic.recommend = i;
+    } else { return; }
+    save(); renderAll();
+  }
+
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest ? e.target.closest('[data-act]') : null;
+    if (el && el.closest('#form') && el.getAttribute('data-act').indexOf('basic-') === 0
+      && el.tagName === 'BUTTON') onAction(el);
+  });
+
   document.addEventListener('input', function (e) {
     var el = e.target;
     if (el.closest && el.closest('#form') && el.getAttribute('data-path')) onFieldChange(el);
@@ -830,6 +925,7 @@
     var el = e.target;
     if (!el.closest || !el.closest('#form')) return;
     if (el.getAttribute('data-unit')) onUnitToggle(el);
+    else if (el.getAttribute('data-act')) onAction(el);
     else if (el.getAttribute('data-path')) onFieldChange(el);
   });
 

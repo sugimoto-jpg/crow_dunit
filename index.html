@@ -60,6 +60,7 @@ textarea{resize:vertical;min-height:58px;line-height:1.6}
 .urow{border:1px solid var(--line);border-radius:8px;padding:8px;margin-bottom:7px;background:var(--soft)}
 .urow .un{font-size:11.5px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
 .urow .un .k{margin-left:auto;font-size:10px;color:var(--muted);font-weight:500}
+.mini-btn{padding:2px 8px;font-size:10px;border-radius:5px;font-weight:600}
 .mini{font-size:10px;font-weight:700;color:#54637a;margin-bottom:3px;display:block}
 .calc{background:var(--tint);border:1px solid #cfe6fb;border-radius:8px;padding:8px 10px;font-size:11px;line-height:1.8;color:#0e4f85}
 .calc b{font-size:12px}
@@ -194,7 +195,30 @@ button.ghost,.file-btn{background:#fff;color:#33475e;border-color:#cfd8e3}
 .org.hl .of .r1{color:#0b6cb3}
 .org .of .r2{font-size:10.5px;color:#6b7a8d;margin-top:3px;line-height:1.5}
 
-/* P5 料金表 */
+/* P5 基本プラン表 */
+.bp-note{margin:0 0 26px;font-size:13.5px;color:#6b7a8d;line-height:1.8;white-space:pre-wrap;flex:none}
+.bp-cards{display:grid;gap:14px;align-items:center;flex:1;min-height:0}
+.bp-card{
+  background:#f2ede6;border-radius:12px;padding:34px 14px 30px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;min-width:0;
+}
+.bp-card.rec{background:#1b1815;padding:20px 14px 34px;box-shadow:0 6px 18px rgba(27,24,21,.22)}
+.bp-badge{
+  background:#cf6a1f;color:#fff;font-size:11px;font-weight:800;border-radius:7px;
+  padding:5px 0;margin-bottom:14px;letter-spacing:.04em;align-self:stretch;
+}
+.bp-name{font-size:14.5px;font-weight:800;color:#2b2b2b;line-height:1.35}
+.bp-card.rec .bp-name{color:#fff}
+.bp-mon{font-size:12px;color:#9a948c;margin-top:8px}
+.bp-card.rec .bp-mon{color:#a8a19a}
+.bp-price{font-size:31px;font-weight:800;color:#1b1815;margin-top:10px;line-height:1.15;white-space:nowrap}
+.bp-card.rec .bp-price{color:#e8993b}
+.bp-per{font-size:12px;color:#9a948c;margin-top:6px}
+.bp-card.rec .bp-per{color:#cfc8c0}
+.bp-total{font-size:12.5px;color:#6d675f;margin-top:20px}
+.bp-card.rec .bp-total{color:#fff;font-weight:700}
+
+/* P6 料金表 */
 .ptable{display:grid;gap:12px;flex:1;min-height:0}
 .pcol{border:1px solid #e2e8f0;border-radius:12px;background:#fff;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 .pcol.self{background:#f7fafd}
@@ -236,7 +260,7 @@ button.ghost,.file-btn{background:#fff;color:#33475e;border-color:#cfd8e3}
 .ptable.c5 .pcol .pf li{font-size:10px}
 .ptable.c5 .pcol .pl .lv{font-size:18px}
 
-/* P6+ プラン詳細 */
+/* P7+ プラン詳細 */
 .dl{width:350px;min-width:350px}
 .dl .dtri{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
 .price-box{border:1px solid #e2e8f0;border-radius:10px;background:#fff;padding:11px 14px;margin-top:10px;text-align:center;flex:none;display:flex;flex-direction:column;min-height:0}
@@ -266,7 +290,7 @@ button.ghost,.file-btn{background:#fff;color:#33475e;border-color:#cfd8e3}
   padding:9px 13px;font-size:11.5px;color:#54637a;line-height:1.65;
 }
 
-/* P9 ロードマップ */
+/* 導入フロー */
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;flex:1;min-height:0}
 .step{border:1px solid #e2e8f0;border-radius:12px;padding:14px;display:flex;flex-direction:column;background:#fff;min-width:0}
 .step.last{background:#f3fbf6;border-color:#cfeadd}
