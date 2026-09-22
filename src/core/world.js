@@ -376,10 +376,17 @@ G.World = {
 
   demonFloor() { return G.World.DEMON_FLOORS[G.State.d.demon.floor] || null; },
 
-  clearFloor() {
+  /* 踏破した階層を記録する。
+   * どの階層を攻略したのかを受け取らないと、踏破済みの階層に再挑戦したときに
+   * 未踏破の上層まで踏破扱いになってしまう。 */
+  clearFloor(index) {
     const d = G.State.d;
-    if (!d.demon.cleared.includes(d.demon.floor)) d.demon.cleared.push(d.demon.floor);
-    d.demon.floor = Math.min(d.demon.floor + 1, G.World.DEMON_FLOORS.length - 1);
+    const i = (index === undefined) ? d.demon.floor : index;
+    if (!d.demon.cleared.includes(i)) d.demon.cleared.push(i);
+    // 最前線を攻略したときだけ先へ進む
+    if (i === d.demon.floor) {
+      d.demon.floor = Math.min(d.demon.floor + 1, G.World.DEMON_FLOORS.length - 1);
+    }
     return G.World.demonFloor();
   },
 };

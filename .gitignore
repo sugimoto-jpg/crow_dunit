@@ -1,0 +1,9 @@
+# 依存パッケージ（npm install で復元する）
+node_modules/
+
+# テストが生成するスクリーンショット
+tools/shots/
+
+# 作業用
+*.log
+.DS_Store

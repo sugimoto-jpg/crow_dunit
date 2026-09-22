@@ -29,7 +29,7 @@ G.RANKS = [
 G.QUESTS = [
   /* --- F --- */
   { id:'q_slime',   rank:0, kind:'subjugate', name:'スライムの駆除', icon:'🫧',
-    desc:'麦畑にスライムが湧いた。3匹ほど減らしてほしい。',
+    desc:'麦畑にスライムが湧いた。2匹ほど減らしてほしい。',
     area:'plains', enemies:['slime','slime'], gold:90, exp:44, ap:1 },
   { id:'q_herb',    rank:0, kind:'gather', name:'薬草の採取', icon:'🌿',
     desc:'道具屋の在庫が心もとない。草原で薬草を摘んできて。',

@@ -71,8 +71,8 @@ body{
 .bar.hp i{background:linear-gradient(90deg,#ff5f6d,#ff9a6d)}
 .bar.mp i{background:linear-gradient(90deg,#4e7fff,#59d8e6)}
 .bar.xp i{background:linear-gradient(90deg,#b58f2e,#f2c14e)}
-.bar.xp{height:7px}
-.bar.xp span{font-size:8px}
+.bar.xp{height:11px}
+.bar.xp span{font-size:8.5px;padding-right:6px}
 .hud-side{display:flex;gap:6px;flex:0 0 auto}
 .hud-cell{
   min-width:50px;text-align:center;padding:4px 6px;border-radius:10px;

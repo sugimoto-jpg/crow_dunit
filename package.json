@@ -1,0 +1,16 @@
+{
+  "name": "tensei-arcana",
+  "version": "1.0.0",
+  "private": true,
+  "description": "転生魔法学院譚 〜村人から始まる魔王討伐〜（依存ライブラリなしのブラウザRPG）",
+  "scripts": {
+    "lint": "node tools/lint-text.js",
+    "balance": "node tools/balance.js",
+    "playthrough": "node tools/playthrough.js",
+    "test": "node tools/lint-text.js && node tools/smoke.js",
+    "test:late": "node tools/smoke-late.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}

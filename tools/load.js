@@ -19,6 +19,7 @@ function loadGame(files) {
         clear: () => { store = {}; },
       };
     })(),
+    addEventListener: () => {},
     document: {
       getElementById: () => null,
       querySelector: () => null,
@@ -26,6 +27,7 @@ function loadGame(files) {
       createElement: () => ({ style: {}, classList: { add() {}, remove() {} }, appendChild() {}, remove() {} }),
       addEventListener: () => {},
       body: { appendChild() {} },
+      visibilityState: 'visible',
     },
   };
   sandbox.window = sandbox;
