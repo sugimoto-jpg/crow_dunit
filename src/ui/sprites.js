@@ -27,7 +27,7 @@ G.SPRITE_PAL = {
   scout:    { main: '#3f6b53', sub: '#27402f', accent: '#8fd6a8', metal: '#cfd8d2', hair: '#4a4a5e' },
 };
 
-/* ジョブ -> 見た目の系統 */
+/* ジョブ -> 見た目の系統（土台となる5系統） */
 G.SPRITE_ARCH = {
   villager: 'villager',
   apprentice_mage: 'mage', sorcerer: 'mage', elementalist: 'mage',
@@ -38,6 +38,63 @@ G.SPRITE_ARCH = {
   bishop: 'cleric', inquisitor: 'cleric', saint: 'cleric',
   apprentice_scout: 'scout', thief: 'scout', ranger: 'scout',
   ninja: 'scout', sniper: 'scout', shadow_emperor: 'scout',
+};
+
+/* ---------- 職業ごとの見た目 ----------
+ * 「どの職業が、どう見えるか」をここ1か所にまとめる。
+ * 系統(5種)だけで描くと、同じ系統の6職がほぼ同じ絵になってしまうため、
+ * 職業ごとの違いをこの表で足していく。
+ *
+ * 書ける項目（すべて任意。書かなければ系統の既定どおり）
+ *   head    頭の形。省略すると系統の既定
+ *   body    体の形。省略すると系統の既定
+ *   weapon  武器を持っていないときに描く形
+ *   cape    マントの有無。省略すると「Tier2以上で付く」
+ *   pal     色の上書き（main / sub / accent / metal）
+ *   deco    その職だけの飾り
+ *
+ * 将来、絵（画像）に差し替えるときは、ここに img を足して
+ * 描画側で切り替えれば、ゲーム側のコードは変えずに済む。
+ */
+G.SPRITE_JOB = {
+  /* Tier0 */
+  villager: {},
+  /* 剣士系：見習いの革鎧から、板金・外套・白銀を経て、鎧を脱いだ剣聖まで */
+  apprentice_knight: {
+    head: 'k_bare', body: 'k_leather', weapon: 'sword', cape: false,
+    pal: { main: '#8a6e52', sub: '#5c4735', accent: '#d94f5c', metal: '#c9b79a' },
+  },
+  swordsman: {
+    head: 'k_band', body: 'k_chain', weapon: 'sword', cape: false,
+    pal: { main: '#7c8595', sub: '#4d5462', accent: '#d94f5c' },
+  },
+  guardian: {
+    head: 'k_full', body: 'k_plate', weapon: 'sword', cape: true,
+    pal: { main: '#5f6a7d', sub: '#39414f', accent: '#c7902f', metal: '#aab4c4' },
+    deco: shieldSvg,
+  },
+  magic_swordsman: {
+    head: 'k_hood', body: 'k_coat', weapon: 'sword', cape: false,
+    pal: { main: '#6a5e93', sub: '#3d3560', accent: '#b98cff', metal: '#d9d2f2' },
+  },
+  paladin: {
+    head: 'k_wing', body: 'k_holy', weapon: 'sword', cape: true,
+    pal: { main: '#dfe4ee', sub: '#a8b2c6', accent: '#f2c14e', metal: '#f4f7fc' },
+    deco: shieldSvg,
+  },
+  sword_saint: {
+    head: 'k_ribbon', body: 'k_gi', weapon: 'sword', cape: false,
+    pal: { main: '#2f3550', sub: '#1d2135', accent: '#f2c14e', metal: '#e8edf7' },
+  },
+  /* 魔術系 */
+  apprentice_mage: {}, sorcerer: {}, elementalist: {},
+  archmage: {}, spirit_lord: {}, sage: {},
+  /* 神官系 */
+  apprentice_cleric: {}, priest: {}, exorcist: {},
+  bishop: {}, inquisitor: {}, saint: {},
+  /* 斥候系 */
+  apprentice_scout: {}, thief: {}, ranger: {},
+  ninja: {}, sniper: {}, shadow_emperor: {},
 };
 
 /* 仲間ごとの髪色（同じ系統でも見分けがつくように） */
@@ -53,6 +110,18 @@ G.SPRITE_TINT = {
   riina:  { accent: '#f2c14e' },
   noa:    { main: '#2f5844', accent: '#7fe0a8' },
 };
+
+/* ---------- 飾り ---------- */
+/* 盾。後ろ側の腕（画面左）に構える。
+ * G.SPRITE_JOB の deco に入れて使う。 */
+function shieldSvg(pal) {
+  return `<g class="s-shield">
+    <path d="M13 40 q7 -4 14 0 q0 13 -7 19 q-7 -6 -7 -19 z"
+          fill="${pal.metal}" stroke="${LINE}" stroke-width="1.4"/>
+    <path d="M16 43 q4 -2 8 0 q0 9 -4 13 q-4 -4 -4 -13 z"
+          fill="${pal.accent}" stroke="${LINE}" stroke-width="1.1" opacity=".9"/>
+  </g>`;
+}
 
 /* ---------- 武器 ---------- */
 /* 前腕の先（32,20 付近）に付く。刃は上向きに描く。 */
@@ -99,14 +168,16 @@ function weaponSvg(shape, pal) {
 }
 
 /* ---------- 頭 ---------- */
-function headSvg(arch, pal, hair) {
+/* kind は見た目の型。既定では系統名と同じだが、
+ * 職業ごとに別の型を指定できるようにしてある。 */
+function headSvg(kind, pal, hair) {
   const face = `
     <circle cx="32" cy="23" r="13" fill="${SKIN}" stroke="${LINE}" stroke-width="1.4"/>
     <ellipse cx="26.5" cy="24" rx="1.6" ry="2.2" fill="${LINE}"/>
     <ellipse cx="37.5" cy="24" rx="1.6" ry="2.2" fill="${LINE}"/>
     <path d="M29 29 q3 2.5 6 0" stroke="${SKIN_D}" stroke-width="1.2" fill="none" stroke-linecap="round"/>`;
 
-  if (arch === 'mage') {
+  if (kind === 'mage') {
     return `<g class="s-head">
       ${face}
       <path d="M17 20 q4 -17 15 -17 q11 0 15 17 q-15 -6 -30 0 z" fill="${pal.main}" stroke="${LINE}" stroke-width="1.4"/>
@@ -114,7 +185,70 @@ function headSvg(arch, pal, hair) {
       <circle cx="32" cy="12" r="2.6" fill="${pal.accent}" stroke="${LINE}" stroke-width="1"/>
     </g>`;
   }
-  if (arch === 'knight') {
+  /* ---- 剣士系：職業ごとの頭 ---- */
+  /* 見習いは兜をかぶらない。髪が見える */
+  if (kind === 'k_bare') {
+    return `<g class="s-head">
+      ${face}
+      <path d="M18 22 q0 -19 14 -19 q14 0 14 19 q-5 -9 -14 -9 q-9 0 -14 9 z"
+            fill="${hair}" stroke="${LINE}" stroke-width="1.3"/>
+      <path d="M19 19 q6 -6 13 -5" stroke="${pal.accent}" stroke-width="1.6" fill="none" opacity=".7"/>
+    </g>`;
+  }
+  /* 剣士：額を守る鉢金 */
+  if (kind === 'k_band') {
+    return `<g class="s-head">
+      ${face}
+      <path d="M18 22 q0 -19 14 -19 q14 0 14 19 q-5 -9 -14 -9 q-9 0 -14 9 z"
+            fill="${hair}" stroke="${LINE}" stroke-width="1.3"/>
+      <rect x="18" y="15" width="28" height="5" rx="2" fill="${pal.metal}" stroke="${LINE}" stroke-width="1.3"/>
+      <path d="M29 15 l3 -4 l3 4 z" fill="${pal.accent}" stroke="${LINE}" stroke-width="1"/>
+    </g>`;
+  }
+  /* 重騎士：顔まで覆う全身兜 */
+  if (kind === 'k_full') {
+    return `<g class="s-head">
+      <path d="M17 26 q0 -23 15 -23 q15 0 15 23 q-4 7 -15 7 q-11 0 -15 -7 z"
+            fill="${pal.metal}" stroke="${LINE}" stroke-width="1.5"/>
+      <rect x="22" y="20" width="20" height="4.5" rx="1.6" fill="${LINE}"/>
+      <rect x="25.5" y="25" width="13" height="2.6" rx="1.2" fill="${LINE}" opacity=".7"/>
+      <path d="M32 3 l0 20" stroke="${pal.sub}" stroke-width="2" opacity=".8"/>
+      <path d="M28 4 q4 -6 8 0 q-4 3 -8 0 z" fill="${pal.accent}" stroke="${LINE}" stroke-width="1.1"/>
+    </g>`;
+  }
+  /* 魔法剣士：目深なフード */
+  if (kind === 'k_hood') {
+    return `<g class="s-head">
+      ${face}
+      <path d="M15 28 q-1 -25 17 -25 q18 0 17 25 q-6 -12 -17 -12 q-11 0 -17 12 z"
+            fill="${pal.sub}" stroke="${LINE}" stroke-width="1.4"/>
+      <path d="M17 24 q3 -15 15 -15 q12 0 15 15 q-7 -7 -15 -7 q-8 0 -15 7 z"
+            fill="${pal.main}" stroke="${LINE}" stroke-width="1.2"/>
+      <circle cx="32" cy="11" r="2.4" fill="${pal.accent}" stroke="${LINE}" stroke-width="1"/>
+    </g>`;
+  }
+  /* 聖騎士：翼飾りの兜 */
+  if (kind === 'k_wing') {
+    return `<g class="s-head">
+      ${face}
+      <path d="M18 22 q0 -19 14 -19 q14 0 14 19 l-4 0 q0 -11 -10 -11 q-10 0 -10 11 z"
+            fill="${pal.metal}" stroke="${LINE}" stroke-width="1.4"/>
+      <path d="M18 12 q-9 -3 -11 3 q7 3 11 1 z" fill="${pal.metal}" stroke="${LINE}" stroke-width="1.2"/>
+      <path d="M46 12 q9 -3 11 3 q-7 3 -11 1 z" fill="${pal.metal}" stroke="${LINE}" stroke-width="1.2"/>
+      <path d="M32 2 q2 -5 4 1 q-2 6 -4 9 z" fill="${pal.accent}" stroke="${LINE}" stroke-width="1.1"/>
+    </g>`;
+  }
+  /* 剣聖：鉢巻。兜を捨てた者 */
+  if (kind === 'k_ribbon') {
+    return `<g class="s-head">
+      ${face}
+      <path d="M18 22 q0 -19 14 -19 q14 0 14 19 q-5 -9 -14 -9 q-9 0 -14 9 z"
+            fill="${hair}" stroke="${LINE}" stroke-width="1.3"/>
+      <rect x="17" y="14" width="30" height="4.4" rx="2" fill="${pal.accent}" stroke="${LINE}" stroke-width="1.2"/>
+      <path d="M17 16 q-8 4 -10 12 q6 -2 9 -7 z" fill="${pal.accent}" stroke="${LINE}" stroke-width="1.1"/>
+    </g>`;
+  }
+  if (kind === 'knight') {
     return `<g class="s-head">
       ${face}
       <path d="M18 22 q0 -19 14 -19 q14 0 14 19 l-4 0 q0 -11 -10 -11 q-10 0 -10 11 z"
@@ -122,7 +256,7 @@ function headSvg(arch, pal, hair) {
       <path d="M32 3 q2 -6 4 0 q-2 6 -4 10 z" fill="${pal.accent}" stroke="${LINE}" stroke-width="1.1"/>
     </g>`;
   }
-  if (arch === 'cleric') {
+  if (kind === 'cleric') {
     return `<g class="s-head">
       <path d="M16 26 q0 -23 16 -23 q16 0 16 23 q-6 6 -16 6 q-10 0 -16 -6 z"
             fill="${pal.main}" stroke="${LINE}" stroke-width="1.4"/>
@@ -134,7 +268,7 @@ function headSvg(arch, pal, hair) {
       <circle cx="32" cy="9" r="2.4" fill="${pal.accent}" stroke="${LINE}" stroke-width="1"/>
     </g>`;
   }
-  if (arch === 'scout') {
+  if (kind === 'scout') {
     return `<g class="s-head">
       ${face}
       <path d="M17 24 q0 -21 15 -21 q15 0 15 21 q-4 -4 -7 -4 l-3 -6 l-5 6 l-5 -5 l-2 5 q-4 0 -8 4 z"
@@ -151,7 +285,7 @@ function headSvg(arch, pal, hair) {
 }
 
 /* ---------- 胴と脚 ---------- */
-function bodySvg(arch, pal, tier) {
+function bodySvg(kind, pal, tier, hasCape) {
   const legs = `
     <g class="s-legs">
       <g class="s-legB"><rect x="25" y="57" width="7" height="21" rx="3" fill="${pal.sub}" stroke="${LINE}" stroke-width="1.3"/>
@@ -161,11 +295,11 @@ function bodySvg(arch, pal, tier) {
     </g>`;
 
   // 上位職はマントが付く
-  const cape = tier >= 2
+  const cape = hasCape
     ? `<path class="s-cape" d="M22 38 q-8 20 -5 36 q15 -6 30 0 q3 -16 -5 -36 z"
          fill="${pal.accent}" opacity=".85" stroke="${LINE}" stroke-width="1.3"/>` : '';
 
-  if (arch === 'mage' || arch === 'cleric') {
+  if (kind === 'mage' || kind === 'cleric') {
     // ローブ（脚は裾で隠す）
     return `${cape}
       <path d="M23 38 q-7 22 -9 40 q20 5 36 0 q-2 -18 -9 -40 z"
@@ -178,13 +312,71 @@ function bodySvg(arch, pal, tier) {
         fill="${pal.main}" stroke="${LINE}" stroke-width="1.4"/>
     <rect x="21" y="53" width="22" height="4.5" rx="2" fill="${pal.sub}" stroke="${LINE}" stroke-width="1.1"/>`;
 
-  if (arch === 'knight') {
+  /* ---- 剣士系：職業ごとの体 ---- */
+  /* 見習い：革の胴着。金具は最小限 */
+  if (kind === 'k_leather') {
+    return `${legs}${cape}${torso}
+      <path d="M24 40 q8 -2 16 0 q1 8 0 14 q-8 2 -16 0 q-1 -6 0 -14 z"
+            fill="${pal.sub}" stroke="${LINE}" stroke-width="1.2" opacity=".9"/>
+      <path d="M26 44 h12 M26 49 h12" stroke="${pal.accent}" stroke-width="1.2" opacity=".7"/>`;
+  }
+  /* 剣士：鎖帷子。輪の連なりを点で表す */
+  if (kind === 'k_chain') {
+    return `${legs}${cape}${torso}
+      <path d="M20 39 q4 -5 9 -3 l-1 7 q-5 0 -8 -1 z" fill="${pal.metal}" stroke="${LINE}" stroke-width="1.2"/>
+      <path d="M44 39 q-4 -5 -9 -3 l1 7 q5 0 8 -1 z" fill="${pal.metal}" stroke="${LINE}" stroke-width="1.2"/>
+      <g opacity=".55" fill="${pal.metal}">
+        <circle cx="27" cy="43" r="1.3"/><circle cx="32" cy="43" r="1.3"/><circle cx="37" cy="43" r="1.3"/>
+        <circle cx="29.5" cy="47" r="1.3"/><circle cx="34.5" cy="47" r="1.3"/>
+        <circle cx="27" cy="51" r="1.3"/><circle cx="32" cy="51" r="1.3"/><circle cx="37" cy="51" r="1.3"/>
+      </g>`;
+  }
+  /* 重騎士：板金鎧。肩と胴を一回り大きくして重さを出す */
+  if (kind === 'k_plate') {
+    return `${legs}${cape}
+      <path d="M21 36 q11 -4 22 0 q4 13 3 24 q-14 4 -28 0 q-1 -11 3 -24 z"
+            fill="${pal.main}" stroke="${LINE}" stroke-width="1.5"/>
+      <rect x="19" y="54" width="26" height="5" rx="2.2" fill="${pal.sub}" stroke="${LINE}" stroke-width="1.2"/>
+      <path d="M17 39 q5 -8 12 -4 l-2 10 q-7 0 -11 -2 z" fill="${pal.metal}" stroke="${LINE}" stroke-width="1.3"/>
+      <path d="M47 39 q-5 -8 -12 -4 l2 10 q7 0 11 -2 z" fill="${pal.metal}" stroke="${LINE}" stroke-width="1.3"/>
+      <path d="M32 40 l0 18" stroke="${pal.sub}" stroke-width="1.6" opacity=".8"/>
+      <path d="M32 42 l5 8 l-5 8 l-5 -8 z" fill="${pal.accent}" stroke="${LINE}" stroke-width="1.1"/>`;
+  }
+  /* 魔法剣士：軽鎧に外套。腰に魔法陣 */
+  if (kind === 'k_coat') {
+    return `${legs}
+      <path class="s-cape" d="M22 38 q-9 19 -7 34 q17 -5 34 0 q2 -15 -7 -34 z"
+            fill="${pal.sub}" stroke="${LINE}" stroke-width="1.3"/>
+      ${torso}
+      <path d="M20 39 q4 -5 9 -3 l-1 7 q-5 0 -8 -1 z" fill="${pal.metal}" stroke="${LINE}" stroke-width="1.2"/>
+      <circle cx="32" cy="49" r="6" fill="none" stroke="${pal.accent}" stroke-width="1.4" opacity=".9"/>
+      <circle cx="32" cy="49" r="2.6" fill="${pal.accent}" opacity=".8"/>
+      <path d="M26 49 h12 M32 43 v12" stroke="${pal.accent}" stroke-width="1" opacity=".65"/>`;
+  }
+  /* 聖騎士：白銀の鎧に金の装飾 */
+  if (kind === 'k_holy') {
+    return `${legs}${cape}${torso}
+      <path d="M20 39 q4 -6 10 -3 l-1 8 q-6 0 -9 -1 z" fill="${pal.metal}" stroke="${LINE}" stroke-width="1.3"/>
+      <path d="M44 39 q-4 -6 -10 -3 l1 8 q6 0 9 -1 z" fill="${pal.metal}" stroke="${LINE}" stroke-width="1.3"/>
+      <path d="M32 40 v16 M26 46 h12" stroke="${pal.accent}" stroke-width="2.4" stroke-linecap="round"/>
+      <circle cx="32" cy="46" r="2.2" fill="${pal.accent}" stroke="${LINE}" stroke-width="1"/>`;
+  }
+  /* 剣聖：鎧を脱いだ道着。帯だけが目印 */
+  if (kind === 'k_gi') {
+    return `${legs}
+      <path d="M23 37 q9 -3 18 0 q3 12 2 22 q-11 3 -22 0 q-1 -10 2 -22 z"
+            fill="${pal.main}" stroke="${LINE}" stroke-width="1.4"/>
+      <path d="M32 37 l-7 20 M32 37 l7 20" stroke="${pal.sub}" stroke-width="1.6" opacity=".85" fill="none"/>
+      <rect x="20" y="52" width="24" height="6" rx="2.4" fill="${pal.accent}" stroke="${LINE}" stroke-width="1.2"/>
+      <path d="M20 55 q-7 5 -8 13 q6 -2 9 -8 z" fill="${pal.accent}" stroke="${LINE}" stroke-width="1.1"/>`;
+  }
+  if (kind === 'knight') {
     return `${legs}${cape}${torso}
       <path d="M20 39 q4 -5 9 -3 l-1 7 q-5 0 -8 -1 z" fill="${pal.metal}" stroke="${LINE}" stroke-width="1.2"/>
       <path d="M44 39 q-4 -5 -9 -3 l1 7 q5 0 8 -1 z" fill="${pal.metal}" stroke="${LINE}" stroke-width="1.2"/>
       <path d="M32 42 l4 7 l-4 7 l-4 -7 z" fill="${pal.accent}" stroke="${LINE}" stroke-width="1"/>`;
   }
-  if (arch === 'scout') {
+  if (kind === 'scout') {
     return `${legs}
       <path class="s-cape" d="M23 38 q-6 16 -4 28 q13 -4 26 0 q2 -12 -4 -28 z"
             fill="${pal.sub}" stroke="${LINE}" stroke-width="1.3"/>
@@ -215,25 +407,33 @@ G.Sprite = {
   /* キャラ -> SVG。装備している武器の形も反映する。 */
   hero(c) {
     const arch = G.SPRITE_ARCH[c.jobId] || 'villager';
+    const look = G.SPRITE_JOB[c.jobId] || {};
     const job = G.JOBS[c.jobId] || {};
     const base = G.SPRITE_PAL[arch] || G.SPRITE_PAL.villager;
-    const pal = Object.assign({}, base);
+    const pal = Object.assign({}, base, look.pal || {});
     const hair = G.SPRITE_HAIR[c.key] || base.hair;
     const tier = job.tier || 0;
 
     // 上位職ほど色を締めて、装飾を足す
     if (tier >= 3) { pal.accent = G.Sprite.lighten(pal.accent, 0.18); }
     Object.assign(pal, G.SPRITE_TINT[c.key] || {});
-    const wshape = (G.ITEMS[c.equip && c.equip.weapon] || {}).shape || 'stick';
+
+    // 職業ごとの指定があればそれを使い、無ければ系統の既定にする
+    const headKind = look.head || arch;
+    const bodyKind = look.body || arch;
+    const hasCape = (look.cape === undefined) ? tier >= 2 : !!look.cape;
+    const wshape = (G.ITEMS[c.equip && c.equip.weapon] || {}).shape
+      || look.weapon || 'stick';
     const arms = armsSvg(pal, wshape);
 
     return `<svg class="chr" viewBox="0 0 64 84" role="img" aria-label="${G.util.esc(c.name)}">
       <ellipse class="s-shadow" cx="32" cy="79" rx="15" ry="3.5" fill="#000" opacity=".3"/>
       <g class="s-body">
-        ${bodySvg(arch, pal, tier)}
+        ${bodySvg(bodyKind, pal, tier, hasCape)}
         ${arms.back}
-        ${headSvg(arch, pal, hair)}
+        ${headSvg(headKind, pal, hair)}
         ${arms.front}
+        ${look.deco ? look.deco(pal) : ''}
         ${tier >= 4 ? `<circle class="s-aura" cx="32" cy="44" r="30" fill="${pal.accent}" opacity=".12"/>` : ''}
       </g>
     </svg>`;
