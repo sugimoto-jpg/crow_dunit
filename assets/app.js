@@ -56,6 +56,7 @@
       },
       basic: {
         title: '料金プラン',
+        unitNote: '1ユニット分の料金表です',
         note: '貴社には、じっくり関係を築く「通常プラン」を推奨いたします。',
         badge: '推奨',
         recommend: 1,
@@ -429,6 +430,7 @@
     var h = ['<details class="sec"><summary>3. 基本プラン表<span class="tag">' + rows.length + 'プラン</span></summary><div class="sec-body">' +
       '<p class="note">アイドマ・ホールディングスの基本プラン表（組織図の次のページ）です。</p>' +
       fText('basic.title', 'ページ見出し', '料金プラン') +
+      fText('basic.unitNote', '単位の注記', '1ユニット分の料金表です', '見出しの下にバッジで表示・空欄で非表示') +
       fArea('basic.note', '前置きの一文', '', '推奨プランを変えたら文章も見直してください') +
       fText('basic.badge', '推奨バッジの文字', '推奨') +
       '<div class="field"><label>プラン<span class="hint">推奨したいプランを選択</span></label>'];
@@ -664,6 +666,7 @@
     }).join('');
     return '<section class="slide">' + head('STANDARD PRICE PLAN', or(b.title, '料金プラン')) +
       '<div class="s-body" style="flex-direction:column;gap:0">' +
+      (or(b.unitNote, '') ? '<div class="bp-unit"><span>' + esc(b.unitNote) + '</span></div>' : '') +
       (or(b.note, '') ? '<p class="bp-note">' + nl2br(b.note) + '</p>' : '') +
       '<div class="bp-cards" style="grid-template-columns:repeat(' + rows.length + ',1fr)">' + cards + '</div>' +
       '</div></section>';
