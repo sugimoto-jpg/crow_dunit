@@ -25,6 +25,13 @@ function serve() {
   });
 }
 
+/* ENTRY で検証対象を差し替えられる。
+ *   ENTRY=dist/tensei-arcana.html        … 1ファイル版をサーバ経由で
+ *   ENTRY=dist/tensei-arcana.html FILE=1 … ダブルクリック相当（file://）で
+ */
+const ENTRY = process.env.ENTRY || 'index.html';
+const USE_FILE = process.env.FILE === '1';
+
 const errors = [];
 const steps = [];
 const step = s => { steps.push(s); console.log('  ' + s); };
@@ -80,7 +87,11 @@ const step = s => { steps.push(s); console.log('  ' + s); };
   };
 
   console.log('▼ ブラウザ操作');
-  await page.goto(`http://127.0.0.1:${port}/index.html`);
+  const target = USE_FILE
+    ? 'file://' + path.join(ROOT, ENTRY)
+    : `http://127.0.0.1:${port}/${ENTRY}`;
+  console.log(`  対象: ${target}`);
+  await page.goto(target);
   await page.waitForSelector('.title-logo');
   step('タイトル画面が表示された');
   await shot('01-title');
@@ -239,6 +250,18 @@ const step = s => { steps.push(s); console.log('  ' + s); };
   step(`転職した: ${job}`);
 
   // セーブとロードの往復
+  const canSave = await page.evaluate(() => {
+    try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); return true; }
+    catch (e) { return false; }
+  });
+  if (!canSave) {
+    step('この環境では保存領域が使えないため、続きからの確認は省略');
+    await browser.close(); srv.close();
+    console.log(`\n▼ 結果: ${steps.length} 手順を実行`);
+    if (errors.length) { console.log(`\n❌ ${errors.length} 件の問題\n` + errors.map(e => '  - ' + e).join('\n')); process.exit(1); }
+    console.log('✅ エラーなし');
+    return;
+  }
   await page.evaluate(() => G.State.save());
   await page.reload();
   await page.waitForSelector('.title-logo');

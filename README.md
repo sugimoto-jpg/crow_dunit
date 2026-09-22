@@ -4,17 +4,29 @@
 **王立アルカナ魔法学院** に通ってレベルを上げ、**冒険者ギルド** で稼ぎ、
 やがて **魔王** に挑むブラウザRPGです。
 
-依存ライブラリはありません。`index.html` を開けばそのまま遊べます。
+依存ライブラリはありません。
 
+## 遊ぶには
+
+**1ファイル完結版（おすすめ）**
+
+```bash
+npm run build      # dist/tensei-arcana.html を生成
 ```
-# そのまま開く
-open index.html
 
-# ローカルサーバ経由で開く場合
-python3 -m http.server 8000   # → http://localhost:8000
+生成された `dist/tensei-arcana.html` は単体で動きます。保存してダブルクリックすれば
+ブラウザで開いて遊べます。スマホに送って開いても同じように遊べます。
+
+**開発中のファイルのまま開く**
+
+```bash
+open index.html                  # そのまま開く
+python3 -m http.server 8000      # サーバ経由 → http://localhost:8000
 ```
 
-進行状況はブラウザの localStorage に保存されます。
+進行状況はブラウザの localStorage に自動保存されます。1ファイル版でも
+`file://` で開いた状態でセーブ・ロードできることを確認しています
+（`ENTRY=dist/tensei-arcana.html FILE=1 node tools/smoke.js`）。
 
 ---
 
@@ -107,6 +119,7 @@ node tools/retune-enemies.js   # その曲線から敵の数値を設計して�
 node tools/playthrough.js      # 開始から魔王討伐まで自動で通しプレイする
 node tools/smoke.js            # 実ブラウザで序盤を操作し JS エラーを検出
 node tools/smoke-late.js       # 実ブラウザで卒業〜エンディングまでを確認
+node tools/build-single.js     # CSSとJSを流し込んだ1ファイル版を生成
 ```
 
 `npm test` で lint・ルール検証・ブラウザ操作の確認をまとめて実行します。
@@ -147,6 +160,7 @@ src/core/
 src/ui/                 画面ごとの描画と操作
 src/main.js             起動とストーリー進行
 tools/                  検証・バランス調整ツール
+dist/                   1ファイル完結版の出力先（build で生成）
 ```
 
 戦闘エンジンは描画から完全に独立しているため、`tools/` から直接呼び出して

@@ -20,6 +20,13 @@
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
+/* 端末のノッチ・ホームバーを避ける。ここで一度だけ確保し、
+   個々のバーでは env() を重ねない（二重に余白が入るため）。 */
+:root{
+  color-scheme:dark;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
 body{
   margin:0;
   background:
@@ -33,7 +40,7 @@ body{
   overflow:hidden;
 }
 #app{
-  max-width:720px;margin:0 auto;height:100dvh;
+  max-width:720px;margin:0 auto;height:100%;
   display:flex;flex-direction:column;
   background:linear-gradient(180deg, rgba(255,255,255,.02), transparent 30%);
 }
@@ -42,8 +49,7 @@ body{
 /* ---------- HUD ---------- */
 .hud{
   flex:0 0 auto;display:flex;gap:10px;align-items:center;
-  padding:8px 12px calc(8px);
-  padding-top:max(8px, env(safe-area-inset-top));
+  padding:8px 12px;
   background:linear-gradient(180deg,#241a42,#1a1430);
   border-bottom:1px solid var(--line);
   box-shadow:0 4px 18px rgba(0,0,0,.4);
@@ -84,7 +90,7 @@ body{
 /* ---------- 画面 ---------- */
 .screen{
   flex:1 1 auto;overflow-y:auto;overflow-x:hidden;
-  padding:14px 14px 22px;
+  padding:14px 16px 22px;
   -webkit-overflow-scrolling:touch;
   scroll-behavior:smooth;
 }
@@ -96,7 +102,6 @@ body{
   flex:0 0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;
   background:linear-gradient(0deg,#1a1430,#241a42);
   border-top:1px solid var(--line);
-  padding-bottom:env(safe-area-inset-bottom);
   z-index:20;
 }
 .nav button{

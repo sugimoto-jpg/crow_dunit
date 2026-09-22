@@ -7,3 +7,6 @@ tools/shots/
 # 作業用
 *.log
 .DS_Store
+
+# ビルド成果物（npm run build で生成）
+dist/

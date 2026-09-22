@@ -105,7 +105,7 @@ G.Story = {
 };
 
 /* ---------- 起動 ---------- */
-window.addEventListener('DOMContentLoaded', () => {
+function boot(resume) {
   // フッターナビ
   document.querySelectorAll('#nav button').forEach(b => {
     b.addEventListener('click', () => {
@@ -121,5 +121,25 @@ window.addEventListener('DOMContentLoaded', () => {
     if (document.visibilityState === 'hidden' && G.State.data) G.State.save();
   });
 
+  // 配信中に更新が入った場合は、遊んでいた画面に戻す
+  if (resume && resume.playing && G.State.load()) {
+    G.UI.setChromeVisible(true);
+    G.UI.show(resume.screen && G.UI.screens[resume.screen] ? resume.screen : 'home');
+    return;
+  }
   G.UI.show('title');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const hot = (typeof window !== 'undefined' && window.claude) ? window.claude.hot : null;
+  if (hot && hot.snapshot) {
+    hot.snapshot(() => {
+      if (G.State.data) G.State.save();
+      // 戦闘中に再開すると状態が壊れるので、拠点に戻す
+      const screen = G.UI.current === 'battle' ? 'home' : G.UI.current;
+      return { playing: !!G.State.data, screen };
+    });
+  }
+  if (hot && hot.ready) hot.ready(boot);
+  else boot((hot && hot.data) || null);
 });
