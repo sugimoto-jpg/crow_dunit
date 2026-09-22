@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">転生魔法学院譚</string>
+    <string name="title_activity_main">転生魔法学院譚</string>
+    <string name="package_name">com.example.tenseiarcana</string>
+    <string name="custom_url_scheme">com.example.tenseiarcana</string>
+</resources>

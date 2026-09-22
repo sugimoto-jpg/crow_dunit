@@ -10,3 +10,12 @@ tools/shots/
 
 # ビルド成果物（npm run build で生成）
 dist/
+
+# Capacitor が生成するもの（npx cap add android で再生成できる）
+/android/.gradle/
+/android/app/build/
+/android/build/
+/android/local.properties
+/android/app/src/main/assets/public/
+/ios/App/Pods/
+/ios/App/public/

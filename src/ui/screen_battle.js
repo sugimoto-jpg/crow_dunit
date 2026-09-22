@@ -235,6 +235,8 @@ G.BattleUI = {
       if (ev.type === 'damage' && ev.amount > 0) {
         G.BattleUI.animate(ev.target.uid, 'is-hurt', 420);
         G.BattleUI.popup(ev.target.uid, '-' + ev.amount, ev.crit ? '#ffd96b' : '#ff9a6d');
+        // アプリ版では手応えとして短く振動させる（ブラウザでは何も起きない）
+        if (G.Native) G.Native.tap(ev.crit ? 'heavy' : (ev.target.side === 'ally' ? 'medium' : 'light'));
       } else if (ev.type === 'dot') {
         G.BattleUI.popup(ev.target.uid, '-' + ev.amount, '#b6ff8a');
       } else if (ev.type === 'heal' && ev.amount > 0) {

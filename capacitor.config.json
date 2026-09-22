@@ -1,0 +1,31 @@
+{
+  "appId": "com.example.tenseiarcana",
+  "appName": "転生魔法学院譚",
+  "webDir": "dist/pwa",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#120d1c"
+  },
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#120d1c"
+  },
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 800,
+      "backgroundColor": "#120d1c",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "splashFullScreen": true,
+      "splashImmersive": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#120d1c",
+      "overlaysWebView": true
+    }
+  }
+}

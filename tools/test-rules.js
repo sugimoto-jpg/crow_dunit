@@ -2,11 +2,13 @@
  * ブラウザ操作では踏みにくい境界条件（学費未納・留年・装備中の売却など）を
  * ヘッドレスで直接確かめる。
  */
-const { loadGame } = require('./load.js');
+const { loadGame, scriptsFromIndex } = require('./load.js');
 
-const FILES = ['src/core/util.js', 'src/data/skills.js', 'src/data/jobs.js', 'src/data/items.js',
-  'src/data/enemies.js', 'src/data/quests.js', 'src/data/academy.js', 'src/data/story.js',
-  'src/core/character.js', 'src/core/state.js', 'src/core/world.js', 'src/core/battle.js'];
+/* 読み込むファイルは index.html から取る。
+ * 以前はここに一覧を手書きしていたが、
+ * 新しいファイルを足したときに書き足し忘れ、
+ * 「セーブが読めない」という実際には起きない失敗が出た。 */
+const FILES = scriptsFromIndex();
 
 let pass = 0;
 const fails = [];

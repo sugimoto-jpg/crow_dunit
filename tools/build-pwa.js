@@ -49,12 +49,30 @@ html = html.replace('</head>', `${head}\n</head>`);
 const reg = `
 <script>
 /* 一度開けば、次からは通信なしで起動できるようにする。
-   対応していないブラウザや file:// では何もしない。 */
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('sw.js').catch(function () { /* 使えなくても遊べる */ });
-  });
-}
+   対応していないブラウザや file:// では何もしない。
+
+   アプリ版（Capacitor）では登録しない。
+   アプリの中身はもともと端末内にあるので速くする必要がなく、
+   むしろ古い内容を抱え込んで、アプリを更新しても
+   新しい画面が出てこなくなる恐れがあるため。 */
+(function () {
+  var native = !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function'
+                  && window.Capacitor.isNativePlatform());
+  if (native) {
+    // 以前に登録されたものが残っていれば外しておく
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations()
+        .then(function (rs) { rs.forEach(function (r) { r.unregister(); }); })
+        .catch(function () {});
+    }
+    return;
+  }
+  if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () { /* 使えなくても遊べる */ });
+    });
+  }
+})();
 </script>`;
 html = html.replace('</body>', `${reg}\n</body>`);
 fs.writeFileSync(path.join(OUT, 'index.html'), html);

@@ -149,6 +149,12 @@ function boot(resume) {
   const origModal = G.UI.modal;
   G.UI.modal = function (opts) { armBack(); return origModal.call(G.UI, opts); };
 
+  /* 保存できない環境（プライベートモードなど）では、先に伝える。
+   * 黙っていると「遊べたのに閉じたら全部消えた」になる。 */
+  if (!G.Storage.persistent) {
+    setTimeout(() => G.UI.toast('この環境では記録を保存できません。閉じると消えます', 'bad'), 1200);
+  }
+
   // 画面を離れるときに自動セーブ
   window.addEventListener('beforeunload', () => { if (G.State.data) G.State.save(); });
   document.addEventListener('visibilitychange', () => {

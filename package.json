@@ -5,7 +5,7 @@
   "description": "転生魔法学院譚 〜村人から始まる魔王討伐〜（依存ライブラリなしのブラウザRPG）",
   "scripts": {
     "lint": "node tools/lint-text.js",
-    "test": "node tools/lint-text.js && node tools/globals.js && node tools/snapshot.js --check && node tools/test-rules.js && node tools/smoke.js && node tools/errors-test.js && node tools/strings.js && node tools/text-test.js && node tools/sprite-check.js --check && node tools/back-test.js && node tools/build-single.js && node tools/build-pwa.js && node tools/pwa-test.js && ENTRY=dist/tensei-arcana.html FILE=1 node tools/smoke.js && node tools/listeners.js",
+    "test": "node tools/lint-text.js && node tools/globals.js && node tools/snapshot.js --check && node tools/test-rules.js && node tools/smoke.js && node tools/errors-test.js && node tools/strings.js && node tools/text-test.js && node tools/sprite-check.js --check && node tools/back-test.js && node tools/build-single.js && node tools/build-pwa.js && node tools/pwa-test.js && node tools/native-test.js && ENTRY=dist/tensei-arcana.html FILE=1 node tools/smoke.js && node tools/listeners.js",
     "test:rules": "node tools/test-rules.js",
     "test:errors": "node tools/errors-test.js",
     "test:back": "node tools/back-test.js",
@@ -25,6 +25,9 @@
     "build:pwa": "node tools/build-single.js && node tools/build-pwa.js",
     "icons": "node tools/make-icons.js",
     "test:pwa": "node tools/pwa-test.js",
+    "test:native": "node tools/native-test.js",
+    "icons:android": "node tools/make-android-icons.js",
+    "cap:sync": "npm run build:pwa && npx cap sync",
     "deps": "node tools/deps.js",
     "snapshot": "node tools/snapshot.js --save",
     "verify": "node tools/snapshot.js --check && node tools/globals.js && node tools/deps.js",
@@ -32,6 +35,15 @@
     "listeners": "node tools/listeners.js"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/ios": "^8.5.2",
+    "@capacitor/preferences": "^8.0.1",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.3",
     "playwright": "^1.63.0"
   }
 }

@@ -51,23 +51,24 @@ G.State = {
   get d() { return G.State.data; },
 
   /* ---------- セーブ / ロード ---------- */
+  /* 保存は G.Storage を通す。
+   * アプリ化したときに保存先を差し替えられるようにするため
+   * （localStorage を直接呼ぶと、32か所すべてを書き換えることになる）。 */
   save() {
     try {
-      localStorage.setItem(G.SAVE_KEY, JSON.stringify(G.State.data));
-      return true;
+      return G.Storage.set(G.SAVE_KEY, JSON.stringify(G.State.data));
     } catch (e) {
-      console.warn('セーブに失敗しました', e);
       return false;
     }
   },
 
   hasSave() {
-    try { return !!localStorage.getItem(G.SAVE_KEY); } catch (e) { return false; }
+    try { return !!G.Storage.get(G.SAVE_KEY); } catch (e) { return false; }
   },
 
   load() {
     try {
-      const raw = localStorage.getItem(G.SAVE_KEY);
+      const raw = G.Storage.get(G.SAVE_KEY);
       if (!raw) return false;
       const d = JSON.parse(raw);
       if (!d || !d.player) return false;
@@ -116,7 +117,7 @@ G.State = {
   },
 
   deleteSave() {
-    try { localStorage.removeItem(G.SAVE_KEY); return true; } catch (e) { return false; }
+    try { G.Storage.remove(G.SAVE_KEY); return true; } catch (e) { return false; }
   },
 
   /* ---------- 所持品 ---------- */
