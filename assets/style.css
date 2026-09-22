@@ -507,6 +507,19 @@ small{font-size:11.5px}
 }
 @keyframes tgt{0%,100%{opacity:1}50%{opacity:.25}}
 
+/* ===== 戦闘コマンドを画面の下に貼り付ける =====
+ * 実測したところ、iPhone SE では「たたかう」が画面の 62px 下にあり、
+ * 毎ターン指でスクロールしないと押せない状態だった。
+ * コマンドだけを下に固定し、戦況（絵とログ）はその奥で動くようにする。 */
+.battle #cmd{
+  position:sticky;bottom:0;z-index:5;
+  margin:0 -16px -22px;              /* 画面の余白いっぱいまで広げる */
+  padding:10px 16px calc(14px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,rgba(18,13,28,0) 0%,rgba(18,13,28,.92) 22%,#120d1c 55%);
+  backdrop-filter:blur(2px);
+}
+.battle #cmd:empty{padding:0;background:none}
+
 /* 画面が狭いときは少し縮める */
 @media (max-width:400px){
   .scene{height:224px}
@@ -517,6 +530,25 @@ small{font-size:11.5px}
   .unit .unit-sprite{width:62px;height:76px}
   .unit.big{width:90px}
   .unit.big .unit-sprite{width:90px;height:110px}
+  /* コマンドを下に貼り付けた分、奥の要素を詰めて戦況が隠れないようにする */
+  .battle-log{height:92px}
+  .party-row{gap:6px}
+}
+
+/* 縦に余裕のない端末（iPhone SE など）ではさらに詰める。
+ * コマンドを下に貼り付けた分、仲間のHPがその奥に隠れてしまうため、
+ * 仲間カードを4つ横並びにして高さを半分にする。 */
+@media (max-height:700px){
+  .scene{height:180px}
+  .scene.boss{height:216px}
+  .battle-log{height:60px;font-size:11.5px;line-height:1.55}
+  .battle .party-row{grid-template-columns:repeat(4,1fr);gap:5px}
+  .battle .ally-card{padding:5px 6px}
+  .battle .ally-card .an{font-size:10.5px;gap:3px}
+  .battle .ally-card .an .em{font-size:13px}
+  /* 名前が入らないので数字は隠し、HP/MPのバーだけ見せる */
+  .battle .ally-card .nums{display:none}
+  .battle .ally-card .ab{margin-top:3px}
 }
 
 /* ===================================================================

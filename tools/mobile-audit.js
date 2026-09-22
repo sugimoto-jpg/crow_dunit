@@ -247,6 +247,51 @@ const SCREENS = ['title', 'home', 'academy', 'guild', 'town', 'status', 'job'];
     await ctx.close();
   }
 
+  /* ---------- 戦闘コマンドに指が届くか ---------- */
+  /* 実測で、iPhone SE では「たたかう」が画面の 62px 下にあり、
+   * 毎ターンスクロールしないと押せない状態だった。
+   * 一度直しても戻りやすい（要素が増えると下に押し出される）ので、
+   * 常に確かめられるようにしておく。 */
+  console.log('\n\n═══ 戦闘コマンドに指が届くか ═══');
+  const reach = [];
+  for (const dev of list) {
+    const ctx = await browser.newContext({ viewport: { width: dev.w, height: dev.h }, deviceScaleFactor: dev.dpr, isMobile: true, hasTouch: true });
+    const page = await ctx.newPage();
+    await page.goto(`http://127.0.0.1:${port}/index.html`);
+    await page.waitForSelector('.title-logo');
+    await page.addStyleTag({ content:
+      `:root{padding-top:${dev.inset.top}px !important;padding-bottom:${dev.inset.bottom}px !important}` });
+    await page.evaluate(() => {
+      G.State.newGame('検証', 'normal');
+      for (const k of ['riina', 'velt', 'noa']) G.State.recruit(k);
+      for (const c of G.State.d.party) { while (c.level < 30) { G.Char.levelUp(c); let g = 0; while (G.Char.autoJob(c) && g++ < 6); } }
+      G.State.d.battleSpeed = 1;
+      G.UI.setChromeVisible(true);
+      G.BattleUI.start(['golem', 'golem', 'golem'], { canFlee: true });
+    });
+    await page.waitForSelector('[data-act="atk"]', { timeout: 15000 });
+    await page.waitForTimeout(200);
+    const r = await page.evaluate(() => {
+      const vh = window.innerHeight;
+      const out = { off: [] };
+      for (const act of ['atk', 'skill', 'item', 'guard', 'flee']) {
+        const el = document.querySelector(`[data-act="${act}"]`);
+        if (!el) continue;
+        const b = el.getBoundingClientRect();
+        if (!(b.top >= -1 && b.bottom <= vh + 1)) out.off.push(`${act}(${Math.round(b.bottom - vh)}px外)`);
+      }
+      const sc = document.getElementById('scene');
+      out.scene = sc ? sc.getBoundingClientRect().bottom > 0 : false;
+      return out;
+    });
+    const bad = r.off.length || !r.scene;
+    console.log(`  ${bad ? '⚠' : '✅'} ${dev.name.padEnd(18)}`
+      + (r.off.length ? `コマンドが画面外: ${r.off.join(' ')}` : 'すべてのコマンドが押せる')
+      + (r.scene ? '' : ' / 戦況が見えない'));
+    if (bad) reach.push(dev.name);
+    await ctx.close();
+  }
+
   /* ---------- まとめ ---------- */
   const section = (title, m, note) => {
     console.log(`\n═══ ${title} ═══`);
@@ -273,7 +318,8 @@ const SCREENS = ['title', 'home', 'academy', 'guild', 'town', 'status', 'job'];
   console.log('\n═══ 横スクロール ═══');
   console.log(all.scroll.length ? all.scroll.map(s => '  ⚠ ' + s).join('\n') : '  ✅ どの画面でも発生しない');
 
-  const total = all.small.size + all.close.size + all.tiny.size + all.overflow.size + all.hidden.size + all.scroll.length;
+  const total = all.small.size + all.close.size + all.tiny.size + all.overflow.size
+    + all.hidden.size + all.scroll.length + reach.length;
   console.log(`\n═══ 合計 ${total} 件 ═══`);
 
   await browser.close();
