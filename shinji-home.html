@@ -1,0 +1,1564 @@
+<title>シンジホーム 入口と出口の設計</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&family=Zen+Kaku+Gothic+Antique:wght@400;500;700&family=Anonymous+Pro:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#ECEEEE;
+  --surface:#FBFCFC;
+  --surface-2:#E3E6E6;
+  --surface-3:#D4D8D9;
+  --ink:#16191A;
+  --ink-2:#4A4E50;
+  --ink-3:#7A7E81;
+  --rule:#DCDFE0;
+  --rule-2:#C0C4C6;
+  --s1:#00779B;
+  --s2:#C25020;
+  --s3:#5F5BBE;
+  --s4:#7F7D12;
+  --s5:#AE357C;
+  --brand:#00779B;
+  --brand-soft:#D8EBF2;
+  --accent:#C25020;
+  --accent-soft:#F8E5DC;
+  --good:#7F7D12;
+  --good-soft:#EFEED5;
+  --warn:#C25020;
+  --warn-soft:#F8E5DC;
+  --info-soft:#E3E2F6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#121415;
+    --surface:#1C1E1F;
+    --surface-2:#272A2B;
+    --surface-3:#333637;
+    --ink:#EAEDEE;
+    --ink-2:#AEB2B4;
+    --ink-3:#82868A;
+    --rule:#2C2F30;
+    --rule-2:#3B3E40;
+    --s1:#2E96B6;
+    --s2:#D2683C;
+    --s3:#8079D2;
+    --s4:#96942C;
+    --s5:#CC5A98;
+    --brand:#2E96B6;
+    --brand-soft:#10262F;
+    --accent:#D2683C;
+    --accent-soft:#2F1B12;
+    --good:#96942C;
+    --good-soft:#242410;
+    --warn:#D2683C;
+    --warn-soft:#2F1B12;
+    --info-soft:#1E1D33;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#121415;
+  --surface:#1C1E1F;
+  --surface-2:#272A2B;
+  --surface-3:#333637;
+  --ink:#EAEDEE;
+  --ink-2:#AEB2B4;
+  --ink-3:#82868A;
+  --rule:#2C2F30;
+  --rule-2:#3B3E40;
+  --s1:#2E96B6;
+  --s2:#D2683C;
+  --s3:#8079D2;
+  --s4:#96942C;
+  --s5:#CC5A98;
+  --brand:#2E96B6;
+  --brand-soft:#10262F;
+  --accent:#D2683C;
+  --accent-soft:#2F1B12;
+  --good:#96942C;
+  --good-soft:#242410;
+  --warn:#D2683C;
+  --warn-soft:#2F1B12;
+  --info-soft:#1E1D33;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);
+  font-family:"Zen Kaku Gothic Antique","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  font-size:15px;line-height:1.85;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"Kaisei Opti","Hiragino Mincho ProN",serif;font-weight:700;margin:0;line-height:1.5;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:3px}
+.mono{font-family:"Anonymous Pro",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.wave{height:3px;background:linear-gradient(90deg,var(--brand) 0 34%,var(--rule-2) 34% 66%,var(--accent) 66% 100%);border:0;margin:0;opacity:.85}
+
+.masthead{background:var(--surface);border-bottom:1px solid var(--rule)}
+.mast-inner{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-end;padding:26px 0 20px}
+.eyebrow{font-family:"Anonymous Pro",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.mast-title{font-size:clamp(22px,3.1vw,35px);font-weight:700;margin-top:8px;letter-spacing:.01em}
+.mast-title em{font-style:normal;color:var(--accent)}
+.mast-sub{color:var(--ink-2);font-size:13.5px;margin-top:9px;max-width:66ch}
+.mast-meta{font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-align:right}
+.mast-meta b{color:var(--ink-2);font-weight:700}
+.flash{display:inline-flex;align-items:center;gap:8px;background:var(--brand-soft);color:var(--brand);
+  font-size:12px;font-weight:700;padding:5px 13px;border-radius:4px;margin-top:12px}
+
+.tabbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:none;border:0;border-bottom:3px solid transparent;font:inherit;font-size:13px;font-weight:700;
+  color:var(--ink-3);padding:13px 11px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brand)}
+.tab .num{font-family:"Anonymous Pro",monospace;font-size:10.5px;color:var(--ink-3);margin-right:6px;font-weight:700}
+.tab[aria-selected="true"] .num{color:var(--brand)}
+
+.panel{padding:34px 0 76px}
+.panel[hidden]{display:none!important}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.sec-head h2{font-size:24px}
+.sec-head .tagline{font-size:12.5px;color:var(--ink-3)}
+.lede{color:var(--ink-2);font-size:14px;max-width:78ch;margin:10px 0 26px}
+.block{margin-top:40px}
+.block > h3{font-size:17.5px}
+.block > .sub{font-size:12.5px;color:var(--ink-3);margin:3px 0 16px}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(186px,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.card.flat{background:transparent;border-style:dashed}
+
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:15px 17px;display:flex;flex-direction:column;gap:1px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;top:0;left:0;width:36px;height:3px;background:var(--rule-2)}
+.stat.hot::before{background:var(--accent);width:100%}
+.stat.pos::before{background:var(--good);width:100%}
+.stat.info::before{background:var(--brand);width:100%}
+.stat.warn::before{background:var(--s5);width:100%}
+.stat .k{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.stat .v{font-family:"Anonymous Pro",monospace;font-size:25px;font-weight:700;letter-spacing:-.02em;line-height:1.35;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:13px;margin-left:2px;color:var(--ink-2);font-family:"Zen Kaku Gothic Antique",sans-serif;font-weight:400}
+.stat .n{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:2px}
+.stat.hot .v{color:var(--accent)}
+.stat.pos .v{color:var(--good)}
+.stat.info .v{color:var(--brand)}
+.stat.warn .v{color:var(--s5)}
+
+.chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.chip.a{background:var(--brand-soft);color:var(--brand)}
+.chip.b{background:var(--accent-soft);color:var(--accent)}
+.chip.c{background:var(--good-soft);color:var(--good)}
+.chip.d{background:var(--info-soft);color:var(--s3)}
+.chip.e{background:var(--surface-2);color:var(--s5)}
+
+.deflist{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;font-size:13.5px;align-items:baseline}
+.deflist dt{color:var(--ink-3);font-size:12px;font-weight:700;white-space:nowrap}
+.deflist dd{margin:0}
+.note{font-size:12px;color:var(--ink-3);line-height:1.78;margin-top:12px}
+.callout{background:var(--good-soft);border-radius:10px;padding:14px 17px;font-size:12.5px;color:var(--ink-2);margin-top:14px}
+.callout b{color:var(--ink)}
+.callout.blue{background:var(--brand-soft)}
+.callout.warm{background:var(--accent-soft)}
+
+.swot{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:14px}
+.swot section{border:1px solid var(--rule);border-radius:10px;padding:16px 18px;background:var(--surface)}
+.swot h4{font-size:14px;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.swot h4::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--rule-2)}
+.swot .s h4::before{background:var(--s1)}
+.swot .w h4::before{background:var(--s2)}
+.swot .o h4::before{background:var(--s4)}
+.swot .t h4::before{background:var(--s5)}
+.swot ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+
+.reason{background:var(--surface);border:1px solid var(--rule);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.reason .rhead{display:flex;gap:16px;align-items:flex-start;padding:20px 24px 0}
+.reason .idx{font-family:"Kaisei Opti",serif;font-size:32px;font-weight:700;color:var(--brand);line-height:1;flex:0 0 auto}
+.reason .kicker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.reason h4{font-size:18px}
+.reason .rbody{padding:12px 24px 20px}
+.reason p{font-size:13.5px;color:var(--ink-2)}
+.reason .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(188px,1fr));gap:10px;margin:15px 0 4px}
+.reason .fact{background:var(--surface-2);border-radius:8px;padding:10px 13px}
+.reason .fact .fv{font-family:"Anonymous Pro",monospace;font-size:19px;font-weight:700}
+.reason .fact .fk{font-size:11px;color:var(--ink-3);line-height:1.5}
+.reason .sowhat{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:13.5px}
+.reason .sowhat b{color:var(--brand)}
+
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch}
+@media(max-width:800px){.vs{grid-template-columns:1fr}}
+.vs-col{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.vs-col.bad{border-top:4px solid var(--accent)}
+.vs-col.good{border-top:4px solid var(--brand)}
+.vs-col .vt{font-family:"Anonymous Pro",monospace;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ink-3)}
+.vs-col h4{font-size:17px;margin:5px 0 12px}
+.vs-col ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:8px}
+.vs-col ul b{color:var(--ink)}
+.vs-mid{display:flex;align-items:center;justify-content:center;font-family:"Kaisei Opti",serif;font-size:20px;color:var(--rule-2)}
+@media(max-width:800px){.vs-mid{padding:4px 0}}
+
+.timeline{overflow-x:auto;padding:24px 0 4px}
+.timeline-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(152px,1fr);min-width:900px;position:relative}
+.timeline-track::before{content:"";position:absolute;left:0;right:0;top:9px;height:2px;background:var(--rule-2)}
+.tl-item{position:relative;padding:26px 12px 0 0}
+.tl-item::before{content:"";position:absolute;left:0;top:2px;width:15px;height:15px;border-radius:50%;background:var(--surface);border:3px solid var(--rule-2)}
+.tl-item.on::before{background:var(--accent);border-color:var(--accent)}
+.tl-item.now::before{background:var(--brand);border-color:var(--brand);width:19px;height:19px;top:0}
+.tl-item .y{font-family:"Anonymous Pro",monospace;font-size:11.5px;font-weight:700;color:var(--ink-3)}
+.tl-item.on .y{color:var(--accent)}
+.tl-item.now .y{color:var(--brand)}
+.tl-item .t{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+
+.pillar{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.pillar .pk{font-family:"Anonymous Pro",monospace;font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink-3)}
+.pillar h4{font-size:16.5px}
+.pillar p{font-size:13px;color:var(--ink-2)}
+.pillar .kpi{margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:4px}
+.pillar .kpi b{font-family:"Anonymous Pro",monospace;color:var(--ink);font-weight:700}
+
+.scroller{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+table.matrix{width:100%;border-collapse:collapse;font-size:13px;min-width:700px}
+table.matrix th,table.matrix td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.matrix th{font-size:11.5px;color:var(--ink-3);font-weight:700;background:var(--surface-2)}
+table.matrix tr:last-child td{border-bottom:0}
+table.matrix td:first-child{font-weight:700}
+table.matrix td.num{font-family:"Anonymous Pro",monospace;text-align:right;white-space:nowrap;font-weight:700}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:1px solid var(--rule);border-radius:10px}
+.seg{display:flex;background:var(--surface-2);border-radius:8px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:12px;font-weight:700;border:0;background:none;color:var(--ink-3);padding:6px 12px;border-radius:6px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.controls input[type="search"],.controls select{font:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--rule-2);border-radius:8px;background:var(--surface);color:var(--ink)}
+.controls input[type="search"]{min-width:190px;flex:1}
+.controls .count{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.controls .count b{font-family:"Anonymous Pro",monospace;color:var(--ink);font-weight:700}
+
+.tlist{display:flex;flex-direction:column;gap:9px}
+.trow{display:grid;grid-template-columns:38px minmax(206px,1.02fr) minmax(238px,1.5fr) minmax(238px,1.5fr);gap:0 18px;
+  background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--rule-2);border-radius:0 10px 10px 0;padding:15px 18px;align-items:start}
+.trow.tA{border-left-color:var(--s1)}
+.trow.tB{border-left-color:var(--s4)}
+.trow.tC{border-left-color:var(--s2)}
+.trow .rank{font-family:"Anonymous Pro",monospace;font-size:13px;color:var(--ink-3);font-weight:700;padding-top:2px}
+.trow .head{display:flex;flex-direction:column;gap:6px}
+.trow .name{font-family:"Kaisei Opti",serif;font-size:14.5px;font-weight:700;line-height:1.45}
+.trow .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.trow .cnt{font-family:"Anonymous Pro",monospace;font-size:13px;font-weight:700}
+.trow .cnt span{font-size:11px;color:var(--ink-3);font-weight:400;margin-left:3px;font-family:"Zen Kaku Gothic Antique",sans-serif}
+.trow .fieldlabel{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);display:block;margin-bottom:3px}
+.trow .fieldbody{font-size:13px;color:var(--ink-2);line-height:1.7}
+.trow .hook .fieldbody{color:var(--ink);border-left:3px solid var(--rule-2);padding-left:11px}
+@media(max-width:900px){
+  .trow{grid-template-columns:34px 1fr;gap:10px 14px}
+  .trow .head,.trow .why,.trow .hook{grid-column:2}
+}
+
+.taskgroup{background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.taskgroup header{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:13px 16px;background:var(--surface-2)}
+.taskgroup header h4{font-size:14px}
+.taskgroup header .hh{font-family:"Anonymous Pro",monospace;font-size:12px;color:var(--ink-2);font-weight:700}
+.taskgroup ul{list-style:none;margin:0;padding:6px 0}
+.taskgroup li{display:flex;justify-content:space-between;gap:12px;padding:7px 16px;font-size:13px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.taskgroup li:last-child{border-bottom:0}
+.taskgroup li b{font-family:"Anonymous Pro",monospace;font-size:12px;color:var(--ink-3);font-weight:400;white-space:nowrap}
+.taskgroup li.key{color:var(--ink)}
+.taskgroup li.key > span:first-child::before{content:"◆";color:var(--brand);font-size:8px;margin-right:7px;vertical-align:2px}
+
+.chartbox{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px}
+.chartbox h4{font-size:14px}
+.chartbox .csub{font-size:12px;color:var(--ink-3);margin:2px 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);margin-bottom:10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+
+.roi-layout{display:grid;grid-template-columns:minmax(280px,336px) 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.roi-layout{grid-template-columns:1fr}}
+.knobs{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px;position:sticky;top:58px;max-height:calc(100vh - 74px);overflow-y:auto}
+.knob{margin-bottom:14px}
+.knob label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink-2);margin-bottom:5px;gap:10px}
+.knob label b{font-family:"Anonymous Pro",monospace;font-size:13px;color:var(--ink);font-weight:700}
+.knob input[type="range"]{width:100%;accent-color:var(--brand);height:20px;cursor:pointer}
+.knob-group{border-top:1px solid var(--rule);padding-top:14px;margin-top:16px}
+.gh{font-family:"Anonymous Pro",monospace;font-size:10.5px;font-weight:700;letter-spacing:.05em;color:var(--ink-3);margin-bottom:12px}
+.gh span{color:var(--brand)}
+.resetbtn{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--rule-2);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:6px 12px;cursor:pointer}
+.resetbtn:hover{border-color:var(--ink-3);color:var(--ink)}
+.verdict{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--good);border-radius:0 10px 10px 0;padding:16px 20px;font-size:13.5px}
+.verdict b{font-family:"Anonymous Pro",monospace;color:var(--good);font-weight:700}
+
+.funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px}
+.fstep{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:13px 14px}
+.fstep .fl{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.fstep .fv{font-family:"Anonymous Pro",monospace;font-size:22px;font-weight:700}
+.fstep .fr{font-size:11px;color:var(--ink-3)}
+.fstep.end{background:var(--brand-soft);border-color:transparent}
+.fstep.end .fv,.fstep.end .fl,.fstep.end .fr{color:var(--brand)}
+
+.phase{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule)}
+.phase:first-of-type{border-top:0}
+.phase .pd{font-family:"Anonymous Pro",monospace;font-size:12px;color:var(--accent);font-weight:700}
+.phase .pt{font-family:"Kaisei Opti",serif;font-size:16px;font-weight:700;line-height:1.4;margin-top:2px}
+.phase ul{margin:0;padding-left:1.15em;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px}
+.phase ul b{color:var(--ink)}
+.owner{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:4px;margin-right:7px;vertical-align:1px}
+.owner.ai{background:var(--brand-soft);color:var(--brand)}
+.owner.kl{background:var(--accent-soft);color:var(--accent)}
+.srcs{font-size:12px;color:var(--ink-3);line-height:1.9}
+@media(max-width:640px){
+  .wrap{padding:0 16px}
+  .phase{grid-template-columns:1fr;gap:10px}
+  .reason .rhead{flex-direction:column;gap:6px}
+}
+</style>
+
+<hr class="wave">
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <div>
+      <div class="eyebrow">事前リサーチ ／ 成長戦略 ／ 2ユニット ROIシミュレーション</div>
+      <h1 class="mast-title">シンジホーム <em>入口と出口</em> の設計</h1>
+      <p class="mast-sub">「マンション管理士の認知度が低い」——これは事実ですが、打ち手にはなりません。認知度を上げるより先に決めるべきことがあります。<b>管理組合は、年に1回の総会でしか物事を決められません。</b>つまり当てるべき時期が組合ごとに決まっている。<b>それを台帳にすれば、毎月どこに行くべきかが自動的に決まります。</b></p>
+      <div class="flash">◆ 本ボードの主題：管理組合が「入口」、不動産取引が「出口」</div>
+    </div>
+    <div class="mast-meta">
+      <div><b>作成</b> 株式会社アイドマ・ホールディングス</div>
+      <div><b>宛先</b> シンジホーム株式会社 上原 真二 様</div>
+      <div><b>次回商談</b> 日程調整中</div>
+      <div><b>更新</b> 2026年9月22日</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="セクション">
+  <div class="wrap tabs" role="tablist">
+    <button class="tab" data-p="research" role="tab" aria-selected="true"><span class="num">01</span>事前リサーチ</button>
+    <button class="tab" data-p="client" role="tab" aria-selected="false"><span class="num">02</span>管理組合の買い方</button>
+    <button class="tab" data-p="funnel" role="tab" aria-selected="false"><span class="num">03</span>入口と出口</button>
+    <button class="tab" data-p="why" role="tab" aria-selected="false"><span class="num">04</span>今すぐやる3つの理由</button>
+    <button class="tab" data-p="strategy" role="tab" aria-selected="false"><span class="num">05</span>成長戦略</button>
+    <button class="tab" data-p="targets" role="tab" aria-selected="false"><span class="num">06</span>営業ターゲット30</button>
+    <button class="tab" data-p="remote" role="tab" aria-selected="false"><span class="num">07</span>在宅ワーカー活用</button>
+    <button class="tab" data-p="roi" role="tab" aria-selected="false"><span class="num">08</span>ROIシミュレーション</button>
+    <button class="tab" data-p="road" role="tab" aria-selected="false"><span class="num">09</span>90日ロードマップ</button>
+  </div>
+</nav>
+
+<!-- ===== 01 ===== -->
+<section class="panel wrap" id="p-research" role="tabpanel">
+  <div class="sec-head"><h2>事前リサーチ</h2><span class="tagline">商談メモと、沖縄という市場の条件</span></div>
+  <p class="lede">御社の公開情報は、法人化から日が浅いこともあり、検索で確認できるものがほとんどありませんでした。ですので本タブは<b>商談メモの内容を整理したうえで、沖縄という市場の条件を重ねる</b>形で構成しています。数字の多くは推計で、次回の商談で実データに置き換える前提です。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">法人化</span><span class="v">2026.05</span><span class="n">個人事業として5〜6年の実績あり</span></div>
+    <div class="stat hot"><span class="k">不動産事業</span><span class="v">2<small>ヶ月目</small></span><span class="n">2026年8月開始。ここが新しい武器</span></div>
+    <div class="stat"><span class="k">体制</span><span class="v">1<small>名</small></span><span class="n">代表お一人。営業も実務も同じ人</span></div>
+    <div class="stat pos"><span class="k">業界経験</span><span class="v">30<small>年超</small></span><span class="n">マンション管理士・宅建士</span></div>
+  </div>
+
+  <div class="block">
+    <h3>会社概要</h3>
+    <p class="sub">商談メモおよび所在地情報より</p>
+    <div class="grid g2">
+      <div class="card">
+        <dl class="deflist">
+          <dt>商号</dt><dd>シンジホーム株式会社</dd>
+          <dt>代表者</dt><dd>上原 真二 様</dd>
+          <dt>法人化</dt><dd>2026年5月（個人事業としては5〜6年）</dd>
+          <dt>所在地</dt><dd>沖縄県宜野湾市我如古1-46-6 1F</dd>
+          <dt>従業員</dt><dd>1名</dd>
+          <dt>事業</dt><dd>マンション管理士事業／不動産事業（売買・賃貸・管理）</dd>
+          <dt>資格</dt><dd>マンション管理士・宅地建物取引士</dd>
+          <dt>ビジョン</dt><dd>10年以内に従業員10名・支店2拠点・自社アパート所有</dd>
+        </dl>
+      </div>
+      <div class="card">
+        <h4 style="font-size:15px;margin-bottom:10px">この会社の一番の強みは「順番」です</h4>
+        <p style="font-size:13.5px;color:var(--ink-2)">不動産業者がマンション管理士の資格を取ることはあります。しかし御社は<b>逆の順番</b>です。マンション管理士として5〜6年、管理組合と向き合ってから、不動産事業を始めた。</p>
+        <p style="font-size:13.5px;color:var(--ink-2);margin-top:12px">この順番だと、<b>売る前から建物の状態と組合の事情を知っている</b>という状態になります。修繕積立金が足りているか、次の大規模修繕がいつか、規約に何が書いてあるか。<b>これは後から買える情報ではありません。</b></p>
+        <div class="callout blue">商談メモにあった「同業者から警戒・反発される懸念」は、裏を返せば<b>その構造が強いことの証明</b>です。既存の不動産業者には作れない立場だからこそ、警戒されます。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>沖縄という市場の条件</h3>
+    <p class="sub">本土と同じ設計では合いません。3つの点で条件が違います</p>
+    <div class="grid g3">
+      <div class="card">
+        <span class="chip a">条件①</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">母数が小さい。だから全部回れる</h4>
+        <p style="font-size:13px;color:var(--ink-2)">沖縄県内の分譲マンション管理組合は<b>推計で1,000組合に届きません</b>。本土の主要都市なら数千〜数万です。<b>これは弱点ではなく、決定的な強みです。</b>全組合を台帳に載せ、築年数と決算月で並べ替えることが、物理的に可能だからです。</p>
+        <p style="font-size:12.5px;color:var(--brand);margin-top:9px;font-weight:700">→ 全数を把握できる県は多くありません</p>
+      </div>
+      <div class="card">
+        <span class="chip b">条件②</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">建物の傷みが早い</h4>
+        <p style="font-size:13px;color:var(--ink-2)">塩害、台風、強い紫外線。沖縄のRC造は<b>鉄筋の腐食・膨張によるコンクリートの剥離</b>が本土より進みやすく、国交省ガイドラインの12〜15年周期をそのまま当てはめるのは危険だと指摘されています。</p>
+        <p style="font-size:12.5px;color:var(--accent);margin-top:9px;font-weight:700">→ 「ガイドライン通り」では通用しない＝専門家が要る</p>
+      </div>
+      <div class="card">
+        <span class="chip c">条件③</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">県外所有者の比率が高い</h4>
+        <p style="font-size:13px;color:var(--ink-2)">リゾート需要とセカンドハウス需要により、<b>総会に来られない区分所有者</b>が一定数います。これは合意形成の難所ですが、同時に<b>売却・相続の相談が集まりやすい層</b>でもあります。商談メモの「県外の購入希望者」というターゲットとも表裏です。</p>
+        <p style="font-size:12.5px;color:var(--good);margin-top:9px;font-weight:700">→ 管理の課題が、そのまま不動産の案件になる</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>強み・弱み・機会・脅威</h3>
+    <p class="sub">商談メモから読み取れる範囲で</p>
+    <div class="swot">
+      <section class="s"><h4>強み（S）</h4><ul>
+        <li>マンション管理士として管理組合と向き合った<b>5〜6年の関係</b>が先にある</li>
+        <li>管理と不動産の両方を持ち、<b>売る前から建物の中身を知っている</b></li>
+        <li>間違いがあれば素直に正す姿勢。管理組合の世界では信用がすべて</li>
+        <li>AI等の新しい道具を自分で学び、資料も自分で作れる</li>
+      </section>
+      <section class="w"><h4>弱み（W）</h4><ul>
+        <li>1名体制。対面での合意形成は時間がかかり、<b>同時に持てる組合数に上限がある</b></li>
+        <li>不動産事業は開始2ヶ月目。取引実績がまだ薄い</li>
+        <li>マンション管理士という役割が住民に知られていない</li>
+        <li>営業が訪問中心で、件数の見通しが立たない</li>
+      </ul></section>
+      <section class="o"><h4>機会（O）</h4><ul>
+        <li><b>改正区分所有法が2026年4月1日に施行済み。全組合が規約を見直す必要がある</b></li>
+        <li>築40年超マンションが全国で急増（2023年末137万戸→20年後464万戸）</li>
+        <li>外部管理者方式のガイドラインが、<b>管理業者以外の第三者を必要としている</b></li>
+        <li>管理計画認定制度により、固定資産税の減額やフラット35の金利引下げが使える</li>
+      </ul></section>
+      <section class="t"><h4>脅威（T）</h4><ul>
+        <li>県内の既存不動産業者・管理会社からの警戒</li>
+        <li>管理業者管理者方式が広がると、組合が「管理会社任せ」になる</li>
+        <li>1名のままでは、組合数が増えた時点で対応が破綻する</li>
+        <li>建物の傷みが進んだ組合ほど、積立金が足りず報酬も払えない</li>
+      </ul></section>
+    </div>
+  </div>
+
+  <div class="callout warm">
+    <b>データの取り扱いについて。</b>御社ホームページ（shinji-home.com）へは、本ボード作成環境のネットワーク制限により直接アクセスできませんでした。また法人化から日が浅く、公開されている企業データベースにも情報が見当たりませんでした。したがって本ボードの会社情報は<b>すべて商談メモに基づく</b>ものです。<b>年商、顧問契約中の管理組合数、顧問料の水準、不動産仲介の実績</b>はいずれも未確認です。とくに<b>いま何組合と契約していて、1組合あたりいくらいただいているか</b>——この2つが分かれば、08タブの試算は実物になります。次回、必ずお聞かせください。
+  </div>
+</section>
+
+<!-- ===== 02 ===== -->
+<section class="panel wrap" id="p-client" role="tabpanel" hidden>
+  <div class="sec-head"><h2>管理組合という顧客</h2><span class="tagline">誰が決めるのか、いつ決まるのか</span></div>
+  <p class="lede">管理組合は、普通の法人とは買い方がまったく違います。ここを設計しないまま訪問を増やしても、件数は伸びません。<b>逆に、ここさえ押さえれば、1人でも計画的に回せます。</b></p>
+
+  <div class="block">
+    <h3>管理組合の3つの特徴</h3>
+    <p class="sub">これが営業設計のすべての前提になります</p>
+    <div class="grid g3">
+      <div class="card">
+        <span class="chip a">特徴①</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">決めるのは年に1回だけ</h4>
+        <p style="font-size:13px;color:var(--ink-2)">予算も、専門家への委託も、規約の改正も、<b>すべて総会の決議</b>が要ります。総会は原則年1回。つまり<b>そこを逃すと1年待ち</b>です。逆算すると、理事会で議題にしてもらう必要があるので、<b>提案すべきは総会の3〜4ヶ月前</b>です。</p>
+      </div>
+      <div class="card">
+        <span class="chip a">特徴②</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">担当者が毎年入れ替わる</h4>
+        <p style="font-size:13px;color:var(--ink-2)">多くの組合で理事は輪番・1年交代です。<b>去年説明した相手は、今年はもういません。</b>商談メモにあった「前回の話の忘れ・知識不足による理解の遅れ」は、担当者が素人で、しかも毎年変わるという構造から来ています。<b>個人との関係だけでは積み上がりません。</b></p>
+      </div>
+      <div class="card">
+        <span class="chip a">特徴③</span>
+        <h4 style="font-size:15px;margin:9px 0 7px">会計年度がバラバラ</h4>
+        <p style="font-size:13px;color:var(--ink-2)">組合ごとに決算月が違います。商談メモの「各組合の会計年度に合わせたバタバタとした対応」はこれです。<b>ただしこれは、見方を変えると資産になります。</b>バラバラだからこそ、<b>毎月どこかの組合が「提案適期」を迎えている</b>ということだからです。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>決算月を台帳にすると、毎月行くべき先が決まります</h3>
+    <p class="sub">これが本ボードで最もお伝えしたい仕組みです</p>
+    <div class="chartbox" id="c-calendar"></div>
+    <div class="callout blue">
+      <b>沖縄だからこそ、これができます。</b>県内の管理組合は推計1,000件未満。<b>全組合の「築年数・戸数・管理会社・決算月」を1枚の台帳に載せることが物理的に可能</b>です。本土の主要都市では現実的ではありません。台帳さえあれば、「今月は3月決算の組合15件に当たる」という具合に、<b>訪問先が毎月自動的に決まります</b>。この台帳づくりこそ、07タブで在宅ワーカーに最初にお願いすべき仕事です。
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>認知度を上げる、の前にやること</h3>
+    <p class="sub">順番の問題です</p>
+    <div class="vs">
+      <div class="vs-col bad">
+        <div class="vt">APPROACH A</div>
+        <h4>認知度を上げにいく</h4>
+        <ul>
+          <li>セミナー、SNS、チラシ。<b>間違いではありませんが、効くまでが長い</b>です。</li>
+          <li>そもそも住民は、困っていないときにマンション管理士の話を聞きません。</li>
+          <li><b>相手が「困る時期」はこちらで選べない</b>ので、件数の見通しが立ちません。</li>
+          <li>1人で、不動産事業も並行しながらやるには、投下する時間が読めなさすぎます。</li>
+        </ul>
+      </div>
+      <div class="vs-mid">対</div>
+      <div class="vs-col good">
+        <div class="vt">APPROACH B</div>
+        <h4>決まる時期に、決まる相手へ行く</h4>
+        <ul>
+          <li><b>総会の3〜4ヶ月前</b>に当たる。相手が議題を決める、まさにその時期です。</li>
+          <li><b>2026年4月施行の改正区分所有法</b>という、全組合に共通する用件があります。</li>
+          <li>台帳があれば、今月当たるべき組合が数字で出ます。<b>見通しが立ちます。</b></li>
+          <li>会えなかった組合も、来年の同じ時期に自動的にリストへ戻ってきます。</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">認知度向上をやめる、という話ではありません。<b>順番として、まず決まる時期に当たる仕組みを作る</b>ということです。訪問の中で認知は自然に広がります。</p>
+  </div>
+</section>
+
+<!-- ===== 03 ===== -->
+<section class="panel wrap" id="p-funnel" role="tabpanel" hidden>
+  <div class="sec-head"><h2>入口と出口</h2><span class="tagline">顧問料だけを見ると、この事業は小さく見えます</span></div>
+  <p class="lede">商談メモにあった「マンション管理士業務と不動産事業のコラボレーション」——これが御社の差別化の核心です。<b>ただ、口で説明しても伝わりません。数字にすると一目で分かります。</b></p>
+
+  <div class="block">
+    <h3>1つの管理組合から、年に何が生まれるか</h3>
+    <p class="sub">50戸のマンション1棟と顧問契約した場合</p>
+    <div class="chartbox" id="c-chain"></div>
+    <div class="callout">
+      <b>ここが決定的な違いです。</b>顧問料だけを見れば月3万円・年36万円で、たしかに小さい。しかし<b>その組合の50戸からは、毎年一定の割合で売却・相続・賃貸化が発生します</b>。年2.5%なら1.25戸。そのうち3割を任せていただければ年0.4件。1件あたりの仲介手数料を60万円前後とすれば、<b>顧問料と同じくらいの額が不動産側から生まれます</b>。組合数が増えれば、この出口は比例して増えます。<b>しかも、他社は入口を持っていません。</b>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>なぜ他社にはできないのか</h3>
+    <p class="sub">警戒される理由でもあります</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>立場</th><th>建物の状態を知っているか</th><th>組合の事情を知っているか</th><th>所有者と接点があるか</th><th>結果</th></tr></thead>
+        <tbody>
+          <tr><td>一般の不動産仲介</td><td>売却の依頼が来てから調べる</td><td>調査で分かる範囲のみ</td><td>売る気になった人だけ</td><td>競合が多く、価格勝負になりやすい</td></tr>
+          <tr><td>マンション管理会社</td><td>よく知っている</td><td>よく知っている</td><td>あるが、仲介はしない／できない会社が多い</td><td>情報はあるが、出口を持たない</td></tr>
+          <tr><td>マンション管理士（管理のみ）</td><td>よく知っている</td><td>よく知っている</td><td>総会・理事会を通じてある</td><td>相談されても、他社に渡すしかない</td></tr>
+          <tr style="background:var(--brand-soft)"><td>シンジホーム</td><td><b>売る前から知っている</b></td><td><b>規約から積立金まで把握</b></td><td><b>管理を通じた継続的な関係</b></td><td><b>相談された時点で最も適任</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">この表が、そのまま営業の説明材料になります。組合の理事の方に「なぜうちに頼むといいのか」を伝えるとき、<b>一番下の行を見せるのが最短です</b>。</p>
+  </div>
+
+  <div class="block">
+    <h3>ただし、気をつけるべきこと</h3>
+    <p class="sub">この構造は強いぶん、扱いを誤ると一瞬で崩れます</p>
+    <div class="grid g2">
+      <div class="card flat">
+        <h4 style="font-size:14.5px;margin-bottom:8px">利益相反を、先に開示する</h4>
+        <p style="font-size:13px;color:var(--ink-2)">管理の立場で助言する人が、不動産の手数料も得る。これは<b>構造的に利益相反を疑われる立場</b>です。国交省の外部管理者方式ガイドラインも、まさにこの点を警戒しています。<b>隠さず、最初に書面で開示するのが唯一の正解</b>です。「管理と仲介の両方をお受けできますが、仲介は他社に依頼される選択肢も当然あります」と先に言い切る。<b>誠実さが強みだと商談メモにありました。それをそのまま制度にしてください。</b></p>
+      </div>
+      <div class="card flat">
+        <h4 style="font-size:14.5px;margin-bottom:8px">管理の顧客を、売るための手段にしない</h4>
+        <p style="font-size:13px;color:var(--ink-2)">出口の数字が見えると、つい入口を「見込み客リスト」として扱いたくなります。<b>それをやった瞬間に、この構造は死にます。</b>管理組合の世界は狭く、沖縄はさらに狭い。1件の評判が全県に伝わります。<b>管理は管理として完結させ、不動産は相談されたときだけ受ける</b>——この線を守ることが、結果として最も多くの案件を生みます。急がないでください。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 04 ===== -->
+<section class="panel wrap" id="p-why" role="tabpanel" hidden>
+  <div class="sec-head"><h2>今すぐやらないといけない3つの理由</h2><span class="tagline">法律・制度・世の中の流れ</span></div>
+  <p class="lede">1つ目は<b>すでに施行されており、全国すべての管理組合に関係します</b>。しかも総会は年1回しかありません。この意味で、いまが最も動きやすい時期です。</p>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">1</div>
+      <div>
+        <div class="kicker"><span class="chip b">法律</span><span class="chip a">2026年4月1日 施行済み</span></div>
+        <h4>改正区分所有法が施行された。全組合が規約を見直す用件を持っている</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p>2025年5月23日に「建物の区分所有等に関する法律等の一部を改正する法律」（令和7年法律第47号）が成立し、<b>2026年4月1日から施行されました</b>。改正の柱は①区分所有建物の管理の円滑化、②再生の円滑化、③被災区分所有建物の再生の円滑化です。具体的には、集会の決議が<b>出席者の多数決</b>を基礎とする形に改められ、所在等不明の区分所有者を決議の母数から外す仕組みが導入されました。建替え決議は原則4/5が維持されつつ、客観的な事由がある5類型では<b>3/4</b>に緩和。さらに<b>更新（一棟リノベーション）・建物敷地売却・取壊し敷地売却・取壊しの4つの決議が、従来の「全員合意」から4/5（または3/4）へ</b>と変わりました。団地の建替えも、過半数の出席と出席者の3/4で決議できるようになっています。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">2026.04.01</div><div class="fk">改正区分所有法の施行日（施行済み）</div></div>
+        <div class="fact"><div class="fv">全員合意→4/5</div><div class="fk">一棟リノベ・売却・取壊しの決議要件</div></div>
+        <div class="fact"><div class="fv">年1回</div><div class="fk">総会。逃すと次は1年後</div></div>
+      </div>
+      <div class="sowhat"><b>シンジホームにとって：</b>これは<b>すべての管理組合が等しく抱えている用件</b>です。規約が旧法を前提に書かれたままなら、実務が法と噛み合いません。そして<b>規約の改正には総会の決議が要ります</b>。総会は年1回、会計年度は組合ごとにバラバラ。つまり施行から1年半ほどのあいだに、県内の全組合が順番に「次の総会で規約改正を議題にするかどうか」を決める時期を迎えます。<b>その波は、いま県内を順番に通過している最中です。</b>認知度がなくても、「法改正への対応はお済みですか」という一言なら、どの組合にも通じます。<b>これほど当たる理由が明確な時期は、この先10年ありません。</b></div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">2</div>
+      <div>
+        <div class="kicker"><span class="chip d">制度</span><span class="chip a">2024年6月 ガイドライン公表</span></div>
+        <h4>外部管理者方式が広がり、「管理会社ではない第三者」が制度的に必要になった</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p>国土交通省は2024年6月7日、<b>「マンションにおける外部管理者方式等に関するガイドライン」</b>を公表しました。従来はマンション管理士等の専門家が管理者になることを前提としていた指針に、<b>管理業者が管理者になる方式（管理業者管理者方式）の留意点</b>を加えたものです。背景には、管理者業務を受託する管理業者のうち<b>約7割が理事会を設置しない方式</b>を採用しているという実態があります。ガイドラインは、管理者権限の範囲、日常管理や大規模修繕における<b>利益相反取引のプロセスと情報開示</b>、そして<b>監事の設置と監査のあり方</b>を整理しました。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">約7<small>割</small></div><div class="fk">理事会を置かない方式を採る管理業者</div></div>
+        <div class="fact"><div class="fv">監事の設置</div><div class="fk">ガイドラインが求めるチェック機能</div></div>
+        <div class="fact"><div class="fv">2024.06.07</div><div class="fk">ガイドライン公表日</div></div>
+      </div>
+      <div class="sowhat"><b>シンジホームにとって：</b>商談メモにあった「管理者型管理（理事会を置かない形式）への対応」は、まさにこの流れの中にあります。そして重要なのは、<b>管理会社が管理者になると、工事の発注先が自分自身になりうる</b>という構造上の問題です。だからガイドラインは監事の設置と情報開示を求めています。<b>ここに、管理業者ではないマンション管理士の席があります。</b>御社は管理業者ではないため、この構造的な利益相反から距離があります。「管理会社が管理者をやる形にするなら、<b>第三者の目を1つ入れておきませんか</b>」——これは、管理会社と争わずに組合に入れる、数少ない切り口です。理事の成り手不足に悩む組合ほど、この話は通じます。</div>
+    </div>
+  </div>
+
+  <div class="reason">
+    <div class="rhead">
+      <div class="idx">3</div>
+      <div>
+        <div class="kicker"><span class="chip e">世の中の流れ</span><span class="chip a">築40年超が20年で3.4倍</span></div>
+        <h4>建物が古くなり、住んでいる人も高齢になる。両方が同時に来る</h4>
+      </div>
+    </div>
+    <div class="rbody">
+      <p>国土交通省の資料によれば、築40年以上のマンションは<b>2023年末時点で約137万戸、10年後には約274万戸、20年後には約464万戸</b>に達する見込みです。20年で3.4倍。さらに深刻なのは居住者側で、<b>築40年以上のマンションでは、世帯主が70歳以上の住戸の割合が5割を超えています</b>。建物の修繕が最も必要な時期に、住民の多くが年金生活に入り、理事の成り手もいなくなる——この2つが同時に来ます。沖縄では塩害・台風・強い紫外線によりRC造の劣化が本土より進みやすく、<b>国交省ガイドラインの12〜15年周期をそのまま当てはめるのは危険</b>だと指摘されています。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">137→464<small>万戸</small></div><div class="fk">築40年超マンション（20年後）</div></div>
+        <div class="fact"><div class="fv">5<small>割超</small></div><div class="fk">築40年超で世帯主70歳以上の住戸</div></div>
+        <div class="fact"><div class="fv">12-15<small>年</small></div><div class="fk">修繕周期の目安。沖縄はより短く要診断</div></div>
+      </div>
+      <div class="sowhat"><b>シンジホームにとって：</b>商談メモの「建物の老朽化・住民の高齢化に伴う理事会の形骸化」は、御社だけが直面している問題ではなく、<b>全国で同時に進行している構造変化</b>です。そして御社の原体験——不動産の知識不足による後悔をしてほしくない、という信念——が最も効くのが、まさにこの層です。<b>70代の区分所有者にとって、修繕・売却・相続の判断は人生で最後の大きな決断</b>になります。そこに、管理も不動産も分かる人が伴走できるかどうか。しかも<b>この層は待ってくれません</b>。判断が遅れるほど、建物の価値も本人の判断力も落ちていきます。手遅れになる前に会える体制をつくること自体が、御社の信念を実行に移すことだと考えています。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 05 ===== -->
+<section class="panel wrap" id="p-strategy" role="tabpanel" hidden>
+  <div class="sec-head"><h2>業績向上のための成長戦略</h2><span class="tagline">3本柱と、10年の道筋</span></div>
+  <p class="lede">ビジョンとして「10年以内に従業員10名・支店2拠点・自社アパート所有」を挙げておられました。<b>そこへの最短経路は、いきなり人を増やすことではありません。</b>1人で回せる仕組みを作り、その仕組みごと人に渡す——という順番です。</p>
+
+  <div class="grid g3">
+    <div class="pillar">
+      <div class="pk">PILLAR 01 ／ 土台（0-3ヶ月）</div>
+      <h4>県内全組合の台帳をつくる</h4>
+      <p>沖縄県内の分譲マンションを<b>築年数・戸数・管理会社・決算月</b>で1枚にまとめます。1,000件未満なので、これは<b>やりきれる仕事</b>です。台帳ができた瞬間から、毎月訪問すべき組合が自動的に決まります。<b>この台帳は、将来10名体制になったときの最重要資産にもなります。</b></p>
+      <div class="kpi"><span>主指標：<b>台帳の網羅率</b></span><span>副指標：<b>決算月が判明した組合数</b></span><span>着手：<b>即日</b></span></div>
+    </div>
+    <div class="pillar">
+      <div class="pk">PILLAR 02 ／ 本命（1-12ヶ月）</div>
+      <h4>法改正を用件に、顧問契約を積む</h4>
+      <p>総会の3〜4ヶ月前を狙って、<b>改正区分所有法への対応</b>を切り口に当たります。認知度は要りません。全組合に共通する用件があるからです。顧問契約はストックなので、<b>積み上がれば翌年以降の土台</b>になります。ここが売上の背骨です。</p>
+      <div class="kpi"><span>主指標：<b>顧問契約の組合数</b></span><span>副指標：<b>規約改正の受託件数</b></span><span>着手：<b>1ヶ月目から</b></span></div>
+    </div>
+    <div class="pillar">
+      <div class="pk">PILLAR 03 ／ 出口（6ヶ月目〜）</div>
+      <h4>相談された不動産だけを受ける</h4>
+      <p>顧問先の区分所有者から、売却・相続・賃貸化の相談が自然に発生します。<b>こちらから売り込まないことが条件</b>です。相談された案件だけを丁寧に受ける。それでも組合数に比例して件数は増えます。<b>単価が大きいので、ここが利益を作ります。</b></p>
+      <div class="kpi"><span>主指標：<b>相談からの受託件数</b></span><span>副指標：<b>顧問先1組合あたりの取引数</b></span><span>着手：<b>自然発生を待つ</b></span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>10年で、どう10名になるか</h3>
+    <p class="sub">人を増やす順番にも、前後関係があります</p>
+    <div class="chartbox" id="c-growth"></div>
+  </div>
+
+  <div class="block">
+    <h3>いまと、3年後の姿</h3>
+    <p class="sub">数値は本ボードの標準前提に基づく想定です</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead><tr><th>項目</th><th>いま</th><th>1年後</th><th>3年後</th></tr></thead>
+        <tbody>
+          <tr><td>訪問先の決め方</td><td>紹介と手当たり次第</td><td>台帳の決算月順に自動で決まる</td><td>前年の未受注先が自動で再浮上する</td></tr>
+          <tr><td>顧問契約</td><td>—（未確認）</td><td>10組合前後</td><td>20〜25組合。1人での上限に近づく</td></tr>
+          <tr><td>不動産取引</td><td>開始2ヶ月目</td><td>顧問先から年3〜5件</td><td>年10件超。売上の柱の一つに</td></tr>
+          <tr><td>上原様の時間</td><td>営業・実務・事務を全部</td><td>実務と商談に集中</td><td>実務の一部を人に渡し、新規開拓へ</td></tr>
+          <tr><td>体制</td><td>1名</td><td>1名＋在宅ワーカー</td><td><b>最初の正社員を採用できる売上規模</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>この戦略の弱点</h3>
+    <p class="sub">先に申し上げておきます</p>
+    <div class="grid g2">
+      <div class="card flat">
+        <h4 style="font-size:14.5px;margin-bottom:8px">弱点①　1人で持てる組合数には上限があります</h4>
+        <p style="font-size:13px;color:var(--ink-2)">総会、理事会、日常の相談。1組合あたり月4時間としても、25組合で月100時間です。<b>そこに不動産の実務が重なると、すぐに破綻します。</b>08タブでは、この時間の奪い合いをそのまま計算しています。<b>上限に近づいたら、人を増やすか、単価を上げるかの判断が必要</b>になります。先に知っておいてください。</p>
+      </div>
+      <div class="card flat">
+        <h4 style="font-size:14.5px;margin-bottom:8px">弱点②　法改正の波は、いつか終わります</h4>
+        <p style="font-size:13px;color:var(--ink-2)">「改正区分所有法への対応」という用件は強力ですが、<b>2〜3年で一巡します</b>。その後も同じ切り口では当たれません。だからこの期間に、<b>規約改正という単発の仕事を、顧問契約という継続の関係に変える</b>ことが決定的に重要です。単発で終わらせると、波が引いたときに何も残りません。<b>入口で会えるいまのうちに、出口までの関係を作ってください。</b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 06 ===== -->
+<section class="panel wrap" id="p-targets" role="tabpanel" hidden>
+  <div class="sec-head"><h2>営業ターゲット30</h2><span class="tagline">母数・狙う理由・最初の一言</span></div>
+  <p class="lede">Tier Aは<b>築年数で区切った管理組合</b>です。管理の課題は築年数でほぼ決まるので、この軸で切ると提案内容がそのまま決まります。Tier Bは組合に辿り着く経路、Tier Cは不動産の出口です。母数は<b>沖縄県内・推計</b>で、実データでの置き換えを前提としています。</p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">総母数（30セグメント計）</span><span class="v" id="t-all">—</span><span class="n">沖縄県内・推計</span></div>
+    <div class="stat hot"><span class="k">Tier A・管理組合</span><span class="v" id="t-a">—</span><span class="n">全数を台帳に載せられる規模です</span></div>
+    <div class="stat pos"><span class="k">1年目の目標</span><span class="v">10<small>組合</small></span><span class="n">母数の約1.2％で足ります</span></div>
+    <div class="stat"><span class="k">1年で接触できる件数</span><span class="v">3,600<small>件</small></span><span class="n">月300件×12ヶ月</span></div>
+  </div>
+
+  <div class="block">
+    <h3>3層別の母数</h3>
+    <p class="sub">Tier Aは850組合。これは「全部に行ける」数字です</p>
+    <div class="chartbox" id="c-tiers"></div>
+  </div>
+
+  <div class="block">
+    <h3>ターゲット一覧</h3>
+    <p class="sub">Tierで絞る／母数で並べ替える／キーワードで検索する</p>
+    <div class="controls">
+      <div class="seg" id="t-seg">
+        <button data-t="all" aria-pressed="true">すべて（30）</button>
+        <button data-t="A" aria-pressed="false">A・管理組合（10）</button>
+        <button data-t="B" aria-pressed="false">B・辿り着く経路（10）</button>
+        <button data-t="C" aria-pressed="false">C・不動産の出口（10）</button>
+      </div>
+      <input type="search" id="t-q" placeholder="築年数・理由・切り口を検索" aria-label="ターゲットを検索">
+      <select id="t-sort" aria-label="並べ替え">
+        <option value="pri">優先度順</option>
+        <option value="cnt">母数が多い順</option>
+        <option value="cntA">母数が少ない順</option>
+      </select>
+      <div class="count">表示 <b id="t-n">30</b> 件 ／ 母数計 <b id="t-sum">—</b></div>
+    </div>
+    <div class="tlist" id="t-list"></div>
+  </div>
+</section>
+
+<!-- ===== 07 ===== -->
+<section class="panel wrap" id="p-remote" role="tabpanel" hidden>
+  <div class="sec-head"><h2>在宅ワーカー活用</h2><span class="tagline">最初の仕事は、台帳をつくることです</span></div>
+  <p class="lede">在宅ワーカーにお願いすべき仕事のうち、<b>もっとも価値が高いのは県内全組合の台帳づくり</b>です。これは上原様がやるには時間がかかりすぎ、かといって誰かがやらなければ営業の設計そのものが成り立ちません。<b>1人会社にとって、時間を空けることはそのまま売上余力になります。</b></p>
+
+  <div class="grid g4">
+    <div class="stat info"><span class="k">移管できる業務量</span><span class="v">90<small>h/月</small></span><span class="n">正社員0.55名分の稼働</span></div>
+    <div class="stat hot"><span class="k">うち上原様が抱えている分</span><span class="v">90<small>h/月</small></span><span class="n">1人会社なので全部が代表の時間です</span></div>
+    <div class="stat"><span class="k">対象業務の数</span><span class="v">16<small>種</small></span><span class="n">5カテゴリに分類</span></div>
+    <div class="stat pos"><span class="k">在宅ワーカー体制</span><span class="v">2<small>名相当</small></span><span class="n">1人1日2時間の分業</span></div>
+  </div>
+
+  <div class="block">
+    <h3>在宅ワーカーに依頼できる業務</h3>
+    <p class="sub">◆印は、いま上原様の時間をとくに奪っている業務です。時間は月間の想定工数</p>
+    <div class="grid g3" id="tasks"></div>
+    <div class="callout warm">
+      <b>この業種ならではの注意点。</b>外に出せるのは<b>調べる・並べる・形にする</b>までです。規約改正の内容判断、総会での説明、合意形成、重要事項説明、不動産の価格査定は、<b>資格と経験を持つ上原様にしかできません</b>。とくに<b>議事録は「書く」ところまでを在宅ワーカー、「内容を確定する」のは上原様</b>という切り分けが必須です。管理組合の議事録は法的な効力を持つ文書なので、ここを曖昧にしてはいけません。
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：現状</h3>
+    <p class="sub">全部が1本の線でつながっている</p>
+    <div class="chartbox" id="c-org-now"></div>
+  </div>
+
+  <div class="block">
+    <h3>想定組織図：在宅ワーカー活用後</h3>
+    <p class="sub">上原様は「会う」「判断する」「説明する」だけに残る</p>
+    <div class="chartbox" id="c-org-next"></div>
+  </div>
+
+  <div class="block">
+    <h3>上原様の時間配分は、どう変わるか</h3>
+    <p class="sub">月160時間を基準にした想定</p>
+    <div class="chartbox" id="c-time"></div>
+  </div>
+</section>
+
+<!-- ===== 08 ===== -->
+<section class="panel wrap" id="p-roi" role="tabpanel" hidden>
+  <div class="sec-head"><h2>ROIシミュレーション</h2><span class="tagline">顧問料と、そこから生まれる不動産取引を分けて計算します</span></div>
+  <p class="lede">このシミュレーションの要点は2つです。<b>①顧問契約は積み上がるストック、不動産取引はそこから派生するフロー。</b>②<b>上原様お一人の時間が、両方の上限を決める。</b>組合が増えるほど対応時間が増え、商談に出られなくなります。その自己制動も含めて計算しています。</p>
+
+  <div class="roi-layout">
+    <div class="knobs">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h4 style="font-size:15px">前提条件</h4>
+        <button class="resetbtn" id="r-reset">標準に戻す</button>
+      </div>
+      <div class="seg" style="margin-bottom:16px">
+        <button data-preset="cons" aria-pressed="false">保守</button>
+        <button data-preset="base" aria-pressed="true">標準</button>
+        <button data-preset="bull" aria-pressed="false">強気</button>
+      </div>
+
+      <div class="gh">◆ 入口 ／ <span>管理組合の開拓（営業支援ユニット）</span></div>
+      <div class="knob"><label for="k-app">月間アプローチ数<b><span id="v-app"></span>件</b></label><input type="range" id="k-app" min="50" max="800" step="25"></div>
+      <div class="knob"><label for="k-appo">アポイント率<b><span id="v-appo"></span>%</b></label><input type="range" id="k-appo" min="0.5" max="8" step="0.5"></div>
+      <div class="knob"><label for="k-close">商談→顧問契約率<b><span id="v-close"></span>%</b></label><input type="range" id="k-close" min="3" max="40" step="1"></div>
+      <div class="knob"><label for="k-lag">商談から総会での決議まで<b><span id="v-lag"></span>ヶ月</b></label><input type="range" id="k-lag" min="1" max="9" step="1"></div>
+      <p class="note" style="margin-top:-4px">※ 管理組合は総会でしか決められません。ここが本ボードの前提です。</p>
+      <div class="knob"><label for="k-fee">1組合あたり月額顧問料<b><span id="v-fee"></span>万円</b></label><input type="range" id="k-fee" min="1" max="15" step="0.5"></div>
+      <div class="knob"><label for="k-keep">顧問契約の年間継続率<b><span id="v-keep"></span>%</b></label><input type="range" id="k-keep" min="50" max="98" step="2"></div>
+      <div class="knob"><label for="k-sfee">ユニット月額費用<b><span id="v-sfee"></span>万円</b></label><input type="range" id="k-sfee" min="15" max="60" step="1"></div>
+
+      <div class="knob-group">
+        <div class="gh">◆ 出口 ／ <span>顧問先から生まれる不動産取引</span></div>
+        <div class="knob"><label for="k-units">1組合あたりの戸数<b><span id="v-units"></span>戸</b></label><input type="range" id="k-units" min="10" max="150" step="5"></div>
+        <div class="knob"><label for="k-turn">年間の売却・相続の発生率<b><span id="v-turn"></span>%</b></label><input type="range" id="k-turn" min="0.5" max="6" step="0.5"></div>
+        <div class="knob"><label for="k-share">うち自社で受託できる率<b><span id="v-share"></span>%</b></label><input type="range" id="k-share" min="5" max="70" step="5"></div>
+        <div class="knob"><label for="k-price">1件あたりの平均成約価格<b><span id="v-price"></span>万円</b></label><input type="range" id="k-price" min="500" max="5000" step="100"></div>
+      </div>
+
+      <div class="knob-group">
+        <div class="gh">◆ 上原様の時間 ／ <span>生産性向上支援ユニット</span></div>
+        <div class="knob"><label for="k-avail">月間の可処分時間<b><span id="v-avail"></span>h</b></label><input type="range" id="k-avail" min="80" max="200" step="10"></div>
+        <div class="knob"><label for="k-other">雑務に残る時間<b><span id="v-other"></span>h/月</b></label><input type="range" id="k-other" min="0" max="80" step="5"></div>
+        <div class="knob"><label for="k-hours">1組合あたりの月間対応時間<b><span id="v-hours"></span>h</b></label><input type="range" id="k-hours" min="1" max="12" step="0.5"></div>
+        <div class="knob"><label for="k-dealh">不動産1件あたりの所要時間<b><span id="v-dealh"></span>h</b></label><input type="range" id="k-dealh" min="5" max="60" step="5"></div>
+        <div class="knob"><label for="k-ofee">ユニット月額費用<b><span id="v-ofee"></span>万円</b></label><input type="range" id="k-ofee" min="3" max="20" step="1"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div>
+        <h4 style="font-size:15px;margin-bottom:3px">1年目の着地</h4>
+        <p class="sub" style="margin-bottom:12px">顧問契約が先に積み上がり、不動産取引が後から付いてきます</p>
+        <div class="grid g4">
+          <div class="stat pos"><span class="k">投資を回収する月</span><span class="v" id="o-roi">—</span><span class="n" id="o-roin">—</span></div>
+          <div class="stat info"><span class="k">12ヶ月後の顧問契約</span><span class="v" id="o-orgs">—</span><span class="n" id="o-orgsn">—</span></div>
+          <div class="stat hot"><span class="k">1年目の不動産取引</span><span class="v" id="o-deals">—</span><span class="n" id="o-dealsn">—</span></div>
+          <div class="stat warn"><span class="k">12ヶ月目の月次売上</span><span class="v" id="o-mrr">—</span><span class="n" id="o-mrrn">—</span></div>
+        </div>
+      </div>
+
+      <div>
+        <p class="sub" style="margin-bottom:10px">月間のファネル（12ヶ月目の時点）</p>
+        <div class="funnel">
+          <div class="fstep"><div class="fl">アプローチ</div><div class="fv" id="f-app">—</div><div class="fr">訪問・電話・郵送</div></div>
+          <div class="fstep"><div class="fl">アポイント</div><div class="fv" id="f-appo">—</div><div class="fr" id="f-appo-r">—</div></div>
+          <div class="fstep"><div class="fl">商談（上原様）</div><div class="fv" id="f-meet">—</div><div class="fr" id="f-meet-r">—</div></div>
+          <div class="fstep end"><div class="fl">顧問契約</div><div class="fv" id="f-win">—</div><div class="fr" id="f-win-r">—</div></div>
+        </div>
+      </div>
+
+      <div class="chartbox" id="c-hours"></div>
+      <div class="chartbox" id="c-revenue"></div>
+      <div class="chartbox" id="c-cum"></div>
+
+      <div class="verdict" id="o-verdict"></div>
+
+      <div class="card flat">
+        <div class="eyebrow" style="margin-bottom:10px">この試算の読み方</div>
+        <ul style="margin:0;padding-left:1.2em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">
+          <li><b>時間の配分には順番があります。</b>既存の顧問先への対応が最優先、次に発生した不動産取引、次に商談、残りが雑務です。<b>組合が増えるほど商談に出られなくなり、新規が止まります。</b>上のグラフでその様子が見えます。これが1人会社の天井です。</li>
+          <li><b>1年目のROIで判断しないでください。</b>管理組合は総会でしか決められないため、いま商談しても契約は数ヶ月後です。<b>1年目は契約が出そろう前に終わります。</b>ですので主指標を「累積で投資を上回る月」に置いています。ここを曖昧にしたまま12ヶ月で評価すると、伸びている事業を止めることになります。</li>
+          <li><b>不動産取引は「相談されたら受ける」前提です。</b>売り込みは織り込んでいません。「うち自社で受託できる率」を上げるのは営業努力ではなく、<b>信頼の結果</b>だとお考えください。03タブに書いたとおり、ここを売り込みに変えると入口そのものを失います。</li>
+          <li><b>顧問料の水準が最大の不確実要素です。</b>初期値は月3万円を仮置きしています。<b>実際にいまいくらいただいているのか、次回お聞かせください。</b>ここが月1万円なのか5万円なのかで、事業の姿がまったく変わります。</li>
+          <li><b>「雑務に残る時間」のつまみが、在宅ワーカーの効果です。</b>初期値は15時間ですが、入れない場合は50時間程度が現実的です。<b>つまみを50に上げてみてください</b>——商談も組合対応もできなくなるのが見えます。それが在宅ワーカーを入れない場合のコストです。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 09 ===== -->
+<section class="panel wrap" id="p-road" role="tabpanel" hidden>
+  <div class="sec-head"><h2>90日ロードマップ</h2><span class="tagline">まず台帳、次に法改正、最後に出口</span></div>
+  <p class="lede">90日の目標は、<b>県内全組合の台帳を完成させ、顧問契約を2〜3組合取ること</b>です。台帳は一度作れば10年使えます。<b>最初の90日で作る資産は、契約よりも台帳のほうです。</b></p>
+
+  <div class="card">
+    <div class="phase">
+      <div><div class="pd">DAY 0</div><div class="pt">次回商談<br>（日程調整中）</div></div>
+      <ul>
+        <li><span class="owner ai">アイドマ</span>本ボードの02タブ（決算月の台帳）と03タブ（入口と出口）をご説明</li>
+        <li><span class="owner ai">アイドマ</span>台帳作成の進め方と、抽出できる情報源のご提示</li>
+        <li><span class="owner kl">シンジホーム</span><b>いま顧問契約している管理組合の数と、1組合あたりの月額</b>（08タブの前提が確定します）</li>
+        <li><span class="owner kl">シンジホーム</span>1組合にかけている月平均の時間（総会・理事会・相談の合計）</li>
+        <li><span class="owner kl">シンジホーム</span>不動産事業でこれまでに受けた相談の件数と、その入り方</li>
+        <li>この場で決めること：<b>台帳を先に作るという方針の合意</b></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 1-30</div><div class="pt">台帳をつくる</div></div>
+      <ul>
+        <li><span class="owner kl">シンジホーム</span>在宅ワーカーへの移管を<b>県内マンションの基礎台帳づくり</b>から開始</li>
+        <li><span class="owner ai">アイドマ</span>台帳の項目を設計：所在地・築年・戸数・管理会社・<b>決算月・総会時期</b></li>
+        <li><span class="owner ai">アイドマ</span>並行して、<b>築35年以上の組合</b>から接触リストを先行作成</li>
+        <li><span class="owner kl">シンジホーム</span>改正区分所有法の説明資料を1本つくる（どの組合にも使える汎用版）</li>
+        <li><span class="owner ai">アイドマ</span>接触の切り口を「法改正への対応はお済みですか」に一本化して検証</li>
+        <li>30日目の到達点：<b>台帳の骨格が完成。築35年以上の組合への接触が開始できている状態</b></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 31-60</div><div class="pt">決算月順に<br>当たりはじめる</div></div>
+      <ul>
+        <li><span class="owner ai">アイドマ</span>台帳から<b>「3〜4ヶ月後に総会を迎える組合」</b>を抽出し、そこに集中</li>
+        <li><span class="owner kl">シンジホーム</span>商談では<b>利益相反の開示を最初に</b>。管理と仲介の関係を書面で明示する</li>
+        <li><span class="owner ai">アイドマ</span>Tier B（司法書士・税理士・保険代理店）への接触を開始</li>
+        <li><span class="owner kl">シンジホーム</span>議事録作成を在宅ワーカーへ移管（内容確定は上原様）</li>
+        <li><span class="owner ai">アイドマ</span>反応の良かった築年数帯を特定し、リストをそこへ寄せる</li>
+        <li>60日目の到達点：<b>顧問契約1〜2組合。決算月ベースの訪問計画が回りはじめている</b></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div><div class="pd">DAY 61-90</div><div class="pt">来年の総会シーズンに<br>備える</div></div>
+      <ul>
+        <li><span class="owner kl">シンジホーム</span>顧問契約2〜3組合。<b>単発の規約改正で終わらせず、継続の関係に変える</b></li>
+        <li><span class="owner ai">アイドマ</span>台帳を完成させ、<b>今後12ヶ月の月別訪問計画</b>に落とす</li>
+        <li><span class="owner kl">シンジホーム</span>顧問先の区分所有者向けに、相談窓口があることだけを静かに知らせる（売り込まない）</li>
+        <li><span class="owner ai">アイドマ</span>Tier Cへの接触を準備（遺品整理・介護事業者・地域包括支援センター）</li>
+        <li>90日目の到達点：<b>台帳完成と顧問契約2〜3組合。ここから先は台帳が営業を決めます</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>出典</h3>
+    <p class="sub">本ボードで用いた公開データ</p>
+    <div class="card flat">
+      <div class="srcs">
+        ・改正区分所有法（建物の区分所有等に関する法律等の一部を改正する法律／令和7年法律第47号／2025年5月23日成立・2026年4月1日施行／出席者多数決、建替え決議の3/4への緩和、更新・売却・取壊し決議の全員合意から4/5への変更、所在等不明区分所有者への対応、団地建替えの決議要件）：法務省・国土交通省および各法律事務所の解説<br>
+        ・マンションにおける外部管理者方式等に関するガイドライン（2024年6月7日公表／管理業者管理者方式の留意点、利益相反取引の情報開示、監事の設置と監査／理事会を設置しない方式を採用する管理業者が約7割）：国土交通省<br>
+        ・築40年以上のマンション戸数（2023年末 約137万戸→10年後 約274万戸→20年後 約464万戸／築40年以上で世帯主70歳以上の住戸が5割超）：国土交通省<br>
+        ・マンション管理計画認定制度（2022年4月開始／認定を受けた場合の固定資産税の減額、フラット35の金利引下げ、共用部分リフォーム融資）：国土交通省<br>
+        ・大規模修繕の周期の目安（12〜15年）および沖縄における塩害・台風・紫外線によるRC造の劣化：国土交通省ガイドラインおよび沖縄県内事業者の解説<br>
+        <br>
+        <b>推計であることの明示。</b>ターゲット30の母数、とくに<b>沖縄県内の分譲マンション管理組合数（約850組合）は、公的統計で直接確認できた数字ではなく、本ボードにおける推計</b>です。台帳づくりの最初の成果は、この数字を実データに置き換えることでもあります。会社情報はすべて商談メモに基づいており、公開情報では確認できませんでした。
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+"use strict";
+
+var tabs=Array.prototype.slice.call(document.querySelectorAll(".tab"));
+tabs.forEach(function(t){
+  t.addEventListener("click",function(){
+    tabs.forEach(function(x){
+      x.setAttribute("aria-selected",x===t?"true":"false");
+      document.getElementById("p-"+x.dataset.p).hidden=(x!==t);
+    });
+    window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  });
+});
+
+var NF=new Intl.NumberFormat("ja-JP");
+function n(v){return NF.format(Math.round(v));}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function svg(w,h,inner){
+  return '<svg viewBox="0 0 '+w+' '+h+'" role="img" preserveAspectRatio="xMidYMid meet" '+
+    'style="max-width:'+Math.round(w*1.18)+'px;margin:0 auto">'+inner+'</svg>';
+}
+function txt(x,y,s,o){
+  o=o||{};
+  return '<text x="'+x+'" y="'+y+'" fill="'+(o.fill||"var(--ink-2)")+'" font-size="'+(o.size||11)+'" '+
+   'font-family="'+(o.mono?"Anonymous Pro, monospace":(o.disp?"Kaisei Opti, serif":"Zen Kaku Gothic Antique, sans-serif"))+'" '+
+   'font-weight="'+(o.weight||400)+'" text-anchor="'+(o.anchor||"start")+'"'+
+   (o.baseline?' dominant-baseline="'+o.baseline+'"':'')+'>'+esc(s)+'</text>';
+}
+function rrect(x,y,w,h,r,fill){
+  if(h<=0||w<=0) return "";
+  r=Math.min(r,h/2,w/2);
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+r+'" fill="'+fill+'"></rect>';
+}
+function box(x,y,w,h,title,sub,color,dashed){
+  var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="var(--surface-2)" stroke="'+(color||"var(--rule-2)")+'" stroke-width="1.6"'+(dashed?' stroke-dasharray="5 4"':'')+'></rect>';
+  s+=txt(x+13,y+(sub?23:h/2+5),title,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+  if(sub) s+=txt(x+13,y+40,sub,{fill:"var(--ink-3)",size:10.5});
+  return s;
+}
+function niceMax(v,div){
+  if(!(v>0)) return div;
+  var unit=v/div, step=Math.pow(10,Math.floor(Math.log10(unit))), r=unit/step;
+  var mult=r<=1?1:r<=2?2:r<=2.5?2.5:r<=5?5:10;
+  return step*mult*div;
+}
+
+/* ============ 02 決算月カレンダー ============ */
+(function(){
+  var months=["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+  /* 決算月の分布（推計・3月と12月に寄る） */
+  var dist=[38,42,165,58,52,72,48,45,62,58,64,146];
+  var W=760,H=330,padL=58,padR=60,padT=46,padB=96;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var max=niceMax(Math.max.apply(null,dist)*1.12,4),s="";
+  for(var g=0;g<=4;g++){
+    var y=padT+plotH-(g/4)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(max*g/4),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-16,"組合数",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  var bw=plotW/12*0.58;
+  /* いまが9月 → 提案適期は12月〜1月決算（総会はその2〜3ヶ月後） */
+  var hot=[11,0];
+  for(var m=0;m<12;m++){
+    var cx=padL+(m+0.5)*(plotW/12);
+    var h=(dist[m]/max)*plotH;
+    var isHot=hot.indexOf(m)>=0;
+    s+=rrect(cx-bw/2,padT+plotH-h,bw,h,3,isHot?"var(--s2)":"var(--s1)");
+    s+=txt(cx,padT+plotH-h-7,dist[m],{fill:isHot?"var(--s2)":"var(--ink-3)",size:10,mono:true,anchor:"middle",weight:isHot?700:400});
+    s+=txt(cx,padT+plotH+18,months[m],{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  }
+  s+='<rect x="'+padL+'" y="'+(padT+plotH+32)+'" width="'+plotW+'" height="48" rx="8" fill="var(--accent-soft)"></rect>';
+  s+=txt(padL+14,padT+plotH+52,"いまは9月。決算が12月・1月の組合は、総会が2〜4月。つまり「提案適期」はまさに今です。",{fill:"var(--accent)",size:12,weight:700,disp:true});
+  s+=txt(padL+14,padT+plotH+70,"3月決算の組合（最多）に当たるべきは、年明けの1〜2月。台帳があれば、この順番が自動で決まります。",{fill:"var(--ink-2)",size:11});
+  s+=txt(8,H-6,"※ 決算月の分布は一般的な傾向に基づく推計です。実際の分布は台帳づくりの最初の成果として判明します。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-calendar").innerHTML=
+    '<h4>決算月別の管理組合数（沖縄県内・推計）</h4><p class="csub">総会は決算の2〜3ヶ月後。提案はそのさらに3〜4ヶ月前</p>'+svg(W,H,s);
+})();
+
+/* ============ 03 入口と出口の連鎖 ============ */
+(function(){
+  var W=760,H=300,s="";
+  s+=box(8,20,200,68,"管理組合 1件","50戸のマンション","var(--s1)");
+  s+=txt(21,76,"顧問料 月3万円 ＝ 年36万円",{fill:"var(--s1)",size:11,weight:700});
+
+  s+='<path d="M 208 54 L 244 54" stroke="var(--rule-2)" stroke-width="2" marker-end="url(#ar)"></path>';
+  s+='<defs><marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="var(--rule-2)"></path></marker></defs>';
+
+  s+=box(244,20,210,68,"50戸で起きること","売却・相続・賃貸化 年2.5%","var(--s4)");
+  s+=txt(257,76,"＝ 年1.25戸が動く",{fill:"var(--s4)",size:11,weight:700});
+
+  s+='<path d="M 454 54 L 490 54" stroke="var(--rule-2)" stroke-width="2" marker-end="url(#ar)"></path>';
+
+  s+=box(490,20,262,68,"そのうち受託できる分","相談された案件のみ・30%","var(--s2)");
+  s+=txt(503,76,"＝ 年0.38件 × 手数料約60万円",{fill:"var(--s2)",size:11,weight:700});
+
+  /* 比較バー */
+  var rows=[
+    {k:"管理組合 1件",fee:36,deal:23},
+    {k:"管理組合 10件",fee:360,deal:228},
+    {k:"管理組合 25件",fee:900,deal:570}
+  ];
+  var padL=190,plotW=470,max=niceMax(1600,4);
+  var top=128;
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-14)+'" x2="'+x+'" y2="'+(top+3*44-10)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-22,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(padL+plotW+34,top-22,"万円/年",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  rows.forEach(function(r,i){
+    var y=top+i*44;
+    s+=txt(padL-12,y+9,r.k,{fill:"var(--ink)",size:12.5,weight:700,anchor:"end",disp:true});
+    var w1=(r.fee/max)*plotW,w2=(r.deal/max)*plotW;
+    s+=rrect(padL,y-4,w1,26,4,"var(--s1)");
+    s+=rrect(padL+w1,y-4,w2,26,4,"var(--s2)");
+    s+=txt(padL+w1+w2+9,y+9,n(r.fee+r.deal)+"万円",{fill:"var(--ink-2)",size:11.5,mono:true,weight:700,baseline:"middle"});
+  });
+  s+=txt(8,H-8,"※ 顧問料3万円/月、1組合50戸、年間発生率2.5%、受託率30%、成約価格1,800万円、手数料3%＋6万円で計算した概算です。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-chain").innerHTML=
+    '<h4>1組合が生む、2種類の売上</h4><p class="csub">顧問料（ストック）と、そこから派生する仲介手数料（フロー）</p>'+
+    '<div class="legend"><span><i style="background:var(--s1)"></i>顧問料</span><span><i style="background:var(--s2)"></i>不動産の仲介手数料</span></div>'+svg(W,H,s);
+})();
+
+/* ============ 05 10年の絵 ============ */
+(function(){
+  var W=760,H=280,padL=60,padR=140,padT=42,padB=52;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var years=10;
+  var orgs=[3,10,18,25,30,38,48,58,68,80];
+  var staff=[1,1,1.5,2,3,4,5.5,7,8.5,10];
+  var max=niceMax(88,4),maxS=12,s="";
+  for(var g=0;g<=4;g++){
+    var y=padT+plotH-(g/4)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(max*g/4),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+    s+=txt(padL+plotW+10,y,(maxS*g/4).toFixed(0),{fill:"var(--s2)",size:10,mono:true,baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-14,"顧問組合数",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  s+=txt(padL+plotW+10,padT-14,"人数",{fill:"var(--s2)",size:10});
+  var bw=plotW/years*0.56;
+  for(var i=0;i<years;i++){
+    var cx=padL+(i+0.5)*(plotW/years);
+    var h=(orgs[i]/max)*plotH;
+    s+=rrect(cx-bw/2,padT+plotH-h,bw,h,3,"var(--s1)");
+    s+=txt(cx,padT+plotH+18,(i+1)+"年",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  }
+  var d=staff.map(function(v,i){
+    var x=padL+(i+0.5)*(plotW/years), y=padT+plotH-(v/maxS)*plotH;
+    return (i===0?"M ":"L ")+x+" "+y;
+  }).join(" ");
+  s+='<path d="'+d+'" fill="none" stroke="var(--s2)" stroke-width="2.6"></path>';
+  var lx=padL+9.5*(plotW/years), ly=padT+plotH-(staff[9]/maxS)*plotH;
+  s+='<circle cx="'+lx+'" cy="'+ly+'" r="4" fill="var(--s2)"></circle>';
+  s+=txt(lx+9,ly,"10名",{fill:"var(--s2)",size:11.5,weight:700,mono:true,baseline:"middle"});
+  /* 1人の上限ライン */
+  var capY=padT+plotH-(25/max)*plotH;
+  s+='<line x1="'+padL+'" y1="'+capY+'" x2="'+(padL+plotW)+'" y2="'+capY+'" stroke="var(--s5)" stroke-width="1.5" stroke-dasharray="5 4"></line>';
+  s+=txt(padL+plotW+10,capY,"1人での上限（目安）",{fill:"var(--s5)",size:10.5,weight:700,baseline:"middle"});
+  s+=txt(8,H-8,"※ 概念図です。3〜4年目に1人の上限に当たり、そこから先は人を増やさないと組合数が伸びません。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-growth").innerHTML=
+    '<h4>10年で従業員10名へ</h4><p class="csub">先に仕組みを作り、上限に当たってから人を増やす</p>'+
+    '<div class="legend"><span><i style="background:var(--s1)"></i>顧問契約の組合数（左軸）</span><span><i style="background:var(--s2)"></i>人数（右軸）</span></div>'+svg(W,H,s);
+})();
+
+/* ============ 06 ターゲット ============ */
+var TIER_META={
+  A:{label:"管理組合",note:"築年数で課題が決まる"},
+  B:{label:"辿り着く経路",note:"組合に紹介してもらう"},
+  C:{label:"不動産の出口",note:"相談が集まる先"}
+};
+var TARGETS=[
+  {t:"A",n:"築45年超の管理組合",c:55,w:"建替え・売却・取壊しが現実の議題になる層。改正法で決議要件が緩和され、これまで全員合意で止まっていた案件が動き出す。",h:"「法改正で、一棟リノベも敷地売却も全員合意が要らなくなりました。選択肢が増えています」"},
+  {t:"A",n:"築40〜45年の管理組合",c:65,w:"3回目の大規模修繕と、積立金不足が同時に来る時期。世帯主70歳以上が半数を超え、理事の成り手もいない。最も困っている層。",h:"「次の修繕、積立金は足りていますか。足りない前提での選択肢を整理できます」"},
+  {t:"A",n:"築35〜40年の管理組合",c:85,w:"まだ手が打てる最後の時期。ここで長期修繕計画を立て直せるかで、10年後の資産価値が変わる。提案が最も効く層。",h:"「いま計画を見直せば間に合います。40年を超えてからでは選択肢が減ります」"},
+  {t:"A",n:"築30〜35年の管理組合",c:95,w:"2回目の大規模修繕の前後。修繕委員会が立ち上がることが多く、外部の専門家を入れる合意が取りやすい。",h:"「修繕委員会に、管理会社とは別の目を1つ入れておきませんか」"},
+  {t:"A",n:"築25〜30年の管理組合",c:110,w:"設備の更新（給排水・エレベーター）が視野に入る。沖縄は塩害でこの時期の劣化が本土より早く、診断の価値が高い。",h:"「沖縄の建物は本土のガイドライン通りにはいきません。実際の状態を見ませんか」"},
+  {t:"A",n:"築20〜25年の管理組合",c:100,w:"1回目の修繕が終わり、管理が惰性になりやすい時期。規約が旧法のまま放置されているケースが多い。",h:"「規約、分譲時のままではありませんか。2026年4月の法改正に合っていない可能性があります」"},
+  {t:"A",n:"築15〜20年の管理組合",c:90,w:"最初の大規模修繕を迎える層。何を基準に業者を選べばいいか分からず、外部の助言を最も必要とする。",h:"「初めての大規模修繕ですよね。業者選びの進め方だけでもご説明できます」"},
+  {t:"A",n:"築10〜15年の管理組合",c:85,w:"まだ困っていないが、長期修繕計画の見直し時期。早期に関係を作れれば、その後30年の顧問先になる。",h:"「まだ先の話ですが、長期修繕計画は5年ごとの見直しが推奨されています」"},
+  {t:"A",n:"築10年未満の管理組合",c:140,w:"母数は最大だが緊急性が低い。ただし規約は分譲時のままで、改正法への対応が必要なのは同じ。長期の仕込み先。",h:"「新しい建物でも、規約は法改正に合わせる必要があります。確認だけでもいかがですか」"},
+  {t:"A",n:"新築分譲予定・引渡し前",c:25,w:"原始規約の段階から関与できれば最も理想的。分譲会社との関係が必要だが、1件取れれば長期の顧問契約になる。",h:"「引渡し後の管理の立ち上げ、第三者の立場でお手伝いできます」"},
+
+  {t:"B",n:"税理士・会計事務所",c:380,w:"管理組合の会計を見ている事務所があり、相続の相談も集まる。県内で最も母数が大きく、紹介の質も高い経路。",h:"「顧問先で、マンションの相続や管理のご相談を受けられることはありませんか」"},
+  {t:"B",n:"損害保険代理店（マンション総合保険）",c:340,w:"全ての管理組合が保険に入っており、代理店は理事長と直接つながっている。築年数と修繕履歴も把握している。",h:"「保険の更新時に、建物の状態のご相談を受けられることはありませんか」"},
+  {t:"B",n:"建築設計事務所",c:320,w:"大規模修繕の設計監理を担う立場。管理士とは競合せず補完関係で、組合を一緒に支える形が作れる。",h:"「設計監理はお願いできませんが、組合側の合意形成はお手伝いできます」"},
+  {t:"B",n:"弁護士事務所",c:290,w:"管理費滞納、専有部分のトラブル、規約の解釈。法律問題として持ち込まれた案件の、実務側の受け皿になれる。",h:"「訴訟までは要らないが、規約の整備で解決する案件はありませんか」"},
+  {t:"B",n:"金融機関の支店（銀行・信金・信組）",c:270,w:"修繕積立金の運用、共用部分リフォーム融資、区分所有者の住宅ローン。組合と所有者の両方に接点を持つ。",h:"「管理計画認定を取ると、フラット35の金利が下がります。ご存じの取引先はありませんか」"},
+  {t:"B",n:"司法書士事務所",c:210,w:"相続登記の義務化以降、相続案件が集中している。マンションの相続は「登記の次に中身をどうするか」が必ず出る。",h:"「相続登記の後、その住戸をどうするかというご相談はありませんか」"},
+  {t:"B",n:"管理組合の理事長・役員経験者",c:150,w:"一度理事を務めた人は、管理の難しさを身をもって知っている。他の組合の役員とも横のつながりを持つ。",h:"「理事をされたときに困られたこと、他の組合でも同じことが起きています」"},
+  {t:"B",n:"大規模修繕の施工会社・設計監理事務所",c:85,w:"工事の前後で組合と深く関わる。工事を取りたい側なので、組合側に立つ管理士とは役割が分かれ、組みやすい。",h:"「組合側の取りまとめが進まず、工事が止まる案件はありませんか」"},
+  {t:"B",n:"マンション管理会社（沖縄県内）",c:45,w:"競合に見えるが、管理者方式の監事や第三者チェックとしてなら組める。母数は小さいが1社で多数の組合を持つ。",h:"「管理者方式にされる場合、監事の設置が求められます。第三者としてお受けできます」"},
+  {t:"B",n:"自治体の住宅部門・県マンション管理士会",c:45,w:"公的な立場からの紹介は信用の裏付けになる。相談窓口やセミナーの機会がそのまま営業になる。",h:"「管理組合向けの相談会や勉強会で、お手伝いできることはありませんか」"},
+
+  {t:"C",n:"賃貸中住戸のオーナー（区分所有者）",c:4800,w:"総会に来ない層だが、管理の質が利回りに直結する。賃貸管理の受託と、将来の売却の両方につながる。",h:"「お部屋の管理、どちらにお願いされていますか。建物全体の状態もあわせてご説明できます」"},
+  {t:"C",n:"高齢単身の区分所有者",c:3100,w:"見守り・住み替え・相続対策のすべてが必要。商談メモの見守りサービス構想とも直結し、最も社会的意義が大きい層。",h:"「お一人でお住まいの方に、月に一度お声かけする仕組みをご用意しています」"},
+  {t:"C",n:"県外在住の区分所有者",c:2200,w:"総会に出られず、建物の状態も分からない。困っても頼る先がない層で、管理士としての情報提供がそのまま信頼になる。",h:"「県外にお住まいだと建物の様子が分かりませんよね。年に一度、状況をお送りできます」"},
+  {t:"C",n:"空室・空き家になっている住戸の所有者",c:1400,w:"管理費だけが出ていく状態。売るか貸すかの判断を先送りしている人が多く、背中を押す情報を持っているのが強み。",h:"「空室のまま管理費だけ払われていませんか。売る・貸す、両方の試算をお出しできます」"},
+  {t:"C",n:"相続が発生した区分所有者",c:900,w:"相続登記の義務化で動かざるを得ない層。感情的にも難しく、急かさず整理してくれる相手が求められる。",h:"「相続されたお部屋、急いで決める必要はありません。選択肢だけ整理しましょう」"},
+  {t:"C",n:"リフォーム・リノベーション会社",c:420,w:"専有部分の工事で所有者と接点を持つ。売却前のリフォーム相談から、仲介の依頼につながる経路。",h:"「売却前提のリフォームのご相談、査定とセットでお受けできます」"},
+  {t:"C",n:"ハウスクリーニング・原状回復事業者",c:290,w:"退去・売却の直前に必ず入る業者。案件の発生を最も早く知る立場で、情報の鮮度が高い。",h:"「退去後のお部屋、その後どうされるか決まっていないケースはありませんか」"},
+  {t:"C",n:"介護事業者・地域包括支援センター",c:160,w:"高齢の区分所有者の住み替え・施設入居に伴う売却が発生する。公的な性格を持つ相手なので、誠実さが最も評価される。",h:"「施設に移られる際、お住まいの処分でお困りの方はいらっしゃいませんか」"},
+  {t:"C",n:"遺品整理・残置物処分事業者",c:75,w:"商談メモにあった連携構想の相手。相続と売却の直前工程を担い、案件の発生をほぼ確実に把握している。",h:"「片付けの後、その住戸をどうするかというご相談を受けられることはありませんか」"},
+  {t:"C",n:"県外向け移住・セカンドハウスの媒体",c:35,w:"商談メモの「県外の購入希望者」に届く経路。母数は最小だが、管理まで分かる売主側の情報は希少価値が高い。",h:"「沖縄のマンションは管理の差が大きい。買う前に見るべき点を記事にできます」"}
+];
+TARGETS.forEach(function(d,i){d.i=i;});
+
+(function(){
+  var a=TARGETS.filter(function(d){return d.t==="A";}).reduce(function(x,y){return x+y.c;},0);
+  var all=TARGETS.reduce(function(x,y){return x+y.c;},0);
+  document.getElementById("t-all").innerHTML=n(all)+'<small>件</small>';
+  document.getElementById("t-a").innerHTML=n(a)+'<small>組合</small>';
+})();
+
+(function(){
+  var rows=["A","B","C"].map(function(t){
+    var sum=TARGETS.filter(function(d){return d.t===t;}).reduce(function(a,b){return a+b.c;},0);
+    return {t:t,sum:sum,cnt:TARGETS.filter(function(d){return d.t===t;}).length};
+  });
+  var max=niceMax(Math.max.apply(null,rows.map(function(r){return r.sum;}))*1.05,4);
+  var W=660,H=230,padL=236,padR=100,plotW=W-padL-padR,rowH=56,top=40,s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(top-12)+'" x2="'+x+'" y2="'+(top+rows.length*rowH-18)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,top-20,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+40,top-20,"件",{fill:"var(--ink-3)",size:10});
+  var colors={A:"var(--s1)",B:"var(--s4)",C:"var(--s2)"};
+  rows.forEach(function(r,i){
+    var y=top+i*rowH,m=TIER_META[r.t];
+    s+=txt(0,y+8,"Tier "+r.t+"・"+m.label+"（"+r.cnt+"分類）",{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(0,y+26,m.note,{fill:"var(--ink-3)",size:10.5});
+    s+=rrect(padL,y-6,(r.sum/max)*plotW,24,4,colors[r.t]);
+    s+=txt(padL+(r.sum/max)*plotW+8,y+6,n(r.sum),{fill:"var(--ink-2)",size:11.5,mono:true,baseline:"middle"});
+  });
+  document.getElementById("c-tiers").innerHTML=
+    '<h4>3層別の母数（沖縄県内・推計）</h4><p class="csub">Tier Aの850組合は、全部を台帳に載せられる数です</p>'+svg(W,H,s)+
+    '<p class="csub" style="margin:12px 0 0"><b>母数が小さいことが、この事業では強みになります。</b>本土なら「どこに当たるか」を選ぶ作業が必要ですが、沖縄では<b>全部に当たったうえで、当たる順番だけを決めればいい</b>。決算月順に並べるだけで、向こう12ヶ月の訪問計画が完成します。</p>';
+})();
+
+(function(){
+  var seg=document.getElementById("t-seg"), q=document.getElementById("t-q"), sort=document.getElementById("t-sort");
+  var list=document.getElementById("t-list"), cn=document.getElementById("t-n"), cs=document.getElementById("t-sum");
+  var cur="all";
+  function render(){
+    var kw=q.value.trim().toLowerCase();
+    var arr=TARGETS.filter(function(d){
+      if(cur!=="all"&&d.t!==cur) return false;
+      if(!kw) return true;
+      return (d.n+d.w+d.h).toLowerCase().indexOf(kw)>=0;
+    });
+    var mode=sort.value;
+    arr=arr.slice().sort(function(a,b){
+      if(mode==="cnt") return b.c-a.c;
+      if(mode==="cntA") return a.c-b.c;
+      return a.i-b.i;
+    });
+    list.innerHTML=arr.map(function(d,idx){
+      var m=TIER_META[d.t];
+      return '<article class="trow t'+d.t+'">'+
+        '<div class="rank">'+String(idx+1).padStart(2,"0")+'</div>'+
+        '<div class="head"><div class="name">'+esc(d.n)+'</div>'+
+        '<div class="meta"><span class="chip '+(d.t==="A"?"a":d.t==="B"?"c":"b")+'">Tier '+d.t+'・'+m.label+'</span>'+
+        '<span class="cnt">'+n(d.c)+'<span>件</span></span></div></div>'+
+        '<div class="why"><span class="fieldlabel">なぜ狙うか</span><div class="fieldbody">'+esc(d.w)+'</div></div>'+
+        '<div class="hook"><span class="fieldlabel">最初の一言</span><div class="fieldbody">'+esc(d.h)+'</div></div>'+
+        '</article>';
+    }).join("");
+    cn.textContent=arr.length;
+    cs.textContent=n(arr.reduce(function(a,b){return a+b.c;},0))+"件";
+  }
+  seg.addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    cur=b.dataset.t;
+    Array.prototype.forEach.call(seg.children,function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    render();
+  });
+  q.addEventListener("input",render);
+  sort.addEventListener("change",render);
+  render();
+})();
+
+/* ============ 07 在宅ワーカー ============ */
+var TASKS=[
+  {g:"管理組合の台帳・カレンダー",h:26,items:[
+    {n:"県内マンションの基礎台帳（築年・戸数・管理会社）",h:10,k:1},
+    {n:"決算月・総会時期の一覧管理とアラート",h:6,k:1},
+    {n:"提案適期（総会3〜4ヶ月前）の組合リスト作成",h:6,k:1},
+    {n:"接触履歴・提案履歴の記録",h:4,k:0}
+  ]},
+  {g:"書類・資料作成",h:24,items:[
+    {n:"総会・理事会の議事録の作成（下書きまで）",h:8,k:1},
+    {n:"規約改正の新旧対照表の作成",h:8,k:1},
+    {n:"説明資料・スライドの作成",h:8,k:1}
+  ]},
+  {g:"不動産業務の下支え",h:20,items:[
+    {n:"重要事項説明書の下準備（調査項目の収集）",h:8,k:1},
+    {n:"物件資料・販売図面の作成",h:6,k:0},
+    {n:"レインズ・ポータルサイトへの入稿",h:6,k:0}
+  ]},
+  {g:"広報・発信",h:12,items:[
+    {n:"法改正の解説コンテンツの作成",h:6,k:1},
+    {n:"HP・SNS・ブログの更新",h:6,k:0}
+  ]},
+  {g:"バックオフィス",h:8,items:[
+    {n:"請求・入金消込",h:4,k:0},
+    {n:"経費精算・記帳",h:4,k:0}
+  ]}
+];
+(function(){
+  document.getElementById("tasks").innerHTML=TASKS.map(function(g){
+    return '<div class="taskgroup"><header><h4>'+esc(g.g)+'</h4><span class="hh">'+g.h+' h/月</span></header><ul>'+
+      g.items.map(function(it){
+        return '<li'+(it.k?' class="key"':'')+'><span>'+esc(it.n)+'</span><b>'+it.h+'h</b></li>';
+      }).join("")+'</ul></div>';
+  }).join("");
+})();
+
+(function(){
+  var W=760,H=250,s="";
+  s+=box(268,16,224,54,"上原 様（1名）","訪問も実務も書類も全部","var(--s2)");
+  var now=[
+    ["訪問先を決める","紹介と手当たり次第"],
+    ["総会・理事会・相談","本業。ここが売上"],
+    ["議事録・資料作成","夜と週末に回りがち"],
+    ["不動産の実務・事務","開始2ヶ月目で手探り"]
+  ];
+  now.forEach(function(c,i){
+    var x=8+i*188;
+    s+='<path d="M 380 70 L 380 94 L '+(x+82)+' 94 L '+(x+82)+' 114" stroke="var(--rule-2)" stroke-width="1.3" fill="none"></path>';
+    s+='<rect x="'+x+'" y="114" width="166" height="54" rx="8" fill="var(--surface)" stroke="var(--rule-2)" stroke-width="1.3"></rect>';
+    s+=txt(x+12,136,c[0],{fill:"var(--ink)",size:11.5,weight:700,disp:true});
+    s+=txt(x+12,154,c[1],{fill:"var(--ink-3)",size:10});
+  });
+  s+='<rect x="8" y="188" width="744" height="46" rx="8" fill="var(--accent-soft)"></rect>';
+  s+=txt(22,210,"この構造の問題：組合が増えるほど、訪問先を決める時間がなくなります。",{fill:"var(--accent)",size:12,weight:700,disp:true});
+  s+=txt(22,228,"つまり「順調なときほど、次の組合を取りにいけない」。1人会社が伸び悩む最大の理由です。",{fill:"var(--ink-2)",size:10.5});
+  document.getElementById("c-org-now").innerHTML='<h4>いまの体制</h4><p class="csub">1本の線に全部がぶら下がっている</p>'+svg(W,H,s);
+})();
+
+(function(){
+  var W=760,H=274,s="";
+  s+=box(268,14,224,52,"上原 様（1名）","会う・判断する・説明する","var(--s1)");
+  var cols=[
+    {t:"在宅ワーカーチーム",u:"2名相当／月90時間",c:"var(--s4)"},
+    {t:"アイドマ 営業支援ユニット",u:"台帳からの接触（外付け）",c:"var(--s3)"},
+    {t:"管理組合の台帳",u:"訪問先が自動で決まる",c:"var(--s1)"}
+  ];
+  cols.forEach(function(c,i){
+    var x=8+i*252;
+    s+='<path d="M 380 66 L 380 88 L '+(x+114)+' 88 L '+(x+114)+' 106" stroke="'+c.c+'" stroke-width="1.5" fill="none"></path>';
+    s+='<rect x="'+x+'" y="106" width="228" height="52" rx="8" fill="var(--surface-2)" stroke="'+c.c+'" stroke-width="1.6"></rect>';
+    s+=txt(x+13,128,c.t,{fill:"var(--ink)",size:12.5,weight:700,disp:true});
+    s+=txt(x+13,146,c.u,{fill:"var(--ink-3)",size:10.5});
+  });
+  var subs=[
+    ["台帳・カレンダー 26h","書類・資料 24h","不動産の下支え 20h","広報 12h","事務 8h"],
+    ["決算月順のリスト","電話・郵送・訪問準備","アポイント獲得まで"],
+    ["築年数・戸数・決算月","毎月の訪問先が出る","10年使える資産になる"]
+  ];
+  subs.forEach(function(list,i){
+    var x=8+i*252;
+    list.forEach(function(t,j){ s+=txt(x+13,170+j*20,"・"+t,{fill:"var(--ink-2)",size:10.5}); });
+  });
+  s+='<rect x="8" y="240" width="744" height="28" rx="7" fill="var(--good-soft)"></rect>';
+  s+=txt(20,258,"到達点：上原様は総会と商談に集中し、訪問先は台帳が決める。夜と週末が書類作成で埋まらない。",{fill:"var(--good)",size:11.5,weight:700});
+  document.getElementById("c-org-next").innerHTML='<h4>在宅ワーカー活用後の体制</h4><p class="csub">台帳が「訪問先を決める人」の代わりになります</p>'+svg(W,H,s);
+})();
+
+(function(){
+  var rows=[
+    {k:"総会・理事会・組合対応",a:40,b:76},
+    {k:"商談（新規の組合）",a:8,b:24},
+    {k:"議事録・資料作成",a:34,b:8},
+    {k:"訪問先を決める・調べる",a:18,b:2},
+    {k:"不動産の実務",a:20,b:34},
+    {k:"広報・発信",a:10,b:4},
+    {k:"経理・事務",a:12,b:2},
+    {k:"学習・講習会",a:18,b:10}
+  ];
+  var W=760,H=330,padL=210,padR=100,padT=38,padB=44;
+  var plotW=W-padL-padR,plotH=H-padT-padB,rowH=plotH/rows.length;
+  var max=niceMax(80,4),s="";
+  for(var i=0;i<=4;i++){
+    var g=max*i/4,x=padL+(g/max)*plotW;
+    s+='<line x1="'+x+'" y1="'+(padT-10)+'" x2="'+x+'" y2="'+(padT+plotH)+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(x,padT-18,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"middle"});
+  }
+  s+=txt(W-padR+28,padT-18,"h/月",{fill:"var(--ink-3)",size:10});
+  rows.forEach(function(r,i){
+    var y=padT+i*rowH+3, bh=(rowH-10)/2;
+    s+=txt(padL-12,y+bh,r.k,{fill:"var(--ink)",size:11.5,anchor:"end",baseline:"middle"});
+    s+=rrect(padL,y,(r.a/max)*plotW,bh,3,"var(--rule-2)");
+    s+=rrect(padL,y+bh+3,(r.b/max)*plotW,bh,3,r.b>=r.a?"var(--s1)":"var(--s2)");
+    s+=txt(padL+(r.b/max)*plotW+7,y+bh+3+bh/2,r.b+"h",{fill:"var(--ink-3)",size:10,mono:true,baseline:"middle"});
+  });
+  s+=txt(padL,H-10,"上＝いま（推定）／下＝移管後。合計は月160時間で揃えています。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-time").innerHTML=
+    '<h4>上原様の時間配分</h4><p class="csub">総量は変えず、資格がなければできない仕事の比率を上げる</p>'+
+    '<div class="legend"><span><i style="background:var(--rule-2)"></i>いま</span><span><i style="background:var(--s1)"></i>移管後</span></div>'+svg(W,H,s);
+})();
+
+/* ============ 08 ROI ============ */
+var PRESETS={
+  cons:{app:100,appo:2,  close:5, lag:6,fee:2,  keep:80,sfee:30,units:35,turn:1.5,share:15,price:1200,avail:120,other:45,hours:6,dealh:30,ofee:5},
+  base:{app:300,appo:4,  close:12,lag:4,fee:3,  keep:90,sfee:30,units:50,turn:2.5,share:30,price:1800,avail:140,other:15,hours:4,dealh:20,ofee:5},
+  bull:{app:500,appo:6,  close:16,lag:3,fee:5,  keep:94,sfee:40,units:65,turn:3.5,share:45,price:2500,avail:160,other:10,hours:3,dealh:15,ofee:8}
+};
+var KEYS=["app","appo","close","lag","fee","keep","sfee","units","turn","share","price","avail","other","hours","dealh","ofee"];
+var DEC={appo:1,turn:1,hours:1};
+var MTGH=2;
+
+function readInputs(){
+  var p={}; KEYS.forEach(function(k){ p[k]=parseFloat(document.getElementById("k-"+k).value); }); return p;
+}
+function setInputs(o){ KEYS.forEach(function(k){ document.getElementById("k-"+k).value=o[k]; }); }
+
+function calc(p){
+  var apposM=p.app*(p.appo/100);
+  var orgs=0, hist=[], cumGp=0, cumCost=0, cumGpArr=[], cumCostArr=[], y1Deals=0;
+  var pending=[];                              /* 商談済みで、総会の決議を待っている分 */
+  var monthCost=(p.sfee+p.ofee)*10000;
+  var commPer=(p.price*10000*0.03+60000);      /* 仲介手数料 3%＋6万円 */
+  var everCapped=false;
+
+  for(var m=1;m<=36;m++){
+    orgs*=Math.pow(p.keep/100,1/12);           /* 解約 */
+
+    /* 顧問先から自然発生する不動産取引（月次） */
+    var dealsM=orgs*p.units*(p.turn/100)*(p.share/100)/12;
+
+    /* 時間配分：組合対応 → 不動産 → 商談 → 雑務 */
+    var orgH=orgs*p.hours;
+    var dealH=dealsM*p.dealh;
+    var freeH=Math.max(0,p.avail-orgH-dealH-p.other);
+    var meets=Math.min(apposM,freeH/MTGH);
+    if(apposM>freeH/MTGH+1e-9) everCapped=true;
+
+    /* 今月の商談は、総会（lagヶ月後）で決議される */
+    if(m>1) pending.push({due:m+p.lag,qty:meets*(p.close/100)});
+    var newOrgs=0;
+    for(var q=0;q<pending.length;q++){
+      if(pending[q].due===m){ newOrgs+=pending[q].qty; pending[q].qty=0; }
+    }
+    /* 増えた組合の対応時間が確保できるか */
+    var roomH=Math.max(0,p.avail-orgH-dealH-p.other-meets*MTGH);
+    newOrgs=Math.min(newOrgs,roomH/p.hours);
+    orgs+=newOrgs;
+
+    var feeRev=orgs*p.fee*10000;
+    var dealRev=dealsM*commPer;
+    var gp=feeRev+dealRev;                      /* いずれも原価は自身の時間 */
+    cumGp+=gp; cumCost+=monthCost;
+    cumGpArr.push(cumGp); cumCostArr.push(cumCost);
+    if(m<=12) y1Deals+=dealsM;
+    hist.push({m:m,orgs:orgs,dealsM:dealsM,meets:meets,orgH:orgH,dealH:dealH,
+      meetH:meets*MTGH,otherH:p.other,freeH:Math.max(0,p.avail-orgH-dealH-meets*MTGH-p.other),
+      feeRev:feeRev,dealRev:dealRev,rev:gp,newOrgs:newOrgs});
+  }
+  var y1=hist[11];
+  var y1Gp=cumGpArr[11], y1Cost=cumCostArr[11];
+  var roi=y1Cost>0?(y1Gp-y1Cost)/y1Cost*100:0;
+  var payback=null;
+  for(var i=0;i<36;i++){ if(payback===null&&cumGpArr[i]>=cumCostArr[i]) payback=i+1; }
+  var orgCeil=Math.max(0,(p.avail-p.other-y1.meetH-y1.dealH)/p.hours);
+
+  return {hist:hist,y1:y1,y1Gp:y1Gp,y1Cost:y1Cost,roi:roi,payback:payback,apposM:apposM,y1Deals:y1Deals,
+    cumGpArr:cumGpArr,cumCostArr:cumCostArr,everCapped:everCapped,orgCeil:orgCeil,commPer:commPer,
+    monthCost:monthCost,y3Gp:cumGpArr[35],y3Cost:cumCostArr[35]};
+}
+function man(v){return n(v/10000);}
+
+function update(){
+  var p=readInputs();
+  KEYS.forEach(function(k){ document.getElementById("v-"+k).textContent=DEC[k]?p[k].toFixed(1):n(p[k]); });
+  var r=calc(p), y=r.y1;
+
+  document.getElementById("o-roi").innerHTML=r.payback?(r.payback+'<small>ヶ月目</small>'):'36<small>ヶ月超</small>';
+  document.getElementById("o-roi").parentElement.className="stat "+(r.payback?"pos":"hot");
+  document.getElementById("o-roin").textContent="累積粗利が累積投資を上回る月／1年目ROI "+(r.roi>=0?"+":"")+Math.round(r.roi)+"%";
+  document.getElementById("o-orgs").innerHTML=y.orgs.toFixed(1)+'<small>組合</small>';
+  document.getElementById("o-orgsn").textContent="対応に月"+y.orgH.toFixed(0)+"h／天井は"+r.orgCeil.toFixed(1)+"組合";
+  document.getElementById("o-deals").innerHTML=r.y1Deals.toFixed(1)+'<small>件</small>';
+  document.getElementById("o-dealsn").textContent="1件あたり手数料 約"+man(r.commPer)+"万円";
+  document.getElementById("o-mrr").innerHTML=man(y.rev)+'<small>万円</small>';
+  document.getElementById("o-mrrn").textContent="顧問料 "+man(y.feeRev)+"万円＋仲介 "+man(y.dealRev)+"万円";
+
+  document.getElementById("f-app").textContent=n(p.app);
+  document.getElementById("f-appo").textContent=r.apposM.toFixed(1);
+  document.getElementById("f-appo-r").textContent="アポ率 "+p.appo.toFixed(1)+"%";
+  document.getElementById("f-meet").textContent=y.meets.toFixed(1);
+  document.getElementById("f-meet-r").textContent=(r.apposM>y.meets+0.05)?"時間が足りず頭打ち":"時間に余力あり";
+  document.getElementById("f-win").textContent=y.newOrgs.toFixed(2);
+  document.getElementById("f-win-r").textContent="契約率 "+p.close+"%";
+
+  drawHours(r,p);
+  drawRevenue(r,p);
+  drawCum(r);
+
+  var v=document.getElementById("o-verdict");
+  if(r.roi>=0){
+    v.style.borderLeftColor="var(--good)";
+    v.innerHTML='<b>判定：</b> 1年目の粗利は <b>'+man(r.y1Gp)+'万円</b>、投資は <b>'+man(r.y1Cost)+
+      '万円</b>、ROIは <b>'+Math.round(r.roi)+'%</b>。'+(r.payback?'累積で投資を上回るのは <b>'+r.payback+'ヶ月目</b>です。':'')+
+      ' 12ヶ月後は顧問 '+y.orgs.toFixed(1)+'組合、月次売上 <b>'+man(y.rev)+
+      '万円</b>（顧問料 '+man(y.feeRev)+'万円＋仲介 '+man(y.dealRev)+'万円）。3年累計では粗利 <b>'+man(r.y3Gp)+
+      '万円</b>・投資 '+man(r.y3Cost)+'万円になります。';
+  } else {
+    v.style.borderLeftColor="var(--accent)";
+    v.innerHTML='<b style="color:var(--accent)">判定：</b> この前提では1年目に投資を回収できません（ROI '+Math.round(r.roi)+
+      '%）。12ヶ月目の月次売上は '+man(y.rev)+'万円で、月額費用 '+man(r.monthCost)+
+      '万円を'+(y.rev>=r.monthCost?'上回っています':'下回っています')+'。3年累計では粗利 <b style="color:var(--accent)">'+
+      man(r.y3Gp)+'万円</b>・投資 '+man(r.y3Cost)+'万円で、'+
+      (r.payback?'<b style="color:var(--accent)">'+r.payback+'ヶ月目</b>に累積で上回ります。':'36ヶ月以内には上回りません。')+
+      ' <b style="color:var(--accent)">顧問料の水準</b>を実際の金額に置き換えてご確認ください。';
+  }
+  if(y.orgs>=r.orgCeil-0.2){
+    v.innerHTML+='<br><span style="color:var(--s5)">※ 顧問契約が<b style="color:var(--s5)">1人での天井（'+r.orgCeil.toFixed(1)+
+      '組合）に到達</b>しています。これ以上は上原様の時間が足りず受けられません。ここから先は、<b style="color:var(--s5)">人を増やすか、顧問料を上げるか</b>の判断になります。</span>';
+  }
+  if(r.everCapped){
+    v.innerHTML+='<br><span style="color:var(--ink-3)">※ 組合対応と不動産実務に時間を取られ、獲得したアポイント（月'+r.apposM.toFixed(1)+
+      '件）のすべてには対応できていません。アプローチ数を増やしても、上原様が商談に出られなければ契約は増えません。</span>';
+  }
+  if(p.other>=40){
+    v.innerHTML+='<br><span style="color:var(--ink-3)">※ 雑務に月'+p.other+'時間を残す設定です。これは<b>在宅ワーカーを入れない場合</b>に近い水準で、その分だけ商談と組合対応の時間が削られています。</span>';
+  }
+}
+
+function drawHours(r,p){
+  var W=700,H=290,padL=60,padR=110,padT=34,padB=46;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var max=niceMax(p.avail,4),s="";
+  for(var g=0;g<=4;g++){
+    var y=padT+plotH-(g/4)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(max*g/4),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-14,"時間/月",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  var bw=plotW/12*0.62;
+  for(var m=0;m<12;m++){
+    var h=r.hist[m],cx=padL+(m+0.5)*(plotW/12),base=padT+plotH;
+    var segs=[[h.orgH,"var(--s1)"],[h.dealH,"var(--s2)"],[h.meetH,"var(--s3)"],[h.otherH,"var(--rule-2)"],[h.freeH,"var(--s4)"]];
+    var acc=0;
+    segs.forEach(function(sg){
+      var sh=(sg[0]/max)*plotH;
+      s+=rrect(cx-bw/2,base-acc-sh,bw,sh,1.5,sg[1]);
+      acc+=sh;
+    });
+    if(m%2===1||m===0) s+=txt(cx,base+17,(m+1)+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  }
+  s+=txt(padL+plotW+8,padT+plotH-(r.hist[11].orgH/max)*plotH/2,"組合対応",{fill:"var(--s1)",size:10.5,weight:700,baseline:"middle"});
+  s+=txt(padL,H-6,"※ 組合対応が最優先、次に不動産の実務、次に商談、残りが雑務と空き時間。空きが多い月は、それだけ開拓に回せる余力があるということです。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-hours").innerHTML=
+    '<h4>上原様の時間が、何に使われるか（1年目）</h4><p class="csub">このボードでいちばん重要なグラフです</p>'+
+    '<div class="legend"><span><i style="background:var(--s1)"></i>組合対応</span><span><i style="background:var(--s2)"></i>不動産の実務</span><span><i style="background:var(--s3)"></i>商談</span><span><i style="background:var(--rule-2)"></i>雑務</span><span><i style="background:var(--s4)"></i>空き（新規開拓に使える）</span></div>'+svg(W,H,s);
+}
+
+function drawRevenue(r,p){
+  var W=700,H=280,padL=62,padR=100,padT=32,padB=46;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var maxV=niceMax(r.hist[11].rev/10000*1.3,4),s="";
+  for(var g=0;g<=4;g++){
+    var y=padT+plotH-(g/4)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(maxV*g/4),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-12,"万円/月",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  var bw=plotW/12*0.6;
+  for(var m=0;m<12;m++){
+    var h=r.hist[m],cx=padL+(m+0.5)*(plotW/12),base=padT+plotH;
+    var fv=(h.feeRev/10000/maxV)*plotH;
+    var dv=(h.dealRev/10000/maxV)*plotH;
+    s+=rrect(cx-bw/2,base-fv,bw,fv,2,"var(--s1)");
+    s+=rrect(cx-bw/2,base-fv-dv,bw,dv,2,"var(--s2)");
+    if(m%2===1||m===0) s+=txt(cx,base+17,(m+1)+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  }
+  var cy=padT+plotH-(r.monthCost/10000/maxV)*plotH;
+  s+='<line x1="'+padL+'" y1="'+cy+'" x2="'+(padL+plotW)+'" y2="'+cy+'" stroke="var(--s5)" stroke-width="1.6" stroke-dasharray="5 4"></line>';
+  s+=txt(padL+plotW+8,cy,"月額費用 "+man(r.monthCost)+"万円",{fill:"var(--s5)",size:10.5,weight:700,baseline:"middle"});
+  s+=txt(padL,H-6,"※ 棒が破線を超えた月から、支援の費用が事業の売上で払える状態になります。",{fill:"var(--ink-3)",size:10});
+  document.getElementById("c-revenue").innerHTML=
+    '<h4>月次売上の積み上がり（1年目）</h4><p class="csub">顧問料が土台、仲介手数料がその上に乗る</p>'+
+    '<div class="legend"><span><i style="background:var(--s1)"></i>顧問料</span><span><i style="background:var(--s2)"></i>仲介手数料</span></div>'+svg(W,H,s);
+}
+
+function drawCum(r){
+  var W=700,H=250,padL=64,padR=82,padT=32,padB=46;
+  var plotW=W-padL-padR,plotH=H-padT-padB;
+  var maxV=niceMax(Math.max(r.cumGpArr[35],r.cumCostArr[35])*1.12/10000,4),s="";
+  for(var i=0;i<=4;i++){
+    var g=maxV*i/4,y=padT+plotH-(g/maxV)*plotH;
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+plotW)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"></line>';
+    s+=txt(padL-10,y,n(g),{fill:"var(--ink-3)",size:10,mono:true,anchor:"end",baseline:"middle"});
+  }
+  s+=txt(padL-10,padT-12,"万円",{fill:"var(--ink-3)",size:10,anchor:"end"});
+  function px(m){return padL+(m/35)*plotW;}
+  function py(v){return padT+plotH-(v/10000/maxV)*plotH;}
+  [["cumGpArr","var(--s1)"],["cumCostArr","var(--s5)"]].forEach(function(pair){
+    var d=r[pair[0]].map(function(v,i){return (i===0?"M ":"L ")+px(i)+" "+py(v);}).join(" ");
+    s+='<path d="'+d+'" fill="none" stroke="'+pair[1]+'" stroke-width="2.4"></path>';
+    s+='<circle cx="'+px(35)+'" cy="'+py(r[pair[0]][35])+'" r="3.6" fill="'+pair[1]+'"></circle>';
+    s+=txt(px(35)+8,py(r[pair[0]][35]),n(r[pair[0]][35]/10000),{fill:pair[1],size:11,weight:700,mono:true,baseline:"middle"});
+  });
+  if(r.payback){
+    var bx=px(r.payback-1);
+    s+='<line x1="'+bx+'" y1="'+padT+'" x2="'+bx+'" y2="'+(padT+plotH)+'" stroke="var(--s1)" stroke-width="1.4" stroke-dasharray="5 4"></line>';
+    s+=txt(bx+7,padT+13,"累積で上回る "+r.payback+"ヶ月目",{fill:"var(--s1)",size:11,weight:700});
+  }
+  for(var m=0;m<36;m+=6) s+=txt(px(m),padT+plotH+17,(m+1)+"ヶ月",{fill:"var(--ink-3)",size:10,anchor:"middle"});
+  document.getElementById("c-cum").innerHTML=
+    '<h4>3年（36ヶ月）の累積</h4><p class="csub">累積粗利と累積投資</p>'+
+    '<div class="legend"><span><i style="background:var(--s1)"></i>累積 粗利</span><span><i style="background:var(--s5)"></i>累積 投資</span></div>'+svg(W,H,s);
+}
+
+(function(){
+  KEYS.forEach(function(k){
+    document.getElementById("k-"+k).addEventListener("input",function(){
+      Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(b){b.setAttribute("aria-pressed","false");});
+      update();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(b){
+    b.addEventListener("click",function(){
+      Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+      setInputs(PRESETS[b.dataset.preset]); update();
+    });
+  });
+  document.getElementById("r-reset").addEventListener("click",function(){
+    Array.prototype.forEach.call(document.querySelectorAll("[data-preset]"),function(x){x.setAttribute("aria-pressed",x.dataset.preset==="base"?"true":"false");});
+    setInputs(PRESETS.base); update();
+  });
+  setInputs(PRESETS.base);
+  update();
+})();
+
+})();
+</script>
