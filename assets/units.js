@@ -1,4 +1,6 @@
 /* ユニットマスタ
+ * role   : 役割の短い言い方（組織図の補足文の自動生成に使用）
+ * desc   : 提供内容の一文（プラン説明文の自動生成に使用）
  * price  : 標準の月額（万円）
  * months : 標準の支援期間（ヶ月）
  * members: 標準の稼働人数（組織図・総稼働リソースに使用）
@@ -8,6 +10,7 @@
 window.UNIT_MASTER = [
   {
     key: 'sales-support', name: '営業支援ユニット', short: '営業支援',
+    role: '営業の仕組み構築', desc: '営業戦略の立案からリスト作成・台本作成・営業システムの提供まで',
     price: 20, months: 13, members: 4,
     items: [
       '営業戦略の立案',
@@ -22,11 +25,13 @@ window.UNIT_MASTER = [
   },
   {
     key: 'sales', name: 'セールスユニット', short: 'セールス',
+    role: '商談力の強化', desc: '商談台本と料金表の整備、営業研修からオンライン商談の実行まで',
     price: 10, months: 13, members: 2,
     items: ['商談台本作成', '料金表作成', '営業研修', 'オンライン商談']
   },
   {
     key: 'crapro', name: 'クラプロユニット', short: 'クラプロ',
+    role: 'Web集客の構築', desc: 'Webマーケ戦略の立案からサイト制作・SEO/MEO対策・SNS運用まで',
     price: 20, months: 13, members: 4,
     items: [
       'Webマーケティング戦略立案',
@@ -38,6 +43,7 @@ window.UNIT_MASTER = [
   },
   {
     key: 'productivity', name: '生産性向上支援ユニット', short: '生産性向上',
+    role: '採用基盤の構築', desc: '組織図・マニュアルの整備から求人執筆・スカウト配信・選考代行まで',
     price: 12.5, months: 15, members: 6,
     items: [
       '組織図作成',
@@ -53,16 +59,19 @@ window.UNIT_MASTER = [
   },
   {
     key: 'management', name: 'マネジメント代行ユニット', short: 'マネジメント',
+    role: '運用管理の代行', desc: '日々の運用マネジメント代行とワークフローの継続改善',
     price: 17.5, months: 15, members: 4,
     items: ['運用のマネジメント代行', 'ワークフローマニュアル改善']
   },
   {
     key: 'fieldwork', name: 'フィールドワークユニット', short: 'フィールドワーク',
+    role: '全国現地での実動', desc: '現場業務マニュアルの整備と47都道府県42,000人規模の現地稼働',
     price: 10, months: 13, members: 42000,
     items: ['現場業務マニュアル作成', '47都道府県42,000人現地スタッフ']
   },
   {
     key: 'sales-system', name: '営業システムの提供', short: '営業システム',
+    role: '商談機会の創出', desc: '決裁者との直面談20件やフォームアプローチ2万件による商談機会の創出',
     price: 15, months: 13, members: 2,
     items: [
       '決裁権お持ちの経営者との直面談20件',
@@ -73,6 +82,7 @@ window.UNIT_MASTER = [
   },
   {
     key: 'hr', name: 'HRユニット', short: 'HR',
+    role: '採用力の強化', desc: '母集団形成から求人媒体の制作・面接・定着支援・人事制度の整備まで',
     price: 15, months: 13, members: 4,
     items: [
       '母集団形成',
@@ -86,11 +96,13 @@ window.UNIT_MASTER = [
   },
   {
     key: 'media', name: 'メディアユニット', short: 'メディア',
+    role: '認知の拡大', desc: 'BS放送・TVer配信や公式SNSでの発信による認知拡大',
     price: 10, months: 13, members: 2,
     items: ['For Japan出演', 'BS放送＋TVer配信', '公式SNSでの切り抜き配信']
   },
   {
     key: 'secretary', name: '秘書ユニット', short: '秘書',
+    role: '管理サポートの整備', desc: '役員秘書・営業事務・各種連絡業務やリサーチ業務の代行',
     price: 10, months: 13, members: 2,
     items: [
       '役員秘書',
@@ -104,6 +116,7 @@ window.UNIT_MASTER = [
   },
   {
     key: 'ai', name: 'AIユニット', short: 'AI',
+    role: 'AI活用の推進', desc: 'AIツールの選定からワークフロー構築・オリエンテーションまで',
     price: 15, months: 13, members: 3,
     items: [
       'フレームワーク構築',
@@ -116,6 +129,7 @@ window.UNIT_MASTER = [
   },
   {
     key: 'backoffice', name: 'バックオフィスユニット', short: 'バックオフィス',
+    role: '管理業務の効率化', desc: '労務・経理・採用事務などバックオフィス業務の構築と代行',
     price: 15, months: 13, members: 4,
     items: [
       'ワークフロー構築',
@@ -131,6 +145,7 @@ window.UNIT_MASTER = [
   },
   {
     key: 'cfo', name: 'CFOユニット', short: 'CFO',
+    role: '財務基盤の強化', desc: '財務支援から月次決算化・事業計画策定・IPO/M&A支援まで',
     price: 20, months: 13, members: 2,
     items: [
       '財務支援',

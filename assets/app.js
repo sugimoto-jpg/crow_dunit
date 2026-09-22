@@ -9,27 +9,19 @@
   function defaultPlan(key) {
     var d = {
       A: {
-        nickname: 'フルスペック実行支援', structureTop: '全国現場実行完結',
-        structureNote: '管理から全国現地稼働までフルカバー',
-        summary: '企画・採用・管理代行に加え、全国現地での実動まで全てを外部化できる最上位包括プランです。',
+        nickname: 'フルスペック実行支援',
         units: ['productivity', 'management', 'fieldwork'], unitMonths: 13, normalMonthly: 120, recommended: true
       },
       B: {
-        nickname: '組織構築＋運用マネジメント代行', structureTop: 'マネジメント連動',
-        structureNote: '運用管理代行＋基盤構築の2層体制',
-        summary: '社内の管理負担をゼロにし、プロのマネージャーが実動部隊の品質と進捗を徹底コントロールします。',
+        nickname: '組織構築＋運用マネジメント代行',
         units: ['productivity', 'management'], unitMonths: 15, normalMonthly: 80, recommended: false
       },
       C: {
-        nickname: '生産性向上・採用基盤構築', structureTop: '単独機能特化',
-        structureNote: 'マニュアル作成・採用基盤の構築',
-        summary: 'ミニマムコストで採用マニュアルの標準化と優秀な人材の確保基盤を一気に構築します。',
+        nickname: '生産性向上・採用基盤構築',
         units: ['productivity'], unitMonths: 15, normalMonthly: 40, recommended: false
       },
       D: {
-        nickname: 'スモールスタート', structureTop: 'ピンポイント支援',
-        structureNote: '必要な機能のみを厳選',
-        summary: '課題が明確な領域にリソースを集中投下する、ピンポイント型の特別プランです。',
+        nickname: 'スモールスタート',
         units: [], normalMonthly: '', recommended: false
       }
     }[key];
@@ -37,10 +29,10 @@
       enabled: key !== 'D',
       label: 'プラン' + key,
       nickname: d.nickname,
-      structureTop: d.structureTop,
-      structureNote: d.structureNote,
+      structureTop: '',
+      structureNote: '',
       unitsCaption: '',
-      summary: d.summary,
+      summary: '',
       recommended: d.recommended,
       normalMonthly: d.normalMonthly,
       normalMonths: 13,
@@ -117,6 +109,7 @@
       var base = defaults();
       state = merge(base, saved);
       mergeMaster();
+      migrateAutoText();
     } catch (e) { defaults(); }
   }
 
@@ -131,12 +124,32 @@
     return over === undefined ? base : over;
   }
 
+  /* 旧版で固定文だった文言は、初期文のままなら空にして自動生成に戻す */
+  var LEGACY_TEXT = [
+    '全国現場実行完結', 'マネジメント連動', '単独機能特化', 'ピンポイント支援',
+    '管理から全国現地稼働までフルカバー', '運用管理代行＋基盤構築の2層体制',
+    'マニュアル作成・採用基盤の構築', '必要な機能のみを厳選',
+    '企画・採用・管理代行に加え、全国現地での実動まで全てを外部化できる最上位包括プランです。',
+    '社内の管理負担をゼロにし、プロのマネージャーが実動部隊の品質と進捗を徹底コントロールします。',
+    'ミニマムコストで採用マニュアルの標準化と優秀な人材の確保基盤を一気に構築します。',
+    '課題が明確な領域にリソースを集中投下する、ピンポイント型の特別プランです。'
+  ];
+  function migrateAutoText() {
+    PLAN_KEYS.forEach(function (k) {
+      var p = state.plans[k];
+      ['structureTop', 'structureNote', 'summary'].forEach(function (f) {
+        if (LEGACY_TEXT.indexOf(p[f]) >= 0) p[f] = '';
+      });
+    });
+  }
+
   function mergeMaster() {
     if (!Array.isArray(state.unitMaster)) state.unitMaster = [];
     window.UNIT_MASTER.forEach(function (m) {
-      if (!state.unitMaster.some(function (u) { return u.key === m.key; })) {
-        state.unitMaster.push(JSON.parse(JSON.stringify(m)));
-      }
+      var cur = null;
+      state.unitMaster.forEach(function (u) { if (u.key === m.key) cur = u; });
+      if (!cur) { state.unitMaster.push(JSON.parse(JSON.stringify(m))); return; }
+      Object.keys(m).forEach(function (f) { if (cur[f] === undefined) cur[f] = m[f]; });
     });
   }
 
@@ -216,6 +229,66 @@
     });
     return out;
   }
+  function unitRoles(p) {
+    return p.units.map(function (u) {
+      var m = master(u.key);
+      return or(m.role, m.short);
+    });
+  }
+  /* 体制キャッチ（組織図の小見出し） */
+  function autoStructureTop(p) {
+    var keys = p.units.map(function (u) { return u.key; });
+    if (!keys.length) return '';
+    if (keys.indexOf('fieldwork') >= 0) return '全国現場実行完結';
+    if (keys.indexOf('management') >= 0) return 'マネジメント連動';
+    if (keys.length === 1) return '単独機能特化';
+    return keys.length + 'ユニット複合';
+  }
+  /* 組織図の補足（総稼働リソースの下）— 三角形の上から下の順に合わせる */
+  function autoStructureNote(p) {
+    var sorted = { units: p.units.slice().sort(function (a, b) { return N(a.members) - N(b.members); }) };
+    var r = unitRoles(sorted), n = r.length;
+    if (!n) return '';
+    if (n === 1) return r[0] + 'に特化';
+    if (n === 2) return r[0] + '＋' + r[1] + 'の2層体制';
+    return r[0] + 'から' + r[n - 1] + 'までの' + n + '層体制';
+  }
+  /* プラン説明文（詳細ページ下部） */
+  function autoSummary(key) {
+    var p = state.plans[key];
+    if (!p.units.length) return '';
+    var base = basePlan(key), lead;
+    if (base) {
+      var bp = state.plans[base];
+      var delta = p.units.filter(function (u) {
+        return !bp.units.some(function (v) { return v.key === u.key; });
+      });
+      var dr = delta.map(function (u) { var m = master(u.key); return or(m.role, m.short); });
+      var drTxt = dr.length <= 3 ? dr.join('・')
+        : dr.slice(0, 2).join('・') + 'ほか' + (dr.length - 2) + '機能';
+      lead = bp.label + 'の全支援機能に加え、' + drTxt + 'まで対応する上位プランです。';
+    } else if (p.units.length === 1) {
+      var m1 = master(p.units[0].key);
+      lead = or(m1.desc, m1.name) + 'を一括でご提供します。';
+    } else {
+      var r = unitRoles(p);
+      var rTxt = r.length <= 3 ? r.join('・')
+        : r.slice(0, 3).join('・') + 'ほか' + (r.length - 3) + '機能';
+      lead = rTxt + 'を一体で担う' + r.length + 'ユニット構成です。';
+    }
+    var keys = p.units.map(function (u) { return u.key; }), tail;
+    if (keys.indexOf('fieldwork') >= 0) tail = '採用から現場実行までを一つの窓口で完結できます。';
+    else if (keys.indexOf('management') >= 0) tail = '社内の管理負担をかけずに運用まで任せられます。';
+    else tail = '専任チームが初月から稼働します。';
+    return lead + tail;
+  }
+  function structureTopOf(p) { return or(p.structureTop, '') !== '' ? p.structureTop : autoStructureTop(p); }
+  function structureNoteOf(p) { return or(p.structureNote, '') !== '' ? p.structureNote : autoStructureNote(p); }
+  function summaryOf(key) {
+    var p = state.plans[key];
+    return or(p.summary, '') !== '' ? p.summary : autoSummary(key);
+  }
+
   function captionOf(p) {
     if (or(p.unitsCaption, '') !== '') return p.unitsCaption;
     if (!p.units.length) return '';
@@ -327,7 +400,10 @@
         '<div class="row">' +
         fText('unitMaster.' + i + '.name', 'ユニット名', '') +
         fText('unitMaster.' + i + '.short', '短縮名', '') +
-        '</div><div class="row">' +
+        '</div>' +
+        fText('unitMaster.' + i + '.role', '役割', '例）採用基盤の構築', '組織図の補足文に使用') +
+        fArea('unitMaster.' + i + '.desc', '説明', '', 'プラン説明文に使用') +
+        '<div class="row">' +
         '<div class="field"><label>標準月額<span class="hint">万円</span></label><input type="number" step="any" data-path="unitMaster.' + i + '.price" data-type="num" value="' + esc(u.price) + '"></div>' +
         '<div class="field"><label>標準期間<span class="hint">ヶ月</span></label><input type="number" step="any" data-path="unitMaster.' + i + '.months" data-type="num" value="' + esc(u.months) + '"></div>' +
         '<div class="field"><label>標準人数<span class="hint">名</span></label><input type="number" step="any" data-path="unitMaster.' + i + '.members" data-type="num" value="' + esc(u.members) + '"></div>' +
@@ -424,10 +500,11 @@
 
     /* 文言 */
     h.push('<div style="margin-top:10px">' +
-      fText('plans.' + k + '.structureTop', '体制キャッチ', '例）全国現場実行完結') +
-      fText('plans.' + k + '.unitsCaption', '構成メモ', '自動: ' + (captionOf(p) || '—')) +
-      fText('plans.' + k + '.structureNote', '組織図の補足', '') +
-      fArea('plans.' + k + '.summary', 'プラン説明文', '') +
+      '<p class="note">下の4項目は選んだユニットから自動で作成されます。文章を変えたいときだけ入力してください（入力すると自動生成より優先されます）。</p>' +
+      fText('plans.' + k + '.structureTop', '体制キャッチ', '自動: ' + (autoStructureTop(p) || '—'), '自動生成') +
+      fText('plans.' + k + '.unitsCaption', '構成メモ', '自動: ' + (captionOf(p) || '—'), '自動生成') +
+      fText('plans.' + k + '.structureNote', '組織図の補足', '自動: ' + (autoStructureNote(p) || '—'), '自動生成') +
+      fArea('plans.' + k + '.summary', 'プラン説明文', autoSummary(k) || '', '自動生成') +
       '<div style="margin-top:4px">' + fChk('plans.' + k + '.recommended', 'おすすめプランとして強調表示', false) + '</div>' +
       '</div>');
 
@@ -554,12 +631,13 @@
       '<div class="s-body"><div class="orgs" style="grid-template-columns:repeat(' + order.length + ',1fr);width:100%">' +
       order.map(function (k) {
         var p = state.plans[k];
+        var top = structureTopOf(p), note = structureNoteOf(p);
         return '<div class="org' + (p.recommended ? ' hl' : '') + '">' +
-          '<div class="oh">' + (or(p.structureTop, '') ? '<div class="os">' + esc(p.structureTop) + '</div>' : '') +
+          '<div class="oh">' + (top ? '<div class="os">' + esc(top) + '</div>' : '') +
           '<div class="on">' + esc(p.label) + ' 体制</div></div>' +
           triangle(p) +
           '<div class="of"><div class="r1">総稼働リソース: ' + num(members(p)) + '名</div>' +
-          (or(p.structureNote, '') ? '<div class="r2">' + esc(p.structureNote) + '</div>' : '') + '</div></div>';
+          (note ? '<div class="r2">' + esc(note) + '</div>' : '') + '</div></div>';
       }).join('') + '</div></div></section>';
   }
 
@@ -680,7 +758,7 @@
         var isNew = starOn && baseItems.indexOf(it) < 0;
         return '<li' + (isNew ? ' class="st"' : '') + '>' + esc(it) + '</li>';
       }).join('') + (rest ? '<li class="more">ほか ' + (rest + 1) + '項目</li>' : '') + '</ul>' +
-      (or(p.summary, '') ? '<div class="summary">' + nl2br(p.summary) + '</div>' : '') +
+      (summaryOf(k) ? '<div class="summary">' + nl2br(summaryOf(k)) + '</div>' : '') +
       '</div></div></section>';
   }
 
