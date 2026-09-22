@@ -59,7 +59,10 @@ ${js}
 `;
 
 /* --- 公開用：doctype/html/head/body は付けない --- */
-const artifact = `<title>${title}</title>
+/* 配信ページ（artifact）の題名は、説明を外した作品名だけにする。
+ * 一覧に並んだときに見分けやすくするため。 */
+const shortTitle = title.split(/[〜:：]/)[0].trim() || title;
+const artifact = `<title>${shortTitle}</title>
 <style>
 ${css}
 </style>
