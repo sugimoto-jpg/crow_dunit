@@ -45,7 +45,23 @@ G.UI.register('title', {
           el.addEventListener('keydown', ev => { if (ev.key === 'Enter') { name = el.value; done('ok'); } });
         },
       });
-      G.Story.beginNewGame(name);
+      const diff = await G.UI.modal({
+        title: '難易度を選んでください',
+        body: `<p class="dim">敵の強さが変わります。あとから変更はできません。</p>
+          ${Object.entries(G.DIFFICULTY).map(([k, v]) => `
+            <div class="list-item">
+              <div class="ico">${k === 'easy' ? '🌱' : k === 'normal' ? '⚔️' : '🔥'}</div>
+              <div class="body">
+                <div class="nm">${v.name}</div>
+                <div class="ds">敵のHP ${Math.round(v.hp * 100)}% ／ 攻撃力 ${Math.round(v.atk * 100)}%</div>
+              </div>
+              <div class="act"><button class="btn sm" data-pick="${k}">選ぶ</button></div>
+            </div>`).join('')}`,
+        actions: [{ label: 'ふつうで始める', cls: 'primary', value: 'normal' }],
+        bind: done => document.querySelectorAll('#modal [data-pick]').forEach(el =>
+          el.addEventListener('click', () => done(el.dataset.pick))),
+      });
+      G.Story.beginNewGame(name, diff);
     });
 
     G.UI.on('about', () => G.UI.alert('このゲームについて', `

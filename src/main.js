@@ -4,8 +4,8 @@ window.G = window.G || {};
 G.Story = {
 
   /* 新規ゲーム：プロローグから学院入学まで */
-  beginNewGame(name) {
-    G.State.newGame(name);
+  beginNewGame(name, difficulty) {
+    G.State.newGame(name, difficulty);
     G.UI.setChromeVisible(false);
     G.UI.playStory(G.STORY.prologue, () => {
       G.UI.playStory(G.STORY.village, () => {

@@ -40,6 +40,7 @@ G.UI.register('home', {
           <div class="k">所持金</div><div class="v gold">${G.util.g(d.gold)} G</div>
           <div class="k">ギルド階級</div><div class="v">${d.guild.registered ? G.World.rank().name : '未登録'}</div>
           <div class="k">達成依頼</div><div class="v">${d.guild.totalClears} 件</div>
+          <div class="k">難易度</div><div class="v">${G.DIFFICULTY[d.difficulty].name}</div>
         </div>
       </div>
 

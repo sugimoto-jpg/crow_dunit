@@ -7,7 +7,7 @@ G.State = {
   data: null,
 
   /* ---------- 新規ゲーム ---------- */
-  newGame(playerName) {
+  newGame(playerName, difficulty) {
     const name = (playerName || '').trim() || 'アルト';
     const player = G.Char.create({ key: 'player', name, icon: '🧑', isPlayer: true });
     player.equip.weapon = 'wood_stick';
@@ -20,6 +20,7 @@ G.State = {
     G.State.data = {
       version: 1,
       createdAt: Date.now(),
+      difficulty: G.DIFFICULTY[difficulty] ? difficulty : 'normal',
       player,
       party: [player],
       roster: {},                       // 加入済み仲間 key -> char
@@ -80,6 +81,7 @@ G.State = {
   /* 旧セーブ / 壊れたセーブの補正 */
   migrate(d) {
     d.version = d.version || 1;
+    if (!G.DIFFICULTY[d.difficulty]) d.difficulty = 'normal';
     d.inventory = d.inventory || {};
     d.flags = d.flags || {};
     d.roster = d.roster || {};
