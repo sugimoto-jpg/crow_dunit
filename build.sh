@@ -27,6 +27,8 @@ for tag in ('<!doctype html>\n', '<html lang="ja">\n', '<head>\n', '</head>\n',
             '<meta charset="utf-8">\n', '<meta name="viewport" content="width=device-width,initial-scale=1">\n'):
     art = art.replace(tag, '')
 art = art.replace('<script>\n/* 特別料金表ビルダー',
+                  '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>\n'
+                  '<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>\n'
                   '<script>window.ARTIFACT_BUILD = true;</script>\n<script>\n/* 特別料金表ビルダー', 1)
 io.open('dist/artifact.html', 'w', encoding='utf-8').write(art)
 print('生成しました: dist/artifact.html')

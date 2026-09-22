@@ -973,16 +973,20 @@
   }
 
   /* 公開版: ビューアのダウンロード機能に渡す（不可ならコピー用ダイアログ） */
-  function saveViaHost(name, text) {
-    if (!window.claude || !window.claude.use) { copyModal(name, text); return; }
+  function saveViaHost(name, data) {
+    function fallback() {
+      if (typeof data === 'string') copyModal(name, data);
+      else alert('この環境ではファイルを保存できませんでした。お手数ですが別のブラウザでお試しください。');
+    }
+    if (!window.claude || !window.claude.use) { fallback(); return; }
     window.claude.use('downloads').then(function (d) {
-      if (!d) { copyModal(name, text); return; }
-      d.save({ filename: name, data: text }).catch(function (err) {
+      if (!d) { fallback(); return; }
+      d.save({ filename: name, data: data }).catch(function (err) {
         var code = err && err.code;
         if (code === 'declined' || code === 'rate_limited') return;
-        copyModal(name, text);
+        fallback();
       });
-    }, function () { copyModal(name, text); });
+    }, fallback);
   }
 
   function download(text, name, mime) {
@@ -1003,6 +1007,74 @@
       '.stage{box-shadow:none;margin:0 auto;height:539px;overflow:hidden;break-after:auto;page-break-after:auto}\n' +
       '.stage+.stage{break-before:page;page-break-before:always}}\n' +
       css + '\n</style></head><body>\n' + body + '\n</body></html>', fileName('html'), 'text/html');
+  }
+
+  /* ---------- PDFの直接生成（ビューアで印刷が使えない場合） ---------- */
+  function progressBox(total) {
+    var ov = document.createElement('div');
+    ov.className = 'ovl';
+    ov.innerHTML = '<div class="ovl-box" style="width:min(360px,100%);align-items:center;text-align:center">' +
+      '<div class="ovl-h">PDFを作成しています</div>' +
+      '<p class="ovl-p" style="margin:0"><b class="pg-n">0</b> / ' + total + ' ページ</p>' +
+      '<div class="pg-bar"><i></i></div></div>';
+    document.body.appendChild(ov);
+    return {
+      update: function (n) {
+        ov.querySelector('.pg-n').textContent = n;
+        ov.querySelector('.pg-bar i').style.width = Math.round(n / total * 100) + '%';
+      },
+      close: function () { ov.remove(); }
+    };
+  }
+
+  function pdfReady() {
+    return !!(window.html2canvas && window.jspdf && window.jspdf.jsPDF);
+  }
+
+  function makePdf() {
+    if (!pdfReady()) {
+      alert('この環境ではPDFを直接作成できません。\n「HTMLで書き出し」で保存したファイルを開き、ブラウザの印刷からPDFに保存してください。');
+      return;
+    }
+    var slides = fittedSlides();
+    var box = document.getElementById('render');
+    if (!box || !slides.length) return;
+    var pg = progressBox(slides.length), i = 0, pdf;
+    try {
+      /* 印刷時と同じ 254mm × 142.9mm（720×405pt）で作る */
+      pdf = new window.jspdf.jsPDF({ orientation: 'landscape', unit: 'pt', format: [720, 405], compress: true });
+    } catch (e) { pg.close(); alert('PDFの作成に失敗しました。'); return; }
+
+    function fail() {
+      pg.close(); box.innerHTML = '';
+      alert('PDFの作成に失敗しました。\n「HTMLで書き出し」で保存したファイルを開き、ブラウザの印刷からPDFに保存してください。');
+    }
+    function step() {
+      if (i >= slides.length) {
+        box.innerHTML = '';
+        pg.close();
+        try { saveViaHost(fileName('pdf'), pdf.output('blob')); } catch (e) { fail(); }
+        return;
+      }
+      box.innerHTML = slides[i];
+      var el = box.firstElementChild;
+      if (!el) { i++; setTimeout(step, 0); return; }
+      window.html2canvas(el, {
+        scale: 2.5, backgroundColor: '#ffffff', logging: false, useCORS: false,
+        onclone: function (doc) {
+          var r = doc.getElementById('render');
+          if (r) { r.style.visibility = 'visible'; r.style.opacity = '1'; }
+        }
+      }).then(function (canvas) {
+        try {
+          if (i > 0) pdf.addPage([720, 405], 'landscape');
+          pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 720, 405);
+        } catch (e) { fail(); return; }
+        i++; pg.update(i);
+        setTimeout(step, 0);
+      }, fail);
+    }
+    setTimeout(step, 30);
   }
 
   /* ---------- イベント ---------- */
@@ -1074,7 +1146,13 @@
     load();
     renderAll();
 
-    document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
+    var btnPrint = document.getElementById('btn-print');
+    if (window.ARTIFACT_BUILD) {
+      btnPrint.textContent = 'PDFを作成';
+      btnPrint.addEventListener('click', makePdf);
+    } else {
+      btnPrint.addEventListener('click', function () { window.print(); });
+    }
     document.getElementById('btn-html').addEventListener('click', exportHtml);
     document.getElementById('btn-save').addEventListener('click', function () {
       download(JSON.stringify(state, null, 2), fileName('json'), 'application/json');

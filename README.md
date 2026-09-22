@@ -100,7 +100,11 @@ build.sh                        dist/ を生成するスクリプト
 | --- | --- |
 | `dist/特別料金表ビルダー.html` | 手元・社内配布用（1ファイル完結。ダウンロードも印刷もフル機能） |
 | `dist/web/index.html` | 静的ホスティング公開用（Netlify / Cloudflare Pages / GitHub Pages などにこのフォルダを置くだけ） |
-| `dist/artifact.html` | claude.ai の Artifact 公開用（外側のHTMLタグなし。保存はビューア経由、不可ならコピー用ダイアログ） |
+| `dist/artifact.html` | claude.ai の Artifact 公開用（外側のHTMLタグなし。ビューアが印刷を許可しないため、PDFはページ内で生成して保存する） |
+
+Artifact 版だけは `window.print()` が使えないため、html2canvas + jsPDF（cdnjs から読み込み）で
+各ページを描画して 254mm × 142.9mm・11ページのPDFを生成し、ビューアの保存機能に渡します。
+ライブラリが読み込めない環境では、HTML書き出し→ローカルで印刷、を案内します。
 
 静的ホスティングに置く場合はサーバー側の処理が一切不要（`dist/web` をそのままアップロード）。
 入力内容は閲覧者それぞれのブラウザ内にのみ保存され、どこにも送信されません。

@@ -84,6 +84,7 @@ button.ghost,.file-btn{background:#fff;color:#33475e;border-color:#cfd8e3}
 .zoom input{width:110px;accent-color:var(--blue)}
 #preview{flex:1;overflow:auto;padding:20px 0 60px;background:#eef1f5}
 #measure{position:fixed;left:-20000px;top:0;width:960px;height:540px;overflow:hidden;visibility:hidden;pointer-events:none}
+#render{position:fixed;left:-20000px;top:0;width:960px;height:540px;overflow:hidden;pointer-events:none;background:#fff}
 .stage{margin:0 auto 20px;box-shadow:0 4px 20px rgba(16,42,69,.16);background:#fff;position:relative}
 .stage .pno{
   position:absolute;right:-1px;top:-21px;font-size:10px;font-weight:700;color:var(--muted);
@@ -109,6 +110,8 @@ button.ghost,.file-btn{background:#fff;color:#33475e;border-color:#cfd8e3}
 .ovl-p{margin:0;font-size:11.5px;color:var(--muted);line-height:1.7}
 .ovl-t{flex:1;min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;white-space:pre}
 .ovl-b{display:flex;gap:8px;justify-content:flex-end}
+.pg-bar{width:100%;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.pg-bar i{display:block;height:100%;width:0;background:var(--blue);transition:width .2s}
 
 /* ============ スライド（提案書本体 960x540） ============ */
 .slide{
@@ -339,7 +342,7 @@ button.ghost,.file-btn{background:#fff;color:#33475e;border-color:#cfd8e3}
   .stage+.stage{break-before:page;page-break-before:always}
   .stage>.slide{transform:none !important}
   .stage .pno{display:none}
-  #measure{display:none !important}
+  #measure,#render{display:none !important}
   .slide{break-inside:avoid;page-break-inside:avoid}
 }
 </style>
@@ -367,6 +370,7 @@ button.ghost,.file-btn{background:#fff;color:#33475e;border-color:#cfd8e3}
   </main>
 </div>
 <div id="measure"></div>
+<div id="render"></div>
 <script src="assets/units.js"></script>
 <script src="assets/app.js"></script>
 </body>
