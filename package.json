@@ -11,6 +11,7 @@
     "strings": "node tools/strings.js",
     "unused": "node tools/unused.js",
     "mobile": "node tools/mobile-audit.js",
+    "sprites": "node tools/sprite-sheet.js",
     "test:late": "node tools/smoke-late.js",
     "balance": "node tools/balance.js",
     "playthrough": "node tools/playthrough.js",
