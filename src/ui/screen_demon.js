@@ -53,22 +53,31 @@ G.UI.register('demon', {
         return;
       }
 
-      const group = f.boss ? [f.boss] : G.util.choice(f.enemies);
+      // 魔王を一度倒していれば、再挑戦では真魔王から始める。
+      // 倒した相手ともう一度戦わせるのは筋が通らないし、
+      // 長い前半戦をやり直させるのは単に苦行になる。
+      const retryFinal = !!f.second && G.State.flag('demon_lord_down');
+      const group = retryFinal ? [f.second] : (f.boss ? [f.boss] : G.util.choice(f.enemies));
       const e = G.ENEMIES[group[0]];
+      const isBossFight = retryFinal || !!f.boss;
 
       const ok = await G.UI.confirm(f.name, `
-        <p>${f.boss ? `<b class="gold">${G.util.esc(e.name)}</b> が待ち構えている。` :
+        ${retryFinal ? '<p>倒れた魔王の亡骸から立ち上った黒い霧が、まだそこに渦巻いている。</p>' : ''}
+        <p>${isBossFight ? `<b class="gold">${G.util.esc(e.name)}</b> が待ち構えている。` :
           `${group.map(x => G.ENEMIES[x].name).join('、')} が立ちはだかった。`}</p>
-        ${f.boss ? '<p class="dim">ボス戦では逃げられない。</p>' : ''}`,
+        ${isBossFight ? '<p class="dim">ボス戦では逃げられない。</p>' : ''}`,
         '戦う', 'ひきかえす');
       if (!ok) return;
 
       G.BattleUI.start(group, {
-        canFlee: !f.boss,
-        intro: f.boss ? (e.intro || '') : '',
+        canFlee: !isBossFight,
+        intro: isBossFight ? (e.intro || '') : '',
         onEnd: async out => {
           if (out.result !== 'win') { G.State.save(); G.UI.show('demon'); return; }
           await G.UI.showLevelReports(out.levelReports);
+
+          // 真魔王だけに挑んで勝った場合はそのまま終幕へ
+          if (retryFinal) { G.Story.onEnding(); return; }
 
           // 真魔王は魔王を倒した直後に続けて現れる。
           // 消耗したまま最難関に挑ませると、負けたときに魔王戦からやり直しになり
@@ -78,6 +87,7 @@ G.UI.register('demon', {
               <p>膝をついた魔王の体から、黒い霧が噴き出す。</p>
               <p>「———— 足りぬ。まだ、足りぬのだ」</p>
               <p class="dim">魔力が膨れ上がり、空間そのものが軋んだ。</p>`);
+            G.State.setFlag('demon_lord_down');
             G.State.restParty();
             G.State.save();
             G.UI.playStory(G.STORY.goddess_blessing, () => {

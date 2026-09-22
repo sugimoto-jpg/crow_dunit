@@ -99,6 +99,7 @@ python3 -m http.server 8000   # → http://localhost:8000
 
 ```bash
 node tools/lint-text.js        # 日本語テキストへの異物混入を検出
+node tools/test-rules.js       # ルールの境界条件を検証（学費未納・留年・装備中の売却など）
 node tools/balance.js          # 進行度ごとの勝率を多数回試行で測る
 node tools/diag.js             # パーティ火力と敵の耐久を突き合わせる
 node tools/measure-party.js    # パーティ火力曲線を実測して JSON に保存
@@ -107,6 +108,8 @@ node tools/playthrough.js      # 開始から魔王討伐まで自動で通し�
 node tools/smoke.js            # 実ブラウザで序盤を操作し JS エラーを検出
 node tools/smoke-late.js       # 実ブラウザで卒業〜エンディングまでを確認
 ```
+
+`npm test` で lint・ルール検証・ブラウザ操作の確認をまとめて実行します。
 
 ブラウザ検証には Playwright を使います（環境に同梱の Chromium を利用するため
 ブラウザのダウンロードは不要です）。

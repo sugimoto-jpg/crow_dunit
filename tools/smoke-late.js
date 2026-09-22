@@ -70,17 +70,23 @@ const step = s => console.log('  ' + s);
         .sort((x, y) => x.hp / x.maxHp - y.hp / y.maxHp)[0];
       const ofKind = k => list.map(id => ({ id, sk: G.SKILLS[id] })).filter(x => x.sk && x.sk.kind === k);
 
-      // 1. 倒れた仲間がいれば蘇生する
+      const holds = id => G.State.countItem(id) > 0;
+
+      // 1. 倒れた仲間がいれば蘇生する（技がなければ道具で）
       if (dead) {
         const rev = list.map(id => ({ id, sk: G.SKILLS[id] })).find(x => x.sk && x.sk.revive);
         if (rev) return { id: rev.id, target: dead.uid, why: '蘇生' };
+        if (holds('phoenix_tail')) return { item: 'phoenix_tail', target: dead.uid, why: '蘇生(道具)' };
       }
-      // 2. 大きく削られている仲間がいれば回復する
+      // 2. 大きく削られている仲間がいれば回復する（技がなければ道具で）
       if (hurt && hurt.hp < hurt.maxHp * 0.5) {
         const heals = ofKind('heal').sort((a, c) => c.sk.power - a.sk.power);
         if (heals.length) {
           const h = heals[0];
           return { id: h.id, target: h.sk.target === 'allies' ? null : hurt.uid, why: '回復' };
+        }
+        for (const id of ['elixir', 'hi_potion', 'potion']) {
+          if (holds(id)) return { item: id, target: hurt.uid, why: '回復(道具)' };
         }
       }
       // 3. それ以外は期待ダメージが最大の技
@@ -96,11 +102,25 @@ const step = s => console.log('  ' + s);
       return top ? { id: top, target: null, why: '攻撃' } : null;
     }, ids);
 
-    if (plan && plan.id) await tap(page.locator(`[data-act="sk"][data-id="${plan.id}"]`));
-    else { await tap(page.locator('[data-act="back"]')); await tap(page.locator('[data-act="atk"]')); }
+    if (plan && plan.id) {
+      await tap(page.locator(`[data-act="sk"][data-id="${plan.id}"]`));
+    } else if (plan && plan.item) {
+      // 技で賄えないときは道具を使う（実プレイヤーなら当然使う）
+      await tap(page.locator('[data-act="back"]'));
+      await tap(page.locator('[data-act="item"]'));
+      const it = page.locator(`[data-act="it"][data-id="${plan.item}"]`);
+      if (await it.count()) await tap(it.first());
+      else { await tap(page.locator('[data-act="back"]')); await tap(page.locator('[data-act="atk"]')); }
+    } else {
+      await tap(page.locator('[data-act="back"]'));
+      await tap(page.locator('[data-act="atk"]'));
+    }
 
-    // 対象選択が出たら選ぶ
-    if (await has('#field .enemy.selectable')) {
+    // 対象選択が出たら選ぶ（蘇生対象は .down、それ以外は .selectable）
+    const downed = page.locator(`#party .ally[data-uid="${plan && plan.target}"]`);
+    if (plan && plan.item === 'phoenix_tail' && await downed.count()) {
+      await tap(downed.first());
+    } else if (await has('#field .enemy.selectable')) {
       await tap(page.locator('#field .enemy.selectable').first());
     } else if (await has('#party .ally.selectable')) {
       const want = plan && plan.target
@@ -223,6 +243,32 @@ const step = s => console.log('  ' + s);
   await page.waitForSelector('[data-act="floor"]');
   await shot('12-demon');
   step('魔王城の階層一覧を表示');
+
+  /* 魔王を倒した後に真魔王へ負けたら、再挑戦は真魔王から始まること */
+  await page.evaluate(() => {
+    G.State.setFlag('met_demon_lord');
+    G.State.setFlag('demon_lord_down');
+    G.UI.show('demon');
+  });
+  await tap(page.locator('[data-act="floor"]').last());
+  await page.waitForTimeout(250);
+  const b = page.locator('#modal-actions .btn', { hasText: '戦う' });
+  if (await b.count()) await tap(b.first());
+  await page.waitForSelector('.battle-field', { timeout: 8000 });
+  const foe = await page.evaluate(() => G.BattleUI.bs.b.enemies[0].enemyId);
+  if (foe !== 'demon_lord_2') {
+    errors.push(`魔王を倒した後の再挑戦なのに ${foe} と戦わされている`);
+  } else {
+    step('魔王撃破後の再挑戦は真魔王から始まる');
+  }
+  // 検証用の状態を戻して、本来の流れをやり直す
+  await page.evaluate(() => {
+    G.State.setFlag('demon_lord_down', false);
+    G.State.restParty();
+    G.UI.el('nav').classList.remove('hidden');
+    G.UI.show('demon');
+  });
+  await page.waitForSelector('[data-act="floor"]');
 
   /* 魔王 → 真魔王 → エンディング。全滅したら立て直して再挑戦する。 */
   const enterTop = async () => {
