@@ -4,6 +4,7 @@ window.G = window.G || {};
 G.UI.register('home', {
   render() {
     const d = G.State.d;
+    const au = (G.Audio && G.Audio.settings) || { bgm: false, se: false };
     const notices = [];
 
     if (!d.graduated && !d.tuitionPaid) {
@@ -79,6 +80,15 @@ G.UI.register('home', {
         <span class="btn-sub">HPとMPが全回復し、翌日になります（残り ${d.ap} AP を捨てます）</span>
       </button>
       <button class="btn" data-act="save">💾 セーブする<span class="btn-sub">進行状況をこの端末に保存します</span></button>
+
+      <h2>音</h2>
+      <div class="row" style="gap:8px">
+        <button class="btn sm ${au.bgm ? '' : 'ghost'}" data-act="bgm">${au.bgm ? '🔊' : '🔇'} BGM</button>
+        <button class="btn sm ${au.se ? '' : 'ghost'}" data-act="se">${au.se ? '🔔' : '🔕'} 効果音</button>
+      </div>
+      <p class="dim" style="font-size:11.5px;margin-top:4px">
+        音が出ないときは、端末の音量と、iPhone の場合は本体横のマナーモードをご確認ください。</p>
+
       <button class="btn ghost" data-act="title">タイトルへもどる</button>`;
   },
 
@@ -96,6 +106,18 @@ G.UI.register('home', {
       for (const e of events) G.UI.toast(e.text, e.type === 'exam' ? 'gold' : 'good');
       G.UI.refresh();
       G.Story.check();
+    });
+
+    G.UI.on('bgm', () => {
+      if (!G.Audio) return;
+      G.Audio.setEnabled('bgm', !G.Audio.settings.bgm);
+      G.UI.show('home');
+    });
+    G.UI.on('se', () => {
+      if (!G.Audio) return;
+      G.Audio.setEnabled('se', !G.Audio.settings.se);
+      G.Audio.se('se_ok');
+      G.UI.show('home');
     });
 
     G.UI.on('save', () => {

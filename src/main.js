@@ -149,6 +149,33 @@ function boot(resume) {
   const origModal = G.UI.modal;
   G.UI.modal = function (opts) { armBack(); return origModal.call(G.UI, opts); };
 
+  /* ---------- 音 ----------
+   * スマートフォンでは、画面を1度も触っていない状態では音を鳴らせない。
+   * 最初のタップで音の出口を開く（プレイヤーには何も見えない）。 */
+  const unlockAudio = () => {
+    if (!G.Audio) return;
+    G.Audio.unlock();
+    document.removeEventListener('pointerdown', unlockAudio);
+    document.removeEventListener('keydown', unlockAudio);
+  };
+  document.addEventListener('pointerdown', unlockAudio);
+  document.addEventListener('keydown', unlockAudio);
+
+  /* ボタンを押したときの効果音。押せる要素をまとめて拾う。 */
+  document.addEventListener('pointerdown', ev => {
+    if (!G.Audio) return;
+    const el = ev.target && ev.target.closest && ev.target.closest('button, [data-act], [data-nav], [data-pick]');
+    if (!el || el.disabled) return;
+    const cancel = /やめる|もどる|戻る|閉じる|キャンセル/.test(el.textContent || '');
+    G.Audio.se(cancel ? 'se_cancel' : 'se_ok');
+  }, true);
+
+  /* 他のアプリに切り替わったら音を止める（鳴りっぱなしは非常に嫌われる） */
+  document.addEventListener('visibilitychange', () => {
+    if (!G.Audio) return;
+    if (document.visibilityState === 'hidden') G.Audio.suspend(); else G.Audio.resume();
+  });
+
   /* 保存できない環境（プライベートモードなど）では、先に伝える。
    * 黙っていると「遊べたのに閉じたら全部消えた」になる。 */
   if (!G.Storage.persistent) {

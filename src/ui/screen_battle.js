@@ -34,6 +34,13 @@ G.BattleUI = {
     G.UI.currentArgs = null;
     G.UI.el('nav').classList.add('hidden');
 
+    /* 相手に応じて曲を変える。魔王は専用の曲。 */
+    if (G.Audio) {
+      const ids = b.enemies.map(e => e.enemyId);
+      G.Audio.bgm(ids.some(i => /demon_lord/.test(i)) ? 'bgm_final'
+        : b.enemies.some(e => e.isBoss) ? 'bgm_boss' : 'bgm_battle');
+    }
+
     G.BattleUI.mount();
     if (opts.intro) G.BattleUI.log(opts.intro, 'sys');
     G.BattleUI.log(`${b.enemies.map(e => e.name).join('、')} が現れた！`, 'hi');
@@ -217,6 +224,10 @@ G.BattleUI = {
     let prev = null;
     for (const ev of events) {
       if (ev.text) {
+        if (G.Audio) {
+          if (ev.type === 'down') G.Audio.se('se_alert');
+          else if (ev.type === 'status') G.Audio.se('se_status');
+        }
         const cls = ev.type === 'damage' || ev.type === 'dot' ? 'dmg'
           : ev.type === 'heal' || ev.type === 'revive' ? 'heal'
             : ev.type === 'down' ? 'bad'
@@ -228,11 +239,13 @@ G.BattleUI = {
       if (ev.type === 'use' && ev.actor) {
         const kind = ev.skill ? ev.skill.kind : 'phys';
         const cast = ['mag', 'heal', 'buff', 'debuff', 'special'].includes(kind);
+        if (G.Audio) G.Audio.se(cast ? 'se_magic' : 'se_attack');
         G.BattleUI.animate(ev.actor.uid, cast ? 'is-cast' : 'is-attack', cast ? 900 : 520);
         await sleep((cast ? 260 : 170) * G.BattleUI.speed);
       }
 
       if (ev.type === 'damage' && ev.amount > 0) {
+        if (G.Audio) G.Audio.se('se_hit');
         G.BattleUI.animate(ev.target.uid, 'is-hurt', 420);
         G.BattleUI.popup(ev.target.uid, '-' + ev.amount, ev.crit ? '#ffd96b' : '#ff9a6d');
         // アプリ版では手応えとして短く振動させる（ブラウザでは何も起きない）
@@ -240,10 +253,12 @@ G.BattleUI = {
       } else if (ev.type === 'dot') {
         G.BattleUI.popup(ev.target.uid, '-' + ev.amount, '#b6ff8a');
       } else if (ev.type === 'heal' && ev.amount > 0) {
+        if (G.Audio) G.Audio.se('se_heal');
         G.BattleUI.popup(ev.target.uid, '+' + ev.amount, '#7dffb0');
       } else if (ev.type === 'mp' && ev.amount > 0) {
         G.BattleUI.popup(ev.target.uid, '+' + ev.amount, '#7ad4ff');
       } else if (ev.type === 'revive') {
+        if (G.Audio) G.Audio.se('se_heal');
         G.BattleUI.animate(ev.target.uid, 'is-enter', 500);
       }
 

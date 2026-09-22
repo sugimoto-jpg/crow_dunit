@@ -99,9 +99,12 @@ G.Native.ready = (async function () {
           P.App.exitApp();
         }
       });
-      /* 他のアプリに切り替わったときに保存する */
+      /* 他のアプリに切り替わったときに保存し、音も止める */
       P.App.addListener('appStateChange', ({ isActive }) => {
-        if (!isActive && G.State.data) G.State.save();
+        if (!isActive) {
+          if (G.State.data) G.State.save();
+          if (G.Audio) G.Audio.suspend();
+        } else if (G.Audio) G.Audio.resume();
       });
     } catch (e) { /* 使えなければ何もしない */ }
   }

@@ -24,6 +24,7 @@ G.UI = {
     if (def.mount) def.mount(args);
     G.UI.updateHud();
     G.UI.updateNav(name);
+    G.UI.syncBgm(name);
   },
 
   /* 現在の画面を描き直す */
@@ -103,6 +104,22 @@ G.UI = {
   setChromeVisible(v) {
     G.UI.el('hud').classList.toggle('hidden', !v);
     G.UI.el('nav').classList.toggle('hidden', !v);
+  },
+
+  /* ---------- BGM ---------- */
+  /* 画面ごとに曲を決める。同じ曲が続くときは鳴らし直さない
+   * （G.Audio 側で判定しているので、ここは毎回呼んでよい）。 */
+  SCREEN_BGM: {
+    title: 'bgm_title',
+    home: 'bgm_academy', academy: 'bgm_academy', job: 'bgm_academy', status: 'bgm_academy',
+    town: 'bgm_town', guild: 'bgm_town',
+    demon: 'bgm_boss',
+  },
+
+  syncBgm(name) {
+    if (!G.Audio) return;
+    const id = G.UI.SCREEN_BGM[name];
+    if (id) G.Audio.bgm(id);
   },
 
   /* ---------- 戻る操作 ---------- */
