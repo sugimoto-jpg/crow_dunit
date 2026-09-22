@@ -26,7 +26,7 @@ G.ITEMS = {
   silver_sword:{ name:'シルバーソード', type:'weapon', icon:'🤍', price:5200,  mods:{atk:58, res:8},     desc:'魔物に特効を持つ銀の刃。' },
   mithril_blade:{name:'ミスリルブレード',type:'weapon',icon:'💎', price:16000, mods:{atk:95, spd:10},    desc:'軽く、硬く、折れない。' },
   flame_tongue:{ name:'フレイムタン',   type:'weapon', icon:'🔥', price:32000, mods:{atk:130, mag:25},   el:'fire', desc:'刀身が常に燃えている。' },
-  excalibur:   { name:'聖剣エクスカリバー',type:'weapon',icon:'🌟',price:0, mods:{atk:210, mag:60, res:30}, el:'light', desc:'魔王を討つために鍛えられた選ばれし刃。', noShop:true },
+  excalibur:   { name:'聖剣エクスカリバー',type:'weapon',icon:'🌟',price:0, mods:{atk:210, mag:60, res:30}, el:'light', desc:'魔王を討つために鍛えられた選ばれし刃。', noShop:true, unique:true },
 
   oak_staff:   { name:'樫の杖',        type:'weapon', icon:'🪄', price:300,   mods:{mag:12, mp:10},     desc:'学院の入学時に配られる杖。' },
   apprentice_wand:{name:'見習いの魔杖', type:'weapon', icon:'✨', price:1300,  mods:{mag:28, mp:22},     desc:'魔力の通りが良い。' },
@@ -65,7 +65,7 @@ G.ITEMS = {
   life_amulet: { name:'生命のお守り',  type:'accessory', icon:'❤️', price:4200, mods:{hp:220, def:10},  desc:'最大HPが大きく伸びる。' },
   scholar_glasses:{name:'学者の眼鏡',  type:'accessory', icon:'👓', price:2000, mods:{mag:10}, study:0.35, desc:'授業での習熟度が35%上がる。' },
   lucky_coin:  { name:'幸運の金貨',    type:'accessory', icon:'🪙', price:3600, mods:{}, goldBonus:0.35, desc:'クエスト報酬が35%増える。' },
-  hero_proof:  { name:'勇者の証',      type:'accessory', icon:'🏅', price:0,    mods:{atk:40,def:40,mag:40,res:40,spd:20,hp:400}, noShop:true, desc:'魔王に挑む資格を持つ者の証。' },
+  hero_proof:  { name:'勇者の証',      type:'accessory', icon:'🏅', price:0,    mods:{atk:40,def:40,mag:40,res:40,spd:20,hp:400}, noShop:true, unique:true, desc:'魔王に挑む資格を持つ者の証。' },
 
   /* ---------- 素材・その他 ---------- */
   slime_gel:   { name:'スライムゼリー', type:'material', icon:'🫧', price:18,  desc:'錬金術の基礎素材。' },

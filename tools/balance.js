@@ -107,11 +107,18 @@ function setupParty({ level, jobPath, companions = [], equip = {} }) {
   }
   // 装備：候補が配列なら、そのキャラが最も強くなるものを自動で選ぶ
   //（実プレイでは各自が適した武器を持つため、全員に同じ剣を持たせると測定が歪む）
+  // 一点物（聖剣・勇者の証）は主人公だけが持てる。
+  // 全員に配ると終盤の実力を大きく過大評価してしまう。
+  const takenUnique = new Set();
   for (const c of G.State.d.party) {
     for (const [slot, val] of Object.entries(equip)) {
-      const cands = (Array.isArray(val) ? val : [val]).filter(id => G.ITEMS[id]);
+      let cands = (Array.isArray(val) ? val : [val]).filter(id => G.ITEMS[id]);
+      if (!c.isPlayer) cands = cands.filter(id => !G.ITEMS[id].unique);
+      cands = cands.filter(id => !takenUnique.has(id));
       if (!cands.length) continue;
-      c.equip[slot] = cands.length === 1 ? cands[0] : bestFor(c, slot, cands);
+      const pick = cands.length === 1 ? cands[0] : bestFor(c, slot, cands);
+      if (G.ITEMS[pick].unique) takenUnique.add(pick);
+      c.equip[slot] = pick;
     }
     G.Char.syncSkills(c);
     G.Char.fullRestore(c);
@@ -141,7 +148,24 @@ function trial(name, setup, enemyIds, n = 200) {
   return wr;
 }
 
-module.exports = { G, trial, runBattle, setupParty, allyAI };
+/* 実際の最終決戦は「魔王 → 全回復 → 真魔王」の二段階。
+ * 通しでどれだけ勝てるかを測る。 */
+function finalGauntlet(setup, n = 120) {
+  let first = 0, both = 0;
+  for (let i = 0; i < n; i++) {
+    setupParty(setup);
+    if (runBattle(['demon_lord_1']).result !== 'win') continue;
+    first++;
+    G.State.restParty();                 // 女神の加護による全回復
+    if (runBattle(['demon_lord_2']).result === 'win') both++;
+  }
+  console.log(
+    `${'最終決戦の通し（魔王→全回復→真魔王）'.padEnd(30, '　')} `
+    + `前半 ${(first / n * 100).toFixed(0)}%  通し ${(both / n * 100).toFixed(0)}%`);
+  return both / n;
+}
+
+module.exports = { G, trial, runBattle, setupParty, allyAI, finalGauntlet };
 
 if (require.main === module) {
   console.log('=== 序盤（学院入学〜Fランク / 主人公のみ or リィナ同行） ===');
@@ -176,8 +200,11 @@ if (require.main === module) {
   trial('Lv46 昇格試験 紅蓮竜', { level: 46, jobPath: ['apprentice_knight', 'swordsman', 'magic_swordsman'], companions: ['riina', 'velt', 'noa'], equip: { weapon: ['flame_tongue','world_tree_staff','shadow_fang'], armor: ['dragon_mail','holy_vestment','shadow_garb'], accessory:'life_amulet' } }, ['boss_flame_dragon']);
 
   console.log('\n=== 終盤・魔王城（Lv50-58） ===');
-  trial('Lv48 vs 門番ガルヴァス', { level: 48, jobPath: ['apprentice_knight', 'swordsman', 'magic_swordsman', 'sword_saint'], companions: ['riina', 'velt', 'noa'], equip: { weapon: ['flame_tongue','world_tree_staff','shadow_fang'], armor: ['dragon_mail','star_robe','shadow_garb'], accessory: 'hero_proof' } }, ['gate_keeper']);
-  trial('Lv51 vs 四天王セレス', { level: 51, jobPath: ['apprentice_knight', 'swordsman', 'magic_swordsman', 'sword_saint'], companions: ['riina', 'velt', 'noa'], equip: { weapon: ['flame_tongue','world_tree_staff','shadow_fang'], armor: ['dragon_mail','star_robe','shadow_garb'], accessory: 'hero_proof' } }, ['four_general_1']);
-  trial('Lv55 vs 魔王ヴァルドレア', { level: 55, jobPath: ['apprentice_knight', 'swordsman', 'magic_swordsman', 'sword_saint'], companions: ['riina', 'velt', 'noa'], equip: { weapon: ['excalibur','world_tree_staff','shadow_fang'], armor: ['dragon_mail','star_robe','shadow_garb'], accessory: 'hero_proof' } }, ['demon_lord_1']);
-  trial('Lv58 vs 真魔王', { level: 58, jobPath: ['apprentice_knight', 'swordsman', 'magic_swordsman', 'sword_saint'], companions: ['riina', 'velt', 'noa'], equip: { weapon: ['excalibur','world_tree_staff','shadow_fang'], armor: ['dragon_mail','star_robe','shadow_garb'], accessory: 'hero_proof' } }, ['demon_lord_2']);
+  trial('Lv50 vs 門番ガルヴァス', { level: 50, jobPath: ['apprentice_knight', 'swordsman', 'magic_swordsman', 'sword_saint'], companions: ['riina', 'velt', 'noa'], equip: { weapon: ['flame_tongue','world_tree_staff','shadow_fang'], armor: ['dragon_mail','star_robe','shadow_garb'], accessory: ['hero_proof','life_amulet','mana_pendant'] } }, ['gate_keeper']);
+  trial('Lv54 vs 四天王セレス', { level: 54, jobPath: ['apprentice_knight', 'swordsman', 'magic_swordsman', 'sword_saint'], companions: ['riina', 'velt', 'noa'], equip: { weapon: ['flame_tongue','world_tree_staff','shadow_fang'], armor: ['dragon_mail','star_robe','shadow_garb'], accessory: ['hero_proof','life_amulet','mana_pendant'] } }, ['four_general_1']);
+  trial('Lv58 vs 魔王ヴァルドレア', { level: 58, jobPath: ['apprentice_knight', 'swordsman', 'magic_swordsman', 'sword_saint'], companions: ['riina', 'velt', 'noa'], equip: { weapon: ['excalibur','world_tree_staff','shadow_fang'], armor: ['dragon_mail','star_robe','shadow_garb'], accessory: ['hero_proof','life_amulet','mana_pendant'] } }, ['demon_lord_1']);
+  trial('Lv62 vs 真魔王', { level: 62, jobPath: ['apprentice_knight', 'swordsman', 'magic_swordsman', 'sword_saint'], companions: ['riina', 'velt', 'noa'], equip: { weapon: ['excalibur','world_tree_staff','shadow_fang'], armor: ['dragon_mail','star_robe','shadow_garb'], accessory: ['hero_proof','life_amulet','mana_pendant'] } }, ['demon_lord_2']);
+
+  console.log('');
+  finalGauntlet({ level: 60, jobPath: ['apprentice_knight', 'swordsman', 'magic_swordsman', 'sword_saint'], companions: ['riina', 'velt', 'noa'], equip: { weapon: ['excalibur','world_tree_staff','shadow_fang'], armor: ['dragon_mail','star_robe','shadow_garb'], accessory: ['hero_proof','life_amulet','mana_pendant'] } });
 }

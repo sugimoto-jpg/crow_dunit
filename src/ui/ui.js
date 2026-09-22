@@ -53,6 +53,15 @@ G.UI = {
 
     const p = d.player;
     const der = G.Char.derived(p);
+
+    // 戦闘中はキャラ側のHP/MPが戦闘終了まで更新されないので、
+    // 戦闘ユニットの値を見て表示する（そうしないとHUDだけ開始時のまま固まる）。
+    let curHp = p.hp, curMp = p.mp;
+    if (G.UI.current === 'battle' && G.BattleUI && G.BattleUI.bs) {
+      const u = G.BattleUI.bs.b.allies.find(a => a.ref === p);
+      if (u) { curHp = u.hp; curMp = u.mp; }
+    }
+
     G.UI.el('hud-player').textContent = p.name;
     G.UI.el('hud-job').textContent = G.Char.jobName(p);
     G.UI.el('hud-lv').textContent = 'Lv.' + p.level;
@@ -61,8 +70,8 @@ G.UI = {
       G.UI.el(fill).style.width = (max > 0 ? G.util.clamp(cur / max, 0, 1) * 100 : 0) + '%';
       G.UI.el(text).textContent = label || `${Math.floor(cur)}/${max}`;
     };
-    set('hud-hp-fill', 'hud-hp-text', p.hp, der.hp);
-    set('hud-mp-fill', 'hud-mp-text', p.mp, der.mp);
+    set('hud-hp-fill', 'hud-hp-text', Math.max(0, curHp), der.hp);
+    set('hud-mp-fill', 'hud-mp-text', curMp, der.mp);
     const need = G.Char.expToNext(p.level);
     set('hud-xp-fill', 'hud-xp-text', p.exp, need, `次のLvまで ${G.util.g(need - p.exp)}`);
 

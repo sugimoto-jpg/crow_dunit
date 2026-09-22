@@ -52,35 +52,62 @@ const step = s => console.log('  ' + s);
   const tap = async loc => { await loc.click({ force: true }); await page.waitForTimeout(160); };
 
   /* 戦闘で1手だけ進める。
-   * 適当な技を選ぶと決着まで異常に長くなるので、
-   * 「いま最も期待ダメージが高い技」を画面の情報から選ぶ。 */
+   * 回復も蘇生もせずに殴り続けると当然負けるので、
+   * 「そこそこ賢いプレイヤー」として、倒れた仲間の蘇生 → 回復 → 攻撃 の順に判断する。 */
   const battleStep = async () => {
     if (!(await has('[data-act="atk"]'))) { await page.waitForTimeout(120); return; }
     await tap(page.locator('[data-act="skill"]'));
     const ids = await page.$$eval('[data-act="sk"]:not([disabled])', els => els.map(e => e.dataset.id));
-    let best = null;
-    if (ids.length) {
-      best = await page.evaluate(list => {
-        const b = G.BattleUI.bs.b;
-        const actor = G.Battle.unitById(b, b.order[b.cursor]);
-        const foes = G.Battle.livingEnemies(b);
-        if (!actor || !foes.length) return null;
-        let top = null, topDmg = 0;
-        for (const id of list) {
-          const sk = G.SKILLS[id];
-          if (!sk || !['phys', 'mag', 'hybrid'].includes(sk.kind)) continue;
-          const targets = sk.target === 'all' ? foes : [foes[0]];
-          let d = 0;
-          for (const t of targets) d += G.Battle.calcDamage(actor, t, sk).amount * (sk.hits || 1);
-          if (d > topDmg) { topDmg = d; top = id; }
+
+    const plan = await page.evaluate(list => {
+      const b = G.BattleUI.bs.b;
+      const actor = G.Battle.unitById(b, b.order[b.cursor]);
+      const foes = G.Battle.livingEnemies(b);
+      if (!actor || !foes.length) return null;
+      const allies = b.allies;
+      const dead = allies.find(a => a.hp <= 0);
+      const hurt = allies.filter(a => a.hp > 0)
+        .sort((x, y) => x.hp / x.maxHp - y.hp / y.maxHp)[0];
+      const ofKind = k => list.map(id => ({ id, sk: G.SKILLS[id] })).filter(x => x.sk && x.sk.kind === k);
+
+      // 1. 倒れた仲間がいれば蘇生する
+      if (dead) {
+        const rev = list.map(id => ({ id, sk: G.SKILLS[id] })).find(x => x.sk && x.sk.revive);
+        if (rev) return { id: rev.id, target: dead.uid, why: '蘇生' };
+      }
+      // 2. 大きく削られている仲間がいれば回復する
+      if (hurt && hurt.hp < hurt.maxHp * 0.5) {
+        const heals = ofKind('heal').sort((a, c) => c.sk.power - a.sk.power);
+        if (heals.length) {
+          const h = heals[0];
+          return { id: h.id, target: h.sk.target === 'allies' ? null : hurt.uid, why: '回復' };
         }
-        return top;
-      }, ids);
-    }
-    if (best) await tap(page.locator(`[data-act="sk"][data-id="${best}"]`));
+      }
+      // 3. それ以外は期待ダメージが最大の技
+      let top = null, td = 0;
+      for (const id of list) {
+        const sk = G.SKILLS[id];
+        if (!sk || !['phys', 'mag', 'hybrid'].includes(sk.kind)) continue;
+        const ts = sk.target === 'all' ? foes : [foes[0]];
+        let d = 0;
+        for (const t of ts) d += G.Battle.calcDamage(actor, t, sk).amount * (sk.hits || 1);
+        if (d > td) { td = d; top = id; }
+      }
+      return top ? { id: top, target: null, why: '攻撃' } : null;
+    }, ids);
+
+    if (plan && plan.id) await tap(page.locator(`[data-act="sk"][data-id="${plan.id}"]`));
     else { await tap(page.locator('[data-act="back"]')); await tap(page.locator('[data-act="atk"]')); }
-    if (await has('#field .enemy.selectable')) await tap(page.locator('#field .enemy.selectable').first());
-    else if (await has('#party .ally.selectable')) await tap(page.locator('#party .ally.selectable').first());
+
+    // 対象選択が出たら選ぶ
+    if (await has('#field .enemy.selectable')) {
+      await tap(page.locator('#field .enemy.selectable').first());
+    } else if (await has('#party .ally.selectable')) {
+      const want = plan && plan.target
+        ? page.locator(`#party .ally.selectable[data-uid="${plan.target}"]`) : null;
+      if (want && await want.count()) await tap(want);
+      else await tap(page.locator('#party .ally.selectable').first());
+    }
     await page.waitForTimeout(90);
   };
 
@@ -100,7 +127,9 @@ const step = s => console.log('  ' + s);
             story: !!document.querySelector('[data-act="next"]'),
             foes: inBattle && G.BattleUI.bs
               ? G.BattleUI.bs.b.enemies.map(e => `${e.name} ${e.hp}/${e.maxHp}`).join(' / ') : '',
-            hp: G.State.d.party.map(c => c.hp).join(','),
+            hp: inBattle && G.BattleUI.bs
+              ? G.BattleUI.bs.b.allies.map(a => a.hp).join(',')
+              : G.State.d.party.map(c => c.hp).join(','),
           };
         });
         console.log(`    [${label} ${String(i).padStart(3)}] 画面=${w.screen}`
@@ -134,7 +163,7 @@ const step = s => console.log('  ' + s);
   await page.evaluate(() => {
     G.State.newGame('終盤テスト');
     for (const k of ['riina', 'velt', 'noa']) G.State.recruit(k);
-    for (const j of ['apprentice_knight', 'swordsman', 'magic_swordsman']) {
+    for (const j of ['apprentice_knight', 'swordsman', 'magic_swordsman', 'sword_saint']) {
       while (G.State.d.player.level < G.JOBS[j].req) G.Char.levelUp(G.State.d.player);
       G.Char.changeJob(G.State.d.player, j);
     }
@@ -170,12 +199,18 @@ const step = s => console.log('  ' + s);
   /* 装備を整えて魔王城の最上階へ */
   await page.evaluate(() => {
     const d = G.State.d;
-    G.Char.equipItem(d.player, 'excalibur');
-    G.Char.equipItem(d.player, 'hero_proof');
+    // 役割に合った装備を配る。
+    // 剣士に杖を持たせるような配り方をすると、ゲーム側の問題と区別がつかなくなる。
+    const LOADOUT = {
+      player: ['excalibur', 'dragon_mail', 'hero_proof'],
+      riina:  ['world_tree_staff', 'star_robe', 'mana_pendant'],
+      velt:   ['flame_tongue', 'dragon_mail', 'life_amulet'],
+      noa:    ['shadow_fang', 'shadow_garb', 'swift_boots'],
+    };
     for (const c of d.party) {
-      if (!c.isPlayer) {
-        G.State.addItem('dragon_mail'); G.State.addItem('world_tree_staff');
-        G.Char.equipItem(c, 'dragon_mail'); G.Char.equipItem(c, 'world_tree_staff');
+      for (const id of (LOADOUT[c.key] || [])) {
+        G.State.addItem(id);
+        G.Char.equipItem(c, id);
       }
       while (c.level < 62) { G.Char.levelUp(c); let g = 0; while (G.Char.autoJob(c) && g++ < 6); }
       G.Char.fullRestore(c);

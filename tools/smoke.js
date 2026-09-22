@@ -160,8 +160,25 @@ const step = s => { steps.push(s); console.log('  ' + s); };
 
   // 戦闘：勝つか負けるまで「たたかう」を押し続ける
   let turns = 0;
+  let hudChecked = false;
   for (; turns < 120; turns++) {
     if (await page.locator('#modal:not(.hidden)').count()) break;
+    // 戦闘中もHUDのHPが戦闘ユニットの値を追っているか確かめる
+    if (!hudChecked) {
+      const chk = await page.evaluate(() => {
+        const bs = G.BattleUI.bs;
+        if (!bs) return null;
+        const u = bs.b.allies.find(a => a.ref === G.State.d.player);
+        if (!u || u.hp === u.maxHp) return null;   // まだ無傷なら判定しない
+        return { unit: u.hp, hud: document.getElementById('hud-hp-text').textContent };
+      });
+      if (chk) {
+        hudChecked = true;
+        if (!chk.hud.startsWith(String(chk.unit))) {
+          errors.push(`戦闘中のHUDが更新されていない (戦闘=${chk.unit} HUD=${chk.hud})`);
+        } else step(`戦闘中のHUD表示を確認 (${chk.hud})`);
+      }
+    }
     if (await has('[data-act="atk"]')) {
       await page.click('[data-act="atk"]');
       await page.waitForTimeout(150);

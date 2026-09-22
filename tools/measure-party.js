@@ -11,7 +11,7 @@ const GEAR = [
   { lv:40, weapon:['flame_tongue','world_tree_staff','shadow_fang'], armor:['dragon_mail','holy_vestment','shadow_garb'], accessory:'life_amulet' },
   { lv:50, weapon:['flame_tongue','world_tree_staff','shadow_fang'], armor:['dragon_mail','star_robe','shadow_garb'], accessory:'life_amulet' },
   // 卒業時に聖剣と勇者の証を受け取るため、終盤は一段跳ね上がる
-  { lv:54, weapon:['excalibur','world_tree_staff','shadow_fang'], armor:['dragon_mail','star_robe','shadow_garb'], accessory:'hero_proof' },
+  { lv:54, weapon:['excalibur','world_tree_staff','shadow_fang'], armor:['dragon_mail','star_robe','shadow_garb'], accessory:['hero_proof','life_amulet','mana_pendant'] },
 ];
 const gearFor = lv => GEAR.filter(g => g.lv <= lv).pop();
 const PATH = [{lv:5,job:'apprentice_knight'},{lv:15,job:'swordsman'},{lv:30,job:'magic_swordsman'},{lv:50,job:'sword_saint'}];

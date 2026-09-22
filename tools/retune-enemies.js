@@ -68,6 +68,9 @@ const BOSS_PRESS_MUL = {
   boss_flame_dragon: 0.85,
   four_general_1: 1.35,     // 四天王は歯応えを出す
   four_general_2: 1.15,
+  gate_keeper: 0.80,        // 魔王城の最初の関門。ここで詰まらせない
+  demon_lord_1: 0.88,       // 二段階戦の前半。ここで消耗しすぎないように
+  demon_lord_2: 0.88,
 };
 
 /* 極端な重みは戦闘時間を歪めるので、1.0 寄りに圧縮する */
