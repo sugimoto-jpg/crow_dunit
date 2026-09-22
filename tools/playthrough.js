@@ -59,7 +59,12 @@ function examProjection() {
 }
 
 /* ---------- 本編 ---------- */
-G.State.newGame('アルト');
+/* 難易度は環境変数で切り替える。
+ * 既定は ふつう。easy / hard も通しで遊べることを確かめるため。
+ *   DIFF=hard node tools/playthrough.js */
+const DIFF = process.env.DIFF || 'normal';
+G.State.newGame('アルト', DIFF);
+console.log(`難易度: ${G.DIFFICULTY[G.State.d.difficulty].name}`);
 G.State.recruit('riina');
 G.World.registerGuild();
 

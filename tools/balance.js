@@ -87,9 +87,23 @@ function bestFor(c, slot, cands) {
   return best;
 }
 
+/* 難易度の補正値を、測定のときだけ差し替える。
+ * 「この値にしたら勝率はどうなるか」を試すために使う。
+ * ゲームのデータ（util.js の G.DIFFICULTY）は書き換えない。
+ *   HARD_HP=1.25 HARD_ATK=1.12 DIFF=hard node tools/balance.js
+ */
+if (process.env.HARD_HP || process.env.HARD_ATK) {
+  const hp = Number(process.env.HARD_HP || G.DIFFICULTY.hard.hp);
+  const atk = Number(process.env.HARD_ATK || G.DIFFICULTY.hard.atk);
+  G.DIFFICULTY.hard = Object.assign({}, G.DIFFICULTY.hard, { hp, atk });
+  console.log(`※ 測定用に「むずかしい」を 敵HP${Math.round(hp * 100)}% 敵攻撃${Math.round(atk * 100)}% に差し替えています\n`);
+}
+
 /* パーティを指定の進行度に作る */
 function setupParty({ level, jobPath, companions = [], equip = {} }) {
-  G.State.newGame('テスト');
+  /* 難易度は環境変数で切り替える。既定は ふつう。
+   *   DIFF=hard node tools/balance.js */
+  G.State.newGame('テスト', process.env.DIFF || 'normal');
   const p = G.State.d.player;
   for (const key of companions) G.State.recruit(key);
 
