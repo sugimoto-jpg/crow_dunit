@@ -39,7 +39,10 @@ G.BattleUI = {
     G.BattleUI.log(`${b.enemies.map(e => e.name).join('、')} が現れた！`, 'hi');
     // 登場の動き
     for (const u of b.enemies) G.BattleUI.animate(u.uid, 'is-enter', 500);
-    G.BattleUI.run();
+    // run() は非同期。await せずに走らせるので、中で例外が出ても
+    // 呼び出し側には伝わらない（コマンドが出ないまま固まる）。
+    // guard で包んで、失敗したら必ず画面に出るようにする。
+    G.Err.guard('戦闘の進行', () => G.BattleUI.run());
   },
 
   /* ---------- 骨組み ---------- */
