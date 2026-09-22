@@ -100,7 +100,7 @@ G.UI.register('status', {
       </div>`;
   },
 
-  mount(args) {
+  mount() {
     G.UI.on('pick', ds => G.UI.show('status', { key: ds.id }));
 
     G.UI.on('equip', async ds => {
@@ -150,7 +150,6 @@ G.UI.register('status', {
       G.State.save();
       G.UI.toast('装備を変更した', 'good');
       G.UI.show('status', { key: c.key });
-      void args;
     });
   },
 });

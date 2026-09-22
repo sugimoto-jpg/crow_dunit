@@ -4,8 +4,14 @@ window.G = window.G || {};
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 G.BattleUI = {
-  bs: null,       // { b, resolve, waiting }
-  speed: 1,       // 演出速度の倍率
+  bs: null,       // { b, opts }
+
+  /* 演出の速さ。1手ごとに数秒かかると長期戦がつらいので切り替えられるようにする。 */
+  SPEEDS: { 1: { label: 'ふつう', mult: 1 }, 2: { label: 'はやい', mult: 0.5 }, 3: { label: '瞬速', mult: 0.2 } },
+  get speed() {
+    const n = (G.State.data && G.State.data.battleSpeed) || 2;
+    return (G.BattleUI.SPEEDS[n] || G.BattleUI.SPEEDS[2]).mult;
+  },
 
   /* 戦闘を開始する。onEnd(out, result) が呼ばれる */
   start(enemyIds, opts = {}) {
@@ -41,6 +47,10 @@ G.BattleUI = {
         <div class="party-row" id="party">
           ${b.allies.map(a => G.BattleUI.allyHtml(a, mode)).join('')}
         </div>
+        <div class="row" style="justify-content:flex-end;margin:-4px 0 -2px">
+          <button class="btn sm ghost" data-act="speed">⏩ 演出 ${
+            G.BattleUI.SPEEDS[(G.State.data && G.State.data.battleSpeed) || 2].label}</button>
+        </div>
         <div class="battle-log" id="blog">
           ${b.log.map(l => `<div class="${l.cls}">${G.util.esc(l.text)}</div>`).join('')}
         </div>
@@ -48,6 +58,12 @@ G.BattleUI = {
       </div>`;
     const lg = G.UI.el('blog');
     if (lg) lg.scrollTop = lg.scrollHeight;
+    G.UI.on('speed', () => {
+      const d = G.State.d;
+      d.battleSpeed = d.battleSpeed >= 3 ? 1 : d.battleSpeed + 1;
+      G.State.save();
+      G.BattleUI.render(mode);
+    });
     G.UI.updateHud();
   },
 
@@ -105,6 +121,7 @@ G.BattleUI = {
 
   /* ---------- 演出 ---------- */
   async playEvents(events) {
+    let prev = null;
     for (const ev of events) {
       if (ev.text) {
         const cls = ev.type === 'damage' || ev.type === 'dot' ? 'dmg'
@@ -123,7 +140,10 @@ G.BattleUI = {
       } else if (ev.type === 'mp' && ev.amount > 0) {
         G.BattleUI.popup(ev.target.uid, '+' + ev.amount, '#7ad4ff');
       }
-      await sleep(360 * G.BattleUI.speed);
+      // 多段ヒットの2発目以降は待ち時間を詰める（同じ演出が続くだけなので）
+      const quick = ev.type === 'damage' && prev && prev.type === 'damage' && prev.target === ev.target;
+      prev = ev;
+      await sleep((quick ? 150 : 360) * G.BattleUI.speed);
     }
   },
 

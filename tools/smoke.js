@@ -90,7 +90,10 @@ const step = s => { steps.push(s); console.log('  ' + s); };
   await page.waitForSelector('#name-in');
   await page.fill('#name-in', 'テスト勇者');
   await click('#modal-actions .btn');
-  step('名前を入力してゲーム開始');
+  // 難易度選択
+  await page.waitForSelector('#modal [data-pick]');
+  await click('#modal [data-pick="normal"]');
+  step('名前と難易度を選んでゲーム開始');
 
   await advanceStory();
   await page.waitForTimeout(300);
@@ -106,6 +109,9 @@ const step = s => { steps.push(s); console.log('  ' + s); };
   }));
   let s = await state();
   if (s.party !== 2) errors.push(`リィナが加入していない (party=${s.party})`);
+  if (s.name !== 'テスト勇者') errors.push(`入力した名前が反映されていない (${s.name})`);
+  const diff = await page.evaluate(() => G.State.d.difficulty);
+  if (diff !== 'normal') errors.push(`難易度が保存されていない (${diff})`);
   step(`状態: ${s.name} Lv${s.lv} 所持金${s.gold}G パーティ${s.party}人`);
 
   // 学院：授業
@@ -148,6 +154,9 @@ const step = s => { steps.push(s); console.log('  ' + s); };
   step('依頼を受注して戦闘に入った');
   await page.waitForTimeout(600);
   await shot('05-battle');
+
+  // 演出を速くして待ち時間を減らす
+  await page.evaluate(() => { G.State.d.battleSpeed = 3; });
 
   // 戦闘：勝つか負けるまで「たたかう」を押し続ける
   let turns = 0;

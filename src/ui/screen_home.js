@@ -66,9 +66,9 @@ G.UI.register('home', {
               </div>
             </div>
             <div class="kv"><div class="k">HP</div><div class="v">${Math.max(0, c.hp)} / ${der.hp}</div></div>
-            ${G.UI.bar(c.hp, der.hp)}
+            ${G.UI.bar(c.hp, der.hp, 'hp')}
             <div class="kv mt"><div class="k">MP</div><div class="v">${c.mp} / ${der.mp}</div></div>
-            ${G.UI.bar(c.mp, der.mp, 'g')}
+            ${G.UI.bar(c.mp, der.mp, 'mp')}
           </div>`;
       }).join('')}
 

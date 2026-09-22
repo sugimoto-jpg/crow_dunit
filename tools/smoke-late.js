@@ -55,7 +55,7 @@ const step = s => console.log('  ' + s);
    * 適当な技を選ぶと決着まで異常に長くなるので、
    * 「いま最も期待ダメージが高い技」を画面の情報から選ぶ。 */
   const battleStep = async () => {
-    if (!(await has('[data-act="atk"]'))) { await page.waitForTimeout(220); return; }
+    if (!(await has('[data-act="atk"]'))) { await page.waitForTimeout(120); return; }
     await tap(page.locator('[data-act="skill"]'));
     const ids = await page.$$eval('[data-act="sk"]:not([disabled])', els => els.map(e => e.dataset.id));
     let best = null;
@@ -81,13 +81,32 @@ const step = s => console.log('  ' + s);
     else { await tap(page.locator('[data-act="back"]')); await tap(page.locator('[data-act="atk"]')); }
     if (await has('#field .enemy.selectable')) await tap(page.locator('#field .enemy.selectable').first());
     else if (await has('#party .ally.selectable')) await tap(page.locator('#party .ally.selectable').first());
-    await page.waitForTimeout(180);
+    await page.waitForTimeout(90);
   };
 
   /* done() が真になるまで、画面の状態に応じて自動で進める */
-  const pump = async (done, { cap = 400, onIdle = null, prefer = null } = {}) => {
+  const pump = async (done, { cap = 400, onIdle = null, prefer = null, label = '' } = {}) => {
     for (let i = 0; i < cap; i++) {
       if (await done()) return true;
+      // どこで詰まっているか分かるよう、定期的に画面の状態を出す
+      if (label && i % 25 === 0) {
+        const w = await page.evaluate(() => {
+          const m = document.getElementById('modal');
+          const inBattle = !!document.querySelector('.battle-field');
+          return {
+            screen: G.UI.current,
+            modal: m && !m.classList.contains('hidden')
+              ? (document.getElementById('modal-title').textContent || '(無題)') : null,
+            story: !!document.querySelector('[data-act="next"]'),
+            foes: inBattle && G.BattleUI.bs
+              ? G.BattleUI.bs.b.enemies.map(e => `${e.name} ${e.hp}/${e.maxHp}`).join(' / ') : '',
+            hp: G.State.d.party.map(c => c.hp).join(','),
+          };
+        });
+        console.log(`    [${label} ${String(i).padStart(3)}] 画面=${w.screen}`
+          + ` モーダル=${w.modal || 'なし'}${w.story ? ' 物語中' : ''}`
+          + `${w.foes ? ' 敵=' + w.foes : ''} 味方HP=${w.hp}`);
+      }
 
       if (await modalOpen()) {
         const btns = page.locator('#modal-actions .btn');
@@ -125,6 +144,7 @@ const step = s => console.log('  ' + s);
     }
     for (const id of G.SUBJECT_IDS) G.State.d.subjects[id] = 100;
     Object.assign(G.State.d, { gold: 300000, term: 8, examAvailable: true, tuitionPaid: true });
+    G.State.d.battleSpeed = 3;   // 演出を瞬速にして検証時間を詰める
     Object.assign(G.State.d.guild, { registered: true, rank: 6, totalClears: 40 });
     G.State.setFlag('awaken');
     G.State.save();
@@ -136,7 +156,7 @@ const step = s => console.log('  ' + s);
 
   /* 卒業試験 → 卒業 */
   await tap(page.locator('[data-act="exam"]'));
-  const graduated = await pump(() => page.evaluate(() => G.State.d.graduated && G.UI.current === 'home'), { cap: 120 });
+  const graduated = await pump(() => page.evaluate(() => G.State.d.graduated && G.UI.current === 'home'), { cap: 120, label: '卒業' });
   const grad = await page.evaluate(() => ({
     graduated: G.State.d.graduated, unlocked: G.State.d.demon.unlocked,
     sword: G.State.countItem('excalibur'), proof: G.State.countItem('hero_proof'),
@@ -176,7 +196,7 @@ const step = s => console.log('  ' + s);
     await page.waitForTimeout(200);
   };
   const cleared = await pump(() => page.evaluate(() => G.State.d.ending),
-    { cap: 700, onIdle: enterTop, prefer: '戦う' });
+    { cap: 900, onIdle: enterTop, prefer: '戦う', label: '魔王城' });
   step(`魔王討伐: ${cleared ? '達成' : '未達成'}`);
 
   await pump(() => page.evaluate(() => !document.querySelector('[data-act="next"]')), { cap: 60 });

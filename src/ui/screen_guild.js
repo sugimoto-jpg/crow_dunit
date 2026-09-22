@@ -123,7 +123,6 @@ G.UI.register('guild', {
             await G.UI.showLevelReports(r.levelReports);
             if (r.promoReady) G.UI.toast('昇格の条件を満たしたかもしれません', 'gold');
           }
-          void d;
           G.State.save();
           G.UI.show('guild');
           G.Story.check();

@@ -85,6 +85,8 @@ G.UI = {
   /* ---------- トースト ---------- */
   toast(msg, type = '') {
     const wrap = G.UI.el('toast-wrap');
+    // 溜まりすぎると画面下のボタンが見えなくなるので、古いものから消す
+    while (wrap.children.length >= 3) wrap.firstChild.remove();
     const el = document.createElement('div');
     el.className = 'toast ' + type;
     el.textContent = msg;
@@ -178,7 +180,6 @@ G.UI = {
     const parts = [];
     for (const r of reports) {
       const top = r.levels[r.levels.length - 1];
-      const first = r.levels[0];
       const diff = {};
       for (const lv of r.levels) {
         for (const [k, v] of Object.entries(lv.diff)) diff[k] = (diff[k] || 0) + v;
@@ -198,7 +199,6 @@ G.UI = {
             learned.map(s => G.SKILLS[s] ? G.util.esc(G.SKILLS[s].name) : '').filter(Boolean).join('、')}</p>` : ''}
           ${r.jobs && r.jobs.length ? `<p><span class="chip ok">転職</span> ${r.jobs.map(G.util.esc).join(' → ')}</p>` : ''}
         </div>`);
-      void first;
     }
     await G.UI.alert('レベルアップ', parts.join(''));
 

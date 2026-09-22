@@ -21,6 +21,7 @@ G.State = {
       version: 1,
       createdAt: Date.now(),
       difficulty: G.DIFFICULTY[difficulty] ? difficulty : 'normal',
+      battleSpeed: 2,          // 1=ふつう 2=はやい 3=とてもはやい
       player,
       party: [player],
       roster: {},                       // 加入済み仲間 key -> char
@@ -82,6 +83,7 @@ G.State = {
   migrate(d) {
     d.version = d.version || 1;
     if (!G.DIFFICULTY[d.difficulty]) d.difficulty = 'normal';
+    if (![1, 2, 3].includes(d.battleSpeed)) d.battleSpeed = 2;
     d.inventory = d.inventory || {};
     d.flags = d.flags || {};
     d.roster = d.roster || {};

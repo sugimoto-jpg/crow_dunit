@@ -104,8 +104,6 @@ G.UI.register('academy', {
   },
 
   mount() {
-    const d = G.State.d;
-
     G.UI.on('job', () => G.UI.show('job'));
 
     G.UI.on('pay', () => {
@@ -178,6 +176,5 @@ G.UI.register('academy', {
       G.UI.refresh();
       G.Story.check();
     });
-    void d;
   },
 });
