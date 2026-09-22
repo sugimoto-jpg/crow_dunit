@@ -8,7 +8,7 @@ G.State = {
 
   /* ---------- 新規ゲーム ---------- */
   newGame(playerName, difficulty) {
-    const name = (playerName || '').trim() || 'アルト';
+    const name = (playerName || '').trim() || G.T('title.name.default');
     const player = G.Char.create({ key: 'player', name, icon: '🧑', isPlayer: true });
     player.equip.weapon = 'wood_stick';
     player.equip.armor = 'cloth';

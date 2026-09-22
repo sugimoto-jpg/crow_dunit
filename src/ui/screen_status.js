@@ -137,7 +137,7 @@ G.UI.register('status', {
         body,
         actions: [
           ...(c.equip[slot] ? [{ label: '外す', cls: 'ghost', value: '__off' }] : []),
-          { label: 'やめる', cls: 'ghost', value: null },
+          { label: G.T('common.cancel'), cls: 'ghost', value: null },
         ],
         // 一覧の「選ぶ」からも結果を返す
         bind: done => document.querySelectorAll('#modal [data-pick]').forEach(el =>

@@ -108,7 +108,7 @@ G.UI.register('guild', {
         <div class="result-line"><span>消費行動力</span><b>${q.ap} AP</b></div>
         <div class="result-line"><span>報酬</span><b>${G.util.g(q.gold)} G ／ 経験値 ${G.util.g(q.exp)}</b></div>
         <div class="result-line"><span>出現する魔物</span><b>${q.enemies.map(e => G.ENEMIES[e].name).join('、')}</b></div>`,
-        '受注する', 'やめる');
+        '受注する', G.T('common.cancel'));
       if (!ok) return;
       if (!G.World.spendAp(q.ap)) { G.UI.toast('行動力が足りません', 'bad'); return; }
 

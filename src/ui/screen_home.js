@@ -88,7 +88,7 @@ G.UI.register('home', {
       if (d.ap > 0) {
         const ok = await G.UI.confirm('休みますか？',
           `<p>まだ <b class="gold">${d.ap} AP</b> 残っています。</p><p class="dim">休むと翌日になります。</p>`,
-          '休む', 'やめる');
+          '休む', G.T('common.cancel'));
         if (!ok) return;
       }
       const events = G.World.endDay(true);
@@ -105,7 +105,7 @@ G.UI.register('home', {
 
     G.UI.on('title', async () => {
       const ok = await G.UI.confirm('タイトルへもどる',
-        '<p>進行状況を保存してタイトルに戻ります。</p>', 'もどる', 'やめる');
+        '<p>進行状況を保存してタイトルに戻ります。</p>', G.T('common.back'), G.T('common.cancel'));
       if (!ok) return;
       G.State.save();
       G.UI.show('title');

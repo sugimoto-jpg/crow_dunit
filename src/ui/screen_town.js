@@ -121,7 +121,7 @@ G.UI.register('town', {
         body: '<p class="dim">誰に使いますか？</p>',
         actions: d.party.map(c => ({
           label: `${c.icon} ${c.name}（HP ${Math.max(0, c.hp)}）`, value: c.key,
-        })).concat([{ label: 'やめる', cls: 'ghost', value: null }]),
+        })).concat([{ label: G.T('common.cancel'), cls: 'ghost', value: null }]),
       });
       if (!target) return;
       const r = G.World.useItemOutside(ds.id, target);

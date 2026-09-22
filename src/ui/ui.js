@@ -121,7 +121,7 @@ G.UI = {
   /* actions: [{label, cls, value}] / 戻り値は選ばれた value の Promise */
   /* bind(done) を渡すと、本文に置いた要素からも結果を返せる。
    * done(value) を呼べばモーダルが閉じて、その値で解決する。 */
-  modal({ title, body, actions = [{ label: '閉じる', value: true }], dismissable = false, bind = null }) {
+  modal({ title, body, actions = [{ label: G.T('common.close'), value: true }], dismissable = false, bind = null }) {
     return new Promise(resolve => {
       const m = G.UI.el('modal');
       G.UI.el('modal-title').innerHTML = title || '';
@@ -156,7 +156,7 @@ G.UI = {
     });
   },
 
-  confirm(title, body, okLabel = 'はい', ngLabel = 'やめる') {
+  confirm(title, body, okLabel = G.T('common.yes'), ngLabel = G.T('common.cancel')) {
     return G.UI.modal({
       title, body,
       actions: [{ label: okLabel, cls: 'primary', value: true }, { label: ngLabel, cls: 'ghost', value: false }],
@@ -164,7 +164,7 @@ G.UI = {
   },
 
   alert(title, body) {
-    return G.UI.modal({ title, body, actions: [{ label: 'わかった', cls: 'primary', value: true }] });
+    return G.UI.modal({ title, body, actions: [{ label: G.T('common.ok'), cls: 'primary', value: true }] });
   },
 
   /* ---------- ストーリー再生 ---------- */
