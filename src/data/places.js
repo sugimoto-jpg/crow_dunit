@@ -90,7 +90,11 @@ G.SPOTS = {
     enemies: [],
     boss: 'boss_cave_guardian',
     reward: { gold: 1200, exp: 600, items: [{ id: 'hi_potion', n: 2 }] },
-    camp: false,
+    /* 広間の手前で休める。
+     * 到着したときに「準備を整えて奥へ進もう」と出るのに、
+     * 整える手段が無かった。道中で削られたまま挑むことになり、
+     * 実測ではボス戦の敗北がいちばん多い負け方だった。 */
+    camp: true,
     links: ['cave_01'],
     steps: 6, encounterRate: 0.15,
     events: [],

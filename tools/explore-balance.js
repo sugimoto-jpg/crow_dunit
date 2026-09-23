@@ -139,7 +139,9 @@ function journey(level, camp) {
       }
       if (r.done) break;
     }
-    if (camp && to !== 'boss_01') for (const c of d.party) G.Char.fullRestore(c);
+    /* 野営できる地点かどうかは src/data/places.js の camp で決まる。
+     * ここに地点名を書くと、データを直したときに測定が古いままになる。 */
+    if (camp && G.SPOTS[to].camp) for (const c of d.party) G.Char.fullRestore(c);
   }
   const bossId = G.SPOTS.boss_01.boss;
   fights++;

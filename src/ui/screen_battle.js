@@ -100,7 +100,7 @@ G.BattleUI = {
     // 敵は名前とHPを上に、味方は下に置く。
     // 敵の名前が味方の行動マーカーと同じ高さに来て読みにくくなるため。
     const label = `<div class="unit-tag">${G.util.esc(u.name)}</div>
-      ${isFoe ? '<div class="unit-hp"><i></i></div>' : ''}
+      ${isFoe ? '<div class="unit-hp"><i></i></div><div class="unit-hpn"></div>' : ''}
       <div class="unit-st"></div>`;
     return `<div class="unit ${isFoe ? 'foe' : 'hero'} ${u.isBoss ? 'big' : ''}"
                  data-uid="${u.uid}" id="u-${u.uid}">
@@ -146,8 +146,19 @@ G.BattleUI = {
       el.classList.toggle('targetable', !!selectable);
       el.classList.toggle('selectable', !!selectable);  // 検証用の目印
 
+      /* 敵のHPは、棒の長さだけだと読み取りにくい。
+       * 数字を添えて、残りの割合で色も変える。
+       * 「あと一撃で倒せるか」が一目で分かるようにするため。 */
       const bar = el.querySelector('.unit-hp i');
-      if (bar) bar.style.width = pct(u.hp, u.maxHp);
+      if (bar) {
+        const left = u.maxHp > 0 ? u.hp / u.maxHp : 0;
+        bar.style.width = pct(u.hp, u.maxHp);
+        const box = bar.parentNode;
+        box.classList.toggle('mid', left <= 0.5 && left > 0.25);
+        box.classList.toggle('low', left <= 0.25);
+      }
+      const hpn = el.querySelector('.unit-hpn');
+      if (hpn) hpn.textContent = `${Math.max(0, u.hp)}/${u.maxHp}`;
       const st = el.querySelector('.unit-st');
       if (st) st.innerHTML = badges(u);
 

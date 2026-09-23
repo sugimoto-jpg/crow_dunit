@@ -142,8 +142,12 @@ for (const k of ['riina']) G.State.recruit(k);
   d.explore.at = 'village_01';
   check(!G.Explore.canCamp(), '村では野営できない（拠点で休めるため）');
 
+  /* ボスの間の手前では休める。
+   * 到着したときに「準備を整えて奥へ進もう」と出るのに、
+   * 整える手段が無かった。道中で削られたまま挑むことになり、
+   * 実測ではボス戦の敗北がいちばん多い負け方だった。 */
   d.explore.at = 'boss_01';
-  check(!G.Explore.canCamp(), 'ボスの間では野営できない');
+  check(G.Explore.canCamp(), 'ボスの間の手前では野営できる');
 
   d.explore.at = 'cave_01';
   check(G.Explore.canCamp(), '洞窟では野営できる');
