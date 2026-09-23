@@ -250,12 +250,18 @@ console.log('\n▼ 9. 後始末\n');
 {
   const G = fresh();
   check(Object.keys(G.ART_MANIFEST).length === 0, '検証用の画像は残っていない');
-  const left = fs.existsSync(ART)
-    ? fs.readdirSync(ART).filter(f => f !== 'README.md'
-      && fs.statSync(path.join(ART, f)).isDirectory()
-      && fs.readdirSync(path.join(ART, f)).length)
-    : [];
-  check(left.length === 0, '空のフォルダだけが残っている', left.join(','));
+  /* 残っている画像ファイルを数える。
+   * .gitkeep は置き場を git に残すためのもので、画像ではない。 */
+  const left = [];
+  (function walk(dir) {
+    if (!fs.existsSync(dir)) return;
+    for (const f of fs.readdirSync(dir)) {
+      const full = path.join(dir, f);
+      if (fs.statSync(full).isDirectory()) { walk(full); continue; }
+      if (/\.(webp|png|jpe?g)$/i.test(f)) left.push(path.relative(ART, full));
+    }
+  })(ART);
+  check(left.length === 0, '検証用に作った画像は1枚も残っていない', left.join(','));
 }
 
 console.log(`\n▼ 判定：${ok.length} 件成功 / ${ng.length} 件失敗`);
