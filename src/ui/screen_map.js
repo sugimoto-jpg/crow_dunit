@@ -13,7 +13,9 @@ G.UI.register('map', {
     const target = G.Explore.questTarget();
     const route = target ? G.Explore.routeTo(target) : [];
     const lvr = G.Explore.levelRange(here.id);
-    const pool = G.Explore.enemyPool(here.id);
+    /* いま実際に出る魔物を出す。エリアの表そのままだと、
+     * まだ出てこない格上まで並んでしまい、案内にならない。 */
+    const pool = G.Explore.encounterPool(here.id);
 
     /* 出現する魔物。まだ戦ったことのないものは伏せる（図鑑と連動） */
     const foes = pool.length

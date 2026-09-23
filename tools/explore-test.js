@@ -187,7 +187,44 @@ console.log('\n▼ 9. 遭遇する数の偏り\n');
   check(cnt[1] + cnt[2] + cnt[3] === 600, '出てくる数は必ず1〜3体');
 }
 
-console.log('\n▼ 10. 古いセーブでも読める\n');
+console.log('\n▼ 10. 格上は出てこない\n');
+{
+  const names = (lv, spot) => {
+    fresh(lv);
+    return G.Explore.encounterPool(spot).map(e => G.ENEMIES[e].name);
+  };
+  /* 草原の出現表には荒野の狼（Lv6）も入っている。
+   * Lv1 で出てくると、二人パーティでは勝率 2% だった。 */
+  const lv1 = names(1, 'field_01');
+  check(!lv1.includes('荒野の狼'), `Lv1の草原に荒野の狼（Lv6）は出ない（${lv1.join('・')}）`);
+  check(lv1.includes('スライム'), 'Lv1の草原にスライムは出る');
+
+  const lv6 = names(6, 'field_01');
+  check(lv6.includes('荒野の狼'), `Lv6になると荒野の狼も出る（${lv6.join('・')}）`);
+
+  /* 何体も出るときは、その分だけ格下にする */
+  fresh(6);
+  const two = G.Explore.encounterPool('field_01', 2).map(e => G.ENEMIES[e].name);
+  check(!two.includes('荒野の狼'), `2体まとめてのときは荒野の狼は出ない（${two.join('・')}）`);
+
+  /* 格下が足りないときは数のほうを減らす。
+   * いちばん弱いので埋めると、その1種だけが群れて出てしまう。 */
+  fresh(13);
+  G.State.recruit('riina'); G.State.recruit('velt'); G.State.recruit('noa');
+  let max3 = 0;
+  for (let i = 0; i < 400; i++) {
+    const e = G.Explore.rollEnemies('cave_01');
+    if (e.length === 3) max3++;
+  }
+  check(max3 === 0, `Lv13の洞窟では3体同時にならない（${max3}回）`);
+
+  /* 推奨より下の地点へ踏み込んでも、何も出ないことはない */
+  fresh(1);
+  check(G.Explore.encounterPool('cave_01').length >= 1, '格上しかいない地点でも1種は出る');
+  check(G.Explore.rollEnemies('cave_01').length >= 1, 'そこでも必ず1体は出る');
+}
+
+console.log('\n▼ 11. 古いセーブでも読める\n');
 fresh(5);
 const saved = JSON.parse(JSON.stringify(G.State.d));
 delete saved.explore; delete saved.quest;              // 探索の追加より前のセーブを模す

@@ -259,6 +259,28 @@ small{font-size:11.5px}
 .ally-card .mini.h i{background:linear-gradient(90deg,#ff5f6d,#ff9a6d)}
 .ally-card .mini.m i{background:linear-gradient(90deg,#4e7fff,#59d8e6)}
 .ally-card .nums{font-size:11px;color:var(--ink-dim);display:flex;justify-content:space-between}
+/* 相手のカード。味方と同じゲージだが、1行に収める。
+ * 味方と同じ二段にすると画面が縦に伸び、
+ * コマンドまで毎ターンスクロールすることになる。
+ * 残りHPで色を変える（緑=半分より上 / 黄=四分の一より上 / 赤=瀕死） */
+.ally-card.foe{
+  border-color:#5a3050;background:rgba(90,48,80,.16);
+  display:flex;align-items:center;gap:8px;padding:3px 9px;border-radius:9px;
+}
+.ally-card.foe .an{font-size:11.5px}
+.ally-card.foe .an .em{font-size:13px}
+.ally-card.foe .an{flex:0 0 auto;max-width:46%;overflow:hidden;
+  white-space:nowrap;text-overflow:ellipsis}
+.ally-card.foe .ab{flex:1 1 auto;min-width:0;margin-top:0}
+.ally-card.foe .nums{flex:0 0 auto;font-size:10.5px;white-space:nowrap}
+.ally-card.foe .st-badges:empty{display:none}
+.ally-card.foe .mini.h i{background:linear-gradient(90deg,#3ddc84,#8ef0a8)}
+.ally-card.foe .mini.h.mid i{background:linear-gradient(90deg,#f5c542,#ffe08a)}
+.ally-card.foe .mini.h.low i{background:linear-gradient(90deg,#ff5f6d,#ff9a6d)}
+.ally-card.foe.acting{border-color:var(--red)}
+ /* 相手は1行に1体ずつ並べる。
+  * 横に2つ並べると、名前と数字にはさまれてゲージが潰れる。 */
+.party-row.foes{grid-template-columns:1fr;gap:5px;margin-bottom:6px}
 
 .battle-log{
   height:122px;overflow-y:auto;border:1px solid var(--line);border-radius:11px;
@@ -504,24 +526,9 @@ small{font-size:11.5px}
 /* 味方の名前はカード側に出るので、シーン内では出さない */
 .unit.hero .unit-tag{display:none}
 .unit .unit-tag{
-  font-size:10px;font-weight:800;text-align:center;margin-top:-4px;
+  font-size:10px;font-weight:800;text-align:center;margin-top:0;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   text-shadow:0 1px 3px #000, 0 0 6px #000;
-}
-/* 敵のHP。棒だけでは残りが読み取りにくいので、色と数字を添える。
- * 緑=半分より上 / 黄=四分の一より上 / 赤=瀕死 */
-.unit .unit-hp{
-  height:6px;border-radius:999px;background:rgba(0,0,0,.65);
-  border:1px solid rgba(255,255,255,.22);overflow:hidden;margin-top:3px;
-}
-.unit .unit-hp i{display:block;height:100%;transition:width .3s;
-  background:linear-gradient(90deg,#3ddc84,#8ef0a8)}
-.unit .unit-hp.mid i{background:linear-gradient(90deg,#f5c542,#ffe08a)}
-.unit .unit-hp.low i{background:linear-gradient(90deg,#ff5f6d,#ff9a6d)}
-.unit .unit-hpn{
-  font-size:10px;font-weight:700;text-align:center;margin-top:1px;
-  font-variant-numeric:tabular-nums;letter-spacing:-.2px;
-  color:#e8e2ff;text-shadow:0 1px 3px #000, 0 0 5px #000;
 }
 .unit .unit-st{display:flex;gap:2px;justify-content:center;flex-wrap:wrap;min-height:2px;margin-top:2px}
 
@@ -571,13 +578,28 @@ small{font-size:11.5px}
 @media (max-height:700px){
   .scene{height:180px}
   .scene.boss{height:216px}
-  .battle-log{height:60px;font-size:11.5px;line-height:1.55}
+  /* 相手のカードを足したぶん、ログを詰める。
+   * これを詰めないと、仲間のHPがコマンドの奥に隠れてしまう。 */
+  .battle-log{height:44px;font-size:11.5px;line-height:1.55}
   .battle .party-row{grid-template-columns:repeat(4,1fr);gap:5px}
+  /* 縦が足りない端末では、相手を2列にして高さを半分にする。
+   * 1列のままだと、相手が4体いるときに仲間のHPが
+   * コマンドの奥に隠れてしまう。 */
+  .battle .party-row.foes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .battle .ally-card.foe{gap:5px;padding:3px 7px}
+  .battle .ally-card.foe .an{font-size:10.5px;max-width:52%}
+  .battle .ally-card.foe .nums{font-size:9.5px}
+  /* 相手を少し下げる。名前が枠の外へ出ないようにするため。 */
+  .scene-foes{bottom:76px}
+  .scene.boss .scene-foes{bottom:58px}
   .battle .ally-card{padding:5px 6px}
   .battle .ally-card .an{font-size:10.5px;gap:3px}
   .battle .ally-card .an .em{font-size:13px}
   /* 名前が入らないので数字は隠し、HP/MPのバーだけ見せる */
   .battle .ally-card .nums{display:none}
+  /* 相手の残りHPは数字も出す。棒だけだと
+   * 「あと一撃で倒せるか」が読み取れないため。 */
+  .battle .ally-card.foe .nums{display:flex;font-size:10px}
   .battle .ally-card .ab{margin-top:3px}
 }
 

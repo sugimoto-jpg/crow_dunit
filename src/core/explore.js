@@ -59,6 +59,53 @@ G.Explore = {
     return a ? a.pool.slice() : [];
   },
 
+  /* いま実際に出てくる魔物。主人公より格上は出さない。
+   *
+   * エリアの出現表は、そのエリアを歩く全レベル帯ぶんをまとめて持っている。
+   * 草原（推奨 Lv1〜8）の表には荒野の狼（Lv6）も入っていて、
+   * 村を出たばかりの Lv1 でも出てきていた。実測すると
+   *
+   *   Lv1 二人 vs 荒野の狼×1 … 勝率  2%
+   *   Lv5 二人 vs 荒野の狼×1 … 勝率 60%
+   *   Lv1 二人 vs ゴブリン×2 … 勝率 11%（ゴブリンは Lv4）
+   *
+   * 最初の草原で、何もできずに全滅する形になっていた。
+   * 主人公のレベル以下の魔物だけを出すようにすると、
+   * 狼は Lv6 から、ゴブリンは Lv4 から出るようになる。
+   * どちらも、その相手と戦う依頼が出るレベルと一致する。
+   *
+   * 全部が格上のときは、いちばん弱い1種だけを残す。
+   * 推奨レベルより下の地点へ踏み込んだときに、
+   * 何も出てこなくなってしまわないようにするため。 */
+  /* 何体も出るときは、その分だけ格下にする。
+   *
+   *   1体 … 主人公のレベルまで
+   *   2体 … 2下まで
+   *   3体 … 4下まで
+   *
+   * 数が増えると、こちらが1体倒すあいだに何発も殴られる。
+   * 1体なら互角の相手でも、2体そろうと手も足も出なくなる。
+   *   Lv6 二人 vs 荒野の狼×1 … 勝率 89%
+   *   Lv6 二人 vs 荒野の狼×2 … 勝率  0%
+   * 格上が群れで出ないようにすれば、この形は起きない。 */
+  GROUP_SLACK: [0, 0, 2, 4],
+
+  encounterPool(id, n, strict) {
+    const raw = G.Explore.enemyPool(id);
+    if (!raw.length) return [];
+    const lv = (G.State.d && G.State.d.player && G.State.d.player.level) || 1;
+    const slack = G.Explore.GROUP_SLACK[n || 1] || 0;
+    const fit = raw.filter(e => G.ENEMIES[e] && G.ENEMIES[e].lv <= lv - slack);
+    if (fit.length) return fit;
+    /* 群れの数に見合う格下がいないときは、空で返す。
+     * 呼び出し側が数を減らす。いちばん弱いので埋めると、
+     * その1種だけが群れて出ることになってしまう。
+     *   Lv13 三人 vs コボルト×3 … 勝率 18% */
+    if (strict) return [];
+    return [raw.slice().sort((a, b) =>
+      ((G.ENEMIES[a] || {}).lv || 99) - ((G.ENEMIES[b] || {}).lv || 99))[0]];
+  },
+
   /* 推奨レベルの範囲。エリアの設定をそのまま使う。 */
   /* その地点の推奨レベル。
    * 地点に lvRange があればそれを使う。
@@ -160,7 +207,7 @@ G.Explore = {
   GROUP: [{ n: 1, w: 45 }, { n: 2, w: 40 }, { n: 3, w: 15 }],
 
   rollEnemies(spotId) {
-    const pool = G.Explore.enemyPool(spotId);
+    const pool = G.Explore.encounterPool(spotId);
     if (!pool.length) return [];
     /* 仲間の人数より多い群れは出さない。
      *
@@ -173,8 +220,17 @@ G.Explore = {
     const party = Math.max(1, (G.State.d.party || []).length);
     const max = Math.min(3, pool.length + 1, party);
     const n = Math.min(max, G.util.weighted(G.Explore.GROUP).n);
+    /* 数が決まってから、その数に見合った表を引き直す。
+     * 見合う相手がいなければ、数のほうを減らす。 */
+    let k = n, sized = [];
+    while (k > 1) {
+      sized = G.Explore.encounterPool(spotId, k, true);
+      if (sized.length) break;
+      k--;
+    }
+    if (k <= 1) { k = 1; sized = G.Explore.encounterPool(spotId, 1); }
     const out = [];
-    for (let i = 0; i < n; i++) out.push(G.util.choice(pool));
+    for (let i = 0; i < k; i++) out.push(G.util.choice(sized));
     return out;
   },
 

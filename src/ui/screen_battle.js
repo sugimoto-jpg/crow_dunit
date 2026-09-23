@@ -69,6 +69,10 @@ G.BattleUI = {
           </div>
         </div>
 
+        <div class="party-row foes" id="foecards">
+          ${b.enemies.map(u => G.BattleUI.foeCardHtml(u)).join('')}
+        </div>
+
         <div class="party-row" id="cards">
           ${b.allies.map(u => G.BattleUI.cardHtml(u)).join('')}
         </div>
@@ -99,14 +103,29 @@ G.BattleUI = {
     const svg = isFoe ? G.Sprite.enemy(u) : G.Sprite.hero(u.ref);
     // 敵は名前とHPを上に、味方は下に置く。
     // 敵の名前が味方の行動マーカーと同じ高さに来て読みにくくなるため。
+    /* 絵のわきにはHPを出さない。相手も味方と同じくカードで見せる。
+     * 絵の上に重ねると場所が足りず、名前が枠の外へ押し出される。 */
     const label = `<div class="unit-tag">${G.util.esc(u.name)}</div>
-      ${isFoe ? '<div class="unit-hp"><i></i></div><div class="unit-hpn"></div>' : ''}
       <div class="unit-st"></div>`;
     return `<div class="unit ${isFoe ? 'foe' : 'hero'} ${u.isBoss ? 'big' : ''}"
                  data-uid="${u.uid}" id="u-${u.uid}">
       ${isFoe ? label : ''}
       <div class="unit-sprite">${svg}</div>
       ${isFoe ? '' : label}
+    </div>`;
+  },
+
+  /* 相手のHPカード。味方のカードと同じ形にする。
+   * 絵の上の細い棒だけでは、残りがどれくらいか読み取りにくい。
+   * 味方と同じ見た目で並べれば、どちらも同じ読み方ができる。 */
+  foeCardHtml(u) {
+    return `<div class="ally-card foe" data-uid="${u.uid}" id="fc-${u.uid}">
+      <div class="an"><span class="em">${u.icon}</span>${G.util.esc(u.name)}</div>
+      <div class="ab">
+        <div class="mini h"><i></i></div>
+      </div>
+      <div class="nums"><span class="c-hp"></span></div>
+      <div class="st-badges"></div>
     </div>`;
   },
 
@@ -146,21 +165,29 @@ G.BattleUI = {
       el.classList.toggle('targetable', !!selectable);
       el.classList.toggle('selectable', !!selectable);  // 検証用の目印
 
-      /* 敵のHPは、棒の長さだけだと読み取りにくい。
-       * 数字を添えて、残りの割合で色も変える。
-       * 「あと一撃で倒せるか」が一目で分かるようにするため。 */
-      const bar = el.querySelector('.unit-hp i');
-      if (bar) {
-        const left = u.maxHp > 0 ? u.hp / u.maxHp : 0;
-        bar.style.width = pct(u.hp, u.maxHp);
-        const box = bar.parentNode;
-        box.classList.toggle('mid', left <= 0.5 && left > 0.25);
-        box.classList.toggle('low', left <= 0.25);
-      }
-      const hpn = el.querySelector('.unit-hpn');
-      if (hpn) hpn.textContent = `${Math.max(0, u.hp)}/${u.maxHp}`;
       const st = el.querySelector('.unit-st');
       if (st) st.innerHTML = badges(u);
+
+      /* 相手のカード側も同じ内容で更新する */
+      const fc = document.getElementById('fc-' + u.uid);
+      if (fc) {
+        const left = u.maxHp > 0 ? G.util.clamp(u.hp / u.maxHp, 0, 1) : 0;
+        fc.classList.toggle('down', dead);
+        fc.classList.toggle('targetable', !!selectable);
+        fc.classList.toggle('selectable', !!selectable);
+        fc.classList.toggle('acting', u.uid === activeUid && !dead);
+        const fb = fc.querySelector('.mini.h i');
+        if (fb) fb.style.width = left * 100 + '%';
+        const fh = fc.querySelector('.mini.h');
+        if (fh) {
+          fh.classList.toggle('mid', left <= 0.5 && left > 0.25);
+          fh.classList.toggle('low', left <= 0.25);
+        }
+        const fn = fc.querySelector('.c-hp');
+        if (fn) fn.textContent = `HP ${Math.max(0, u.hp)}/${u.maxHp}`;
+        const fst = fc.querySelector('.st-badges');
+        if (fst) fst.innerHTML = badges(u);
+      }
 
       const chr = el.querySelector('.chr');
       if (chr) {
@@ -518,7 +545,10 @@ G.BattleUI = {
         G.UI.on('back', menu);
 
         const handlers = [];
-        document.querySelectorAll('#scene .unit.targetable').forEach(el => {
+        /* 絵でもカードでも選べるようにする。
+         * 絵は小さく、指では押しにくいため。 */
+        document.querySelectorAll(
+          '#scene .unit.targetable, #foecards .ally-card.targetable').forEach(el => {
           const h = () => { act.targetUid = el.dataset.uid; done(act); };
           el.addEventListener('click', h);
           handlers.push([el, h]);
