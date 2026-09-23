@@ -83,4 +83,19 @@ function child(size = 300) {
   </svg>`;
 }
 
-module.exports = { daughter, staff, elder, heart, house, teacher, child, mother: daughter };
+function worker(size = 300) {
+  return `<svg width="${size}" height="${size * 1.25}" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
+    <path d="M36 250 Q38 162 100 158 Q162 162 164 250 Z" fill="#1F5F8B"/>
+    <path d="M86 158 L100 180 L114 158 Z" fill="#FFFFFF"/>
+    <rect x="116" y="194" width="32" height="20" rx="4" fill="#FFFFFF"/>
+    <path d="M86 146 h28 v20 h-28z" fill="${SKIN}"/>
+    <ellipse cx="100" cy="100" rx="40" ry="46" fill="${SKIN}"/>
+    <path d="M60 96 Q60 70 76 66 L124 66 Q140 70 140 96 Q130 84 100 84 Q70 84 60 96Z" fill="#2B2B2B"/>
+    <path d="M54 72 Q56 36 100 36 Q144 36 146 72 Z" fill="#E08A3C"/>
+    <path d="M50 70 h112 q4 0 4 5 q0 5 -4 5 h-112 q-4 0 -4 -5 q0 -5 4 -5z" fill="#C8742C"/>
+    <circle cx="84" cy="102" r="5" fill="#2B2B2B"/><circle cx="116" cy="102" r="5" fill="#2B2B2B"/>
+    <path d="M88 122 q12 10 24 0" stroke="#B5533F" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+
+module.exports = { worker, daughter, staff, elder, heart, house, teacher, child, mother: daughter };
