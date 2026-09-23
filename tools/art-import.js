@@ -39,17 +39,21 @@ for (let i = 0; i < args.length; i++) {
   if (args[i] === '--size') { flags.size = args[++i]; continue; }
   if (args[i] === '--group') { flags.group = true; continue; }
   if (args[i] === '--pad') { flags.pad = Number(args[++i]); continue; }
+  if (args[i] === '--q') { flags.q = Number(args[++i]); continue; }
   files.push(args[i]);
 }
 if (files.length < 2 || files.length % 2 !== 0) {
   console.error('使い方: node tools/art-import.js <入力画像> <出力先> [--size 384x480]');
   console.error('        node tools/art-import.js --group <入力1> <出力1> <入力2> <出力2> ...');
+  console.error('  --size 384x480  枠の大きさ / --pad 0.03  余白 / --q 0.9  画質');
   process.exit(1);
 }
 const pairs = [];
 for (let i = 0; i < files.length; i += 2) pairs.push([files[i], files[i + 1]]);
 const [W, H] = (flags.size || '384x480').split('x').map(Number);
 const PAD = flags.pad == null ? 0.03 : flags.pad;
+/* WebPの画質。枠を大きくすると同じ画質でも容量が増えるので下げられるようにする。 */
+const Q = flags.q == null ? 0.9 : flags.q;
 
 const EXE = ['/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
   '/opt/pw-browsers/chromium/chrome-linux/chrome'].find(p => fs.existsSync(p));
@@ -76,6 +80,81 @@ function cut({ url }) {
       return Math.max(r, g, b) - Math.min(r, g, b);
     };
     const lum = o => (d[o] * 299 + d[o + 1] * 587 + d[o + 2] * 114) / 1000;
+
+    /* すでに透明な絵は、その透明をそのまま使う。
+     * 一覧表から切り出した絵（tools/art-slice.js の出力）は、
+     * もう背景が抜けている。もう一度色で判定すると、
+     * 白い骨や銀の鎧を「灰色＝背景」と間違えて削ってしまう。 */
+    let hasAlpha = false;
+    for (let i = 3; i < d.length; i += 4) if (d[i] < 250) { hasAlpha = true; break; }
+    if (hasAlpha) {
+      /* 透明のふちに残った、明るい灰色の背景を削る。
+       * 一覧表の背景（透過を表す市松模様）は、一覧表から切り出す段階で
+       * 取りきれず、絵のわきに白い板のように残ることがある。
+       * 透明な場所から「明るくて色みのない画素」だけをたどって消す。
+       * キャラクターの輪郭は暗い線なので、そこで必ず止まる。 */
+      const BR_SAT = 26, BR_LUM = 165;
+      const seen = new Uint8Array(w * h);
+      const q = [];
+      const step = (x, y) => {
+        if (x < 0 || y < 0 || x >= w || y >= h) return;
+        const j = y * w + x;
+        if (seen[j]) return;
+        seen[j] = 1;
+        const o = j * 4;
+        if (d[o + 3] < 128) { q.push(j); return; }
+        if (sat(o) <= BR_SAT && lum(o) >= BR_LUM) { d[o + 3] = 0; q.push(j); }
+      };
+      for (let j = 0; j < w * h; j++) if (d[j * 4 + 3] < 128) { seen[j] = 1; q.push(j); }
+      while (q.length) {
+        const j = q.pop();
+        const x = j % w, y = (j / w) | 0;
+        step(x + 1, y); step(x - 1, y); step(x, y + 1); step(x, y - 1);
+      }
+
+      /* 一覧表から切り出すと、隣の絵の端が入り込むことがある。
+       * 繋がっている塊に分けて、いちばん大きい塊（＝本体）と、
+       * それに近い大きさの塊だけを残す。
+       * ごみを残したまま枠に収めると、その分だけ本体が小さくなる。 */
+      const lab = new Int32Array(w * h).fill(-1);
+      const area = [];
+      const st = [];
+      for (let i = 0; i < w * h; i++) {
+        if (lab[i] >= 0 || d[i * 4 + 3] < 128) continue;
+        const cid = area.length; area.push(0);
+        lab[i] = cid; st.push(i);
+        while (st.length) {
+          const j = st.pop(); area[cid]++;
+          const x = j % w, y = (j / w) | 0;
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              const nx = x + dx, ny = y + dy;
+              if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+              const k = ny * w + nx;
+              if (lab[k] >= 0 || d[k * 4 + 3] < 128) continue;
+              lab[k] = cid; st.push(k);
+            }
+          }
+        }
+      }
+      if (!area.length) return { error: 'キャラクターが見つかりませんでした（全部が透明です）' };
+      const big = Math.max(...area);
+      const KEEP = 0.35; /* 本体の35%以上なら、離れていても絵の一部とみなす */
+      let aX = w, aY = h, bX = -1, bY = -1, kept2 = 0, dropped = 0;
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const i = y * w + x;
+          if (lab[i] < 0) continue;
+          if (area[lab[i]] < big * KEEP) { d[i * 4 + 3] = 0; dropped++; continue; }
+          kept2++;
+          if (x < aX) aX = x; if (x > bX) bX = x;
+          if (y < aY) aY = y; if (y > bY) bY = y;
+        }
+      }
+      cx.putImageData(id, 0, 0);
+      return { w, h, minX: aX, minY: aY, maxX: bX, maxY: bY, alpha: true, dropped,
+        ratio: +(kept2 / (w * h)).toFixed(3), cut: c.toDataURL('image/png') };
+    }
 
     /* 縁から塗りつぶして背景を見つける。
      * 市松模様は灰色（彩度が低い）。
@@ -148,18 +227,18 @@ function cut({ url }) {
 
 /* 決められた範囲を切り出して、出力の枠に収める。
  * 足の裏が下端に来るように置く。 */
-function place({ png, box, W, H, PAD, webp }) {
+function place({ png, box, W, H, PAD, scale, webp, q }) {
   return (async () => {
     const img = new Image(); img.src = png; await img.decode();
     const cw = box.maxX - box.minX + 1, ch = box.maxY - box.minY + 1;
     const o = document.createElement('canvas'); o.width = W; o.height = H;
     const ox = o.getContext('2d');
     ox.imageSmoothingEnabled = true; ox.imageSmoothingQuality = 'high';
-    const s = Math.min(W * (1 - PAD * 2) / cw, H * (1 - PAD * 2) / ch);
+    const s = scale || Math.min(W * (1 - PAD * 2) / cw, H * (1 - PAD * 2) / ch);
     const dw = cw * s, dh = ch * s;
     ox.drawImage(img, box.minX, box.minY, cw, ch,
       (W - dw) / 2, H - dh - H * PAD, dw, dh);
-    return o.toDataURL(webp ? 'image/webp' : 'image/png', 0.9);
+    return o.toDataURL(webp ? 'image/webp' : 'image/png', q);
   })();
 }
 
@@ -180,25 +259,32 @@ function place({ png, box, W, H, PAD, webp }) {
     marked.push({ src, dest, ...r });
   }
 
-  /* --- 共通の切り出し範囲を決める --- */
+  /* --- 共通の切り出し方を決める ---
+   *
+   * 元の画像の大きさがそろっているとき（同じ人の別ポーズなど）は、
+   * 全部を囲む1つの範囲を使う。位置まで揃うので、差し替えても動かない。
+   *
+   * そろっていないとき（一覧表から切り出した別々の絵など）は、
+   * 拡大率だけを揃える。大小関係（スライムは小さい、竜は大きい）が残る。 */
   const sameSize = marked.every(m => m.w === marked[0].w && m.h === marked[0].h);
   const group = flags.group && marked.length > 1;
-  if (group && !sameSize) {
-    console.error('--group では、元の画像の大きさが全部そろっている必要があります');
-    process.exit(1);
-  }
-  const box = group
+  const box = (group && sameSize)
     ? {
       minX: Math.min(...marked.map(m => m.minX)), minY: Math.min(...marked.map(m => m.minY)),
       maxX: Math.max(...marked.map(m => m.maxX)), maxY: Math.max(...marked.map(m => m.maxY)),
     }
     : null;
+  /* 拡大率を揃える場合：いちばん大きい絵が枠に収まる率に合わせる */
+  const scale = (group && !sameSize)
+    ? Math.min(...marked.map(m => Math.min(W * (1 - PAD * 2) / (m.maxX - m.minX + 1),
+      H * (1 - PAD * 2) / (m.maxY - m.minY + 1))))
+    : null;
 
   /* --- 2回目：決めた範囲で書き出す --- */
   for (const m of marked) {
     const b = box || { minX: m.minX, minY: m.minY, maxX: m.maxX, maxY: m.maxY };
-    const res = await page.evaluate(place, { png: m.cut, box: b, W, H, PAD,
-      webp: /\.webp$/i.test(m.dest) });
+    const res = await page.evaluate(place, { png: m.cut, box: b, W, H, PAD, scale,
+      webp: /\.webp$/i.test(m.dest), q: Q });
     const buf = Buffer.from(res.split(',')[1], 'base64');
     fs.mkdirSync(path.dirname(m.dest), { recursive: true });
     fs.writeFileSync(m.dest, buf);
@@ -207,11 +293,15 @@ function place({ png, box, W, H, PAD, webp }) {
     console.log(`  ${path.basename(m.src)} → ${m.dest}`);
     console.log(`     元 ${m.w}×${m.h} / 切り出し ${b.maxX - b.minX + 1}×${b.maxY - b.minY + 1}`
       + ` / 書き出し ${W}×${H} / ${kb}KB`);
-    if (m.ratio > 0.75) console.log(`     ⚠ 背景がうまく消えていないかもしれません（残った割合 ${m.ratio}）`);
+    /* もともと透明だった絵は、枠いっぱいに絵が詰まっているのが普通なので
+     * 「残った割合が多い＝背景が消えていない」の判定はあてはまらない。 */
+    if (m.ratio > 0.75 && !m.alpha) console.log(`     ⚠ 背景がうまく消えていないかもしれません（残った割合 ${m.ratio}）`);
+    if (m.dropped) console.log(`     離れた小さな塊を ${m.dropped} 画素ぶん取り除きました`);
     if (m.ratio < 0.03) console.log(`     ⚠ 切り抜きすぎかもしれません（残った割合 ${m.ratio}）`);
     if (buf.length > 40 * 1024) console.log(`     ⚠ 40KBを超えています（${kb}KB）`);
   }
-  if (group) console.log(`\n  ${marked.length}枚を同じ切り出し方で書き出しました（位置と大きさが揃います）`);
+  if (group && sameSize) console.log(`\n  ${marked.length}枚を同じ切り出し方で書き出しました（位置と大きさが揃います）`);
+  else if (group) console.log(`\n  ${marked.length}枚の拡大率を揃えました（絵どうしの大小関係が残ります）`);
 
   await browser.close();
 })().catch(e => { console.error('取り込みに失敗:', e.message); process.exit(1); });
