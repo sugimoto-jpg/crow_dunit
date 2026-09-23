@@ -9,5 +9,9 @@
 window.G = window.G || {};
 
 G.ART_MANIFEST = {
-
+  "companion/noa/battle": "assets/characters/companions/noa/battle.webp",
+  "companion/riina/battle": "assets/characters/companions/riina/battle.webp",
+  "companion/velt/battle": "assets/characters/companions/velt/battle.webp",
+  "job/villager/battle_f": "assets/characters/jobs/villager/battle_f.webp",
+  "job/villager/battle_m": "assets/characters/jobs/villager/battle_m.webp",
 };

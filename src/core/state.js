@@ -7,9 +7,12 @@ G.State = {
   data: null,
 
   /* ---------- 新規ゲーム ---------- */
-  newGame(playerName, difficulty) {
+  /* look は主人公の見た目（いまは性別だけ）。
+   * 絵を男女で描き分けるための指定で、能力や物語には影響しない。 */
+  newGame(playerName, difficulty, look) {
     const name = (playerName || '').trim() || G.T('title.name.default');
-    const player = G.Char.create({ key: 'player', name, icon: '🧑', isPlayer: true });
+    const player = G.Char.create({ key: 'player', name,
+      icon: (look && look.sex === 'f') ? '👧' : '🧑', isPlayer: true, look });
     player.equip.weapon = 'wood_stick';
     player.equip.armor = 'cloth';
     G.Char.fullRestore(player);
@@ -195,6 +198,7 @@ G.State = {
     if (!t || d.roster[key]) return null;
     const c = G.Char.create({
       key, name: t.name, icon: t.icon, growthBonus: t.growthBonus, jobPath: t.jobPath,
+      look: t.look,
     });
     // 主人公より少し低いレベルで加入し、すぐ追いつく
     const target = Math.max(1, d.player.level - 1);

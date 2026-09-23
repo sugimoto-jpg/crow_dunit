@@ -48,6 +48,10 @@ G.STRINGS.ja = {
   'title.name.ok':      'この名前で始める',
 
   /* 難易度を決める */
+  'title.sex.title': '主人公の姿',
+  'title.sex.lead': 'どちらの姿で旅を始めますか。あとから変えることはできません。',
+  'title.sex.m': '少年',
+  'title.sex.f': '少女',
   'title.diff.title':  '難易度を選んでください',
   'title.diff.lead':   '敵の強さが変わります。あとから変更はできません。',
   'title.diff.stats':  '敵のHP {hp}% ／ 攻撃力 {atk}%',

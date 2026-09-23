@@ -109,15 +109,16 @@ G.STORY = {
   ],
 };
 
-/* 仲間キャラのテンプレート */
+/* 仲間キャラのテンプレート
+ * look は絵を選ぶときの手掛かり。専用の絵がある仲間では使われない。 */
 G.COMPANIONS = {
   riina: {
-    name:'リィナ', icon:'👧', jobPath:['villager','apprentice_cleric','priest','bishop','saint'],
+    name:'リィナ', icon:'👧', look:{ sex:'f' }, jobPath:['villager','apprentice_cleric','priest','bishop','saint'],
     role:'healer', desc:'幼馴染。村の教会育ちで、神官科に進んだ。',
     growthBonus:{ mag:1.1, res:1.1 },
   },
   velt: {
-    name:'ヴェルト', icon:'🧑‍🦰', jobPath:['villager','apprentice_knight','swordsman','magic_swordsman','sword_saint'],
+    name:'ヴェルト', icon:'🧑‍🦰', look:{ sex:'m' }, jobPath:['villager','apprentice_knight','swordsman','magic_swordsman','sword_saint'],
     role:'attacker', desc:'一つ上の先輩。ぶっきらぼうだが面倒見がいい。',
     growthBonus:{ atk:1.1, hp:1.1 },
   },

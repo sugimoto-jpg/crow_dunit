@@ -4658,6 +4658,9 @@
    "riina": {
     "name": "リィナ",
     "icon": "👧",
+    "look": {
+     "sex": "f"
+    },
     "jobPath": [
      "villager",
      "apprentice_cleric",
@@ -4675,6 +4678,9 @@
    "velt": {
     "name": "ヴェルト",
     "icon": "🧑‍🦰",
+    "look": {
+     "sex": "m"
+    },
     "jobPath": [
      "villager",
      "apprentice_knight",

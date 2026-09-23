@@ -86,6 +86,20 @@ const step = s => { steps.push(s); console.log('  ' + s); };
     }
   };
 
+  /* モーダルが出てこなくなるまで閉じ続ける。
+   * 戦闘のあとは「結果 → レベルアップ → 転職の案内」が
+   * 少し遅れて次々に出るので、一度閉じただけでは足りない。
+   * 2回続けて何も出なければ落ち着いたとみなす。 */
+  const settle = async (ms = 9000) => {
+    const until = Date.now() + ms;
+    let quiet = 0;
+    while (Date.now() < until && quiet < 2) {
+      if (await page.locator('#modal:not(.hidden)').count()) { await closeModal(); quiet = 0; }
+      else quiet++;
+      await page.waitForTimeout(350);
+    }
+  };
+
   console.log('▼ ブラウザ操作');
   const target = USE_FILE
     ? 'file://' + path.join(ROOT, ENTRY)
@@ -101,8 +115,11 @@ const step = s => { steps.push(s); console.log('  ' + s); };
   await page.waitForSelector('#name-in');
   await page.fill('#name-in', 'テスト勇者');
   await click('#modal-actions .btn');
+  // 主人公の姿（見た目だけ。能力には影響しない）
+  await page.waitForSelector('#modal [data-pick="m"]');
+  await click('#modal [data-pick="m"]');
   // 難易度選択
-  await page.waitForSelector('#modal [data-pick]');
+  await page.waitForSelector('#modal [data-pick="normal"]');
   await click('#modal [data-pick="normal"]');
   step('名前と難易度を選んでゲーム開始');
 
@@ -243,18 +260,22 @@ const step = s => { steps.push(s); console.log('  ' + s); };
   const won = await page.locator('#modal-title').textContent().catch(() => '');
   step(`戦闘終了: ${won}`);
   await shot('06-result');
-  /* 戦闘のあとは「結果 → レベルアップ → 転職の案内」と
-   * モーダルが続けて出ることがある。あとから出てくる分もあるので、
-   * 一度閉じて終わりにせず、出てこなくなるまで待って閉じる。 */
-  for (let i = 0; i < 6; i++) {
-    await closeModal();
-    await page.waitForTimeout(300);
-    if (!(await page.locator('#modal:not(.hidden)').count())) break;
-  }
+  await settle();
+
+  /* 戦闘に勝つと探索の続きに戻り、そのまま次の遭遇に入ることがある。
+   * ここから先は街や学院の確認なので、いったん探索を切り上げて拠点に戻す。 */
+  await page.evaluate(() => {
+    if (G.TravelUI) G.TravelUI.stop();
+    if (G.Explore) G.Explore.abort();
+    G.UI.setChromeVisible(true);
+    G.UI.show('home');
+  });
+  await settle();
+  await page.waitForSelector('#nav button[data-nav="town"]', { timeout: 6000 });
 
   // 街・状態・ジョブ画面
   await click('#nav button[data-nav="town"]');
-  await closeModal();
+  await settle();
   await page.waitForSelector('[data-act="shop"]');
   await click('[data-act="shop"]');
   await page.waitForSelector('[data-act="buy"]');

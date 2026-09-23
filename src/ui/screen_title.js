@@ -51,6 +51,27 @@ G.UI.register('title', {
           el.addEventListener('keydown', ev => { if (ev.key === 'Enter') { name = el.value; done('ok'); } });
         },
       });
+      /* 主人公の姿を選ぶ。
+       * 絵（assets/characters/）を男女で描き分けるための指定で、
+       * 能力や物語には一切影響しない。 */
+      const sex = await G.UI.modal({
+        title: G.T('title.sex.title'),
+        body: `<p class="dim">${G.T('title.sex.lead')}</p>
+          <div class="row" style="gap:10px;align-items:stretch">
+            ${[['m', G.T('title.sex.m')], ['f', G.T('title.sex.f')]].map(([k, label]) => `
+              <div style="flex:1;text-align:center">
+                <div class="portrait" style="width:100%;height:120px;margin:0 auto 6px"
+                     >${G.Sprite.hero({ key: 'player', name: '', isPlayer: true,
+                        jobId: 'villager', equip: {}, look: { sex: k } })}</div>
+                <button class="btn sm" style="width:100%" data-pick="${k}"
+                  >${G.util.esc(label)}</button>
+              </div>`).join('')}
+          </div>`,
+        actions: [{ label: G.T('common.cancel'), cls: 'ghost', value: 'm' }],
+        bind: done => document.querySelectorAll('#modal [data-pick]').forEach(el =>
+          el.addEventListener('click', () => done(el.dataset.pick))),
+      });
+
       const diff = await G.UI.modal({
         title: G.T('title.diff.title'),
         body: `<p class="dim">${G.T('title.diff.lead')}</p>
@@ -69,7 +90,7 @@ G.UI.register('title', {
         bind: done => document.querySelectorAll('#modal [data-pick]').forEach(el =>
           el.addEventListener('click', () => done(el.dataset.pick))),
       });
-      G.Story.beginNewGame(name, diff);
+      G.Story.beginNewGame(name, diff, { sex: sex === 'f' ? 'f' : 'm' });
     });
 
     G.UI.on('about', () => G.UI.alert(G.T('title.about.title'), `

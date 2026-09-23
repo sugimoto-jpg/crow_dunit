@@ -54,14 +54,28 @@ G.Art = {
     return null;
   },
 
+  /* 用途が無いときの代わり。
+   * 1枚の絵をいくつもの画面で使い回せるようにする。
+   * 立ち絵だけ用意した、戦闘の絵だけ用意した、どちらでも成立する。 */
+  USE_CHAIN: {
+    battle: ['battle', 'portrait'],
+    field: ['field', 'battle', 'portrait'],
+    portrait: ['portrait', 'battle'],
+    face: ['face', 'portrait', 'battle'],
+  },
+
   /* ---------- 味方（主人公・仲間） ---------- */
-  /* 探す順番（README と同じ）
-   *   1. そのキャラ専用で、いまの職の絵
-   *   2. 職の絵（性別あり）
-   *   3. 職の絵（性別なし）
-   *   4. そのキャラ専用の汎用の絵
-   *   5. 同じ系統の代表職の絵
+  /* 探す順番
+   *   1. そのキャラ専用で、いまの職の絵   例 companion/riina/battle_saint
+   *   2. そのキャラ専用の絵               例 companion/riina/battle
+   *   3. 職の絵（性別あり → 性別なし）    例 job/swordsman/battle_m
+   *   4. 同じ系統の代表職の絵
+   * それぞれで用途の代わり（USE_CHAIN）も順に試す。
    * 見つからなければ null（＝ SVG で描く）
+   *
+   * キャラ専用を職より先に見るのは、
+   * 仲間には固有の姿があるため。リィナが村人の絵にならないようにする。
+   * 主人公の絵は jobs/villager/ に置くので、転職すればその職の絵になる。
    */
   heroKeys(c, use) {
     if (!c) return [];
@@ -72,18 +86,20 @@ G.Art = {
     const job = c.jobId || 'villager';
     const arch = (G.SPRITE_ARCH && G.SPRITE_ARCH[job]) || 'villager';
     const rep = ARCH_REP[arch] || 'villager';
+    const uses = G.Art.USE_CHAIN[use] || [use];
 
-    const keys = [
-      `${kind}/${id}/${use}_${job}`,
-      `job/${job}/${use}_${sex}`,
-      `job/${job}/${use}`,
-      `job/${job}/${use}_${other}`,
-      `${kind}/${id}/${use}_${sex}`,
-      `${kind}/${id}/${use}`,
-      `${kind}/${id}/${use}_${other}`,
-    ];
+    const keys = [];
+    for (const u of uses) keys.push(`${kind}/${id}/${u}_${job}`);
+    for (const u of uses) {
+      keys.push(`${kind}/${id}/${u}_${sex}`, `${kind}/${id}/${u}`, `${kind}/${id}/${u}_${other}`);
+    }
+    for (const u of uses) {
+      keys.push(`job/${job}/${u}_${sex}`, `job/${job}/${u}`, `job/${job}/${u}_${other}`);
+    }
     if (rep !== job) {
-      keys.push(`job/${rep}/${use}_${sex}`, `job/${rep}/${use}`, `job/${rep}/${use}_${other}`);
+      for (const u of uses) {
+        keys.push(`job/${rep}/${u}_${sex}`, `job/${rep}/${u}`, `job/${rep}/${u}_${other}`);
+      }
     }
     return keys;
   },
@@ -101,12 +117,15 @@ G.Art = {
   foeKeys(enemyId, use, isBoss) {
     if (!enemyId) return [];
     const kind = isBoss ? 'boss' : 'monster';
+    const uses = G.Art.USE_CHAIN[use] || [use];
     /* ボスの絵は bosses/ に置くが、monsters/ にあっても拾う。
      * 置き間違いで絵が出ないより、拾えたほうがよい。 */
-    const keys = [`${kind}/${enemyId}/${use}`, `monster/${enemyId}/${use}`,
-      `boss/${enemyId}/${use}`];
+    const keys = [];
+    for (const u of uses) {
+      keys.push(`${kind}/${enemyId}/${u}`, `monster/${enemyId}/${u}`, `boss/${enemyId}/${u}`);
+    }
     const look = G.Sprite && G.Sprite.ENEMY_LOOK && G.Sprite.ENEMY_LOOK[enemyId];
-    if (look && look[0]) keys.push(`monster/${look[0]}/${use}`);
+    if (look && look[0]) for (const u of uses) keys.push(`monster/${look[0]}/${u}`);
     return keys;
   },
 

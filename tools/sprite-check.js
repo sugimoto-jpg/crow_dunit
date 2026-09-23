@@ -47,6 +47,11 @@ const hash = s => crypto.createHash('sha1').update(norm(s)).digest('hex').slice(
   await page.waitForSelector('.title-logo');
 
   const out = await page.evaluate(() => {
+    /* この照合は「コードで描く絵（SVG）が変わっていないか」を見るためのもの。
+     * 画像素材が入っていると <img> に置き換わって比べられなくなるので、
+     * 一時的に画像の一覧を空にして、SVG の側だけを測る。
+     * 画像側の検証は tools/art-test.js が受け持つ。 */
+    G.ART_MANIFEST = {};
     G.State.newGame('基準', 'normal');
     const res = { jobs: {}, enemies: {} };
     /* 武器の違いで絵が変わるので、全ての武器の形を1つずつ試す */

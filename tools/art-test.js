@@ -12,11 +12,17 @@
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
+const os = require('os');
 const { execFileSync } = require('child_process');
 const { loadGame, scriptsFromIndex } = require('./load.js');
 
 const ROOT = path.resolve(__dirname, '..');
-const ART = path.join(ROOT, 'assets/characters');
+
+/* 本物の素材（assets/characters/）は触らない。
+ * 検証用の画像は、使い捨てのフォルダに作って最後に消す。
+ * 本物を消してしまう事故を、仕組みとして起こらないようにする。 */
+const ART = path.join(os.tmpdir(), 'ta-art-test-' + process.pid);
+const REAL = path.join(ROOT, 'assets/characters');
 
 const ok = [], ng = [];
 const check = (cond, label, extra) => {
@@ -63,6 +69,18 @@ function crc32(buf) {
   return c ^ -1;
 }
 
+/* 検証を始める前の、本物の素材の枚数。最後に変わっていないか確かめる。 */
+const realBefore = (function walk(dir) {
+  if (!fs.existsSync(dir)) return 0;
+  let n = 0;
+  for (const f of fs.readdirSync(dir)) {
+    const full = path.join(dir, f);
+    if (fs.statSync(full).isDirectory()) { n += walk(full); continue; }
+    if (/\.(webp|png|jpe?g)$/i.test(f)) n++;
+  }
+  return n;
+})(path.join(ROOT, 'assets/characters'));
+
 const made = [];
 function put(rel, rgba) {
   const full = path.join(ART, rel);
@@ -72,28 +90,26 @@ function put(rel, rgba) {
   return full;
 }
 function cleanup() {
-  for (const f of made) { try { fs.unlinkSync(f); } catch (e) {} }
-  /* 空になったフォルダを片付ける */
-  for (const f of made) {
-    let d = path.dirname(f);
-    while (d.startsWith(ART) && d !== ART) {
-      try { if (!fs.readdirSync(d).length) fs.rmdirSync(d); else break; } catch (e) { break; }
-      d = path.dirname(d);
-    }
-  }
-  build();
+  try { fs.rmSync(ART, { recursive: true, force: true }); } catch (e) {}
 }
-const build = (args) => execFileSync(process.execPath,
-  [path.join(ROOT, 'tools/build-art.js'), '--quiet'].concat(args || []), { cwd: ROOT });
+/* 検証用フォルダを走査して、一覧を文字列で受け取る。
+ * ファイルには書き出さないので、開発中の src/data/art.js は無傷。 */
+const build = (args) => JSON.parse(execFileSync(process.execPath,
+  [path.join(ROOT, 'tools/build-art.js'), '--dir', ART, '--json'].concat(args || []),
+  { cwd: ROOT, encoding: 'utf8' }) || '{}');
 
-const fresh = () => loadGame(scriptsFromIndex());
+/* 一覧を差し替えたゲームを用意する */
+const fresh = (manifest) => {
+  const G = loadGame(scriptsFromIndex());
+  G.ART_MANIFEST = manifest || {};
+  return G;
+};
 
 try {
   /* ---------- 1. 画像が1枚も無い状態 ---------- */
   console.log('▼ 1. 画像が1枚も無いとき\n');
-  build();
   {
-    const G = fresh();
+    const G = fresh(build());
     check(Object.keys(G.ART_MANIFEST).length === 0, '一覧が空である');
     check(G.Art.any === false, '「画像は無い」と判定される');
     G.State.newGame('テスト', 'normal');
@@ -108,9 +124,8 @@ try {
   /* ---------- 2. 画像を1枚だけ置く（スライム） ---------- */
   console.log('\n▼ 2. スライムの絵を1枚だけ置く\n');
   put('monsters/slime/battle.png');
-  build();
   {
-    const G = fresh();
+    const G = fresh(build());
     check(G.Art.any === true, '「画像がある」と判定される');
     const url = G.Art.foe('slime', 'battle', false);
     check(!!url && /monsters\/slime\/battle\.png$/.test(url), 'スライムの絵が見つかる', String(url));
@@ -132,9 +147,8 @@ try {
   put('jobs/swordsman/battle_m.png');
   put('jobs/swordsman/battle_f.png');
   put('jobs/apprentice_knight/battle_m.png');
-  build();
   {
-    const G = fresh();
+    const G = fresh(build());
     G.State.newGame('テスト', 'normal');
     const c = G.State.d.player;
     c.jobId = 'swordsman';
@@ -159,18 +173,25 @@ try {
     c.jobId = 'archmage';
     check(G.Art.hero(c, 'battle') === null, '系統も違えばSVGに戻る');
 
-    /* 用途が違えば別の絵。無ければ null */
+    /* 用途が違っても、1枚あれば使い回す。
+     * 立ち絵を用意していなくても、戦闘の絵で代わりにする。 */
     c.jobId = 'swordsman';
-    check(G.Art.hero(c, 'portrait') === null, '立ち絵はまだ無いのでSVGに戻る');
+    c.look = { sex: 'm' };
+    check(/battle_m\.png$/.test(G.Art.hero(c, 'portrait')),
+      '立ち絵が無ければ戦闘の絵で代わりにする');
+    check(/battle_m\.png$/.test(G.Art.hero(c, 'field')),
+      '小型の絵が無くても戦闘の絵で代わりにする');
+    /* どの用途の絵も無ければ SVG */
+    c.jobId = 'archmage';
+    check(G.Art.hero(c, 'portrait') === null, 'どの用途の絵も無ければSVGに戻る');
   }
 
   /* ---------- 4. 仲間専用の絵が職の絵より優先される ---------- */
   console.log('\n▼ 4. 仲間専用の絵\n');
   put('companions/riina/battle.png');
   put('companions/riina/battle_saint.png');
-  build();
   {
-    const G = fresh();
+    const G = fresh(build());
     G.State.newGame('テスト', 'normal');
     G.State.recruit('riina');
     const r = G.State.d.party.find(x => x.key === 'riina');
@@ -187,9 +208,8 @@ try {
   put('monsters/slime/せんとう.png');            // 用途名が違う
   put('monsters/slime/battle.txt');              // 画像でない
   put('jobs/swordsman/battle_x.png');            // 性別でも職でもない接尾辞
-  build();
   {
-    const G = fresh();
+    const G = fresh(build());
     check(!G.ART_MANIFEST['monster/slime/せんとう'], '読めない名前は一覧に入らない');
     check(!Object.keys(G.ART_MANIFEST).some(k => /\.txt/.test(k)), '画像でないファイルは無視される');
     /* battle_x は「職 x の絵」と解釈される。存在しない職なので誰にも使われない。 */
@@ -203,7 +223,7 @@ try {
   /* ---------- 6. 存在しないIDを聞かれたとき ---------- */
   console.log('\n▼ 6. 知らないIDを聞かれても落ちない\n');
   {
-    const G = fresh();
+    const G = fresh(build());
     check(G.Art.hero(null, 'battle') === null, 'キャラが無くてもnullを返す');
     check(G.Art.foe('存在しない敵', 'battle', false) === null, '知らない敵でもnullを返す');
     check(G.Art.npc('存在しないNPC', 'field') === null, '知らないNPCでもnullを返す');
@@ -213,25 +233,23 @@ try {
 
   /* ---------- 7. 1ファイル版への埋め込み ---------- */
   console.log('\n▼ 7. 1ファイル版に埋め込まれる\n');
-  build(['--inline']);
   {
-    const G = fresh();
+    const G = fresh(build(['--inline']));
     const url = G.ART_MANIFEST['monster/slime/battle'];
     check(!!url && /^data:image\/png;base64,/.test(url), '画像が文字列として埋め込まれる');
     check(!Object.keys(G.ART_MANIFEST).some(k => /\/portrait/.test(k)),
       '立ち絵は埋め込まない（容量のため）');
   }
-  build();
   {
-    const G = fresh();
-    check(/^assets\//.test(G.ART_MANIFEST['monster/slime/battle'] || ''),
-      '作り終わったら通常版（画像へのパス）に戻る');
+    const G = fresh(build());
+    check(/^\S+\.png$/.test(G.ART_MANIFEST['monster/slime/battle'] || ''),
+      '通常版では画像へのパスが入る');
   }
 
   /* ---------- 8. セーブの互換 ---------- */
   console.log('\n▼ 8. 古いセーブでも読める\n');
   {
-    const G = fresh();
+    const G = fresh(build());
     G.State.newGame('テスト', 'normal');
     G.State.recruit('riina');
     const saved = JSON.parse(JSON.stringify(G.State.d));
@@ -246,22 +264,34 @@ try {
 }
 
 /* 後始末が効いているか */
-console.log('\n▼ 9. 後始末\n');
+console.log('\n▼ 9. 後始末と、本物の素材への影響\n');
 {
-  const G = fresh();
-  check(Object.keys(G.ART_MANIFEST).length === 0, '検証用の画像は残っていない');
-  /* 残っている画像ファイルを数える。
-   * .gitkeep は置き場を git に残すためのもので、画像ではない。 */
-  const left = [];
-  (function walk(dir) {
-    if (!fs.existsSync(dir)) return;
+  check(!fs.existsSync(ART), '検証用のフォルダは残っていない', ART);
+  /* 本物の素材は1枚も増えていない・減っていない */
+  const realCount = (function walk(dir) {
+    if (!fs.existsSync(dir)) return 0;
+    let n = 0;
     for (const f of fs.readdirSync(dir)) {
       const full = path.join(dir, f);
-      if (fs.statSync(full).isDirectory()) { walk(full); continue; }
-      if (/\.(webp|png|jpe?g)$/i.test(f)) left.push(path.relative(ART, full));
+      if (fs.statSync(full).isDirectory()) { n += walk(full); continue; }
+      if (/\.(webp|png|jpe?g)$/i.test(f)) n++;
     }
-  })(ART);
-  check(left.length === 0, '検証用に作った画像は1枚も残っていない', left.join(','));
+    return n;
+  })(REAL);
+  check(realCount === realBefore,
+    `本物の素材は触っていない（${realBefore}枚のまま）`, `いま${realCount}枚`);
+
+  /* 実際に置いてある素材で、ゲームが問題なく動く */
+  const G = loadGame(scriptsFromIndex());
+  G.State.newGame('テスト', 'normal');
+  for (const k of ['riina', 'velt', 'noa']) G.State.recruit(k);
+  let imgs = 0, svgs = 0;
+  for (const c of G.State.d.party) {
+    const h = G.Sprite.hero(c);
+    if (/^<img/.test(h)) imgs++; else if (/^<svg/.test(h)) svgs++;
+  }
+  check(imgs + svgs === G.State.d.party.length,
+    `いまの素材で全員が描ける（画像${imgs}人 / SVG${svgs}人）`);
 }
 
 console.log(`\n▼ 判定：${ok.length} 件成功 / ${ng.length} 件失敗`);

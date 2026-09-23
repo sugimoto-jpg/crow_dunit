@@ -13,8 +13,15 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const DIR = path.join(ROOT, 'assets/characters');
-const OUT = path.join(ROOT, 'src/data/art.js');
+
+/* 走査先と書き出し先は差し替えられる。
+ * 検証（tools/art-test.js）が、本物の素材を触らずに試せるようにするため。 */
+const argOf = name => {
+  const i = process.argv.indexOf(name);
+  return i >= 0 ? process.argv[i + 1] : null;
+};
+const DIR = path.resolve(ROOT, argOf('--dir') || 'assets/characters');
+const OUT = path.resolve(ROOT, argOf('--out') || 'src/data/art.js');
 
 /* フォルダ名 → 種別。README と同じ並び。 */
 const KINDS = {
@@ -31,6 +38,8 @@ const INLINE_USES = ['battle', 'face'];
 
 const inline = process.argv.includes('--inline');
 const quiet = process.argv.includes('--quiet');
+/* --json … ファイルに書かず、一覧をそのまま出力する（検証用） */
+const asJson = process.argv.includes('--json');
 
 /* ファイル名 → { use, sex, job }。読めなければ null。 */
 function parseName(base) {
@@ -113,6 +122,11 @@ G.ART_MANIFEST = {
 ${body}
 };
 `;
+
+if (asJson) {
+  process.stdout.write(JSON.stringify(entries));
+  process.exit(0);
+}
 
 fs.writeFileSync(OUT, src);
 
