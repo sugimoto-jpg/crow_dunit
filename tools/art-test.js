@@ -40,6 +40,10 @@ function makePng(w, h, rgba) {
       raw[o] = rgba[0]; raw[o + 1] = rgba[1]; raw[o + 2] = rgba[2]; raw[o + 3] = rgba[3];
     }
   }
+  return pngOf(w, h, raw);
+}
+
+function pngOf(w, h, raw) {
   const chunk = (type, data) => {
     const len = Buffer.alloc(4); len.writeUInt32BE(data.length);
     const td = Buffer.concat([Buffer.from(type, 'ascii'), data]);
@@ -80,6 +84,23 @@ const realBefore = (function walk(dir) {
   }
   return n;
 })(path.join(ROOT, 'assets/characters'));
+
+/* 灰色の背景の真ん中に、指定の大きさの四角を描いたPNG。
+ * 「腕を広げた絵」「縮こまった絵」の代わりに使う。 */
+function makeShape(w, h, cw, ch) {
+  const raw = Buffer.alloc((w * 4 + 1) * h);
+  const x0 = ((w - cw) / 2) | 0, y0 = ((h - ch) / 2) | 0;
+  for (let y = 0; y < h; y++) {
+    raw[y * (w * 4 + 1)] = 0;
+    for (let x = 0; x < w; x++) {
+      const o = y * (w * 4 + 1) + 1 + x * 4;
+      const inside = x >= x0 && x < x0 + cw && y >= y0 && y < y0 + ch;
+      const c = inside ? [220, 40, 40] : [110, 110, 110];
+      raw[o] = c[0]; raw[o + 1] = c[1]; raw[o + 2] = c[2]; raw[o + 3] = 255;
+    }
+  }
+  return pngOf(w, h, raw);
+}
 
 const made = [];
 function put(rel, rgba) {
@@ -245,8 +266,42 @@ try {
     check(fp && fp.hurt && !fp.walk, '敵も用意した動きだけ返る');
   }
 
+  /* ---------- 5b. まとめて取り込むと位置と大きさが揃う ---------- */
+  console.log('\n▼ 6. まとめて取り込む（--group）\n');
+  {
+    const dir = path.join(os.tmpdir(), 'ta-group-' + process.pid);
+    fs.mkdirSync(dir, { recursive: true });
+    /* 中身の大きさが違う2枚を作る（腕を広げた絵と、縮こまった絵のつもり） */
+    const wide = path.join(dir, 'wide.png');
+    const slim = path.join(dir, 'slim.png');
+    fs.writeFileSync(wide, makeShape(200, 200, 160, 100));
+    fs.writeFileSync(slim, makeShape(200, 200, 40, 100));
+    const outA = path.join(dir, 'a.png');
+    const outB = path.join(dir, 'b.png');
+    /* 取り込みツールが報告する「切り出し」の大きさで比べる。
+     * 書き出したPNGを自前で読むと、行ごとの圧縮の種類まで
+     * 扱わねばならず、測り方のほうが間違いやすい。 */
+    const run = (...a) => execFileSync(process.execPath,
+      [path.join(ROOT, 'tools/art-import.js'), ...a],
+      { cwd: ROOT, encoding: 'utf8' });
+    const cropsOf = out => [...out.matchAll(/切り出し (\d+)×(\d+)/g)].map(m => m[1] + 'x' + m[2]);
+
+    /* 1枚ずつ入れると、それぞれのふちに合わせて切り出すので揃わない */
+    const a1 = cropsOf(run(wide, outA, '--size', '100x100'))[0];
+    const b1 = cropsOf(run(slim, outB, '--size', '100x100'))[0];
+    check(a1 !== b1, `1枚ずつだと切り出し方が違う（${a1} / ${b1}）`);
+
+    /* まとめて入れると同じ切り出し方になる */
+    const grp = cropsOf(run('--group', wide, outA, slim, outB, '--size', '100x100'));
+    check(grp.length === 2 && grp[0] === grp[1],
+      `まとめて入れると切り出し方が揃う（${grp.join(' / ')}）`);
+    check(fs.existsSync(outA) && fs.existsSync(outB), '2枚とも書き出される');
+
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+
   /* ---------- 5. 名前や置き場所を間違えたとき ---------- */
-  console.log('\n▼ 6. 間違えて置いても壊れない\n');
+  console.log('\n▼ 7. 間違えて置いても壊れない\n');
   put('monsters/slime/せんとう.png');            // 用途名が違う
   put('monsters/slime/battle.txt');              // 画像でない
   put('jobs/swordsman/battle_x.png');            // 性別でも職でもない接尾辞
@@ -263,7 +318,7 @@ try {
   }
 
   /* ---------- 6. 存在しないIDを聞かれたとき ---------- */
-  console.log('\n▼ 7. 知らないIDを聞かれても落ちない\n');
+  console.log('\n▼ 8. 知らないIDを聞かれても落ちない\n');
   {
     const G = fresh(build());
     check(G.Art.hero(null, 'battle') === null, 'キャラが無くてもnullを返す');
@@ -274,7 +329,7 @@ try {
   }
 
   /* ---------- 7. 1ファイル版への埋め込み ---------- */
-  console.log('\n▼ 8. 1ファイル版に埋め込まれる\n');
+  console.log('\n▼ 9. 1ファイル版に埋め込まれる\n');
   {
     const G = fresh(build(['--inline']));
     const url = G.ART_MANIFEST['monster/slime/battle'];
@@ -289,7 +344,7 @@ try {
   }
 
   /* ---------- 8. セーブの互換 ---------- */
-  console.log('\n▼ 9. 古いセーブでも読める\n');
+  console.log('\n▼ 10. 古いセーブでも読める\n');
   {
     const G = fresh(build());
     G.State.newGame('テスト', 'normal');
@@ -306,7 +361,7 @@ try {
 }
 
 /* 後始末が効いているか */
-console.log('\n▼ 10. 後始末と、本物の素材への影響\n');
+console.log('\n▼ 11. 後始末と、本物の素材への影響\n');
 {
   check(!fs.existsSync(ART), '検証用のフォルダは残っていない', ART);
   /* 本物の素材は1枚も増えていない・減っていない */

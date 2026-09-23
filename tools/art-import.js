@@ -1,10 +1,22 @@
 /* ===== キャラクター画像の取り込み =====
  * 生成AIから出てきた画像を、ゲームで使える形に整える。
  *
- *   node tools/art-import.js <入力画像> <出力先> [--size 384x480] [--check]
+ *   node tools/art-import.js <入力画像> <出力先> [--size 384x480]
+ *   node tools/art-import.js --group <入力1> <出力1> <入力2> <出力2> ...
  *
  * 例）
  *   node tools/art-import.js ~/dl/hero.jpg assets/characters/player/battle_m.webp
+ *
+ *   ふだんの絵と、動きの絵をまとめて入れる（位置と大きさが揃う）
+ *   node tools/art-import.js --group \
+ *     ~/dl/stand.jpg  assets/characters/jobs/villager/battle_m.webp \
+ *     ~/dl/attack.jpg assets/characters/jobs/villager/battle_m_attack.webp
+ *
+ * --group が要る理由：
+ *   1枚ずつ入れると、それぞれの絵のふちに合わせて切り出すため、
+ *   腕を広げた絵は縮み、縮こまった絵は大きくなる。
+ *   差し替わった瞬間にキャラが伸び縮みして見えてしまう。
+ *   --group では全部の絵を見てから、共通の切り出し方で書き出すので揃う。
  *
  * やること
  *   1. 透過を表す市松模様の背景を消して、本当に透明にする
@@ -25,15 +37,17 @@ const flags = {};
 const files = [];
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--size') { flags.size = args[++i]; continue; }
-  if (args[i] === '--check') { flags.check = true; continue; }
+  if (args[i] === '--group') { flags.group = true; continue; }
   if (args[i] === '--pad') { flags.pad = Number(args[++i]); continue; }
   files.push(args[i]);
 }
-if (files.length < 2) {
+if (files.length < 2 || files.length % 2 !== 0) {
   console.error('使い方: node tools/art-import.js <入力画像> <出力先> [--size 384x480]');
+  console.error('        node tools/art-import.js --group <入力1> <出力1> <入力2> <出力2> ...');
   process.exit(1);
 }
-const [src, dest] = files;
+const pairs = [];
+for (let i = 0; i < files.length; i += 2) pairs.push([files[i], files[i + 1]]);
 const [W, H] = (flags.size || '384x480').split('x').map(Number);
 const PAD = flags.pad == null ? 0.03 : flags.pad;
 
@@ -42,15 +56,13 @@ const EXE = ['/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
 
 const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp' };
 
-(async () => {
-  if (!fs.existsSync(src)) { console.error(`入力が見つかりません: ${src}`); process.exit(1); }
-  const browser = await chromium.launch({ executablePath: EXE, headless: true, args: ['--no-sandbox'] });
-  const page = await browser.newPage();
+/* ===== ブラウザの中で動く処理 ===== */
 
-  const dataUrl = `data:${MIME[path.extname(src).toLowerCase()] || 'image/png'};base64,`
-    + fs.readFileSync(src).toString('base64');
-
-  const out = await page.evaluate(async ({ url, W, H, PAD }) => {
+/* 背景を消して、キャラの入っている範囲を測る。
+ * 透明にした絵は PNG（可逆）で返す。ここで劣化させると、
+ * このあとの縮小で粗が出るため。 */
+function cut({ url }) {
+  return (async () => {
     const img = new Image(); img.src = url; await img.decode();
     const w = img.width, h = img.height;
     const c = document.createElement('canvas'); c.width = w; c.height = h;
@@ -65,9 +77,9 @@ const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
     };
     const lum = o => (d[o] * 299 + d[o + 1] * 587 + d[o + 2] * 114) / 1000;
 
-    /* --- 1. 縁から塗りつぶして背景を見つける ---
+    /* 縁から塗りつぶして背景を見つける。
      * 市松模様は灰色（彩度が低い）。
-     * キャラの輪郭には明るい黄色の縁取りがあるので、そこで必ず止まる。
+     * キャラの輪郭には明るい縁取りがあるので、そこで必ず止まる。
      * 「縁から繋がっている灰色」だけを背景にするので、
      * 服の白や鎧の銀（どちらも彩度が低い）は消えない。 */
     const BG_SAT = 30;
@@ -88,9 +100,19 @@ const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
       push(x + 1, y); push(x - 1, y); push(x, y + 1); push(x, y - 1);
     }
 
-    /* --- 2. 境目の暗い縁取りを削る ---
-     * 切り口をそのまま残すと、キャラの周りに黒い線が出る。
-     * 背景に接していて、暗くて彩度も低い画素を、もう一段消す。 */
+    /* ※ 剣の軌跡のように線が輪を作っていると、その内側の背景は
+     *    外周から繋がっていないので、ここでは消えずに残る。
+     *
+     *    色や模様から機械的に見分ける方法を試したが、
+     *    黒い髪が市松模様の暗い升と見分けられず、髪が削れてしまった。
+     *    JPEGには透明の情報が無いため、確実な手立てがない。
+     *
+     *    元の画像を「透過PNG」で書き出してもらえば、この問題は起きない。
+     *    市松模様はもともと「ここは透明」という表示なので、
+     *    PNGで保存すれば本当に透明な状態で受け取れる。 */
+
+    /* 境目の暗い縁取りを削る。
+     * 切り口をそのまま残すと、キャラの周りに黒い線が出る。 */
     for (let pass = 0; pass < 2; pass++) {
       const add = [];
       for (let y = 1; y < h - 1; y++) {
@@ -105,7 +127,6 @@ const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
       for (const i of add) bg[i] = 1;
     }
 
-    /* --- 3. 背景を透明にする --- */
     let minX = w, minY = h, maxX = -1, maxY = -1, kept = 0;
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
@@ -118,41 +139,77 @@ const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
     }
     if (maxX < 0) return { error: 'キャラクターが見つかりませんでした（全部が背景と判定されました）' };
     cx.putImageData(id, 0, 0);
+    return { w, h, minX, minY, maxX, maxY,
+      ratio: +(kept / (w * h)).toFixed(3), cut: c.toDataURL('image/png') };
+  })();
+}
 
-    /* --- 4. 切り出して、決められた枠に収める --- */
-    const cw = maxX - minX + 1, ch = maxY - minY + 1;
+/* 決められた範囲を切り出して、出力の枠に収める。
+ * 足の裏が下端に来るように置く。 */
+function place({ png, box, W, H, PAD, webp }) {
+  return (async () => {
+    const img = new Image(); img.src = png; await img.decode();
+    const cw = box.maxX - box.minX + 1, ch = box.maxY - box.minY + 1;
     const o = document.createElement('canvas'); o.width = W; o.height = H;
     const ox = o.getContext('2d');
     ox.imageSmoothingEnabled = true; ox.imageSmoothingQuality = 'high';
-    const availW = W * (1 - PAD * 2), availH = H * (1 - PAD * 2);
-    const s = Math.min(availW / cw, availH / ch);
+    const s = Math.min(W * (1 - PAD * 2) / cw, H * (1 - PAD * 2) / ch);
     const dw = cw * s, dh = ch * s;
-    /* 足元を下端に合わせる（下の余白はPAD分だけ残す） */
-    ox.drawImage(c, minX, minY, cw, ch, (W - dw) / 2, H - dh - H * PAD, dw, dh);
+    ox.drawImage(img, box.minX, box.minY, cw, ch,
+      (W - dw) / 2, H - dh - H * PAD, dw, dh);
+    return o.toDataURL(webp ? 'image/webp' : 'image/png', 0.9);
+  })();
+}
 
-    return {
-      w, h, cw, ch, kept,
-      ratio: +(kept / (w * h)).toFixed(3),
-      webp: o.toDataURL('image/webp', 0.9),
-      png: o.toDataURL('image/png'),
-    };
-  }, { url: dataUrl, W, H, PAD });
+(async () => {
+  for (const [src] of pairs) {
+    if (!fs.existsSync(src)) { console.error(`入力が見つかりません: ${src}`); process.exit(1); }
+  }
+  const browser = await chromium.launch({ executablePath: EXE, headless: true, args: ['--no-sandbox'] });
+  const page = await browser.newPage();
+
+  /* --- 1回目：背景を消して、キャラの入っている範囲を測る --- */
+  const marked = [];
+  for (const [src, dest] of pairs) {
+    const dataUrl = `data:${MIME[path.extname(src).toLowerCase()] || 'image/png'};base64,`
+      + fs.readFileSync(src).toString('base64');
+    const r = await page.evaluate(cut, { url: dataUrl });
+    if (r.error) { console.error(`${path.basename(src)}: ${r.error}`); process.exit(1); }
+    marked.push({ src, dest, ...r });
+  }
+
+  /* --- 共通の切り出し範囲を決める --- */
+  const sameSize = marked.every(m => m.w === marked[0].w && m.h === marked[0].h);
+  const group = flags.group && marked.length > 1;
+  if (group && !sameSize) {
+    console.error('--group では、元の画像の大きさが全部そろっている必要があります');
+    process.exit(1);
+  }
+  const box = group
+    ? {
+      minX: Math.min(...marked.map(m => m.minX)), minY: Math.min(...marked.map(m => m.minY)),
+      maxX: Math.max(...marked.map(m => m.maxX)), maxY: Math.max(...marked.map(m => m.maxY)),
+    }
+    : null;
+
+  /* --- 2回目：決めた範囲で書き出す --- */
+  for (const m of marked) {
+    const b = box || { minX: m.minX, minY: m.minY, maxX: m.maxX, maxY: m.maxY };
+    const res = await page.evaluate(place, { png: m.cut, box: b, W, H, PAD,
+      webp: /\.webp$/i.test(m.dest) });
+    const buf = Buffer.from(res.split(',')[1], 'base64');
+    fs.mkdirSync(path.dirname(m.dest), { recursive: true });
+    fs.writeFileSync(m.dest, buf);
+
+    const kb = (buf.length / 1024).toFixed(1);
+    console.log(`  ${path.basename(m.src)} → ${m.dest}`);
+    console.log(`     元 ${m.w}×${m.h} / 切り出し ${b.maxX - b.minX + 1}×${b.maxY - b.minY + 1}`
+      + ` / 書き出し ${W}×${H} / ${kb}KB`);
+    if (m.ratio > 0.75) console.log(`     ⚠ 背景がうまく消えていないかもしれません（残った割合 ${m.ratio}）`);
+    if (m.ratio < 0.03) console.log(`     ⚠ 切り抜きすぎかもしれません（残った割合 ${m.ratio}）`);
+    if (buf.length > 40 * 1024) console.log(`     ⚠ 40KBを超えています（${kb}KB）`);
+  }
+  if (group) console.log(`\n  ${marked.length}枚を同じ切り出し方で書き出しました（位置と大きさが揃います）`);
 
   await browser.close();
-
-  if (out.error) { console.error(out.error); process.exit(1); }
-
-  const isWebp = /\.webp$/i.test(dest);
-  const b64 = (isWebp ? out.webp : out.png).split(',')[1];
-  const buf = Buffer.from(b64, 'base64');
-  fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.writeFileSync(dest, buf);
-
-  const kb = (buf.length / 1024).toFixed(1);
-  console.log(`  ${path.basename(src)} → ${dest}`);
-  console.log(`     元 ${out.w}×${out.h} / 切り出し ${out.cw}×${out.ch}`
-    + ` / 書き出し ${W}×${H} / ${kb}KB`);
-  if (out.ratio > 0.75) console.log(`     ⚠ 背景がうまく消えていないかもしれません（残った割合 ${out.ratio}）`);
-  if (out.ratio < 0.03) console.log(`     ⚠ 切り抜きすぎかもしれません（残った割合 ${out.ratio}）`);
-  if (buf.length > 40 * 1024) console.log(`     ⚠ 40KBを超えています（${kb}KB）`);
 })().catch(e => { console.error('取り込みに失敗:', e.message); process.exit(1); });
