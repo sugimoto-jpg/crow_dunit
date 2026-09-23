@@ -182,9 +182,13 @@ function finalGauntlet(setup, n = 120) {
 module.exports = { G, trial, runBattle, setupParty, allyAI, finalGauntlet };
 
 if (require.main === module) {
-  console.log('=== 序盤（学院入学〜Fランク / 主人公のみ or リィナ同行） ===');
-  trial('Lv1 単騎 vs スライム×1', { level: 1, jobPath: [], equip: { weapon: 'wood_stick', armor: 'cloth' } }, ['slime']);
-  trial('Lv1 単騎 vs スライム×3(依頼)', { level: 1, jobPath: [], equip: { weapon: 'wood_stick', armor: 'cloth' } }, ['slime', 'slime', 'slime']);
+  /* リィナは最初の物語（学院入学）で必ず仲間になる。
+   * 単騎で戦う場面は実際には無いので、単騎の行は素の強さを見るための
+   * 目安として1つだけ残し、残りは実際に起きる形で測る。
+   * 序盤の細かい手応えは tools/early-balance.js で見る。 */
+  console.log('=== 序盤（学院入学〜Fランク / リィナ同行） ===');
+  trial('Lv1 単騎 vs スライム×1（素の強さの目安）', { level: 1, jobPath: [], equip: { weapon: 'wood_stick', armor: 'cloth' } }, ['slime']);
+  trial('Lv1 +リィナ vs スライム×2(依頼)', { level: 1, jobPath: [], companions: ['riina'], equip: { weapon: 'wood_stick', armor: 'academy_robe' } }, ['slime', 'slime']);
   trial('Lv2 +リィナ vs スライム×3', { level: 2, jobPath: [], companions: ['riina'], equip: { weapon: 'wood_stick', armor: 'cloth' } }, ['slime', 'slime', 'slime']);
   trial('Lv3 +リィナ vs 大ネズミ×3', { level: 3, jobPath: [], companions: ['riina'], equip: { weapon: 'wood_stick', armor: 'cloth' } }, ['rat', 'rat', 'rat']);
   trial('Lv4 +リィナ vs ゴブリン×2', { level: 4, jobPath: [], companions: ['riina'], equip: { weapon: ['bronze_sword','oak_staff','bronze_dagger'], armor: 'academy_robe' } }, ['goblin', 'goblin']);
