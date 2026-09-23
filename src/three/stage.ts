@@ -59,7 +59,7 @@ export class Stage {
     canvas.style.cursor = 'grab';
     container.appendChild(canvas);
 
-    this.distance = mode === 'battle' ? 6.2 : 4.4;
+    this.distance = mode === 'battle' ? 6.2 : 3.7;
     this.minDist = mode === 'battle' ? 4 : 2.6;
     this.maxDist = mode === 'battle' ? 9 : 7;
     this.camera = new THREE.PerspectiveCamera(mode === 'battle' ? 38 : 35, 1, 0.1, 100);
@@ -76,9 +76,13 @@ export class Stage {
     key.shadow.camera.bottom = -4;
     key.shadow.bias = -0.0015;
     this.scene.add(key);
-    const rim = new THREE.DirectionalLight('#7fb2ff', 1.2);
+    const rim = new THREE.DirectionalLight('#7fb2ff', 1.0);
     rim.position.set(-4, 3, -4);
     this.scene.add(rim);
+    // 参考画像のような暖色の縁取り光
+    const warm = new THREE.DirectionalLight('#ffd9a0', 0.9);
+    warm.position.set(2, 2, -5);
+    this.scene.add(warm);
 
     // ---- 床（魔法陣風の台座） ----
     this.scene.add(this.turntable);

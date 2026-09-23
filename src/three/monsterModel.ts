@@ -1,10 +1,17 @@
 import * as THREE from 'three';
 import type { MonsterSpec } from '../data/types';
+import { addOutlines, toon } from './toon';
 
 export type MonsterAnim = 'idle' | 'hit' | 'attack' | 'defeat';
 
-function mat(color: string | THREE.Color, opts: Partial<THREE.MeshStandardMaterialParameters> = {}) {
-  return new THREE.MeshStandardMaterial({ color, roughness: 0.5, metalness: 0.05, ...opts });
+type MatOpts = Partial<THREE.MeshToonMaterialParameters> & { roughness?: number; metalness?: number };
+
+/** トゥーン材質（旧 Standard 用の roughness/metalness 指定は無視する） */
+function mat(color: string | THREE.Color, opts: MatOpts = {}) {
+  const { roughness: _r, metalness: _m, ...rest } = opts;
+  void _r;
+  void _m;
+  return toon(color, rest);
 }
 
 /** プロシージャル生成のモンスター（＝見込み顧客）。前方向 = ローカル +Z */
@@ -12,7 +19,7 @@ export class MonsterModel {
   readonly root = new THREE.Group();
   private body = new THREE.Group();
   private eyes: THREE.Object3D[] = [];
-  private mats = new Map<THREE.MeshStandardMaterial, { c: THREE.Color; i: number }>();
+  private mats = new Map<THREE.MeshToonMaterial, { c: THREE.Color; i: number }>();
   private anim: MonsterAnim = 'idle';
   private animT = 0;
   private basePos = new THREE.Vector3();
@@ -25,6 +32,7 @@ export class MonsterModel {
     this.floating = spec.shape === 'ghost' || spec.shape === 'demon';
     this.scale = bossScale;
     this.build(spec);
+    addOutlines(this.root, '#1c1020', 0.02);
     this.body.scale.setScalar(bossScale);
   }
 
@@ -61,7 +69,7 @@ export class MonsterModel {
     mesh.position.set(x, y, z);
     mesh.castShadow = true;
     parent.add(mesh);
-    if (material instanceof THREE.MeshStandardMaterial && !this.mats.has(material))
+    if (material instanceof THREE.MeshToonMaterial && !this.mats.has(material))
       this.mats.set(material, { c: material.emissive.clone(), i: material.emissiveIntensity });
     return mesh;
   }
@@ -200,7 +208,7 @@ export class MonsterModel {
     this.buildAccessory(spec, accentMat, eyeY, eyeZ, topY);
   }
 
-  private buildAccessory(spec: MonsterSpec, accentMat: THREE.MeshStandardMaterial, eyeY: number, eyeZ: number, topY: number) {
+  private buildAccessory(spec: MonsterSpec, accentMat: THREE.MeshToonMaterial, eyeY: number, eyeZ: number, topY: number) {
     switch (spec.accessory) {
       case 'glasses': {
         const frame = mat('#111111', { metalness: 0.6 });
@@ -336,7 +344,7 @@ export class MonsterModel {
       if (o.name === 'spin') o.rotation.y += dt * 2;
       if (o.name === 'wing') o.rotation.y = Math.sign(o.scale.x) * (0.6 + Math.sin(time * 4) * 0.25);
       if (o.name === 'blink' && o instanceof THREE.Mesh) {
-        (o.material as THREE.MeshStandardMaterial).emissiveIntensity = (Math.sin(time * 6) + 1) * 0.8;
+        (o.material as THREE.MeshToonMaterial).emissiveIntensity = (Math.sin(time * 6) + 1) * 0.8;
       }
     });
   }

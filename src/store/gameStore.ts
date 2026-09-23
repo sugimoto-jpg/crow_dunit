@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Gender, JobId } from '../data/types';
-import { JOBS, JOB_ORDER } from '../data/jobs';
+import { CHARACTER_NAMES, JOBS, JOB_ORDER } from '../data/jobs';
 import { basePlayerHp, levelFromExp } from '../data/levels';
 
 export type Tab = 'academy' | 'guild' | 'hero';
@@ -27,6 +27,8 @@ export interface RewardResult {
 interface GameState {
   // ---- 永続化される進行データ ----
   gender: Gender;
+  /** プレイヤーが入力した主人公名 */
+  playerName: string;
   exp: number;
   gold: number;
   jobId: JobId;
@@ -48,6 +50,7 @@ interface GameState {
   // ---- actions ----
   setTab: (tab: Tab) => void;
   setGender: (g: Gender) => void;
+  setPlayerName: (name: string) => void;
   setGuildIndustry: (id: string) => void;
   finishOnboarding: () => void;
   gainReward: (exp: number, gold: number) => RewardResult;
@@ -67,6 +70,7 @@ interface GameState {
 
 const initialProgress = {
   gender: 'male' as Gender,
+  playerName: '',
   exp: 0,
   gold: 100,
   jobId: 'villager' as JobId,
@@ -78,6 +82,14 @@ const initialProgress = {
   guildIndustry: 'it',
   onboarded: false,
 };
+
+export const NAME_MAX = 10;
+
+/** 制御文字を除去し、前後の空白を詰めて最大文字数に丸める */
+export function sanitizeName(name: string): string {
+  // eslint-disable-next-line no-control-regex
+  return [...name.replace(/[\u0000-\u001f\u007f]/g, '').trim()].slice(0, NAME_MAX).join('');
+}
 
 export function jobsUnlockedAt(level: number): JobId[] {
   return JOB_ORDER.filter((id) => JOBS[id].requiredLevel <= level);
@@ -94,6 +106,7 @@ export const useGame = create<GameState>()(
 
       setTab: (tab) => set({ tab }),
       setGender: (gender) => set({ gender }),
+      setPlayerName: (name) => set({ playerName: sanitizeName(name) }),
       setGuildIndustry: (guildIndustry) => set({ guildIndustry }),
       finishOnboarding: () => set({ onboarded: true }),
 
@@ -163,6 +176,7 @@ export const useGame = create<GameState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (s) => ({
         gender: s.gender,
+        playerName: s.playerName,
         exp: s.exp,
         gold: s.gold,
         jobId: s.jobId,
@@ -180,6 +194,9 @@ export const useGame = create<GameState>()(
 
 // ---- 派生値のセレクタ ----
 export const useLevel = () => useGame((s) => levelFromExp(s.exp));
+
+/** 表示用の主人公名（未入力の旧セーブは見た目タイプの既定名） */
+export const usePlayerName = () => useGame((s) => s.playerName || CHARACTER_NAMES[s.gender]);
 
 export function maxHpFor(level: number, jobId: JobId): number {
   return basePlayerHp(level) + JOBS[jobId].perks.hpBonus;

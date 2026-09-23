@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
-import { Coins, Heart, Move3d, RotateCcw, Sparkles, Swords, Trophy, Wand2 } from 'lucide-react';
-import { useGame, useLevel, maxHpFor } from '../store/gameStore';
-import { JOBS, CHARACTER_NAMES } from '../data/jobs';
+import { Check, Coins, Heart, Move3d, Pencil, RotateCcw, Sparkles, Swords, Trophy, Wand2 } from 'lucide-react';
+import { useGame, useLevel, maxHpFor, usePlayerName, NAME_MAX, sanitizeName } from '../store/gameStore';
+import { JOBS } from '../data/jobs';
 import { QUESTS } from '../data/quests';
 import { LECTURES } from '../data/lectures';
 import { CharacterStage } from '../components/CharacterStage';
@@ -21,6 +21,16 @@ export function HeroScreen() {
   const setJobModalOpen = useGame((s) => s.setJobModalOpen);
   const resetAll = useGame((s) => s.resetAll);
   const [confirmReset, setConfirmReset] = useState(false);
+  const playerName = usePlayerName();
+  const setPlayerName = useGame((s) => s.setPlayerName);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState('');
+  const saveName = () => {
+    if (!sanitizeName(draft)) return;
+    setPlayerName(draft);
+    setEditing(false);
+    sfx.confirm();
+  };
   const job = JOBS[jobId];
   const cleared = QUESTS.filter((q) => records[q.id]).length;
   const perfect = QUESTS.filter((q) => records[q.id]?.perfect).length;
@@ -35,7 +45,6 @@ export function HeroScreen() {
             <div className="pointer-events-none absolute left-3 top-3">
               <div className="font-pixel text-xs text-gold-300">Lv.{level} {job.style}</div>
               <PixelTitle className="text-2xl">{job.name}</PixelTitle>
-              <div className="text-sm font-bold text-indigo-100">{CHARACTER_NAMES[gender]}</div>
             </div>
             <div className="pointer-events-none absolute bottom-2 right-3 flex items-center gap-1 rounded-full bg-black/50 px-2 py-1 text-[10px] text-indigo-100">
               <Move3d className="h-3.5 w-3.5" /> ドラッグ/スワイプで回転・ピンチで拡大
@@ -53,7 +62,7 @@ export function HeroScreen() {
                   gender === g ? 'bg-gradient-to-r from-indigo-500 to-violet-600' : 'bg-white/5 text-indigo-200'
                 }`}
               >
-                {CHARACTER_NAMES[g]}（{g === 'male' ? '男性' : '女性'}）
+                {g === 'male' ? '男性タイプ' : '女性タイプ'}
               </button>
             ))}
           </div>
@@ -62,7 +71,48 @@ export function HeroScreen() {
         {/* ステータス */}
         <section className="flex flex-col gap-3">
           <div className="rpg-window p-3">
-            <PixelTitle className="text-base text-gold-300">ステータス</PixelTitle>
+            {editing ? (
+              <form
+                className="flex gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  saveName();
+                }}
+              >
+                <input
+                  id="hero-name"
+                  autoFocus
+                  value={draft}
+                  maxLength={NAME_MAX}
+                  onChange={(e) => setDraft(e.target.value)}
+                  aria-label="主人公の名前"
+                  className="min-w-0 flex-1 rounded-lg bg-black/40 px-3 py-2 text-base font-bold outline-none ring-2 ring-gold-400/60 focus:ring-gold-300"
+                />
+                <button
+                  type="submit"
+                  disabled={!sanitizeName(draft)}
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-gold-400 text-night-950 disabled:opacity-40"
+                  aria-label="名前を保存"
+                >
+                  <Check className="h-5 w-5" />
+                </button>
+              </form>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="min-w-0 flex-1 truncate text-xl font-black">{playerName}</span>
+                <button
+                  onClick={() => {
+                    sfx.select();
+                    setDraft(playerName);
+                    setEditing(true);
+                  }}
+                  className="flex shrink-0 items-center gap-1 rounded-lg bg-white/10 px-2.5 py-1.5 text-xs font-bold text-indigo-100"
+                >
+                  <Pencil className="h-3.5 w-3.5" /> 名前を変更
+                </button>
+              </div>
+            )}
+            <PixelTitle className="mt-3 text-base text-gold-300">ステータス</PixelTitle>
             <dl className="mt-2 grid grid-cols-2 gap-2 text-sm">
               <Stat icon={<Heart className="h-4 w-4 text-rose-400" />} label="最大HP" value={maxHpFor(level, jobId)} />
               <Stat icon={<Swords className="h-4 w-4 text-orange-300" />} label="攻撃倍率" value={`×${job.perks.attackRate.toFixed(2)}`} />

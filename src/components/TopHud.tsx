@@ -1,6 +1,6 @@
 import { Coins, Music, Volume2, VolumeX } from 'lucide-react';
-import { useGame } from '../store/gameStore';
-import { JOBS, CHARACTER_NAMES } from '../data/jobs';
+import { useGame, usePlayerName } from '../store/gameStore';
+import { JOBS } from '../data/jobs';
 import { levelProgress } from '../data/levels';
 import { Bar } from './ui';
 import { sfx } from '../audio/sfx';
@@ -9,7 +9,7 @@ export function TopHud() {
   const exp = useGame((s) => s.exp);
   const gold = useGame((s) => s.gold);
   const jobId = useGame((s) => s.jobId);
-  const gender = useGame((s) => s.gender);
+  const name = usePlayerName();
   const soundOn = useGame((s) => s.soundOn);
   const bgmOn = useGame((s) => s.bgmOn);
   const toggleSound = useGame((s) => s.toggleSound);
@@ -25,13 +25,13 @@ export function TopHud() {
           style={{ background: `linear-gradient(135deg, ${job.palette.armor}, ${job.palette.cape})` }}
           aria-hidden
         >
-          {CHARACTER_NAMES[gender].slice(0, 1)}
+          {[...name][0]}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-2">
             <span className="font-pixel text-base text-gold-300">Lv.{prog.level}</span>
             <span className="truncate text-sm font-bold">
-              {CHARACTER_NAMES[gender]}
+              {name}
               <span className="ml-1 text-xs font-normal text-indigo-200">／{job.name}</span>
             </span>
           </div>

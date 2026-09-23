@@ -14,8 +14,8 @@ import {
 } from 'lucide-react';
 import type { BattleChoice, Quest } from '../data/types';
 import { DIFFICULTY, INDUSTRY_MAP, PHASE_DESCRIPTIONS, PHASE_NAMES } from '../data/industries';
-import { JOBS, CHARACTER_NAMES } from '../data/jobs';
-import { maxHpFor, useGame, useLevel } from '../store/gameStore';
+import { JOBS } from '../data/jobs';
+import { maxHpFor, useGame, useLevel, usePlayerName } from '../store/gameStore';
 import { CharacterStage, type StageHandle } from '../components/CharacterStage';
 import { Bar } from '../components/ui';
 import { playBgm, sfx } from '../audio/sfx';
@@ -51,6 +51,7 @@ export function BattleScreen({ quest }: { quest: Quest }) {
   const level = useLevel();
   const jobId = useGame((s) => s.jobId);
   const gender = useGame((s) => s.gender);
+  const playerName = usePlayerName();
   const gold = useGame((s) => s.gold);
   const exitQuest = useGame((s) => s.exitQuest);
   const gainReward = useGame((s) => s.gainReward);
@@ -321,7 +322,7 @@ export function BattleScreen({ quest }: { quest: Quest }) {
         <div className="pointer-events-none absolute bottom-2 left-2 w-44 rounded-lg bg-night-950/75 px-2.5 py-1.5 ring-1 ring-white/15 sm:w-56">
           <div className="flex items-center justify-between text-[11px]">
             <span className="font-bold">
-              {CHARACTER_NAMES[gender]}
+              {playerName}
               <span className="ml-1 text-indigo-300">{job.name}</span>
             </span>
             <span className="font-pixel tabular-nums">
