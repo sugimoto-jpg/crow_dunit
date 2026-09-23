@@ -7,7 +7,8 @@ description: MiTok（アイドマ・ホールディングス）の2回目商談�
 
 顧客ごとのプロンプト（入力情報）を受け取り、**決まった型の提案書 .pptx（約26枚）**を作る。
 見本：`proposals/mirai-sekkei_mitok_proposal.pptx`（株式会社みらい設計・訪問マッサージ事業）。
-参考実装：`reference/build.js`（スライド生成）、`reference/thumbs/render.js`・`chars.js`（サムネイル生成）。
+参考実装：`reference/build.js`（スライド生成）、`reference/thumbs/render.js`・`chars.js`（サムネイル生成。キャラクター：daughter/mother・staff・elder・teacher・child）。
+2社目の見本：`proposals/clover-house_mitok_proposal.pptx`（教育・子育て／規制が薄い業種は16枚目を「発信ガイドライン」に置換した例）。
 
 ## 目的（毎回ブレさせないこと）
 - 「無料3本を作って様子見」の姿勢を崩し、**単なる動画制作ではなく事業成長の戦略**だと示す。

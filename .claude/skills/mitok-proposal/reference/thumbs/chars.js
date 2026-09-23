@@ -52,4 +52,35 @@ function house(size = 200, color = "#1F5E5B") {
   return `<svg width="${size}" height="${size}" viewBox="0 0 100 100"><path d="M50 12 L90 46 H80 V88 H20 V46 H10 Z" fill="${color}"/><rect x="42" y="60" width="16" height="28" rx="2" fill="#FFFFFF"/>${""}</svg>`;
 }
 
-module.exports = { daughter, staff, elder, heart, house };
+
+function teacher(size = 300) {
+  return `<svg width="${size}" height="${size * 1.25}" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
+    <path d="M38 250 Q40 164 100 160 Q160 164 162 250 Z" fill="#2F7A55"/>
+    <path d="M78 162 L100 200 L122 162 Z" fill="#FFFFFF"/>
+    <circle cx="140" cy="206" r="9" fill="#F6B3AA"/>
+    <path d="M86 148 h28 v22 h-28z" fill="${SKIN}"/>
+    <path d="M50 100 Q46 42 100 40 Q154 42 150 100 L150 140 Q128 146 124 120 L76 120 Q72 146 50 140 Z" fill="#5A3B2C"/>
+    <ellipse cx="100" cy="100" rx="40" ry="46" fill="${SKIN}"/>
+    <path d="M58 92 Q62 50 104 52 Q142 56 144 92 Q128 70 100 72 Q76 70 58 92Z" fill="#5A3B2C"/>
+    <circle cx="84" cy="104" r="12" fill="none" stroke="#2F7A55" stroke-width="3"/>
+    <circle cx="116" cy="104" r="12" fill="none" stroke="#2F7A55" stroke-width="3"/>
+    <path d="M96 104 h8" stroke="#2F7A55" stroke-width="3"/>
+    <circle cx="84" cy="104" r="3.5" fill="#2B2B2B"/><circle cx="116" cy="104" r="3.5" fill="#2B2B2B"/>
+    <path d="M88 124 q12 9 24 0" stroke="#C0604A" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="70" cy="118" r="6" fill="#F4A99A" opacity=".5"/><circle cx="130" cy="118" r="6" fill="#F4A99A" opacity=".5"/>
+  </svg>`;
+}
+
+function child(size = 300) {
+  return `<svg width="${size}" height="${size * 1.25}" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
+    <path d="M52 250 Q54 180 100 176 Q146 180 148 250 Z" fill="#F2C94C"/>
+    <path d="M88 166 h24 v16 h-24z" fill="${SKIN}"/>
+    <ellipse cx="100" cy="124" rx="44" ry="48" fill="${SKIN}"/>
+    <path d="M56 120 Q52 70 100 70 Q148 70 144 120 Q136 94 112 92 Q96 104 72 96 Q60 104 56 120Z" fill="#3A2A22"/>
+    <circle cx="84" cy="128" r="5" fill="#2B2B2B"/><circle cx="116" cy="128" r="5" fill="#2B2B2B"/>
+    <path d="M92 148 q8 4 16 0" stroke="#C0604A" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="70" cy="142" r="7" fill="#F4A99A" opacity=".6"/><circle cx="130" cy="142" r="7" fill="#F4A99A" opacity=".6"/>
+  </svg>`;
+}
+
+module.exports = { daughter, staff, elder, heart, house, teacher, child, mother: daughter };
