@@ -51,6 +51,9 @@ export function HeroScreen() {
               <div className="font-pixel text-xs text-gold-300">Lv.{level} {job.style}</div>
               <PixelTitle className="text-2xl">{job.name}</PixelTitle>
             </div>
+            <div className="pointer-events-none absolute bottom-2 right-3 rounded-full bg-black/50 px-2 py-1 text-[10px] text-indigo-100">
+              タップで攻撃モーション
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-1 border-t border-white/10 p-2">
             {(['male', 'female'] as Gender[]).map((g) => (

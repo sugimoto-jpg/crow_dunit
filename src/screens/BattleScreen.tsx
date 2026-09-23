@@ -121,7 +121,7 @@ export function BattleScreen({ quest }: { quest: Quest }) {
       const floor = phaseIdx < 2 ? Math.round(diff.monsterHp * 0.12 * (2 - phaseIdx)) : 0;
       const damage = phaseIdx === 2 ? monsterHp : Math.max(1, Math.min(Math.round(base), monsterHp - floor));
       stage.current?.playHero('attack');
-      later(300, () => {
+      later(380, () => {
         setFx({ key: Date.now(), type: 'slash', amount: damage, critical });
         stage.current?.playMonster('hit');
         stage.current?.burst('monster', '#ffd166', critical ? 90 : 55);
@@ -130,7 +130,7 @@ export function BattleScreen({ quest }: { quest: Quest }) {
         setMonsterHp((hp) => Math.max(0, hp - damage));
         if (phaseIdx < 2) setMonsterLine(POSITIVE_LINES[Math.floor(Math.random() * POSITIVE_LINES.length)]);
       });
-      later(1000, () => {
+      later(1100, () => {
         setOutcome({ choice, correct: true, damage, critical });
         setStatus('feedback');
       });
@@ -141,7 +141,7 @@ export function BattleScreen({ quest }: { quest: Quest }) {
       setDisabled((d) => new Set(d).add(i));
       setMonsterLine(choice.reaction ?? 'そういう話なら結構です。');
       stage.current?.playMonster('attack');
-      later(320, () => {
+      later(420, () => {
         stage.current?.playHero('hit');
         stage.current?.burst('hero', '#ff4d6d', 40);
         sfx.hurt();
@@ -149,8 +149,8 @@ export function BattleScreen({ quest }: { quest: Quest }) {
         setFx({ key: Date.now(), type: 'hurt', amount: damage, critical: false });
         setPlayerHp((hp) => Math.max(0, hp - damage));
       });
-      later(800, () => setShaking(false));
-      later(1000, () => {
+      later(900, () => setShaking(false));
+      later(1100, () => {
         setOutcome({ choice, correct: false, damage, critical: false });
         setStatus('feedback');
       });
@@ -299,8 +299,18 @@ export function BattleScreen({ quest }: { quest: Quest }) {
         </div>
       </header>
 
+      {/* ===== 顧客（モンスター）の発言：キャラクターに重ならないようステージの上に置く ===== */}
+      <div className="safe-x relative z-10 shrink-0 px-3 pt-2">
+        <div className="mx-auto flex max-w-4xl justify-end">
+          <div key={monsterLine} className="bubble anim-pop w-full px-3 py-2 text-[13px] font-bold leading-snug sm:max-w-xl sm:text-sm">
+            <div className="mb-0.5 text-[10px] font-normal text-slate-500">{quest.monster.persona}</div>
+            {monsterLine}
+          </div>
+        </div>
+      </div>
+
       {/* ===== 中央：ステージ ===== */}
-      <div className="relative min-h-[180px] flex-1">
+      <div className="relative min-h-[150px] flex-1">
         <CharacterStage
           ref={stage}
           mode="battle"
@@ -309,34 +319,6 @@ export function BattleScreen({ quest }: { quest: Quest }) {
           monster={monsterArt}
           className="absolute inset-0"
         />
-
-        {/* 吹き出し */}
-        <div className="pointer-events-none absolute inset-x-0 top-2 flex justify-end px-3">
-          <div key={monsterLine} className="bubble anim-pop max-w-[88%] px-3 py-2 text-[13px] font-bold leading-snug sm:max-w-md sm:text-sm">
-            <div className="mb-0.5 text-[10px] font-normal text-slate-500">{quest.monster.persona}</div>
-            {monsterLine}
-          </div>
-        </div>
-
-        {/* 自キャラHP */}
-        <div className="pointer-events-none absolute bottom-2 left-2 w-44 rounded-lg bg-night-950/75 px-2.5 py-1.5 ring-1 ring-white/15 sm:w-56">
-          <div className="flex items-center justify-between text-[11px]">
-            <span className="font-bold">
-              {playerName}
-              <span className="ml-1 text-indigo-300">{job.name}</span>
-            </span>
-            <span className="font-pixel tabular-nums">
-              {playerHp}/{playerMax}
-            </span>
-          </div>
-          <Bar
-            value={playerHp}
-            max={playerMax}
-            color={playerHp / playerMax > 0.5 ? 'linear-gradient(90deg,#22c55e,#86efac)' : playerHp / playerMax > 0.25 ? '#facc15' : '#ef4444'}
-            height="h-2"
-            className="mt-1"
-          />
-        </div>
 
         {/* エフェクト */}
         {fx && fx.type === 'slash' && (
@@ -390,6 +372,22 @@ export function BattleScreen({ quest }: { quest: Quest }) {
       {/* ===== 下部：営業コマンド ===== */}
       <footer className="safe-bottom safe-x relative z-10 border-t-2 border-white/20 bg-night-950/95">
         <div className="mx-auto max-w-4xl px-3 pb-2 pt-2">
+          {/* 自キャラHP（ステージのキャラクターに重ならないようコマンド欄の上に置く） */}
+          <div className="mb-1.5 flex items-center gap-2 text-[11px]">
+            <span className="shrink-0 font-bold">
+              {playerName}
+              <span className="ml-1 text-indigo-300">{job.name}</span>
+            </span>
+            <Bar
+              value={playerHp}
+              max={playerMax}
+              color={playerHp / playerMax > 0.5 ? 'linear-gradient(90deg,#22c55e,#86efac)' : playerHp / playerMax > 0.25 ? '#facc15' : '#ef4444'}
+              height="h-2"
+            />
+            <span className="w-16 shrink-0 text-right font-pixel tabular-nums">
+              {playerHp}/{playerMax}
+            </span>
+          </div>
           {(status === 'choose' || status === 'animating' || status === 'intro') && (
             <>
               <div className="mb-1.5 flex items-center gap-2">

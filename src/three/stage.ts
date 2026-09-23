@@ -38,6 +38,7 @@ export class Stage {
   private pinchStart = 0;
   private pinchDist0 = 0;
   private lastInteraction = 0;
+  private tapStart: { x: number; y: number; t: number } | null = null;
   private disposed = false;
   /** 縦長画面で左右の2体が収まるように距離を伸ばす倍率 */
   private fitScale = 1;
@@ -146,14 +147,14 @@ export class Stage {
     this.turntable.add(this.hero.root);
   }
 
-  setMonster(sprite: SpriteInfo | null, bossScale = 1) {
+  setMonster(sprite: SpriteInfo | null) {
     if (this.monster) {
       this.turntable.remove(this.monster.root);
       this.monster.dispose();
       this.monster = null;
     }
     if (!sprite) return;
-    this.monster = new SpriteActor(sprite, { face: 'left', scale: bossScale, floating: sprite.floating });
+    this.monster = new SpriteActor(sprite, { face: 'left', floating: sprite.floating });
     this.monster.setBasePosition(new THREE.Vector3(1.55, 0, -0.1));
     this.monster.attackVector.set(-1.7, 0, 0.1);
     this.turntable.add(this.monster.root);
@@ -234,11 +235,11 @@ export class Stage {
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
-    // バトルでは自キャラとモンスター（横幅 約±2.7）が必ず画面に収まる距離を確保
+    // バトルでは自キャラとモンスター（横幅 約±2.75、高さ 約3.2）がちょうど収まる距離にする
     if (this.mode === 'battle') {
       const halfTan = Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
-      const fitDist = 2.7 / (halfTan * this.camera.aspect);
-      this.fitScale = Math.max(1, fitDist / 6.2);
+      const fitDist = Math.max(2.75 / (halfTan * this.camera.aspect), 1.6 / halfTan);
+      this.fitScale = fitDist / 6.2;
     }
   }
 
@@ -262,7 +263,7 @@ export class Stage {
     }
     this.turntable.rotation.y = this.yaw;
 
-    const lookY = this.mode === 'battle' ? 0.95 : 1.0;
+    const lookY = this.mode === 'battle' ? 1.2 : 1.0;
     const camPitch = (this.mode === 'battle' ? 0.2 : 0.12) + this.pitch;
     const dist = this.distance * this.fitScale;
     this.camera.position.set(0, lookY + Math.sin(camPitch) * dist, Math.cos(camPitch) * dist);
@@ -302,6 +303,7 @@ export class Stage {
 
   private onDown = (e: PointerEvent) => {
     this.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    this.tapStart = this.pointers.size === 1 ? { x: e.clientX, y: e.clientY, t: performance.now() } : null;
     this.lastInteraction = performance.now();
     this.renderer.domElement.style.cursor = 'grabbing';
     if (this.pointers.size === 2) {
@@ -333,6 +335,12 @@ export class Stage {
   };
 
   private onUp = (e: PointerEvent) => {
+    // キャラ表示画面ではタップで攻撃モーションを試せる
+    if (this.tapStart && this.mode === 'viewer' && this.pointers.has(e.pointerId)) {
+      const moved = Math.hypot(e.clientX - this.tapStart.x, e.clientY - this.tapStart.y);
+      if (moved < 8 && performance.now() - this.tapStart.t < 400) this.hero?.play('attack');
+    }
+    this.tapStart = null;
     this.pointers.delete(e.pointerId);
     if (this.pointers.size < 2) this.pinchDist0 = 0;
     if (this.pointers.size === 0) this.renderer.domElement.style.cursor = 'grab';

@@ -17,13 +17,12 @@ interface Props {
   jobId: JobId;
   gender: Gender;
   monster?: SpriteInfo | null;
-  bossScale?: number;
   className?: string;
   ref?: Ref<StageHandle>;
 }
 
 /** Three.js ステージ（魔法陣の台座＋2Dスプライト）を React に載せるラッパー */
-export function CharacterStage({ mode, jobId, gender, monster = null, bossScale = 1, className, ref }: Props) {
+export function CharacterStage({ mode, jobId, gender, monster = null, className, ref }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Stage | null>(null);
 
@@ -48,8 +47,8 @@ export function CharacterStage({ mode, jobId, gender, monster = null, bossScale 
   }, [jobId, gender, mode]);
 
   useEffect(() => {
-    stageRef.current?.setMonster(monster, bossScale);
-  }, [monster, bossScale, mode]);
+    stageRef.current?.setMonster(monster);
+  }, [monster, mode]);
 
   useImperativeHandle(ref, () => ({
     playHero: (a) => stageRef.current?.playHero(a),
