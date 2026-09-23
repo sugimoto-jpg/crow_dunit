@@ -20,6 +20,7 @@ import { CharacterStage, type StageHandle } from '../components/CharacterStage';
 import { monsterSprite } from '../data/sprites';
 import { Bar } from '../components/ui';
 import { playBgm, sfx } from '../audio/sfx';
+import { getSaveManager } from '../save';
 
 type Status = 'intro' | 'choose' | 'animating' | 'feedback' | 'victory' | 'defeat';
 
@@ -204,6 +205,8 @@ export function BattleScreen({ quest }: { quest: Quest }) {
           const g = Math.round(quest.rewards.gold * mult * (perfect ? 1.2 : 1));
           const res = gainReward(exp, g);
           recordQuestClear(quest.id, turn - 1, perfect);
+          // 戦闘終了（勝利）：報酬とクエスト達成を即時保存
+          void getSaveManager()?.saveNow('battle_victory');
           setResult({ exp, gold: g, levelUp: !!res.levelUp, perfect });
           stage.current?.playHero('victory');
           sfx.victory();
@@ -215,6 +218,8 @@ export function BattleScreen({ quest }: { quest: Quest }) {
         setOutcome(null);
         setStatus('defeat');
         sfx.defeat();
+        // 戦闘終了（敗北）：回復薬の消費などを即時保存
+        void getSaveManager()?.saveNow('battle_defeat');
       } else {
         setOutcome(null);
         setStatus('choose');

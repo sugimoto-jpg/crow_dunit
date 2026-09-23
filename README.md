@@ -18,7 +18,7 @@ npm run build      # 型チェック + 本番ビルド
 | フレームワーク | Vite + React 19 + TypeScript |
 | スタイリング | Tailwind CSS v4 / lucide-react |
 | 演出 | Three.js（魔法陣の台座・パーティクル）＋ 2Dスプライト（キャラクターシートから切り出し） |
-| 状態管理 | Zustand + persist（自動保存）＋ 冒険の書（手動セーブ3枠） |
+| 状態管理 | Zustand（ゲーム状態）＋ SaveManager（`src/save`：自動セーブ・冒険の書3枠・バックアップ・Migration） |
 | 音響 | Web Audio API による 8bit チップチューン合成（外部音声アセットなし） |
 
 ## 画面構成
@@ -61,3 +61,31 @@ src/
 ```
 
 クエストを追加するには、`src/data/quests/*.ts` に `Quest` 型のオブジェクトを追加します（3フェーズ × 4択、正解は1つ）。
+
+## セーブシステム（src/save）
+
+ゲームの状態は zustand（`src/store/gameStore.ts`）が持ち、保存・読み込みはすべて `SaveManager` に集約しています。
+
+- **保存先**：Web は IndexedDB（主）＋ localStorage（ミラー）。Capacitor でネイティブ化した場合は Preferences（主）＋ localStorage。どれも使えない環境では「保存されません」と表示します。
+- **3世代書き込み**：各スロットを `current / backup / tmp` で持ち、`tmp に書く → 読み戻し検証 → current を backup へ → current に書く → tmp を消す` の順で更新。起動時は全保存先×3世代から、チェックサムが正しく最も新しいものを採用します。
+- **自動セーブ**：ゲーム状態の変化を監視してまとめて保存（進行 150ms / 画面移動・設定 1秒）。戦闘終了・クエスト受注・新規ゲーム・手動セーブ・バックグラウンド移行（`visibilitychange` / `pagehide` / Capacitor `pause`）では即時保存。
+- **起動判定**：初回起動 / 前回の続き / バックアップから復旧 / 旧形式から移行 / 破損 / データ消失 / 保存領域なし。破損・消失時は自動で初期化せず、冒険の書・保存コード・新規開始から選んでもらいます。
+- **saveVersion と Migration**：`src/save/migrations.ts` に版ごとの変換を追加します（v0 旧自動保存 → v1 旧冒険の書 → v2 現行）。アプリより新しい版のデータは読み込みを拒否します。
+- **保存コード**：`AQS1:` で始まる文字列で、端末・ブラウザ・アプリ間の引き継ぎや控えに使えます。
+- **複数タブ**：別のタブが新しい進行を保存したら、古いタブは上書きせず停止して通知します。
+
+### テスト
+
+```bash
+npm test                    # SaveManager の単体テスト（vitest）
+npm run dev & node e2e/save.e2e.mjs   # ブラウザでの E2E（Playwright）
+```
+
+### ネイティブ化（Capacitor）するとき
+
+```bash
+npm i @capacitor/core @capacitor/preferences @capacitor/app && npm i -D @capacitor/cli
+npx cap init "アイドマ営業クエスト" <バンドルID> --web-dir=dist
+npx cap add ios && npx cap add android && npx vite build && npx cap sync
+```
+SaveManager は実行時に Capacitor の Preferences / App プラグインを検出して自動で使います（コード変更不要）。

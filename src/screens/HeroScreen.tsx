@@ -7,6 +7,8 @@ import { LECTURES } from '../data/lectures';
 import { CharacterStage } from '../components/CharacterStage';
 import { PixelTitle, Modal } from '../components/ui';
 import { sfx } from '../audio/sfx';
+import { getSaveManager } from '../save';
+import { SaveStatusPanel } from '../components/SaveStatusPanel';
 import { useHensachi } from '../components/Glossary';
 import { GLOSSARY } from '../data/glossary';
 import type { Gender } from '../data/types';
@@ -177,6 +179,8 @@ export function HeroScreen() {
             </span>
           </button>
 
+          <SaveStatusPanel />
+
           <button
             onClick={() => setConfirmReset(true)}
             className="flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs text-indigo-300/70 hover:text-rose-300"
@@ -190,7 +194,8 @@ export function HeroScreen() {
         <Modal onClose={() => setConfirmReset(false)}>
           <div className="rpg-window p-5 text-center">
             <PixelTitle className="text-lg text-rose-300">冒険の記録を消去しますか？</PixelTitle>
-            <p className="mt-2 text-sm text-indigo-100">レベル・ゴールド・習得状況・討伐記録がすべて初期化されます。</p>
+            <p className="mt-2 text-sm text-indigo-100">レベル・ゴールド・習得状況・討伐記録がすべて初期化され、名前入力から始まります。</p>
+            <p className="mt-1 text-xs text-indigo-300">※ 冒険の書（手動セーブ）は消えません。直前の自動セーブも1世代だけ控えとして残ります。</p>
             <div className="mt-4 flex gap-2">
               <button onClick={() => setConfirmReset(false)} className="flex-1 rounded-lg bg-white/10 py-2.5 text-sm font-bold">
                 やめる
@@ -198,8 +203,10 @@ export function HeroScreen() {
               <button
                 onClick={() => {
                   sfx.defeat();
-                  resetAll();
                   setConfirmReset(false);
+                  const m = getSaveManager();
+                  if (m) void m.newGame();
+                  else resetAll();
                 }}
                 className="flex-1 rounded-lg bg-rose-600 py-2.5 text-sm font-bold"
               >

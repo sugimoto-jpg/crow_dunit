@@ -5,6 +5,7 @@ import { HERO_SPRITES } from '../data/sprites';
 import { levelProgress } from '../data/levels';
 import { Bar } from './ui';
 import { sfx } from '../audio/sfx';
+import { useSaveStatus } from '../save/useSaveStatus';
 
 export function TopHud() {
   const exp = useGame((s) => s.exp);
@@ -14,6 +15,7 @@ export function TopHud() {
   const soundOn = useGame((s) => s.soundOn);
   const toggleSound = useGame((s) => s.toggleSound);
   const setSaveMenu = useGame((s) => s.setSaveMenu);
+  const save = useSaveStatus();
   const prog = levelProgress(exp);
   const job = JOBS[jobId];
   const gender = useGame((s) => s.gender);
@@ -49,7 +51,7 @@ export function TopHud() {
           <span className="font-pixel text-sm tabular-nums text-gold-300">{gold.toLocaleString()}</span>
         </div>
         <button
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold-400/20 ring-1 ring-gold-400/50"
+          className="relative grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold-400/20 ring-1 ring-gold-400/50"
           onClick={() => {
             sfx.confirm();
             setSaveMenu('save');
@@ -57,6 +59,12 @@ export function TopHud() {
           aria-label="冒険の書（セーブ・ロード）"
         >
           <BookMarked className="h-4 w-4 text-gold-300" />
+          {/* セーブ状態：緑=保存済み / 黄=保存中・停止中 / 赤=失敗・保存されない */}
+          <span
+            className={`absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-night-900 ${
+              save.lastError || !save.durable ? 'bg-rose-500' : save.saving || save.conflict ? 'bg-amber-400' : 'bg-emerald-400'
+            }`}
+          />
         </button>
         <button
           className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/30 ring-1 ring-white/20"

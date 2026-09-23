@@ -1,11 +1,10 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Gender, JobId } from '../data/types';
 import { CHARACTER_NAMES, JOBS, JOB_ORDER } from '../data/jobs';
 import { basePlayerHp, levelFromExp } from '../data/levels';
-import type { SaveSnapshot } from './saveSlots';
+import type { SaveData, TabId } from '../save/schema';
 
-export type Tab = 'academy' | 'guild' | 'hero';
+export type Tab = TabId;
 
 export interface QuestRecord {
   clears: number;
@@ -74,8 +73,10 @@ interface GameState {
   setJobModalOpen: (open: boolean) => void;
   setLectureOpen: (open: boolean) => void;
   setSaveMenu: (mode: 'save' | 'load' | null) => void;
-  takeSnapshot: () => SaveSnapshot;
-  loadSnapshot: (snap: SaveSnapshot) => void;
+  /** セーブデータへの書き出し（stats は SaveManager が付け足す） */
+  toSaveData: () => Omit<SaveData, 'stats'>;
+  /** セーブデータの反映（UIの一時状態は初期化する） */
+  applySaveData: (data: SaveData) => void;
   resetAll: () => void;
 }
 
@@ -111,148 +112,130 @@ export function jobsUnlockedAt(level: number): JobId[] {
   return JOB_ORDER.filter((id) => JOBS[id].requiredLevel <= level);
 }
 
-export const useGame = create<GameState>()(
-  persist(
-    (set, get) => ({
-      ...initialProgress,
-      activeQuestId: null,
-      levelUpEvent: null,
-      jobModalOpen: false,
-      lectureOpen: false,
-      saveMenu: null,
+// 永続化は SaveManager（src/save）が担当する。ここは純粋なゲーム状態とアクションだけを持つ
+export const useGame = create<GameState>()((set, get) => ({
+  ...initialProgress,
+  activeQuestId: null,
+  levelUpEvent: null,
+  jobModalOpen: false,
+  lectureOpen: false,
+  saveMenu: null,
 
-      setTab: (tab) => set({ tab }),
-      setGender: (gender) => set({ gender }),
-      setPlayerName: (name) => set({ playerName: sanitizeName(name) }),
-      setGuildIndustry: (guildIndustry) => set({ guildIndustry }),
-      finishOnboarding: () => set({ onboarded: true }),
+  setTab: (tab) => set({ tab }),
+  setGender: (gender) => set({ gender }),
+  setPlayerName: (name) => set({ playerName: sanitizeName(name) }),
+  setGuildIndustry: (guildIndustry) => set({ guildIndustry }),
+  finishOnboarding: () => set({ onboarded: true }),
 
-      gainReward: (exp, gold) => {
-        const before = levelFromExp(get().exp);
-        const nextExp = get().exp + exp;
-        const after = levelFromExp(nextExp);
-        let levelUp: LevelUpEvent | null = null;
-        if (after > before) {
-          const newJobs = JOB_ORDER.filter(
-            (id) => JOBS[id].requiredLevel > before && JOBS[id].requiredLevel <= after,
-          );
-          levelUp = { from: before, to: after, newJobs };
-        }
-        set((s) => ({
-          exp: nextExp,
-          gold: s.gold + gold,
-          levelUpEvent: levelUp ?? s.levelUpEvent,
-        }));
-        return { exp, gold, levelUp };
-      },
+  gainReward: (exp, gold) => {
+    const before = levelFromExp(get().exp);
+    const nextExp = get().exp + exp;
+    const after = levelFromExp(nextExp);
+    let levelUp: LevelUpEvent | null = null;
+    if (after > before) {
+      const newJobs = JOB_ORDER.filter(
+        (id) => JOBS[id].requiredLevel > before && JOBS[id].requiredLevel <= after,
+      );
+      levelUp = { from: before, to: after, newJobs };
+    }
+    set((s) => ({
+      exp: nextExp,
+      gold: s.gold + gold,
+      levelUpEvent: levelUp ?? s.levelUpEvent,
+    }));
+      return { exp, gold, levelUp };
+    },
 
-      spendGold: (amount) => {
-        if (get().gold < amount) return false;
-        set((s) => ({ gold: s.gold - amount }));
-        return true;
-      },
+    spendGold: (amount) => {
+      if (get().gold < amount) return false;
+      set((s) => ({ gold: s.gold - amount }));
+      return true;
+    },
 
-      completeLecture: (id, exp, gold) => {
-        if (get().completedLectures.includes(id)) return null;
-        set((s) => ({ completedLectures: [...s.completedLectures, id] }));
-        return get().gainReward(exp, gold);
-      },
+    completeLecture: (id, exp, gold) => {
+      if (get().completedLectures.includes(id)) return null;
+      set((s) => ({ completedLectures: [...s.completedLectures, id] }));
+      return get().gainReward(exp, gold);
+    },
 
-      answerTerm: (id, correct) => {
-        const s = get();
-        const firstTime = correct && !s.masteredTerms.includes(id);
-        set({
-          glossaryStats: { answered: s.glossaryStats.answered + 1, correct: s.glossaryStats.correct + (correct ? 1 : 0) },
-          masteredTerms: firstTime ? [...s.masteredTerms, id] : s.masteredTerms,
-        });
-        return firstTime ? get().gainReward(TERM_REWARD.exp, TERM_REWARD.gold) : null;
-      },
+    answerTerm: (id, correct) => {
+      const s = get();
+      const firstTime = correct && !s.masteredTerms.includes(id);
+      set({
+        glossaryStats: { answered: s.glossaryStats.answered + 1, correct: s.glossaryStats.correct + (correct ? 1 : 0) },
+        masteredTerms: firstTime ? [...s.masteredTerms, id] : s.masteredTerms,
+      });
+      return firstTime ? get().gainReward(TERM_REWARD.exp, TERM_REWARD.gold) : null;
+    },
 
-      recordQuestClear: (questId, turns, perfect) =>
-        set((s) => {
-          const prev = s.questRecords[questId];
-          return {
-            questRecords: {
-              ...s.questRecords,
-              [questId]: {
-                clears: (prev?.clears ?? 0) + 1,
-                bestTurns: prev ? Math.min(prev.bestTurns, turns) : turns,
-                perfect: (prev?.perfect ?? false) || perfect,
-              },
-            },
-          };
-        }),
-
-      changeJob: (id) => {
-        const level = levelFromExp(get().exp);
-        if (JOBS[id].requiredLevel > level) return;
-        set({ jobId: id });
-      },
-
-      toggleSound: () => set((s) => ({ soundOn: !s.soundOn })),
-      toggleBgm: () => set((s) => ({ bgmOn: !s.bgmOn })),
-      startQuest: (id) => set({ activeQuestId: id }),
-      exitQuest: () => set({ activeQuestId: null }),
-      dismissLevelUp: () => set({ levelUpEvent: null }),
-      setJobModalOpen: (jobModalOpen) => set({ jobModalOpen }),
-      setLectureOpen: (lectureOpen) => set({ lectureOpen }),
-      setSaveMenu: (saveMenu) => set({ saveMenu }),
-      takeSnapshot: () => {
-        const s = get();
+    recordQuestClear: (questId, turns, perfect) =>
+      set((s) => {
+        const prev = s.questRecords[questId];
         return {
-          gender: s.gender,
-          playerName: s.playerName,
-          exp: s.exp,
-          gold: s.gold,
-          jobId: s.jobId,
+          questRecords: {
+            ...s.questRecords,
+            [questId]: {
+              clears: (prev?.clears ?? 0) + 1,
+              bestTurns: prev ? Math.min(prev.bestTurns, turns) : turns,
+              perfect: (prev?.perfect ?? false) || perfect,
+            },
+          },
+        };
+      }),
+
+    changeJob: (id) => {
+      const level = levelFromExp(get().exp);
+      if (JOBS[id].requiredLevel > level) return;
+      set({ jobId: id });
+    },
+
+    toggleSound: () => set((s) => ({ soundOn: !s.soundOn })),
+    toggleBgm: () => set((s) => ({ bgmOn: !s.bgmOn })),
+    startQuest: (id) => set({ activeQuestId: id }),
+    exitQuest: () => set({ activeQuestId: null }),
+    dismissLevelUp: () => set({ levelUpEvent: null }),
+    setJobModalOpen: (jobModalOpen) => set({ jobModalOpen }),
+    setLectureOpen: (lectureOpen) => set({ lectureOpen }),
+    setSaveMenu: (saveMenu) => set({ saveMenu }),
+    toSaveData: () => {
+      const s = get();
+      return {
+        player: { name: s.playerName, gender: s.gender, jobId: s.jobId, exp: s.exp, gold: s.gold },
+        progress: {
           completedLectures: [...s.completedLectures],
-          questRecords: { ...s.questRecords },
           masteredTerms: [...s.masteredTerms],
           glossaryStats: { ...s.glossaryStats },
-        };
-      },
-      loadSnapshot: (snap) =>
-        set({
-          gender: snap.gender,
-          playerName: sanitizeName(snap.playerName ?? ''),
-          exp: Math.max(0, snap.exp),
-          gold: Math.max(0, snap.gold),
-          jobId: JOBS[snap.jobId] ? snap.jobId : 'villager',
-          completedLectures: [...(snap.completedLectures ?? [])],
-          questRecords: { ...(snap.questRecords ?? {}) },
-          masteredTerms: [...(snap.masteredTerms ?? [])],
-          glossaryStats: snap.glossaryStats ? { ...snap.glossaryStats } : { answered: 0, correct: 0 },
-          onboarded: true,
-          tab: 'academy',
-          activeQuestId: null,
-          levelUpEvent: null,
-          jobModalOpen: false,
-          saveMenu: null,
-        }),
-      resetAll: () => set({ ...initialProgress, activeQuestId: null, levelUpEvent: null, jobModalOpen: false, saveMenu: null }),
-    }),
-    {
-      name: 'aidma-sales-quest-v1',
-      storage: createJSONStorage(() => localStorage),
-      partialize: (s) => ({
-        gender: s.gender,
-        playerName: s.playerName,
-        exp: s.exp,
-        gold: s.gold,
-        jobId: s.jobId,
-        completedLectures: s.completedLectures,
-        questRecords: s.questRecords,
-        masteredTerms: s.masteredTerms,
-        glossaryStats: s.glossaryStats,
-        soundOn: s.soundOn,
-        bgmOn: s.bgmOn,
-        tab: s.tab,
-        guildIndustry: s.guildIndustry,
-        onboarded: s.onboarded,
-      }),
+          questRecords: { ...s.questRecords },
+        },
+        flags: { onboarded: s.onboarded },
+        location: { tab: s.tab, guildIndustry: s.guildIndustry },
+        settings: { soundOn: s.soundOn, bgmOn: s.bgmOn },
+      };
     },
-  ),
-);
+    applySaveData: (d) =>
+      set({
+        gender: d.player.gender,
+        playerName: sanitizeName(d.player.name),
+        exp: d.player.exp,
+        gold: d.player.gold,
+        jobId: JOBS[d.player.jobId] ? d.player.jobId : 'villager',
+        completedLectures: [...d.progress.completedLectures],
+        masteredTerms: [...d.progress.masteredTerms],
+        glossaryStats: { ...d.progress.glossaryStats },
+        questRecords: { ...d.progress.questRecords },
+        onboarded: d.flags.onboarded,
+        tab: d.location.tab,
+        guildIndustry: d.location.guildIndustry,
+        soundOn: d.settings.soundOn,
+        bgmOn: d.settings.bgmOn,
+        activeQuestId: null,
+        levelUpEvent: null,
+        jobModalOpen: false,
+        lectureOpen: false,
+        saveMenu: null,
+      }),
+    resetAll: () => set({ ...initialProgress, activeQuestId: null, levelUpEvent: null, jobModalOpen: false, lectureOpen: false, saveMenu: null }),
+}));
 
 // ---- 派生値のセレクタ ----
 export const useLevel = () => useGame((s) => levelFromExp(s.exp));

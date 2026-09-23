@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BookMarked, Sparkles } from 'lucide-react';
-import { hasAnySlot } from '../store/saveSlots';
+import { useSaveStatus } from '../save/useSaveStatus';
+import { getSaveManager } from '../save';
 import { NAME_MAX, sanitizeName, useGame } from '../store/gameStore';
 import { CHARACTER_NAMES } from '../data/jobs';
 import type { Gender } from '../data/types';
@@ -19,7 +20,12 @@ function OnboardingInner() {
   const setPlayerName = useGame((s) => s.setPlayerName);
   const finish = useGame((s) => s.finishOnboarding);
   const setSaveMenu = useGame((s) => s.setSaveMenu);
-  const [hasSave] = useState(hasAnySlot);
+  // 冒険の書があれば「再開する」を出す（起動後に作られた冒険の書も含めて、表示のたびに確認）
+  const bootHasSlots = useSaveStatus().boot?.hasSlots ?? false;
+  const [hasSave, setHasSave] = useState(bootHasSlots);
+  useEffect(() => {
+    getSaveManager()?.hasAnySlot().then(setHasSave);
+  }, []);
   const [name, setName] = useState<string>(CHARACTER_NAMES[gender]);
   const [touched, setTouched] = useState(false);
   const valid = sanitizeName(name).length > 0;
