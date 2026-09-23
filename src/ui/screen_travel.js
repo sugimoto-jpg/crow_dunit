@@ -70,7 +70,10 @@ G.TravelUI = {
     G.TravelUI.stop();
     G.TravelUI.fast = false;
     const party = document.querySelectorAll('#screen .trip-party .chr');
-    party.forEach(el => el.classList.add('is-walk'));
+    party.forEach(el => {
+      el.classList.add('is-walk');
+      if (G.Art) G.Art.setPose(el, 'is-walk');   // 歩いている絵があれば使う
+    });
     G.TravelUI.tick();
   },
 

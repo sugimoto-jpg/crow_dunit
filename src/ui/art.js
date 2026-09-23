@@ -22,6 +22,17 @@ window.G = window.G || {};
 
 const USES = ['battle', 'field', 'portrait', 'face'];
 
+/* 動きごとの絵。
+ * 1枚絵は腕や脚を別々に動かせないので、手足を動かすにはこれを用意する。
+ * 無ければ、体ごとを傾けたり跳ねさせたりする動き（CSS）だけになる。 */
+const POSES = ['walk', 'attack', 'cast', 'hurt', 'down'];
+
+/* 画面側のクラス名 → 動きの名前 */
+const CLASS_POSE = {
+  'is-walk': 'walk', 'is-attack': 'attack', 'is-cast': 'cast',
+  'is-hurt': 'hurt', 'is-down': 'down',
+};
+
 /* 職業 -> 同じ系統の代表職。
  * その職の絵がまだ無いとき、系統の絵で代わりにする。
  * G.SPRITE_ARCH（5系統）と同じ分け方にしてあるので、
@@ -104,9 +115,23 @@ G.Art = {
     return keys;
   },
 
-  hero(c, use) {
+  hero(c, use, pose) {
     if (!G.Art.any) return null;
-    return G.Art.first(G.Art.heroKeys(c, USES.includes(use) ? use : 'battle'));
+    const keys = G.Art.heroKeys(c, USES.includes(use) ? use : 'battle');
+    if (pose) return G.Art.first(keys.map(k => k + ':' + pose));
+    return G.Art.first(keys);
+  },
+
+  /* そのキャラで用意されている動きの絵を、まとめて返す。
+   * 画面側はこれを <img> に付けておき、動くときに src を差し替える。 */
+  heroPoses(c, use) {
+    if (!G.Art.any) return null;
+    let found = null;
+    for (const p of POSES) {
+      const u = G.Art.hero(c, use, p);
+      if (u) (found = found || {})[p] = u;
+    }
+    return found;
   },
 
   /* ---------- 敵 ---------- */
@@ -129,9 +154,21 @@ G.Art = {
     return keys;
   },
 
-  foe(enemyId, use, isBoss) {
+  foe(enemyId, use, isBoss, pose) {
     if (!G.Art.any) return null;
-    return G.Art.first(G.Art.foeKeys(enemyId, USES.includes(use) ? use : 'battle', isBoss));
+    const keys = G.Art.foeKeys(enemyId, USES.includes(use) ? use : 'battle', isBoss);
+    if (pose) return G.Art.first(keys.map(k => k + ':' + pose));
+    return G.Art.first(keys);
+  },
+
+  foePoses(enemyId, use, isBoss) {
+    if (!G.Art.any) return null;
+    let found = null;
+    for (const p of POSES) {
+      const u = G.Art.foe(enemyId, use, isBoss, p);
+      if (u) (found = found || {})[p] = u;
+    }
+    return found;
   },
 
   /* ---------- NPC ---------- */
@@ -143,9 +180,32 @@ G.Art = {
   /* ---------- 画像タグ ---------- */
   /* 画像でもSVGでも同じ class を付ける。
    * CSS 側の動き（歩く・攻撃・被弾）が、どちらでもそのまま効くようにするため。 */
-  img(url, name, extra) {
-    return `<img class="chr art ${extra || ''}" src="${url}"`
+  img(url, name, extra, poses) {
+    /* 動きの絵は data- に持たせておく。
+     * 画面側は、どのキャラかを調べ直さずに差し替えられる。 */
+    const extra2 = poses
+      ? Object.keys(poses).map(k => ` data-pose-${k}="${G.util.esc(poses[k])}"`).join('')
+      : '';
+    return `<img class="chr art ${extra || ''}" src="${url}" data-base="${G.util.esc(url)}"${extra2}`
       + ` alt="${G.util.esc(name || '')}" draggable="false">`;
+  },
+
+  /* ---------- 動きの絵に差し替える ---------- */
+  /* cls は 'is-walk' などの画面側のクラス名。
+   * その動きの絵が無ければ何もしない（CSSの動きだけになる）。 */
+  setPose(el, cls) {
+    if (!el || el.tagName !== 'IMG' || !el.dataset) return false;
+    const pose = CLASS_POSE[cls];
+    const url = pose && el.dataset['pose' + pose.charAt(0).toUpperCase() + pose.slice(1)];
+    if (!url) return false;
+    el.src = url;
+    return true;
+  },
+
+  /* もとの絵に戻す */
+  clearPose(el) {
+    if (!el || el.tagName !== 'IMG' || !el.dataset || !el.dataset.base) return;
+    if (el.src !== el.dataset.base) el.src = el.dataset.base;
   },
 };
 

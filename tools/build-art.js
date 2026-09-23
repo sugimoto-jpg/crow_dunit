@@ -29,6 +29,16 @@ const KINDS = {
   npc: 'npc', monsters: 'monster', bosses: 'boss',
 };
 const USES = ['battle', 'field', 'portrait', 'face'];
+
+/* 動きごとの絵。用意すれば、その動きのあいだだけ絵が差し替わる。
+ * 1枚絵は腕や脚を別々に動かせないので、手足を動かすにはこれを使う。
+ *   battle_walk.webp     歩いているところ
+ *   battle_attack.webp   武器を振っているところ
+ *   battle_cast.webp     詠唱しているところ
+ *   battle_hurt.webp     けぞっているところ
+ *   battle_down.webp     倒れているところ
+ * 男女があるときは battle_m_walk.webp のように並べる。 */
+const POSES = ['walk', 'attack', 'cast', 'hurt', 'down'];
 const EXT = { '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg' };
 
 /* 1ファイル版に入れる用途。
@@ -41,13 +51,25 @@ const quiet = process.argv.includes('--quiet');
 /* --json … ファイルに書かず、一覧をそのまま出力する（検証用） */
 const asJson = process.argv.includes('--json');
 
-/* ファイル名 → { use, sex, job }。読めなければ null。 */
+/* ファイル名 → { use, sex, job, pose }。読めなければ null。
+ *   battle              用途だけ
+ *   battle_m            男女の別
+ *   battle_saint        その職のときの絵（仲間用）
+ *   battle_walk         歩いているところ
+ *   battle_m_walk       男性の、歩いているところ
+ */
 function parseName(base) {
-  const m = /^([a-z]+)(?:_([a-z0-9_]+))?$/.exec(base);
-  if (!m || !USES.includes(m[1])) return null;
-  const suf = m[2] || null;
-  if (suf === 'm' || suf === 'f') return { use: m[1], sex: suf, job: null };
-  return { use: m[1], sex: null, job: suf };   // 例 battle_saint（仲間の職別）
+  const parts = base.split('_');
+  const use = parts.shift();
+  if (!USES.includes(use)) return null;
+  const r = { use, sex: null, job: null, pose: null };
+  for (const t of parts) {
+    if (t === 'm' || t === 'f') { if (r.sex) return null; r.sex = t; continue; }
+    if (POSES.includes(t)) { if (r.pose) return null; r.pose = t; continue; }
+    if (r.job) return null;                 // 職名は1つだけ
+    r.job = t;
+  }
+  return r;
 }
 
 const entries = {};
@@ -55,13 +77,15 @@ const skipped = [];
 let bytes = 0, inlined = 0;
 
 function addFile(kind, id, file, full) {
+  if (file.startsWith('.')) return;           // .gitkeep など。置き場を残すためのもの
   const ext = path.extname(file).toLowerCase();
   if (!EXT[ext]) { skipped.push(`${file}（対応していない形式）`); return; }
   const p = parseName(path.basename(file, ext));
   if (!p) { skipped.push(`${file}（名前の決まりに合わない）`); return; }
 
   const key = [kind, id, p.use].join('/')
-    + (p.sex ? '_' + p.sex : '') + (p.job ? '_' + p.job : '');
+    + (p.sex ? '_' + p.sex : '') + (p.job ? '_' + p.job : '')
+    + (p.pose ? ':' + p.pose : '');
   const size = fs.statSync(full).size;
   bytes += size;
 
@@ -100,6 +124,8 @@ function scan() {
     }
   }
 }
+
+if (require.main !== module) { module.exports = { parseName, KINDS, USES, POSES, INLINE_USES }; return; }
 
 scan();
 
@@ -148,4 +174,4 @@ if (!quiet) {
   console.log('');
 }
 
-module.exports = { parseName, KINDS, USES, INLINE_USES };
+module.exports = { parseName, KINDS, USES, POSES, INLINE_USES };

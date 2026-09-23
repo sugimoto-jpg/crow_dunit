@@ -203,8 +203,50 @@ try {
       '職専用が無ければ、そのキャラの汎用の絵');
   }
 
+  /* ---------- 4b. 動きの絵 ---------- */
+  console.log('\n▼ 5. 動きの絵（手足を動かす）\n');
+  put('jobs/swordsman/battle_m_walk.png');
+  put('jobs/swordsman/battle_m_attack.png');
+  put('monsters/slime/battle_hurt.png');
+  {
+    const G = fresh(build());
+    G.State.newGame('テスト', 'normal');
+    const c = G.State.d.player;
+    c.jobId = 'swordsman'; c.look = { sex: 'm' };
+
+    check(/battle_m_walk\.png$/.test(G.Art.hero(c, 'battle', 'walk')), '歩く絵が引ける');
+    check(/battle_m_attack\.png$/.test(G.Art.hero(c, 'battle', 'attack')), '攻撃する絵が引ける');
+    check(G.Art.hero(c, 'battle', 'cast') === null, '用意していない動きは無い（CSSの動きだけになる）');
+
+    const poses = G.Art.heroPoses(c, 'battle');
+    check(poses && poses.walk && poses.attack && !poses.cast,
+      '用意した動きだけがまとまって返る', JSON.stringify(Object.keys(poses || {})));
+
+    const html = G.Sprite.hero(c, 'battle');
+    check(/data-pose-walk=/.test(html) && /data-pose-attack=/.test(html),
+      '絵のタグに動きの絵が書き込まれる');
+    check(/data-base=/.test(html), 'もとの絵に戻すための指定も入る');
+
+    /* 差し替えと復帰（画面が無いので、最低限の作り物で試す） */
+    const el = {
+      tagName: 'IMG', src: 'base.png',
+      dataset: { base: 'base.png', poseWalk: 'w.png', poseAttack: 'a.png' },
+    };
+    check(G.Art.setPose(el, 'is-walk') === true && el.src === 'w.png', '歩きに差し替わる');
+    G.Art.clearPose(el);
+    check(el.src === 'base.png', 'もとの絵に戻る');
+    check(G.Art.setPose(el, 'is-cast') === false && el.src === 'base.png',
+      '用意の無い動きでは差し替えない');
+
+    /* 敵側 */
+    check(/battle_hurt\.png$/.test(G.Art.foe('slime', 'battle', false, 'hurt')),
+      '敵の動きの絵も引ける');
+    const fp = G.Art.foePoses('slime', 'battle', false);
+    check(fp && fp.hurt && !fp.walk, '敵も用意した動きだけ返る');
+  }
+
   /* ---------- 5. 名前や置き場所を間違えたとき ---------- */
-  console.log('\n▼ 5. 間違えて置いても壊れない\n');
+  console.log('\n▼ 6. 間違えて置いても壊れない\n');
   put('monsters/slime/せんとう.png');            // 用途名が違う
   put('monsters/slime/battle.txt');              // 画像でない
   put('jobs/swordsman/battle_x.png');            // 性別でも職でもない接尾辞
@@ -221,7 +263,7 @@ try {
   }
 
   /* ---------- 6. 存在しないIDを聞かれたとき ---------- */
-  console.log('\n▼ 6. 知らないIDを聞かれても落ちない\n');
+  console.log('\n▼ 7. 知らないIDを聞かれても落ちない\n');
   {
     const G = fresh(build());
     check(G.Art.hero(null, 'battle') === null, 'キャラが無くてもnullを返す');
@@ -232,7 +274,7 @@ try {
   }
 
   /* ---------- 7. 1ファイル版への埋め込み ---------- */
-  console.log('\n▼ 7. 1ファイル版に埋め込まれる\n');
+  console.log('\n▼ 8. 1ファイル版に埋め込まれる\n');
   {
     const G = fresh(build(['--inline']));
     const url = G.ART_MANIFEST['monster/slime/battle'];
@@ -247,7 +289,7 @@ try {
   }
 
   /* ---------- 8. セーブの互換 ---------- */
-  console.log('\n▼ 8. 古いセーブでも読める\n');
+  console.log('\n▼ 9. 古いセーブでも読める\n');
   {
     const G = fresh(build());
     G.State.newGame('テスト', 'normal');
@@ -264,7 +306,7 @@ try {
 }
 
 /* 後始末が効いているか */
-console.log('\n▼ 9. 後始末と、本物の素材への影響\n');
+console.log('\n▼ 10. 後始末と、本物の素材への影響\n');
 {
   check(!fs.existsSync(ART), '検証用のフォルダは残っていない', ART);
   /* 本物の素材は1枚も増えていない・減っていない */

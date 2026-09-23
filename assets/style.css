@@ -973,18 +973,88 @@ img.chr.art{
 
 /* 画像はパーツに分かれていないので、体ごと動かす。
    SVG版の .s-body に当てている動きを、画像そのものに当て直す。 */
-img.chr.art{animation:art-in .22s ease-out, sp-idle 2.6s ease-in-out infinite}
-img.chr.art.is-walk{animation:sp-walkbob .46s ease-in-out infinite}
-img.chr.art.is-attack{animation:sp-lunge .52s cubic-bezier(.3,1.6,.5,1)}
-img.chr.art.is-cast{animation:sp-castbody .9s ease-in-out}
-img.chr.art.is-hurt{animation:sp-hurt .42s ease-out}
-img.chr.art.is-down{animation:sp-down .6s ease-in forwards}
-img.chr.art.is-enter{animation:sp-enter .5s cubic-bezier(.2,1.5,.4,1)}
+/* ===== 1枚絵の動かし方 =====
+ * 絵がパーツに分かれていないので、腕や脚だけを個別には回せない。
+ * かわりに「体ごと」を軸と重心で動かして、生きて見えるようにする。
+ *
+ *   ・軸は足もと（transform-origin:50% 100%）。
+ *     頭を中心に回すと宙に浮いて見えるが、足を軸にすると踏ん張って見える。
+ *   ・歩きは左右の傾きと上下の跳ねを組み合わせる。
+ *     足が交互に出ているように見える。
+ *   ・攻撃は「沈む → 踏み込む → 戻る」。
+ *
+ * 敵は左右反転して表示するので、回転の向きも自動で逆になるよう
+ * 変数 --flip を掛け算に入れてある。
+ * （反転を別の指定で行うと、動きの指定に上書きされて向きが戻ってしまう） */
+img.chr.art{
+  --flip:1;
+  transform-origin:50% 100%;
+  will-change:transform;
+  animation:art-in .22s ease-out, art-idle 3.1s ease-in-out infinite;
+}
+img.chr.art.foe{--flip:-1}
+
+/* 待機：呼吸。ゆっくり上下して、わずかに伸び縮みする */
+@keyframes art-idle{
+  0%,100%{transform:scaleX(var(--flip)) translateY(0) scale(1,1)}
+  50%{transform:scaleX(var(--flip)) translateY(-1.5%) scale(.995,1.012)}
+}
+
+/* 歩き：左右に傾きながら跳ねる。足を軸にするので歩幅があるように見える */
+img.chr.art.is-walk{animation:art-walk .5s ease-in-out infinite}
+@keyframes art-walk{
+  0%{transform:scaleX(var(--flip)) rotate(-2.6deg) translateY(0) scale(1,1)}
+  25%{transform:scaleX(var(--flip)) rotate(0deg) translateY(-4%) scale(.985,1.02)}
+  50%{transform:scaleX(var(--flip)) rotate(2.6deg) translateY(0) scale(1,1)}
+  75%{transform:scaleX(var(--flip)) rotate(0deg) translateY(-4%) scale(.985,1.02)}
+  100%{transform:scaleX(var(--flip)) rotate(-2.6deg) translateY(0) scale(1,1)}
+}
+
+/* 攻撃：沈んで、踏み込んで、戻る */
+img.chr.art.is-attack{animation:art-attack .56s cubic-bezier(.3,1.5,.4,1)}
+@keyframes art-attack{
+  0%{transform:scaleX(var(--flip)) translateX(0) rotate(0) scale(1,1)}
+  22%{transform:scaleX(var(--flip)) translateX(-7%) rotate(-7deg) scale(1.03,.94)}
+  48%{transform:scaleX(var(--flip)) translateX(20%) rotate(11deg) scale(.96,1.06)}
+  70%{transform:scaleX(var(--flip)) translateX(6%) rotate(3deg) scale(1,1)}
+  100%{transform:scaleX(var(--flip)) translateX(0) rotate(0) scale(1,1)}
+}
+
+/* 詠唱：伸び上がって、淡く光る */
+img.chr.art.is-cast{animation:art-cast .95s ease-in-out}
+@keyframes art-cast{
+  0%,100%{transform:scaleX(var(--flip)) translateY(0) scale(1,1);filter:drop-shadow(0 3px 5px rgba(0,0,0,.55))}
+  45%{transform:scaleX(var(--flip)) translateY(-8%) scale(.97,1.05);
+      filter:drop-shadow(0 3px 5px rgba(0,0,0,.55)) drop-shadow(0 0 10px rgba(180,150,255,.9)) brightness(1.15)}
+}
+
+/* 被弾：のけぞって白く光る */
+img.chr.art.is-hurt{animation:art-hurt .44s ease-out}
+@keyframes art-hurt{
+  0%{transform:scaleX(var(--flip)) translateX(0) rotate(0);filter:drop-shadow(0 3px 5px rgba(0,0,0,.55))}
+  18%{transform:scaleX(var(--flip)) translateX(-12%) rotate(-7deg);
+      filter:brightness(2.2) saturate(.35) drop-shadow(0 0 8px rgba(255,120,120,.9))}
+  52%{transform:scaleX(var(--flip)) translateX(5%) rotate(3deg);filter:brightness(1.3)}
+  100%{transform:scaleX(var(--flip)) translateX(0) rotate(0);filter:drop-shadow(0 3px 5px rgba(0,0,0,.55))}
+}
+
+/* 倒れる：足もとを軸に倒れ込む */
+img.chr.art.is-down{animation:art-down .6s ease-in forwards}
+@keyframes art-down{
+  0%{transform:scaleX(var(--flip)) rotate(0) translateY(0);opacity:1}
+  100%{transform:scaleX(var(--flip)) rotate(-72deg) translateY(4%);opacity:.3}
+}
+
+/* 登場：上から降りてくる */
+img.chr.art.is-enter{animation:art-enter .52s cubic-bezier(.2,1.5,.4,1)}
+@keyframes art-enter{
+  0%{transform:scaleX(var(--flip)) translateY(-26%) scale(.75);opacity:0}
+  100%{transform:scaleX(var(--flip)) translateY(0) scale(1);opacity:1}
+}
 
 /* 暗い背景に沈まないよう、足もとに影を落とす */
 img.chr.art{filter:drop-shadow(0 3px 5px rgba(0,0,0,.55))}
-img.chr.art.foe{transform:scaleX(-1)}   /* 敵は向きを反転（SVG版と同じ） */
 
 @media (prefers-reduced-motion:reduce){
-  img.chr.art{animation:none}
+  img.chr.art{animation:none;transform:scaleX(var(--flip))}
 }

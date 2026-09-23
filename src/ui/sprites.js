@@ -917,7 +917,7 @@ G.Sprite = {
    * SVG で描くときは use を見ない（1つの絵をどの大きさでも使うため）。 */
   hero(c, use) {
     const art = G.Art && G.Art.hero(c, use);
-    if (art) return G.Art.img(art, c.name);
+    if (art) return G.Art.img(art, c.name, '', G.Art.heroPoses(c, use));
 
     const arch = G.SPRITE_ARCH[c.jobId] || 'villager';
     const look = G.SPRITE_JOB[c.jobId] || {};
@@ -1015,7 +1015,10 @@ G.Sprite = {
 
   enemy(u, use) {
     const art = G.Art && G.Art.foe(u.enemyId, use, u.isBoss);
-    if (art) return G.Art.img(art, u.name, 'foe' + (u.isBoss ? ' is-boss' : ''));
+    if (art) {
+      return G.Art.img(art, u.name, 'foe' + (u.isBoss ? ' is-boss' : ''),
+        G.Art.foePoses(u.enemyId, use, u.isBoss));
+    }
 
     const look = G.Sprite.ENEMY_LOOK[u.enemyId] || ['imp', '#8a8a9a', '#4a4a58'];
     const [kind, c1, c2] = look;

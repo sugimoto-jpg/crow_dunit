@@ -334,7 +334,10 @@ G.UI = {
         </div>`).join('')}
       </div>`;
     document.body.appendChild(ov);
-    ov.querySelectorAll('.chr').forEach(el => el.classList.add('is-walk'));
+    ov.querySelectorAll('.chr').forEach(el => {
+      el.classList.add('is-walk');
+      if (G.Art) G.Art.setPose(el, 'is-walk');
+    });
 
     let finished = false;
     const done = () => {

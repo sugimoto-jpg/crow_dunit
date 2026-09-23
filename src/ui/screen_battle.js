@@ -152,7 +152,11 @@ G.BattleUI = {
       if (st) st.innerHTML = badges(u);
 
       const chr = el.querySelector('.chr');
-      if (chr) chr.classList.toggle('is-down', dead);
+      if (chr) {
+        chr.classList.toggle('is-down', dead);
+        /* 倒れている絵があれば使う。立ち上がったら元に戻す。 */
+        if (G.Art) { if (dead) G.Art.setPose(chr, 'is-down'); else G.Art.clearPose(chr); }
+      }
     }
 
     for (const a of b.allies) {
@@ -199,7 +203,13 @@ G.BattleUI = {
     el.classList.remove(cls);
     void el.offsetWidth;            // 同じ動きを連続で出すために巻き戻す
     el.classList.add(cls);
-    setTimeout(() => el.classList.remove(cls), ms);
+    /* その動きの絵（画像）が用意されていれば差し替える。
+     * 無ければ体ごとを動かすCSSだけが効く。 */
+    const swapped = G.Art && G.Art.setPose(el, cls);
+    setTimeout(() => {
+      el.classList.remove(cls);
+      if (swapped) G.Art.clearPose(el);
+    }, ms);
   },
 
   /* ダメージ数値のポップアップ */
