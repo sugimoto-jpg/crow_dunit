@@ -953,3 +953,38 @@ small{font-size:11.5px}
   .fx,.fx-scene{display:none}
   .scene.is-shake,.scene.is-shake-hard{animation:none}
 }
+
+/* ===================================================================
+   キャラクターが画像のとき
+   SVG版（.chr）と同じ箱に収まり、同じ動きが効くようにする。
+   画像が無いキャラは今までどおり SVG で描かれるので、
+   1つの画面に画像とSVGが混ざっても崩れない。
+   =================================================================== */
+img.chr.art{
+  width:100%;height:100%;display:block;
+  object-fit:contain;          /* 比率を保つ。潰れない */
+  object-position:50% 100%;    /* 足元を下端に合わせる */
+  image-rendering:auto;
+  user-select:none;-webkit-user-drag:none;
+  /* 読み込み中に枠だけ見えると目立つので、下から出す */
+  animation:art-in .22s ease-out;
+}
+@keyframes art-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* 画像はパーツに分かれていないので、体ごと動かす。
+   SVG版の .s-body に当てている動きを、画像そのものに当て直す。 */
+img.chr.art{animation:art-in .22s ease-out, sp-idle 2.6s ease-in-out infinite}
+img.chr.art.is-walk{animation:sp-walkbob .46s ease-in-out infinite}
+img.chr.art.is-attack{animation:sp-lunge .52s cubic-bezier(.3,1.6,.5,1)}
+img.chr.art.is-cast{animation:sp-castbody .9s ease-in-out}
+img.chr.art.is-hurt{animation:sp-hurt .42s ease-out}
+img.chr.art.is-down{animation:sp-down .6s ease-in forwards}
+img.chr.art.is-enter{animation:sp-enter .5s cubic-bezier(.2,1.5,.4,1)}
+
+/* 暗い背景に沈まないよう、足もとに影を落とす */
+img.chr.art{filter:drop-shadow(0 3px 5px rgba(0,0,0,.55))}
+img.chr.art.foe{transform:scaleX(-1)}   /* 敵は向きを反転（SVG版と同じ） */
+
+@media (prefers-reduced-motion:reduce){
+  img.chr.art{animation:none}
+}

@@ -9,9 +9,14 @@ G.Char = {
   },
 
   /* 新規キャラ生成 */
-  create({ key, name, icon = '🧑', isPlayer = false, growthBonus = null, jobPath = null }) {
+  create({ key, name, icon = '🧑', isPlayer = false, growthBonus = null, jobPath = null,
+           look = null }) {
     const c = {
       key, name, icon, isPlayer,
+      /* 見た目の指定。いまは性別だけ。
+       * キャラクターの絵を男女で描き分けるために使う（assets/characters/）。
+       * 絵が無いときは使われないので、いまの表示には影響しない。 */
+      look: Object.assign({ sex: 'm' }, look || {}),
       level: 1,
       exp: 0,
       jobId: 'villager',

@@ -94,6 +94,11 @@ G.State = {
     d.flags = d.flags || {};
     d.roster = d.roster || {};
     d.bestiary = d.bestiary || {};
+    /* 見た目の指定（look）を足す前のセーブには無い。
+     * 無いままだと絵を選ぶときに落ちるので、既定値を補う。 */
+    for (const c of (d.party || [])) {
+      c.look = Object.assign({ sex: 'm' }, c.look || {});
+    }
     d.stats = Object.assign(
       { battles: 0, wins: 0, escapes: 0, wipes: 0, quests: 0, lessons: 0, gold: 0 }, d.stats || {});
     d.guild = Object.assign({ registered: false, rank: 0, clears: 0, totalClears: 0, promoReady: false }, d.guild || {});

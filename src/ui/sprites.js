@@ -908,8 +908,17 @@ function armsSvg(pal, weaponShape) {
 /* ---------- 味方キャラ ---------- */
 G.Sprite = {
 
-  /* キャラ -> SVG。装備している武器の形も反映する。 */
-  hero(c) {
+  /* キャラ -> 絵。
+   *
+   * assets/characters/ に画像があればそれを使い、無ければ下のSVGで描く。
+   * 画像が1枚も無い状態でも、これまでとまったく同じ絵が出る。
+   *
+   * use は 'battle'|'field'|'portrait'|'face'。省略すると 'battle'。
+   * SVG で描くときは use を見ない（1つの絵をどの大きさでも使うため）。 */
+  hero(c, use) {
+    const art = G.Art && G.Art.hero(c, use);
+    if (art) return G.Art.img(art, c.name);
+
     const arch = G.SPRITE_ARCH[c.jobId] || 'villager';
     const look = G.SPRITE_JOB[c.jobId] || {};
     const job = G.JOBS[c.jobId] || {};
@@ -1004,7 +1013,10 @@ G.Sprite = {
     demon_lord_2:       ['lord', '#c9434f', '#4a1220'],
   },
 
-  enemy(u) {
+  enemy(u, use) {
+    const art = G.Art && G.Art.foe(u.enemyId, use, u.isBoss);
+    if (art) return G.Art.img(art, u.name, 'foe' + (u.isBoss ? ' is-boss' : ''));
+
     const look = G.Sprite.ENEMY_LOOK[u.enemyId] || ['imp', '#8a8a9a', '#4a4a58'];
     const [kind, c1, c2] = look;
     const big = u.isBoss;

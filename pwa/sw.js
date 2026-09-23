@@ -22,6 +22,7 @@ const FILES = [
   './icon-192.png',
   './icon-512.png',
   './icon-maskable-512.png',
+  /* ART */
 ];
 
 self.addEventListener('install', ev => {

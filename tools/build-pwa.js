@@ -77,6 +77,30 @@ const reg = `
 html = html.replace('</body>', `${reg}\n</body>`);
 fs.writeFileSync(path.join(OUT, 'index.html'), html);
 
+/* ---- キャラクター画像 ----
+ * 1ファイル版には battle と face しか埋め込んでいない（容量のため）。
+ * PWA はファイルを分けて置けるので、立ち絵も含めて全部を運ぶ。
+ * オフラインでも出るよう、取り込む一覧にも加える。 */
+const ART_SRC = path.join(ROOT, 'assets/characters');
+const artFiles = [];
+(function copyArt(from, rel) {
+  if (!fs.existsSync(from)) return;
+  for (const name of fs.readdirSync(from)) {
+    const full = path.join(from, name);
+    const r = rel ? `${rel}/${name}` : name;
+    if (fs.statSync(full).isDirectory()) { copyArt(full, r); continue; }
+    if (!/\.(webp|png|jpe?g)$/i.test(name)) continue;
+    const dest = path.join(OUT, 'characters', r);
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.copyFileSync(full, dest);
+    artFiles.push(`./characters/${r}`);
+  }
+})(ART_SRC, '');
+
+/* 埋め込み版は 'assets/characters/...' を知らないので、
+ * PWA では配信する場所に合わせて書き換える。 */
+if (artFiles.length) html = html.split('assets/characters/').join('characters/');
+
 /* ---- 付属ファイル ---- */
 const files = ['manifest.webmanifest', 'sw.js',
   'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'];
@@ -90,6 +114,17 @@ if (missing.length) {
   console.error(`足りないファイル: ${missing.join(', ')}`);
   console.error('アイコンは node tools/make-icons.js で作れます');
   process.exit(1);
+}
+
+/* ---- 取り込む一覧に画像を書き込む ----
+ * sw.js は「実在するファイルだけ」を書く決まり。
+ * 置いた画像をここで差し込む。 */
+{
+  const swPath = path.join(OUT, 'sw.js');
+  let sw = fs.readFileSync(swPath, 'utf8');
+  const list = artFiles.map(f => `  '${f}',`).join('\n');
+  sw = sw.replace('/* ART */', list);
+  fs.writeFileSync(swPath, sw);
 }
 
 /* ---- 点検 ---- */

@@ -243,12 +243,18 @@ const step = s => { steps.push(s); console.log('  ' + s); };
   const won = await page.locator('#modal-title').textContent().catch(() => '');
   step(`戦闘終了: ${won}`);
   await shot('06-result');
-  await closeModal();
-  await page.waitForTimeout(400);
-  await closeModal();
+  /* 戦闘のあとは「結果 → レベルアップ → 転職の案内」と
+   * モーダルが続けて出ることがある。あとから出てくる分もあるので、
+   * 一度閉じて終わりにせず、出てこなくなるまで待って閉じる。 */
+  for (let i = 0; i < 6; i++) {
+    await closeModal();
+    await page.waitForTimeout(300);
+    if (!(await page.locator('#modal:not(.hidden)').count())) break;
+  }
 
   // 街・状態・ジョブ画面
   await click('#nav button[data-nav="town"]');
+  await closeModal();
   await page.waitForSelector('[data-act="shop"]');
   await click('[data-act="shop"]');
   await page.waitForSelector('[data-act="buy"]');

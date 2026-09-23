@@ -26,6 +26,11 @@ const markup = bodyMatch[1].replace(/<script src="[^"]+"><\/script>\s*/g, '').tr
 const title = (html.match(/<title>([^<]*)<\/title>/) || [, '転生魔法学院譚'])[1];
 const icon = (html.match(/<link rel="icon" href="([^"]+)">/) || [])[1];
 
+/* キャラクター画像は外から読めないので、埋め込んだ一覧を作り直してから使う。
+ * （画像が1枚も無ければ空の一覧になるだけ） */
+require('child_process').execFileSync(process.execPath,
+  [path.join(__dirname, 'build-art.js'), '--inline', '--quiet'], { cwd: ROOT });
+
 /* JS は1つの <script> にまとめる。順番が命なので index.html の順を保つ。 */
 const js = scripts.map(s => `/* ===== ${s} ===== */\n${read(s)}`).join('\n\n');
 
@@ -92,3 +97,8 @@ if (/<!DOCTYPE|<html|<head>|<body>/i.test(artifact)) {
   throw new Error('artifact: doctype/html/head/body を含めてはいけません');
 }
 console.log('外部参照なし・必要な定義あり');
+
+/* 一覧を通常版（画像へのパス）に戻す。
+ * 戻さないと、開発中の index.html まで埋め込み版を読んでしまう。 */
+require('child_process').execFileSync(process.execPath,
+  [path.join(__dirname, 'build-art.js'), '--quiet'], { cwd: ROOT });
