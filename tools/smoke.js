@@ -159,15 +159,47 @@ const step = s => { steps.push(s); console.log('  ' + s); };
   await shot('04-guild');
   step('冒険者登録した');
 
+  /* 依頼を受けると、すぐ戦闘ではなく「目的地」が決まる。
+   * 村から歩いて向かい、道中で魔物に遭遇して戦闘になる。 */
   await click('[data-act="quest"]');
   await click('#modal-actions .btn');   // 受注する
-  await page.waitForSelector('.scene', { timeout: 6000 });
-  step('依頼を受注して戦闘に入った');
+  await page.waitForSelector('.mapboard', { timeout: 6000 });
+  const questTarget = await page.evaluate(() => {
+    const t = G.SPOTS[G.State.d.quest.target];
+    return t ? t.name : null;
+  });
+  if (!questTarget) errors.push('依頼を受けても目的地が決まっていない');
+  await shot('04b-map');
+  step(`依頼を受注して目的地が決まった（${questTarget}）`);
+
+  /* 歩いて遭遇するまで進む。遭遇は確率なので、出るまで何度か往復する。 */
+  await page.evaluate(() => { G.State.d.battleSpeed = 3; });
+  let walked = 0, gotBattle = false;
+  for (let trip = 0; trip < 8 && !gotBattle; trip++) {
+    /* 推奨レベルに届かない行き先を選ぶと確認のモーダルが出る。
+     * depart() はその返事を待つので、待ち受けたまま evaluate すると
+     * こちらが答えられずに止まってしまう。
+     * 警告の出ない行き先を選び、返り値も待たない。 */
+    const exits = await page.evaluate(() => G.Explore.exits()
+      .filter(x => !x.warn).map(x => x.id));
+    const to = exits.find(id => id !== 'village_01') || exits[0];
+    if (!to) { errors.push('村から出られる行き先がない'); break; }
+    await page.evaluate(id => { G.MapUI.depart(id); }, to);
+    await page.waitForSelector('.trip-bar', { timeout: 6000 });
+    if (trip === 0) { await page.waitForTimeout(300); await shot('04c-travel'); }
+    await page.evaluate(() => { G.TravelUI.fast = true; });
+    for (let i = 0; i < 80; i++) {
+      if (await page.locator('.scene').count()) { gotBattle = true; break; }
+      if (await page.locator('.mapboard').count()) break;   // 到着した
+      await page.waitForTimeout(90);
+    }
+    walked++;
+  }
+  if (!gotBattle) errors.push('歩いても魔物に遭遇しなかった');
+  await page.waitForSelector('.scene', { timeout: 8000 });
+  step(`探索中に魔物と遭遇した（${walked}区間）`);
   await page.waitForTimeout(600);
   await shot('05-battle');
-
-  // 演出を速くして待ち時間を減らす
-  await page.evaluate(() => { G.State.d.battleSpeed = 3; });
 
   // 戦闘：勝つか負けるまで「たたかう」を押し続ける
   let turns = 0;

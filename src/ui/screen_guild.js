@@ -71,6 +71,24 @@ G.UI.register('guild', {
           <span class="btn-sub">${G.World.demonFloor() ? G.World.demonFloor().name : ''}</span>
         </button>` : ''}
 
+      ${(() => {
+        const q = G.Quest.active();
+        if (!q) return '';
+        const t = G.SPOTS[d.quest.target];
+        return `<h2>受注中</h2>
+          <div class="card">
+            <div class="card-head">
+              <div class="ico">${q.icon}</div>
+              <div><div class="ttl">${G.util.esc(q.name)}</div>
+                   <div class="sub">🎯 目的地：${G.util.esc(t ? t.name : '？')}</div></div>
+            </div>
+            <p class="dim">${d.quest.reached ? 'すでに到達しています。'
+              : '村から歩いて向かってください。'}</p>
+          </div>
+          <button class="btn" data-act="map">🗺️ 探索に出る</button>
+          <button class="btn ghost sm" data-act="abandon">依頼をやめる</button>`;
+      })()}
+
       <h2>依頼</h2>
       ${Object.keys(byRank).sort((a, b) => b - a).map(r => `
         <h3 style="margin-top:14px">${G.RANKS[r].name}の依頼</h3>
@@ -102,34 +120,35 @@ G.UI.register('guild', {
       const d = G.State.d;
       const q = G.QUESTS.find(x => x.id === ds.id);
       if (!q) return;
+      if (d.quest.active) { G.UI.toast('すでに依頼を受けています', 'bad'); return; }
       if (!G.State.aliveParty().length) { G.UI.toast('全員が戦闘不能です', 'bad'); return; }
+
+      const target = G.SPOTS[G.Quest.targetOf(q)];
+      const lvr = G.Explore.levelRange(target.id);
       const ok = await G.UI.confirm(`${q.icon} ${q.name}`, `
         <p>${G.util.esc(q.desc)}</p>
+        <div class="result-line"><span>目的地</span><b>${G.util.esc(target.name)}</b></div>
+        <div class="result-line"><span>推奨レベル</span><b>Lv${lvr[0]}〜${lvr[1]}</b></div>
         <div class="result-line"><span>消費行動力</span><b>${q.ap} AP</b></div>
-        <div class="result-line"><span>報酬</span><b>${G.util.g(q.gold)} G ／ 経験値 ${G.util.g(q.exp)}</b></div>
-        <div class="result-line"><span>出現する魔物</span><b>${q.enemies.map(e => G.ENEMIES[e].name).join('、')}</b></div>`,
+        <div class="result-line"><span>達成報酬</span><b>${G.util.g(q.gold)} G ／ 経験値 ${G.util.g(q.exp)}</b></div>
+        <p class="dim">受注すると目的地が決まります。村から歩いて向かってください。</p>`,
         '受注する', G.T('common.cancel'));
       if (!ok) return;
-      if (!G.World.spendAp(q.ap)) { G.UI.toast('行動力が足りません', 'bad'); return; }
 
-      G.BattleUI.start(q.enemies, {
-        canFlee: true,
-        onEnd: async out => {
-          if (out.result === 'win') {
-            const r = G.World.completeQuest(q);
-            await G.UI.alert('📋 依頼達成', `
-              <p>ギルドの受付に報告を済ませた。</p>
-              <div class="result-line"><span>達成報酬</span><b>${G.util.g(r.gold)} G</b></div>
-              <div class="result-line"><span>追加経験値</span><b>${G.util.g(r.exp)}</b></div>
-              ${r.items.length ? r.items.map(i => G.UI.itemLine(i.id, i.n)).join('') : ''}`);
-            await G.UI.showLevelReports(r.levelReports);
-            if (r.promoReady) G.UI.toast('昇格の条件を満たしたかもしれません', 'gold');
-          }
-          G.State.save();
-          G.UI.show('guild');
-          G.Story.check();
-        },
-      });
+      const r = G.Quest.accept(q);
+      if (!r.ok) { G.UI.toast(r.msg, 'bad'); return; }
+      G.State.save();
+      G.UI.toast(`目的地：${target.name}`, 'gold');
+      G.UI.show('map');
+    });
+
+    G.UI.on('abandon', async () => {
+      const ok = await G.UI.confirm('依頼をやめる',
+        '<p>受注を取り消します。消費した行動力は戻りません。</p>', 'やめる', 'つづける');
+      if (!ok) return;
+      G.Quest.abandon();
+      G.State.save();
+      G.UI.refresh();
     });
 
     G.UI.on('promo', async () => {
@@ -167,6 +186,7 @@ G.UI.register('guild', {
       });
     });
 
+    G.UI.on('map', () => G.UI.show('map'));
     G.UI.on('demon', () => G.UI.show('demon'));
   },
 });

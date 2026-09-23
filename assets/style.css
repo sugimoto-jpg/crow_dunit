@@ -648,3 +648,85 @@ small{font-size:11.5px}
 .portrait.sm{width:48px;height:60px}
 .job-row{display:flex;align-items:center;gap:10px}
 .card-head .portrait{margin:-4px 0}
+
+/* ===== 地図 ===== */
+.mapboard{
+  position:relative;height:214px;padding:8px;margin-bottom:6px;border-radius:14px;
+  border:1px solid var(--line);overflow:hidden;
+  background:
+    radial-gradient(120% 90% at 20% 10%, #2b2150 0%, transparent 60%),
+    radial-gradient(110% 80% at 90% 100%, #1e2b4d 0%, transparent 55%),
+    #171128;
+}
+.mp-lines{position:absolute;inset:0;width:100%;height:100%}
+.mp-link{stroke:#4a3d75;stroke-width:1.1;stroke-dasharray:3 2;vector-effect:non-scaling-stroke}
+.mp-link.is-route{stroke:var(--gold);stroke-width:2;stroke-dasharray:none;opacity:.9}
+.mp-node{
+  position:absolute;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  opacity:.45;transition:opacity .2s;
+}
+.mp-node.is-seen{opacity:1}
+.mp-ico{
+  font-size:19px;line-height:1;width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:#241a42;border:2px solid var(--line);
+}
+.mp-node.is-seen .mp-ico{border-color:#6a5aa8}
+.mp-node.is-clear .mp-ico{border-color:var(--green)}
+.mp-node.is-target .mp-ico{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,193,78,.2)}
+.mp-node.is-here .mp-ico{
+  border-color:var(--gold);background:#3a2b63;
+  animation:mp-here 1.6s ease-in-out infinite;
+}
+@keyframes mp-here{0%,100%{box-shadow:0 0 0 0 rgba(242,193,78,.5)}50%{box-shadow:0 0 0 7px rgba(242,193,78,0)}}
+/* 端の地点でも名前が切れないよう、はみ出したら折り返す */
+.mp-name{
+  font-size:10px;font-weight:700;color:var(--ink);text-shadow:0 1px 3px #000;
+  max-width:76px;text-align:center;line-height:1.25;
+  overflow-wrap:anywhere;
+}
+.mp-star{position:absolute;top:-13px;color:var(--gold);font-size:13px;text-shadow:0 1px 3px #000}
+
+/* ===== 移動中 ===== */
+.trip{margin-bottom:12px}
+.trip-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.trip-to{font-weight:800;font-size:15px}
+.trip-count{font-size:12px;color:var(--ink-dim);font-variant-numeric:tabular-nums}
+.trip-bar{height:10px;border-radius:999px;background:#150f26;border:1px solid var(--line);overflow:hidden}
+.trip-bar i{display:block;height:100%;width:0;transition:width .28s;
+  background:linear-gradient(90deg,#7a54d6,var(--gold))}
+
+.trip-scene{
+  position:relative;height:168px;margin-top:10px;border-radius:14px;
+  border:1px solid var(--line);overflow:hidden;background:#1d1636;
+}
+.trip-sky{position:absolute;inset:0;
+  background:radial-gradient(120% 100% at 50% 0%, #4a3a86 0%, #221a44 60%, #191230 100%)}
+.trip-scene.is-dark .trip-sky{
+  background:radial-gradient(120% 100% at 50% 0%, #2a2348 0%, #151026 70%)}
+.trip-far{position:absolute;left:0;right:0;bottom:52px;height:56px;opacity:.55;
+  background-repeat:repeat-x;background-size:160px 56px;
+  background-image:radial-gradient(60px 44px at 40px 56px, #3a2f66 0%, transparent 70%),
+                   radial-gradient(70px 52px at 120px 56px, #332a5c 0%, transparent 70%)}
+.trip-ground{position:absolute;left:0;right:0;bottom:0;height:56px;
+  background-repeat:repeat-x;background-size:90px 56px;
+  background-image:linear-gradient(180deg,#2e2550 0%,#241d42 100%),
+                   radial-gradient(3px 2px at 20px 22px, #4a3d75 0%, transparent 100%);
+  border-top:1px solid #4a3d75}
+.trip-party{position:absolute;left:14px;right:14px;bottom:14px;
+  display:flex;gap:2px;align-items:flex-end;justify-content:center}
+.trip-party .unit{width:52px}
+.trip-party .unit-sprite{width:52px;height:66px}
+.trip-scene.is-encounter{animation:trip-alert .42s ease-in-out 1}
+@keyframes trip-alert{
+  0%,100%{filter:none}
+  30%{filter:brightness(1.7) saturate(.4)}
+  60%{filter:brightness(.6)}
+}
+.trip-msg{margin-top:8px;font-size:13px;color:var(--ink-dim);min-height:1.6em}
+
+@media (prefers-reduced-motion:reduce){
+  .mp-node.is-here .mp-ico{animation:none}
+  .trip-scene.is-encounter{animation:none}
+}

@@ -75,6 +75,14 @@ G.UI.register('home', {
       }).join('')}
 
       <h2>行動</h2>
+      <button class="btn gold" data-act="map">
+        🗺️ 探索に出る
+        <span class="btn-sub">${(() => {
+          const q = G.Quest.active();
+          if (q) { const t = G.SPOTS[d.quest.target]; return `🎯 目的地：${G.util.esc(t ? t.name : '？')}`; }
+          return `現在地：${G.util.esc((G.Explore.here() || {}).name || '村')}`;
+        })()}</span>
+      </button>
       <button class="btn primary" data-act="rest">
         🌙 今日は休む
         <span class="btn-sub">HPとMPが全回復し、翌日になります（残り ${d.ap} AP を捨てます）</span>
@@ -107,6 +115,8 @@ G.UI.register('home', {
       G.UI.refresh();
       G.Story.check();
     });
+
+    G.UI.on('map', () => G.UI.show('map'));
 
     G.UI.on('bgm', () => {
       if (!G.Audio) return;

@@ -340,11 +340,11 @@ G.BattleUI = {
             <button class="btn" data-act="item">🎒 どうぐ</button>
             <button class="btn" data-act="guard">🛡️ ぼうぎょ</button>
           </div>
-          <button class="btn ghost mt" data-act="flee">🏃 にげる</button>`);
+          ${b.canFlee ? '<button class="btn ghost mt" data-act="flee">🏃 にげる</button>' : ''}`);
 
         G.UI.on('atk', () => pickTarget({ type: 'attack' }, 'enemy'));
         G.UI.on('guard', () => done({ type: 'guard' }));
-        G.UI.on('flee', () => done({ type: 'flee' }));
+        if (b.canFlee) G.UI.on('flee', () => done({ type: 'flee' }));
         G.UI.on('skill', skillList);
         G.UI.on('item', itemList);
       };

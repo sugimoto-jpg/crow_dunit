@@ -113,6 +113,7 @@ G.UI = {
     title: 'bgm_title',
     home: 'bgm_academy', academy: 'bgm_academy', job: 'bgm_academy', status: 'bgm_academy',
     town: 'bgm_town', guild: 'bgm_town',
+    map: 'bgm_field', travel: 'bgm_field',
     demon: 'bgm_boss',
   },
 

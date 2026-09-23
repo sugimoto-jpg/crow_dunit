@@ -5,9 +5,10 @@
   "description": "転生魔法学院譚 〜村人から始まる魔王討伐〜（依存ライブラリなしのブラウザRPG）",
   "scripts": {
     "lint": "node tools/lint-text.js",
-    "test": "node tools/lint-text.js && node tools/globals.js && node tools/snapshot.js --check && node tools/test-rules.js && node tools/explore-test.js && node tools/smoke.js && node tools/errors-test.js && node tools/strings.js && node tools/text-test.js && node tools/sprite-check.js --check && node tools/back-test.js && node tools/audio-test.js && node tools/build-single.js && node tools/build-pwa.js && node tools/pwa-test.js && node tools/native-test.js && ENTRY=dist/tensei-arcana.html FILE=1 node tools/smoke.js && node tools/listeners.js",
+    "test": "node tools/lint-text.js && node tools/globals.js && node tools/snapshot.js --check && node tools/test-rules.js && node tools/explore-test.js && node tools/smoke.js && node tools/journey-test.js && node tools/errors-test.js && node tools/strings.js && node tools/text-test.js && node tools/sprite-check.js --check && node tools/back-test.js && node tools/audio-test.js && node tools/build-single.js && node tools/build-pwa.js && node tools/pwa-test.js && node tools/native-test.js && ENTRY=dist/tensei-arcana.html FILE=1 node tools/smoke.js && node tools/listeners.js",
     "test:rules": "node tools/test-rules.js",
     "test:explore": "node tools/explore-test.js",
+    "test:journey": "node tools/journey-test.js",
     "test:errors": "node tools/errors-test.js",
     "test:back": "node tools/back-test.js",
     "test:audio": "node tools/audio-test.js",

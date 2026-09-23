@@ -28,7 +28,7 @@ window.G = window.G || {};
 G.SPOTS = {
 
   village_01: {
-    id: 'village_01', name: 'ラヴィンの村はずれ', x: 8, y: 62,
+    id: 'village_01', name: 'ラヴィンの村', x: 13, y: 64,
     type: 'town', area: null,
     description: '旅の始まる場所。ここから先は魔物が出る。',
     requiredLevel: 1,
@@ -72,7 +72,7 @@ G.SPOTS = {
   },
 
   boss_01: {
-    id: 'boss_01', name: '最奥の広間', x: 91, y: 30,
+    id: 'boss_01', name: '最奥の広間', x: 87, y: 28,
     type: 'boss', area: 'cave',
     description: 'この先から、強大な魔力を感じる……',
     requiredLevel: 16,
