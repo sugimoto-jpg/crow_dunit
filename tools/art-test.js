@@ -266,6 +266,36 @@ try {
     check(fp && fp.hurt && !fp.walk, '敵も用意した動きだけ返る');
   }
 
+  /* 番号を付けると、その順に切り替わる */
+  put('jobs/ninja/battle_m.png');              // ふだんの絵（これが無いとSVGのまま）
+  put('jobs/ninja/battle_m_attack1.png');
+  put('jobs/ninja/battle_m_attack2.png');
+  put('jobs/ninja/battle_m_attack3.png');
+  put('jobs/ninja/battle_m_attack5.png');      // 4 が無いので、ここから先は拾わない
+  {
+    const G = fresh(build());
+    G.State.newGame('テスト', 'normal');
+    const c = G.State.d.player;
+    c.jobId = 'ninja'; c.look = { sex: 'm' };
+    const fr = G.Art.heroPoses(c, 'battle').attack;
+    check(fr.length === 3, `番号の順に並ぶ（${fr.length}コマ）`,
+      fr.map(u => u.split('/').pop()).join(' '));
+    check(/attack1\.png$/.test(fr[0]) && /attack3\.png$/.test(fr[2]), '1から順に並ぶ');
+    check(!fr.some(u => /attack5/.test(u)), '番号が飛んだら、その先は拾わない');
+
+    const html = G.Sprite.hero(c, 'battle');
+    check((html.match(/\|/g) || []).length === 2, '絵のタグに3コマが並ぶ');
+
+    /* コマ送りの差し替え（画面が無いので最低限の作り物で試す） */
+    const el = { tagName: 'IMG', src: 'b.png', isConnected: true,
+      dataset: { base: 'b.png', poseAttack: '1.png|2.png|3.png' } };
+    G.Art.setPose(el, 'is-attack', 300);
+    check(el.src === '1.png', 'まず1コマ目になる');
+    check(!!el._poseTimer, 'コマ送りが動き出す');
+    G.Art.clearPose(el);
+    check(!el._poseTimer && el.src === 'b.png', '止めるとコマ送りも終わり、元の絵に戻る');
+  }
+
   /* ---------- 5b. まとめて取り込むと位置と大きさが揃う ---------- */
   console.log('\n▼ 6. まとめて取り込む（--group）\n');
   {

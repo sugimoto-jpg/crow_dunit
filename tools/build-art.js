@@ -35,10 +35,16 @@ const USES = ['battle', 'field', 'portrait', 'face'];
  *   battle_walk.webp     歩いているところ
  *   battle_attack.webp   武器を振っているところ
  *   battle_cast.webp     詠唱しているところ
- *   battle_hurt.webp     けぞっているところ
+ *   battle_hurt.webp     のけぞっているところ
  *   battle_down.webp     倒れているところ
- * 男女があるときは battle_m_walk.webp のように並べる。 */
+ * 男女があるときは battle_m_walk.webp のように並べる。
+ *
+ * 番号を付けると、その順に切り替わる（パラパラ漫画になる）。
+ *   battle_attack1.webp  振りかぶり
+ *   battle_attack2.webp  振り下ろし
+ * 1から順に、間を空けずに並べること（1,2,3…）。 */
 const POSES = ['walk', 'attack', 'cast', 'hurt', 'down'];
+const POSE_RE = new RegExp('^(' + POSES.join('|') + ')([1-9])?$');
 const EXT = { '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg' };
 
 /* 1ファイル版に入れる用途。
@@ -65,7 +71,7 @@ function parseName(base) {
   const r = { use, sex: null, job: null, pose: null };
   for (const t of parts) {
     if (t === 'm' || t === 'f') { if (r.sex) return null; r.sex = t; continue; }
-    if (POSES.includes(t)) { if (r.pose) return null; r.pose = t; continue; }
+    if (POSE_RE.test(t)) { if (r.pose) return null; r.pose = t; continue; }
     if (r.job) return null;                 // 職名は1つだけ
     r.job = t;
   }

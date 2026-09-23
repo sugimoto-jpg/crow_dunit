@@ -154,8 +154,16 @@ G.BattleUI = {
       const chr = el.querySelector('.chr');
       if (chr) {
         chr.classList.toggle('is-down', dead);
-        /* 倒れている絵があれば使う。立ち上がったら元に戻す。 */
-        if (G.Art) { if (dead) G.Art.setPose(chr, 'is-down'); else G.Art.clearPose(chr); }
+        /* 倒れている絵があれば使う。立ち上がったら元に戻す。
+         *
+         * sync() は1手ごとに何度も呼ばれる。
+         * ここで無条件に元へ戻すと、攻撃の絵に差し替えた直後に
+         * 戻されてしまい、動きの絵が一瞬しか出ない。
+         * 倒れた／立ち上がった瞬間だけ触る。 */
+        if (G.Art) {
+          if (dead && !chr._downPose) { chr._downPose = !!G.Art.setPose(chr, 'is-down'); }
+          else if (!dead && chr._downPose) { G.Art.clearPose(chr); chr._downPose = false; }
+        }
       }
     }
 
@@ -205,7 +213,7 @@ G.BattleUI = {
     el.classList.add(cls);
     /* その動きの絵（画像）が用意されていれば差し替える。
      * 無ければ体ごとを動かすCSSだけが効く。 */
-    const swapped = G.Art && G.Art.setPose(el, cls);
+    const swapped = G.Art && G.Art.setPose(el, cls, ms);
     setTimeout(() => {
       el.classList.remove(cls);
       if (swapped) G.Art.clearPose(el);

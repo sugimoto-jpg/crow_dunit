@@ -14,4 +14,6 @@ G.ART_MANIFEST = {
   "companion/velt/battle": "assets/characters/companions/velt/battle.webp",
   "job/villager/battle_f": "assets/characters/jobs/villager/battle_f.webp",
   "job/villager/battle_m": "assets/characters/jobs/villager/battle_m.webp",
+  "job/villager/battle_m:attack1": "assets/characters/jobs/villager/battle_m_attack1.webp",
+  "job/villager/battle_m:attack2": "assets/characters/jobs/villager/battle_m_attack2.webp",
 };

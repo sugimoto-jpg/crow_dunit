@@ -123,13 +123,28 @@ G.Art = {
   },
 
   /* そのキャラで用意されている動きの絵を、まとめて返す。
-   * 画面側はこれを <img> に付けておき、動くときに src を差し替える。 */
+   * 画面側はこれを <img> に付けておき、動くときに src を差し替える。
+   *
+   * 番号付き（attack1, attack2 …）があれば、その順に並べて返す。
+   * 無ければ番号なしの1枚。どちらも無ければその動きは返らない。 */
+  frames(pick) {
+    const out = [];
+    for (let i = 1; i <= 8; i++) {
+      const u = pick(i);
+      if (!u) break;
+      out.push(u);
+    }
+    if (out.length) return out;
+    const one = pick(null);
+    return one ? [one] : [];
+  },
+
   heroPoses(c, use) {
     if (!G.Art.any) return null;
     let found = null;
     for (const p of POSES) {
-      const u = G.Art.hero(c, use, p);
-      if (u) (found = found || {})[p] = u;
+      const fr = G.Art.frames(i => G.Art.hero(c, use, i ? p + i : p));
+      if (fr.length) (found = found || {})[p] = fr;
     }
     return found;
   },
@@ -165,8 +180,8 @@ G.Art = {
     if (!G.Art.any) return null;
     let found = null;
     for (const p of POSES) {
-      const u = G.Art.foe(enemyId, use, isBoss, p);
-      if (u) (found = found || {})[p] = u;
+      const fr = G.Art.frames(i => G.Art.foe(enemyId, use, isBoss, i ? p + i : p));
+      if (fr.length) (found = found || {})[p] = fr;
     }
     return found;
   },
@@ -183,8 +198,10 @@ G.Art = {
   img(url, name, extra, poses) {
     /* 動きの絵は data- に持たせておく。
      * 画面側は、どのキャラかを調べ直さずに差し替えられる。 */
+    /* コマが複数あるときは | で並べる。絵の場所に | は出てこない。 */
     const extra2 = poses
-      ? Object.keys(poses).map(k => ` data-pose-${k}="${G.util.esc(poses[k])}"`).join('')
+      ? Object.keys(poses).map(k =>
+        ` data-pose-${k}="${G.util.esc([].concat(poses[k]).join('|'))}"`).join('')
       : '';
     return `<img class="chr art ${extra || ''}" src="${url}" data-base="${G.util.esc(url)}"${extra2}`
       + ` alt="${G.util.esc(name || '')}" draggable="false">`;
@@ -192,20 +209,45 @@ G.Art = {
 
   /* ---------- 動きの絵に差し替える ---------- */
   /* cls は 'is-walk' などの画面側のクラス名。
-   * その動きの絵が無ければ何もしない（CSSの動きだけになる）。 */
-  setPose(el, cls) {
+   * その動きの絵が無ければ何もしない（CSSの動きだけになる）。
+   *
+   * ms を渡すと、その時間でコマを1周して最後の絵で止まる（攻撃など）。
+   * 渡さないと、コマを繰り返し続ける（歩きなど）。 */
+  setPose(el, cls, ms) {
     if (!el || el.tagName !== 'IMG' || !el.dataset) return false;
     const pose = CLASS_POSE[cls];
-    const url = pose && el.dataset['pose' + pose.charAt(0).toUpperCase() + pose.slice(1)];
-    if (!url) return false;
-    el.src = url;
+    const raw = pose && el.dataset['pose' + pose.charAt(0).toUpperCase() + pose.slice(1)];
+    if (!raw) return false;
+
+    G.Art._stopFrames(el);
+    const urls = raw.split('|');
+    el.src = urls[0];
+    if (urls.length < 2) return true;
+
+    const step = Math.max(70, (ms || 480) / urls.length);
+    let i = 0;
+    el._poseTimer = setInterval(() => {
+      /* 画面が作り直されて、この絵がもう使われていないなら止める */
+      if (!el.isConnected) { G.Art._stopFrames(el); return; }
+      i++;
+      if (i >= urls.length) {
+        if (ms) { G.Art._stopFrames(el); return; }   // 1周して止める
+        i = 0;                                        // 繰り返す
+      }
+      el.src = urls[i];
+    }, step);
     return true;
+  },
+
+  _stopFrames(el) {
+    if (el && el._poseTimer) { clearInterval(el._poseTimer); el._poseTimer = null; }
   },
 
   /* もとの絵に戻す */
   clearPose(el) {
-    if (!el || el.tagName !== 'IMG' || !el.dataset || !el.dataset.base) return;
-    if (el.src !== el.dataset.base) el.src = el.dataset.base;
+    if (!el || el.tagName !== 'IMG' || !el.dataset) return;
+    G.Art._stopFrames(el);
+    if (el.dataset.base && el.src !== el.dataset.base) el.src = el.dataset.base;
   },
 };
 
