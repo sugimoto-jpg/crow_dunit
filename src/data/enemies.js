@@ -23,16 +23,35 @@ G.ENEMIES = {
                 drops:[{id:'herb',rate:.6}] },
 
   /* ---------- 洞窟・遺跡（E〜Dランク Lv9-20） ---------- */
-  kobold:     { name:'コボルト', icon:'🐕', lv:10, hp:278, mp:12, atk:114, def:26, mag:93, res:26, spd:14,
+  /* 2026-09-23 洞窟の4体を弱くした（tools/explore-balance.js で実測）。
+   *
+   * 探索で村からボスの間まで歩けるようにしたところ、洞窟だけが
+   * 段違いに厳しく、道中でほぼ必ず全滅していた。
+   * 原因は攻撃力がレベルに対して跳ね上がっていたこと。
+   *   コボルト Lv10 で atk 114 … Lv18 のボス（82）より高かった
+   *   オーク   Lv15 で atk 107・HP 529
+   * レベルの近いスケルトン（Lv12 atk 51）と比べても外れていたので、
+   * 曲線に乗るところまで下げた。
+   *   コボルト atk 114→72
+   *   吸血蝙蝠 atk  68→58
+   *   オーク   atk 107→72 / HP 529→400
+   * この4体は洞窟にしか出ないので、他のエリアの手応えは変わらない。
+   *
+   * 測定結果（森→洞窟へ万全で出発して辿り着ける割合）
+   *   変更前 推奨Lv10で 28% ／ 変更後 推奨Lv13で 73%
+   *
+   * ※ ハーピー（Lv16 atk 168）も同じように跳ねているが、
+   *    こちらは遺跡エリアなので今回は触っていない。 */
+  kobold:     { name:'コボルト', icon:'🐕', lv:10, hp:278, mp:12, atk:72, def:26, mag:93, res:26, spd:14,
                 exp:122, gold:57, weak:[], resist:[], skills:[{id:'e_claw',w:3},{id:'e_howl',w:1}],
                 drops:[{id:'goblin_fang',rate:.4},{id:'potion',rate:.15}] },
   skeleton:   { name:'スケルトン', icon:'💀', lv:12, hp:323, mp:10, atk:51, def:33, mag:41, res:29, spd:12,
                 tags:['undead'], exp:122, gold:57, weak:['light'], resist:['dark','water'],
                 skills:[{id:'e_crush',w:2}], drops:[{id:'mana_crystal',rate:.2}] },
-  bat_swarm:  { name:'吸血蝙蝠', icon:'🦇', lv:13, hp:269, mp:20, atk:68, def:24, mag:56, res:33, spd:28,
+  bat_swarm:  { name:'吸血蝙蝠', icon:'🦇', lv:13, hp:269, mp:20, atk:58, def:24, mag:56, res:33, spd:28,
                 exp:122, gold:57, weak:['light','wind'], resist:['dark'], skills:[{id:'e_drain',w:3}],
                 drops:[{id:'ether',rate:.2}] },
-  orc:        { name:'オーク', icon:'🐗', lv:15, hp:529, mp:8, atk:107, def:47, mag:87, res:37, spd:10,
+  orc:        { name:'オーク', icon:'🐗', lv:15, hp:400, mp:8, atk:72, def:47, mag:87, res:37, spd:10,
                 exp:184, gold:86, weak:['wind'], resist:['earth'], skills:[{id:'e_crush',w:3},{id:'e_howl',w:1}],
                 drops:[{id:'iron_sword',rate:.05},{id:'potion',rate:.25}] },
   harpy:      { name:'ハーピー', icon:'🦅', lv:16, hp:522, mp:30, atk:168, def:39, mag:129, res:58, spd:34,

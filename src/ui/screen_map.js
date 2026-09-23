@@ -38,6 +38,10 @@ G.UI.register('map', {
       <h2>地図</h2>
       ${G.MapUI.boardHtml(here.id, route, target)}
 
+      ${G.Explore.canCamp() ? `
+        <h2>野営</h2>
+        ${G.MapUI.campHtml()}` : ''}
+
       <h2>行き先</h2>
       ${G.MapUI.exitsHtml(target, route)}
 
@@ -48,6 +52,14 @@ G.UI.register('map', {
 
   mount() {
     G.UI.on('go', ds => G.MapUI.depart(ds.to));
+    G.UI.on('camp', () => {
+      const n = G.Explore.camp();
+      if (!n) { G.UI.toast('全員すでに万全です', 'good'); return; }
+      if (G.Audio) G.Audio.se('se_heal');
+      G.UI.toast(`焚き火で休んだ。${n}人が回復した`, 'good');
+      G.State.save();
+      G.UI.show('map');
+    });
     G.UI.on('boss', () => G.MapUI.bossPrompt());
     G.UI.on('back', () => G.UI.show('home'));
     G.UI.on('home', async () => {
@@ -151,6 +163,21 @@ G.MapUI = {
     }).join('');
 
     return bossBtn + list;
+  },
+
+  /* ---------- 野営 ---------- */
+  /* 何度でも無料で休める。道中の消耗を区間ごとに立て直すための場所。 */
+  campHtml() {
+    const party = G.State.d.party;
+    const hurt = party.filter(c => c.hp < G.Char.maxHp(c) || c.mp < G.Char.maxMp(c));
+    const hp = party.reduce((a, c) => a + Math.max(0, c.hp), 0);
+    const max = party.reduce((a, c) => a + G.Char.maxHp(c), 0);
+    return `<button class="btn ${hurt.length ? 'primary' : ''}" data-act="camp">
+        🔥 焚き火で休む<span class="btn-sub">
+          無料・何度でも ／ パーティHP ${Math.round(hp / Math.max(1, max) * 100)}%
+          ${hurt.length ? ` ／ ${hurt.length}人が消耗している` : ' ／ 全員が万全'}
+        </span>
+      </button>`;
   },
 
   /* ---------- 出発 ---------- */

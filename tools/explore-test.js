@@ -132,7 +132,58 @@ check(route.length === 5 && route[0] === 'village_01' && route[4] === 'boss_01',
 G.State.d.explore.at = 'field_01';
 check(G.Explore.atTarget(), '目的地に着いたと判定される');
 
-console.log('\n▼ 8. 古いセーブでも読める\n');
+console.log('\n▼ 8. 野営\n');
+fresh(20);
+for (const k of ['riina']) G.State.recruit(k);
+{
+  const d = G.State.d;
+  const hurt = () => { for (const c of d.party) { c.hp = 1; c.mp = 0; } };
+
+  d.explore.at = 'village_01';
+  check(!G.Explore.canCamp(), '村では野営できない（拠点で休めるため）');
+
+  d.explore.at = 'boss_01';
+  check(!G.Explore.canCamp(), 'ボスの間では野営できない');
+
+  d.explore.at = 'cave_01';
+  check(G.Explore.canCamp(), '洞窟では野営できる');
+
+  hurt();
+  const n = G.Explore.camp();
+  check(n === d.party.length, `休むと全員が回復する（${n}人）`);
+  check(d.party.every(c => c.hp === G.Char.maxHp(c) && c.mp === G.Char.maxMp(c)),
+    'HPもMPも満タンになる');
+
+  check(G.Explore.camp() === 0, '万全なら何も起きない（回復0人）');
+
+  hurt();
+  const gold = d.gold, day = d.day, ap = d.ap;
+  G.Explore.camp();
+  check(d.gold === gold && d.day === day && d.ap === ap,
+    '野営は無料。お金も日数も行動力も減らない');
+
+  hurt();
+  d.explore.at = 'forest_01';
+  G.Explore.depart('cave_01');
+  check(!G.Explore.canCamp(), '歩いている最中は野営できない');
+  check(G.Explore.camp() === 0, '移動中に休もうとしても回復しない');
+  G.Explore.abort();
+}
+
+console.log('\n▼ 9. 遭遇する数の偏り\n');
+{
+  const total = G.Explore.GROUP.reduce((a, g) => a + g.w, 0);
+  const three = G.Explore.GROUP.find(g => g.n === 3);
+  check(three && three.w / total < 0.2,
+    `3体同時は2割未満（${Math.round(three.w / total * 100)}%）`);
+  fresh(1);
+  const cnt = { 1: 0, 2: 0, 3: 0 };
+  for (let i = 0; i < 600; i++) cnt[G.Explore.rollEnemies('cave_01').length]++;
+  check(cnt[3] < cnt[1], `1体のほうが3体より多く出る（1体${cnt[1]} / 3体${cnt[3]}）`);
+  check(cnt[1] + cnt[2] + cnt[3] === 600, '出てくる数は必ず1〜3体');
+}
+
+console.log('\n▼ 10. 古いセーブでも読める\n');
 fresh(5);
 const saved = JSON.parse(JSON.stringify(G.State.d));
 delete saved.explore; delete saved.quest;              // 探索の追加より前のセーブを模す

@@ -60,9 +60,14 @@ G.Explore = {
   },
 
   /* 推奨レベルの範囲。エリアの設定をそのまま使う。 */
+  /* その地点の推奨レベル。
+   * 地点に lvRange があればそれを使う。
+   * ボスの間は同じ洞窟エリアでも求められる強さが違うので、
+   * エリアの値をそのまま出すと実態と合わない案内になってしまう。 */
   levelRange(id) {
     const s = G.SPOTS[id];
     if (!s) return null;
+    if (s.lvRange) return s.lvRange.slice();
     const a = s.area && G.AREAS[s.area];
     return a ? a.lvRange.slice() : [s.requiredLevel, s.requiredLevel + 5];
   },
@@ -146,11 +151,19 @@ G.Explore = {
     return { encounter: G.Explore.rollEnemies(t.to), step: t.step, total: t.total };
   },
 
-  /* 出てくる魔物を決める。1〜3体。 */
+  /* 出てくる魔物を決める。1〜3体。
+   *
+   * 数は等確率にしない。
+   * 3体同時が3回に1回出ると、道中の回復手段がない探索では
+   * 「運が悪いと何もできずに全滅する」形になってしまう。
+   * 大群はたまに出るくらいがちょうどよい。 */
+  GROUP: [{ n: 1, w: 45 }, { n: 2, w: 40 }, { n: 3, w: 15 }],
+
   rollEnemies(spotId) {
     const pool = G.Explore.enemyPool(spotId);
     if (!pool.length) return [];
-    const n = G.util.randInt(1, Math.min(3, pool.length + 1));
+    const max = Math.min(3, pool.length + 1);
+    const n = Math.min(max, G.util.weighted(G.Explore.GROUP).n);
     const out = [];
     for (let i = 0; i < n; i++) out.push(G.util.choice(pool));
     return out;
@@ -163,6 +176,37 @@ G.Explore = {
     e.at = e.trip.from;
     e.trip = null;
     return true;
+  },
+
+  /* ---------- 野営 ---------- */
+  /* 中間地点では、いつでも無料で休める。
+   *
+   * なぜ無料か：
+   *   道中に回復手段がないと、運の悪い遭遇が続いただけでボスの前に力尽き、
+   *   村からやり直しになってしまう。
+   *   消耗しながら進む手応えは「1区間のあいだ」で十分に出るので、
+   *   区間のつなぎ目では立て直せるようにする。
+   *
+   * 村（拠点で休める）とボスの間（ここは正念場）では野営できない。
+   * 移動の途中でも野営できない。 */
+  canCamp(id) {
+    const e = G.Explore.data();
+    if (!e || e.trip) return false;                 // 歩いている最中は休めない
+    const s = G.SPOTS[id || (e && e.at)];
+    return !!(s && s.camp);
+  },
+
+  /* 休む。戻り値は回復した人数（0なら休めなかった）。 */
+  camp() {
+    const e = G.Explore.data();
+    if (!e || !G.Explore.canCamp()) return 0;
+    let n = 0;
+    for (const c of G.State.d.party) {
+      if (c.hp >= G.Char.maxHp(c) && c.mp >= G.Char.maxMp(c)) continue;
+      G.Char.fullRestore(c);
+      n++;
+    }
+    return n;
   },
 
   /* ---------- ボス ---------- */
