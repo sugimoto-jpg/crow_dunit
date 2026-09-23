@@ -1,8 +1,8 @@
 /* ===== 取り込んだ画像の並べて確認 =====
  *
- *   node tools/art-preview.js [出力先.png]
+ *   node tools/art-preview.js [出力先.png] [--jobs]
  *
- * 敵とボスを1枚に並べて書き出す。
+ * 敵とボス（--jobs なら職業）を1枚に並べて書き出す。
  * 取り込みのあと、背景が残っていないか、隣の絵が混ざっていないか、
  * 大小関係がおかしくないかを目で見て確かめるためのもの。
  * ゲーム本体には影響しない。
@@ -14,7 +14,9 @@ const fs = require('fs');
 const path = require('path');
 const { chromium } = require('playwright');
 
-const OUT = process.argv[2] || 'art-preview.png';
+const args = process.argv.slice(2);
+const JOBS = args.includes('--jobs');
+const OUT = args.find(a => !a.startsWith('--')) || 'art-preview.png';
 const EXE = ['/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
   '/opt/pw-browsers/chromium/chrome-linux/chrome'].find(p => fs.existsSync(p));
 
@@ -26,7 +28,10 @@ const EXE = ['/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
   await page.goto('file://' + path.resolve('index.html'));
   await page.waitForTimeout(800);
 
-  const size = await page.evaluate(() => {
+  const size = await page.evaluate(jobs => {
+    /* 職業の絵は「誰が」で決まるので、主人公を1人作ってから差し替える */
+    if (jobs) { G.State.newGame('見本', 'normal', { sex: 'm' }); return drawJobs(); }
+
     /* ボスかどうかは、敵の設定の boss で決まる（src/data/enemies.js） */
     const ids = Object.keys(G.ENEMIES).filter(id => G.ENEMIES[id].name);
     const wrap = document.createElement('div');
@@ -49,7 +54,34 @@ const EXE = ['/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
     }
     document.body.appendChild(wrap);
     return { n: ids.length, h: wrap.scrollHeight };
-  });
+
+    /* 職業は男女ぶんを並べる。絵が無ければ（SVG）と付く。 */
+    function drawJobs() {
+      const box = document.createElement('div');
+      box.id = 'art-preview';
+      box.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#241a3a;'
+        + 'display:flex;flex-wrap:wrap;align-content:flex-start;gap:2px;padding:10px';
+      const list = Object.keys(G.JOBS);
+      for (const id of list) {
+        for (const sex of ['m', 'f']) {
+          const c = Object.assign({}, G.State.d.player, { jobId: id, look: { sex } });
+          const col = document.createElement('div');
+          col.style.cssText = 'width:96px';
+          const cell = document.createElement('div');
+          cell.className = 'unit';
+          cell.style.cssText = 'height:120px;display:flex;align-items:flex-end;justify-content:center';
+          cell.innerHTML = G.Sprite.hero(c, 'battle');
+          const art = G.Art && G.Art.hero(c, 'battle');
+          const cap = document.createElement('div');
+          cap.style.cssText = `color:${art ? '#9ee' : '#886'};font-size:10px;text-align:center`;
+          cap.textContent = `${G.JOBS[id].name}${sex === 'm' ? '♂' : '♀'}${art ? '' : '(SVG)'}`;
+          col.appendChild(cell); col.appendChild(cap); box.appendChild(col);
+        }
+      }
+      document.body.appendChild(box);
+      return { n: list.length * 2, h: box.scrollHeight };
+    }
+  }, JOBS);
 
   await page.setViewportSize({ width: 1000, height: Math.max(200, size.h + 20) });
   await page.waitForTimeout(400);
