@@ -153,8 +153,10 @@ function boot(resume) {
    * スマートフォンでは、画面を1度も触っていない状態では音を鳴らせない。
    * 最初のタップで音の出口を開く（プレイヤーには何も見えない）。 */
   const unlockAudio = () => {
-    if (!G.Audio) return;
-    G.Audio.unlock();
+    if (G.Audio) G.Audio.unlock();
+    /* 読み上げも同じで、一度も触っていないと喋れない端末がある。
+     * 空白を1回読ませて出口を開ける（人には聞こえない）。 */
+    if (G.Voice && G.Voice.supported) { try { G.Voice.speak(' ', { volume: 0 }); G.Voice.stop(); } catch (e) {} }
     document.removeEventListener('pointerdown', unlockAudio);
     document.removeEventListener('keydown', unlockAudio);
   };

@@ -730,3 +730,226 @@ small{font-size:11.5px}
   .mp-node.is-here .mp-ico{animation:none}
   .trip-scene.is-encounter{animation:none}
 }
+
+/* ===================================================================
+   技のエフェクト
+   外部画像を使わないので、すべてCSSのグラデーションと変形で描く。
+   .fx は対象の絵に重ね、.fx-scene は戦闘画面全体に重ねる。
+   =================================================================== */
+.fx{position:absolute;inset:-14%;pointer-events:none;z-index:6;overflow:visible}
+.fx i{position:absolute;display:block;border-radius:50%}
+
+/* --- 炎：下から巻き上がる --- */
+.fx-fire i{
+  left:50%;bottom:6%;width:42%;height:42%;margin-left:-21%;
+  background:radial-gradient(circle at 50% 70%, #fff3c4 0%, #ffd24a 22%, #ff7a18 55%, rgba(255,60,0,0) 72%);
+  animation:fx-fire .62s ease-out forwards;
+}
+.fx-fire i:nth-child(2){left:26%;width:34%;animation-delay:.07s}
+.fx-fire i:nth-child(3){left:70%;width:30%;animation-delay:.13s}
+@keyframes fx-fire{
+  0%{transform:translateY(20%) scale(.35);opacity:0}
+  25%{opacity:1}
+  100%{transform:translateY(-86%) scale(1.5);opacity:0}
+}
+
+/* --- 氷：結晶が弾ける --- */
+.fx-water i{
+  left:50%;top:50%;width:8%;height:46%;margin:-23% 0 0 -4%;border-radius:2px;
+  background:linear-gradient(180deg, rgba(255,255,255,.95), #7fe3ff 45%, rgba(60,160,255,0));
+  box-shadow:0 0 10px #9ae8ff;
+  animation:fx-ice .58s cubic-bezier(.2,.9,.3,1) forwards;
+}
+.fx-water i:nth-child(1){transform:rotate(0deg)}
+.fx-water i:nth-child(2){animation-delay:.04s;--r:60deg}
+.fx-water i:nth-child(3){animation-delay:.08s;--r:120deg}
+.fx-water i:nth-child(4){animation-delay:.04s;--r:180deg}
+.fx-water i:nth-child(5){animation-delay:.08s;--r:240deg}
+.fx-water i:nth-child(6){animation-delay:.12s;--r:300deg}
+@keyframes fx-ice{
+  0%{transform:rotate(var(--r,0deg)) translateY(0) scaleY(.2);opacity:0}
+  30%{opacity:1}
+  100%{transform:rotate(var(--r,0deg)) translateY(-52%) scaleY(1.15);opacity:0}
+}
+
+/* --- 風：三日月の刃が走る --- */
+.fx-wind i{
+  left:8%;top:50%;width:52%;height:52%;margin-top:-26%;border-radius:50%;
+  background:none;border:3px solid rgba(150,255,235,.9);
+  border-color:rgba(150,255,235,.95) transparent transparent rgba(150,255,235,.6);
+  box-shadow:0 0 12px rgba(120,255,230,.7);
+  animation:fx-wind .5s ease-out forwards;
+}
+.fx-wind i:nth-child(2){top:28%;animation-delay:.09s;width:40%;height:40%}
+.fx-wind i:nth-child(3){top:72%;animation-delay:.17s;width:34%;height:34%}
+@keyframes fx-wind{
+  0%{transform:translateX(-60%) rotate(-30deg) scale(.5);opacity:0}
+  30%{opacity:1}
+  100%{transform:translateX(90%) rotate(40deg) scale(1.2);opacity:0}
+}
+
+/* --- 岩：砕けた欠片が飛ぶ --- */
+.fx-earth i{
+  left:50%;top:60%;width:15%;height:15%;margin-left:-7%;border-radius:3px;
+  background:linear-gradient(150deg,#c9a36b,#7a5527 60%,#4b3316);
+  box-shadow:0 2px 6px rgba(0,0,0,.6);
+  animation:fx-rock .66s cubic-bezier(.25,.8,.4,1) forwards;
+}
+.fx-earth i:nth-child(2){--x:-120%;--y:-70%;animation-delay:.04s;width:11%;height:11%}
+.fx-earth i:nth-child(3){--x:110%;--y:-90%;animation-delay:.08s;width:13%;height:13%}
+.fx-earth i:nth-child(4){--x:-70%;--y:-120%;animation-delay:.02s;width:9%;height:9%}
+.fx-earth i:nth-child(5){--x:80%;--y:-40%;animation-delay:.1s;width:10%;height:10%}
+@keyframes fx-rock{
+  0%{transform:translate(0,0) rotate(0);opacity:0}
+  20%{opacity:1}
+  100%{transform:translate(var(--x,0),var(--y,-100%)) rotate(220deg);opacity:0}
+}
+
+/* --- 光：柱が降り、輪が広がる --- */
+.fx-light i:nth-child(1){
+  left:50%;top:-40%;width:36%;height:150%;margin-left:-18%;border-radius:40%;
+  background:linear-gradient(180deg, rgba(255,255,255,0), #fff7d0 30%, #ffe89a 70%, rgba(255,220,120,0));
+  box-shadow:0 0 30px rgba(255,240,180,.9);
+  animation:fx-pillar .6s ease-out forwards;
+}
+.fx-light i:nth-child(2),.fx-light i:nth-child(3){
+  left:50%;top:62%;width:70%;height:24%;margin:-12% 0 0 -35%;border-radius:50%;
+  background:none;border:3px solid rgba(255,245,200,.95);
+  box-shadow:0 0 16px rgba(255,240,170,.9);
+  animation:fx-ring .6s ease-out forwards;
+}
+.fx-light i:nth-child(3){animation-delay:.14s}
+@keyframes fx-pillar{0%{transform:scaleY(.1);opacity:0}30%{opacity:1}100%{transform:scaleY(1.1);opacity:0}}
+@keyframes fx-ring{0%{transform:scale(.2);opacity:0}30%{opacity:1}100%{transform:scale(1.6);opacity:0}}
+
+/* --- 闇：渦が飲み込む --- */
+.fx-dark i:nth-child(1){
+  left:50%;top:50%;width:90%;height:90%;margin:-45% 0 0 -45%;
+  background:conic-gradient(from 0deg, rgba(120,40,200,0), #6a1fb0 30%, rgba(20,0,40,.9) 60%, rgba(120,40,200,0) 90%);
+  animation:fx-vortex .72s ease-in forwards;
+}
+.fx-dark i:nth-child(2),.fx-dark i:nth-child(3){
+  left:50%;top:50%;width:80%;height:80%;margin:-40% 0 0 -40%;
+  background:none;border:2px solid rgba(190,120,255,.85);
+  box-shadow:0 0 14px rgba(150,60,255,.8) inset;
+  animation:fx-collapse .6s ease-in forwards;
+}
+.fx-dark i:nth-child(3){animation-delay:.16s}
+@keyframes fx-vortex{0%{transform:rotate(0) scale(.3);opacity:0}25%{opacity:1}100%{transform:rotate(420deg) scale(1.1);opacity:0}}
+@keyframes fx-collapse{0%{transform:scale(1.5);opacity:0}35%{opacity:1}100%{transform:scale(.15);opacity:0}}
+
+/* --- 斬撃：白い線が交差する --- */
+.fx-slash i{
+  left:-6%;top:50%;width:112%;height:5px;margin-top:-2px;border-radius:3px;
+  background:linear-gradient(90deg, rgba(255,255,255,0), #fff 35%, #cfe9ff 55%, rgba(255,255,255,0));
+  box-shadow:0 0 14px rgba(200,235,255,.95);
+  animation:fx-slash .34s ease-out forwards;
+}
+.fx-slash i:nth-child(1){transform:rotate(-38deg)}
+.fx-slash i:nth-child(2){--r:34deg;animation-delay:.1s}
+.fx-slash i:nth-child(3){--r:-8deg;animation-delay:.2s}
+@keyframes fx-slash{
+  0%{transform:rotate(var(--r,-38deg)) scaleX(0);opacity:0}
+  25%{opacity:1}
+  100%{transform:rotate(var(--r,-38deg)) scaleX(1);opacity:0}
+}
+
+/* --- 無属性の魔力：衝撃波 --- */
+.fx-arcane i{
+  left:50%;top:50%;width:80%;height:80%;margin:-40% 0 0 -40%;
+  background:none;border:3px solid rgba(190,150,255,.9);
+  box-shadow:0 0 18px rgba(160,110,255,.8);
+  animation:fx-ring .5s ease-out forwards;
+}
+.fx-arcane i:nth-child(2){animation-delay:.12s;border-color:rgba(130,220,255,.85)}
+.fx-arcane i:nth-child(3){animation-delay:.24s;border-color:rgba(255,255,255,.7)}
+
+/* --- 回復：光の粒が昇る --- */
+.fx-heal i{
+  left:50%;bottom:10%;width:11%;height:11%;margin-left:-5%;
+  background:radial-gradient(circle,#ffffff 0%,#7dffb0 45%,rgba(90,255,170,0) 70%);
+  animation:fx-spark .78s ease-out forwards;
+}
+.fx-heal i:nth-child(2){left:24%;animation-delay:.1s}
+.fx-heal i:nth-child(3){left:72%;animation-delay:.2s}
+.fx-heal i:nth-child(4){left:42%;animation-delay:.3s;width:8%;height:8%}
+@keyframes fx-spark{0%{transform:translateY(10%) scale(.4);opacity:0}25%{opacity:1}100%{transform:translateY(-120%) scale(1.1);opacity:0}}
+
+/* --- 強化・弱体：足もとの魔法陣 --- */
+.fx-buff i,.fx-debuff i{
+  left:50%;bottom:2%;width:86%;height:30%;margin-left:-43%;
+  background:none;border:3px solid rgba(120,255,180,.9);border-radius:50%;
+  box-shadow:0 0 16px rgba(110,255,170,.7);
+  animation:fx-rune .7s ease-out forwards;
+}
+.fx-debuff i{border-color:rgba(255,120,190,.9);box-shadow:0 0 16px rgba(255,90,170,.7)}
+.fx-buff i:nth-child(2),.fx-debuff i:nth-child(2){animation-delay:.16s;width:60%;margin-left:-30%}
+@keyframes fx-rune{
+  0%{transform:scale(.3) rotate(0);opacity:0}
+  30%{opacity:1}
+  100%{transform:scale(1.25) rotate(140deg);opacity:0}
+}
+
+/* ---------- 大技（必殺技）の全体演出 ---------- */
+.fx-scene{position:absolute;inset:0;pointer-events:none;z-index:8;overflow:hidden}
+.fx-flash{position:absolute;inset:0;background:#fff;opacity:0;animation:fx-flash .5s ease-out forwards}
+.fx-flash.el-fire{background:radial-gradient(circle,#fff 0%,#ff9a3c 55%,#c02000 100%)}
+.fx-flash.el-water{background:radial-gradient(circle,#fff 0%,#9be6ff 55%,#0a5ca8 100%)}
+.fx-flash.el-wind{background:radial-gradient(circle,#fff 0%,#a9ffe9 55%,#0f8f7a 100%)}
+.fx-flash.el-earth{background:radial-gradient(circle,#fff5e0 0%,#c79a56 55%,#5a3c18 100%)}
+.fx-flash.el-light{background:radial-gradient(circle,#fff 0%,#fff0b8 55%,#c9a02a 100%)}
+.fx-flash.el-dark{background:radial-gradient(circle,#2a0040 0%,#7b25c9 45%,#000 100%)}
+.fx-flash.el-arcane,.fx-flash.el-slash{background:radial-gradient(circle,#fff 0%,#c6a8ff 55%,#3a1f78 100%)}
+@keyframes fx-flash{0%{opacity:0}18%{opacity:.85}100%{opacity:0}}
+
+/* 集中線。大技のときだけ出す */
+.fx-lines{
+  position:absolute;inset:-25%;
+  background:repeating-conic-gradient(from 0deg at 50% 50%,
+    rgba(255,255,255,.55) 0deg 1.1deg, transparent 1.1deg 7deg);
+  -webkit-mask-image:radial-gradient(circle, transparent 26%, #000 62%);
+  mask-image:radial-gradient(circle, transparent 26%, #000 62%);
+  opacity:0;animation:fx-lines .62s ease-out forwards;
+}
+@keyframes fx-lines{0%{opacity:0;transform:scale(1.5) rotate(0)}22%{opacity:.9}100%{opacity:0;transform:scale(.7) rotate(16deg)}}
+
+/* 技名のカットイン */
+.fx-name{
+  position:absolute;left:0;right:0;top:38%;text-align:center;
+  font-size:26px;font-weight:900;letter-spacing:.12em;white-space:nowrap;
+  color:#fff;
+  text-shadow:0 0 14px rgba(255,255,255,.9), 0 3px 0 #2a1550, 0 6px 22px #000;
+  animation:fx-name 1.05s cubic-bezier(.16,1.2,.3,1) forwards;
+}
+.fx-name b{
+  display:block;font-size:11px;font-weight:800;letter-spacing:.3em;
+  color:var(--gold);text-shadow:0 2px 6px #000;margin-bottom:2px;
+}
+@keyframes fx-name{
+  0%{opacity:0;transform:translateX(-28%) skewX(-16deg) scale(.8)}
+  16%{opacity:1;transform:translateX(0) skewX(-8deg) scale(1.08)}
+  30%{transform:translateX(0) skewX(0) scale(1)}
+  78%{opacity:1;transform:translateX(0) scale(1)}
+  100%{opacity:0;transform:translateX(12%) scale(1.06)}
+}
+@media (max-width:400px){ .fx-name{font-size:21px} }
+
+/* 画面を揺らす */
+.scene.is-shake{animation:fx-shake .46s ease-out}
+.scene.is-shake-hard{animation:fx-shake-hard .6s ease-out}
+@keyframes fx-shake{
+  0%,100%{transform:translate(0,0)}
+  15%{transform:translate(-5px,3px)}35%{transform:translate(5px,-3px)}
+  55%{transform:translate(-3px,-2px)}78%{transform:translate(3px,2px)}
+}
+@keyframes fx-shake-hard{
+  0%,100%{transform:translate(0,0)}
+  10%{transform:translate(-10px,6px)}25%{transform:translate(10px,-7px)}
+  40%{transform:translate(-8px,-5px)}55%{transform:translate(8px,5px)}
+  70%{transform:translate(-5px,3px)}85%{transform:translate(4px,-2px)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .fx,.fx-scene{display:none}
+  .scene.is-shake,.scene.is-shake-hard{animation:none}
+}

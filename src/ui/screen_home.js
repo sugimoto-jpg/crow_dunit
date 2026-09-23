@@ -5,6 +5,7 @@ G.UI.register('home', {
   render() {
     const d = G.State.d;
     const au = (G.Audio && G.Audio.settings) || { bgm: false, se: false };
+    const vo = (G.Voice && G.Voice.settings) || { shout: false, story: false };
     const notices = [];
 
     if (!d.graduated && !d.tuitionPaid) {
@@ -94,8 +95,18 @@ G.UI.register('home', {
         <button class="btn sm ${au.bgm ? '' : 'ghost'}" data-act="bgm">${au.bgm ? '🔊' : '🔇'} BGM</button>
         <button class="btn sm ${au.se ? '' : 'ghost'}" data-act="se">${au.se ? '🔔' : '🔕'} 効果音</button>
       </div>
+      ${G.Voice && G.Voice.supported ? `
+        <div class="row" style="gap:8px;margin-top:8px">
+          <button class="btn sm ${vo.shout ? '' : 'ghost'}" data-act="vshout">${vo.shout ? '🗣️' : '🤐'} 掛け声</button>
+          <button class="btn sm ${vo.story ? '' : 'ghost'}" data-act="vstory">${vo.story ? '📖' : '🔇'} 物語の読み上げ</button>
+        </div>
+        ${G.Voice.ready ? '' : `<p class="dim" style="font-size:11.5px;margin-top:4px">
+          この端末には日本語の読み上げ音声が見つかりませんでした。
+          端末の設定で日本語の音声を追加すると喋るようになります。</p>`}` : ''}
+
       <p class="dim" style="font-size:11.5px;margin-top:4px">
-        音が出ないときは、端末の音量と、iPhone の場合は本体横のマナーモードをご確認ください。</p>
+        音が出ないときは、端末の音量と、iPhone の場合は本体横のマナーモードをご確認ください。
+        ${G.Voice && G.Voice.supported ? '声は端末の読み上げ機能を使っています。' : ''}</p>
 
       <button class="btn ghost" data-act="title">タイトルへもどる</button>`;
   },
@@ -117,6 +128,21 @@ G.UI.register('home', {
     });
 
     G.UI.on('map', () => G.UI.show('map'));
+
+    G.UI.on('vshout', () => {
+      if (!G.Voice) return;
+      G.Voice.setEnabled('shout', !G.Voice.settings.shout);
+      G.UI.show('home');
+    });
+
+    G.UI.on('vstory', () => {
+      if (!G.Voice) return;
+      const on = !G.Voice.settings.story;
+      G.Voice.setEnabled('story', on);
+      /* 入れたときは、どんな声で読まれるか一度聞かせる */
+      if (on) G.Voice.narrate('物語を読み上げます。', null);
+      G.UI.show('home');
+    });
 
     G.UI.on('bgm', () => {
       if (!G.Audio) return;

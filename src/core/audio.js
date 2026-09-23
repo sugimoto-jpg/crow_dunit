@@ -159,6 +159,14 @@ const SE = {
   se_status: t => { tone(seGain, 'triangle', 300, t, 0.22, 0.18, 200); tone(seGain, 'triangle', 240, t + 0.1, 0.2, 0.14, 300); },
   se_gain:   t => { [523, 659, 784, 1046].forEach((f, i) => tone(seGain, 'square', f, t + i * 0.07, 0.16, 0.2)); },
   se_alert:  t => { tone(seGain, 'sawtooth', 200, t, 0.3, 0.22, 110); noise(seGain, t, 0.2, 0.18, 700); },
+  /* 大技。ためてから撃つ感じにする（上がる音 → 一撃 → 余韻） */
+  se_ultimate: t => {
+    tone(seGain, 'sawtooth', 120, t, 0.34, 0.16, 700);          // ため
+    tone(seGain, 'square', 180, t + 0.02, 0.3, 0.1, 900);
+    noise(seGain, t + 0.32, 0.36, 0.34, 2400);                   // 着弾
+    tone(seGain, 'sawtooth', 320, t + 0.32, 0.4, 0.22, 60);
+    [784, 988, 1319].forEach((f, i) => tone(seGain, 'sine', f, t + 0.36 + i * 0.05, 0.3, 0.12));
+  },
 };
 const seLast = {};
 

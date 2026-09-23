@@ -18,6 +18,9 @@ G.UI = {
     if (!def) { console.warn('未登録の画面:', name); return; }
     G.UI.current = name;
     G.UI.currentArgs = args;
+    /* 前の画面の読み上げを残さない。
+     * 止めないと、会話を抜けたあとも喋り続けてしまう。 */
+    if (G.Voice) G.Voice.stop();
     const host = G.UI.el('screen');
     host.innerHTML = def.render(args) || '';
     host.scrollTop = 0;
@@ -241,9 +244,15 @@ G.UI = {
           </button>
         </div>`;
       host.scrollTop = host.scrollHeight;
+      /* いま出した1行を読み上げる。待たないので、
+       * 読み終わる前に「つづける」を押しても先へ進める。 */
+      if (G.Voice) G.Voice.narrate(scene[i].text, scene[i].who);
       G.UI.on('next', () => {
         if (i < scene.length - 1) { i++; draw(); }
-        else { G.UI.storyPlaying = false; G.UI.setChromeVisible(!!G.State.data); onDone && onDone(); }
+        else {
+          if (G.Voice) G.Voice.stop();
+          G.UI.storyPlaying = false; G.UI.setChromeVisible(!!G.State.data); onDone && onDone();
+        }
       });
     };
     draw();

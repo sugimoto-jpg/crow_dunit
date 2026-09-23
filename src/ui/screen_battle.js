@@ -219,9 +219,69 @@ G.BattleUI = {
     setTimeout(() => f.remove(), 900);
   },
 
+  /* ---------- 技のエフェクト ---------- */
+  /* 技の見た目をどれにするか。
+   * 属性があればそれ。無ければ攻撃の種類から決める。 */
+  FX_EL: { fire: 1, water: 1, wind: 1, earth: 1, light: 1, dark: 1 },
+  FX_PARTS: { fire: 3, water: 6, wind: 3, earth: 5, light: 3, dark: 3,
+    slash: 3, arcane: 3, heal: 4, buff: 2, debuff: 2 },
+
+  fxKind(skill) {
+    if (!skill) return 'slash';
+    if (skill.el && G.BattleUI.FX_EL[skill.el]) return skill.el;
+    if (skill.kind === 'heal') return 'heal';
+    if (skill.kind === 'buff') return 'buff';
+    if (skill.kind === 'debuff') return 'debuff';
+    if (skill.kind === 'phys') return 'slash';
+    return 'arcane';
+  },
+
+  /* 「大技」かどうか。
+   * MPを多く使う技・全体技・多段技を、見せ場として扱う。
+   * ここを1か所にまとめておけば、あとから基準を変えやすい。 */
+  isBig(skill) {
+    if (!skill) return false;
+    return (skill.mp || 0) >= 18 || skill.target === 'all' || (skill.hits || 1) >= 3;
+  },
+
+  /* 対象の絵に重ねる。kind は fxKind の戻り値。 */
+  fx(uid, kind, ms) {
+    const host = document.querySelector(`#u-${uid} .unit-sprite`);
+    if (!host) return;
+    const d = document.createElement('div');
+    d.className = 'fx fx-' + kind;
+    d.innerHTML = '<i></i>'.repeat(G.BattleUI.FX_PARTS[kind] || 3);
+    host.appendChild(d);
+    setTimeout(() => d.remove(), ms || 900);
+  },
+
+  /* 戦闘画面ぜんぶに重ねる（大技の閃光・集中線・技名） */
+  fxScene(kind, name, who) {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    const d = document.createElement('div');
+    d.className = 'fx-scene';
+    d.innerHTML = `<div class="fx-flash el-${kind}"></div>
+      <div class="fx-lines"></div>
+      ${name ? `<div class="fx-name">${who ? `<b>${G.util.esc(who)}</b>` : ''}${G.util.esc(name)}</div>` : ''}`;
+    scene.appendChild(d);
+    setTimeout(() => d.remove(), 1200);
+  },
+
+  shake(hard) {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    const cls = hard ? 'is-shake-hard' : 'is-shake';
+    scene.classList.remove(cls);
+    void scene.offsetWidth;
+    scene.classList.add(cls);
+    setTimeout(() => scene.classList.remove(cls), hard ? 640 : 500);
+  },
+
   /* ---------- 演出 ---------- */
   async playEvents(events) {
     let prev = null;
+    let skill = null, fxKind = 'slash';
     for (const ev of events) {
       if (ev.text) {
         if (G.Audio) {
@@ -239,26 +299,47 @@ G.BattleUI = {
       if (ev.type === 'use' && ev.actor) {
         const kind = ev.skill ? ev.skill.kind : 'phys';
         const cast = ['mag', 'heal', 'buff', 'debuff', 'special'].includes(kind);
-        if (G.Audio) G.Audio.se(cast ? 'se_magic' : 'se_attack');
+        /* いま出ている技を覚えておく。
+         * これに続くダメージや回復のイベントには技の情報が入っていないので、
+         * どの属性のエフェクトを出すかはここで決めた内容を使う。 */
+        skill = ev.skill || null;
+        fxKind = G.BattleUI.fxKind(skill);
+        const big = G.BattleUI.isBig(skill);
+
+        if (G.Audio) G.Audio.se(big ? 'se_ultimate' : cast ? 'se_magic' : 'se_attack');
+        if (G.Voice) G.Voice.shout(ev.actor, skill, big);
+
+        if (big) {
+          /* 見せ場。閃光と集中線を出し、技名を大きく見せてから当てる。 */
+          G.BattleUI.fxScene(fxKind, skill && skill.name, ev.actor.name);
+          G.BattleUI.shake(true);
+          if (G.Native) G.Native.tap('heavy');
+        }
         G.BattleUI.animate(ev.actor.uid, cast ? 'is-cast' : 'is-attack', cast ? 900 : 520);
-        await sleep((cast ? 260 : 170) * G.BattleUI.speed);
+        await sleep((big ? 620 : cast ? 260 : 170) * G.BattleUI.speed);
       }
 
       if (ev.type === 'damage' && ev.amount > 0) {
         if (G.Audio) G.Audio.se('se_hit');
+        G.BattleUI.fx(ev.target.uid, fxKind);
         G.BattleUI.animate(ev.target.uid, 'is-hurt', 420);
         G.BattleUI.popup(ev.target.uid, '-' + ev.amount, ev.crit ? '#ffd96b' : '#ff9a6d');
+        if (ev.crit) G.BattleUI.shake(false);
         // アプリ版では手応えとして短く振動させる（ブラウザでは何も起きない）
         if (G.Native) G.Native.tap(ev.crit ? 'heavy' : (ev.target.side === 'ally' ? 'medium' : 'light'));
       } else if (ev.type === 'dot') {
         G.BattleUI.popup(ev.target.uid, '-' + ev.amount, '#b6ff8a');
       } else if (ev.type === 'heal' && ev.amount > 0) {
         if (G.Audio) G.Audio.se('se_heal');
+        G.BattleUI.fx(ev.target.uid, 'heal');
         G.BattleUI.popup(ev.target.uid, '+' + ev.amount, '#7dffb0');
       } else if (ev.type === 'mp' && ev.amount > 0) {
         G.BattleUI.popup(ev.target.uid, '+' + ev.amount, '#7ad4ff');
+      } else if (ev.type === 'buff') {
+        if (ev.target) G.BattleUI.fx(ev.target.uid, ev.up ? 'buff' : 'debuff');
       } else if (ev.type === 'revive') {
         if (G.Audio) G.Audio.se('se_heal');
+        G.BattleUI.fx(ev.target.uid, 'light');
         G.BattleUI.animate(ev.target.uid, 'is-enter', 500);
       }
 
