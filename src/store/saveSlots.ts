@@ -17,6 +17,9 @@ export interface SaveSnapshot {
   jobId: JobId;
   completedLectures: string[];
   questRecords: Record<string, QuestRecord>;
+  /** 旧バージョンのセーブには無い */
+  masteredTerms?: string[];
+  glossaryStats?: { answered: number; correct: number };
 }
 
 export interface SaveSlot {

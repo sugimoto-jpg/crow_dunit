@@ -87,7 +87,25 @@ export function BattleScreen({ quest }: { quest: Quest }) {
   const [shaking, setShaking] = useState(false);
   const [result, setResult] = useState<{ exp: number; gold: number; levelUp: boolean; perfect: boolean } | null>(null);
   const stage = useRef<StageHandle>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const [scrollHint, setScrollHint] = useState(false);
+  const updateScrollHint = () => {
+    const el = footerRef.current;
+    if (!el) return;
+    setScrollHint(el.scrollHeight - el.scrollTop - el.clientHeight > 12);
+  };
   const timers = useRef<number[]>([]);
+
+  // フェーズ・状態が変わったらコマンド欄を先頭に戻し、はみ出しがあれば「続き」を案内する
+  useEffect(() => {
+    footerRef.current?.scrollTo({ top: 0 });
+    const t = window.setTimeout(updateScrollHint, 50);
+    window.addEventListener('resize', updateScrollHint);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener('resize', updateScrollHint);
+    };
+  }, [phaseIdx, status]);
 
   const phase = quest.phases[phaseIdx];
   const choices = phasesChoices[phaseIdx];
@@ -310,7 +328,7 @@ export function BattleScreen({ quest }: { quest: Quest }) {
       </div>
 
       {/* ===== 中央：ステージ ===== */}
-      <div className="relative min-h-[150px] flex-1">
+      <div className="relative h-[max(130px,24dvh)] shrink-0 md:h-auto md:min-h-[200px] md:flex-1">
         <CharacterStage
           ref={stage}
           mode="battle"
@@ -370,8 +388,12 @@ export function BattleScreen({ quest }: { quest: Quest }) {
       </div>
 
       {/* ===== 下部：営業コマンド ===== */}
-      <footer className="safe-bottom safe-x relative z-10 border-t-2 border-white/20 bg-night-950/95">
-        <div className="mx-auto max-w-4xl px-3 pb-2 pt-2">
+      <footer className="safe-bottom safe-x relative z-10 flex min-h-0 flex-1 flex-col border-t-2 border-white/20 bg-night-950/95 md:flex-none">
+        <div
+          ref={footerRef}
+          onScroll={updateScrollHint}
+          className="mx-auto min-h-0 w-full max-w-4xl flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-3 pb-2 pt-2"
+        >
           {/* 自キャラHP（ステージのキャラクターに重ならないようコマンド欄の上に置く） */}
           <div className="mb-1.5 flex items-center gap-2 text-[11px]">
             <span className="shrink-0 font-bold">
@@ -390,9 +412,27 @@ export function BattleScreen({ quest }: { quest: Quest }) {
           </div>
           {(status === 'choose' || status === 'animating' || status === 'intro') && (
             <>
-              <div className="mb-1.5 flex items-center gap-2">
+              <div className="mb-1.5 flex items-center gap-1.5">
                 <span className="font-pixel shrink-0 rounded bg-gold-400 px-1.5 text-xs text-night-950">PHASE {phase.phase}</span>
-                <span className="truncate text-xs text-indigo-100">{PHASE_DESCRIPTIONS[phase.phase]}</span>
+                <span className="min-w-0 flex-1 truncate text-xs text-indigo-100">{PHASE_DESCRIPTIONS[phase.phase]}</span>
+                {job.perks.scoutCharges > 0 && (
+                  <button
+                    onClick={handleScout}
+                    disabled={scoutLeft <= 0 || status !== 'choose'}
+                    className="flex shrink-0 items-center gap-0.5 rounded-md bg-emerald-700/70 px-2 py-1 text-[11px] font-bold ring-1 ring-emerald-300/40 disabled:opacity-35"
+                    aria-label={`事前調査（誤答を1つ消す）残り${scoutLeft}回`}
+                  >
+                    <Crosshair className="h-3.5 w-3.5" /> 調査×{scoutLeft}
+                  </button>
+                )}
+                <button
+                  onClick={handlePotion}
+                  disabled={status !== 'choose' || gold < POTION_COST || playerHp >= playerMax}
+                  className="flex shrink-0 items-center gap-0.5 rounded-md bg-pink-700/60 px-2 py-1 text-[11px] font-bold ring-1 ring-pink-300/40 disabled:opacity-35"
+                  aria-label={`回復薬（${POTION_COST}GでHPを${POTION_HEAL}回復）`}
+                >
+                  <FlaskConical className="h-3.5 w-3.5" /> {POTION_COST}G
+                </button>
               </div>
               {showHint && (
                 <div className="mb-1.5 flex items-start gap-1.5 rounded-md bg-sky-900/40 px-2 py-1 text-[11px] leading-snug text-sky-100 ring-1 ring-sky-400/30">
@@ -403,7 +443,7 @@ export function BattleScreen({ quest }: { quest: Quest }) {
                   </span>
                 </div>
               )}
-              <div className="grid max-h-[38dvh] gap-1.5 overflow-y-auto overflow-x-hidden sm:grid-cols-2">
+              <div className="grid gap-1.5 sm:grid-cols-2">
                 {choices.map((c, i) => {
                   const off = disabled.has(i);
                   const sc = scouted.has(i);
@@ -412,7 +452,7 @@ export function BattleScreen({ quest }: { quest: Quest }) {
                       key={`${phaseIdx}-${i}`}
                       onClick={() => pick(i)}
                       disabled={status !== 'choose' || off || sc}
-                      className={`group relative flex items-start gap-2 rounded-lg border-2 px-2.5 py-2 text-left text-[13px] leading-snug transition-all ${
+                      className={`group relative flex items-start gap-2 rounded-lg border-2 px-2 py-1.5 text-left text-[13px] leading-snug transition-all ${
                         off
                           ? 'border-rose-500/40 bg-rose-950/40 text-rose-200/50 line-through'
                           : sc
@@ -420,29 +460,17 @@ export function BattleScreen({ quest }: { quest: Quest }) {
                             : 'border-white/25 bg-night-800 hover:border-gold-400 hover:bg-night-700 active:scale-[0.98]'
                       }`}
                     >
-                      <span className="font-pixel mt-px shrink-0 text-gold-400 group-hover:animate-pulse">{off ? '✕' : sc ? '🏹' : '▶'}</span>
+                      <span
+                        className={`font-pixel mt-px grid h-5 w-5 shrink-0 place-items-center rounded text-[11px] ${
+                          off || sc ? 'bg-white/10 text-white/40' : 'bg-gold-400 text-night-950'
+                        }`}
+                      >
+                        {off ? '✕' : sc ? '－' : 'ABCD'[i]}
+                      </span>
                       <span>{c.text}</span>
                     </button>
                   );
                 })}
-              </div>
-              <div className="mt-2 flex gap-1.5">
-                {job.perks.scoutCharges > 0 && (
-                  <button
-                    onClick={handleScout}
-                    disabled={scoutLeft <= 0 || status !== 'choose'}
-                    className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-emerald-700/70 py-2 text-xs font-bold ring-1 ring-emerald-300/40 disabled:opacity-35"
-                  >
-                    <Crosshair className="h-4 w-4" /> 事前調査 ×{scoutLeft}
-                  </button>
-                )}
-                <button
-                  onClick={handlePotion}
-                  disabled={status !== 'choose' || gold < POTION_COST || playerHp >= playerMax}
-                  className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-pink-700/60 py-2 text-xs font-bold ring-1 ring-pink-300/40 disabled:opacity-35"
-                >
-                  <FlaskConical className="h-4 w-4" /> 回復薬 +{POTION_HEAL}HP（{POTION_COST}G）
-                </button>
               </div>
             </>
           )}
@@ -540,6 +568,14 @@ export function BattleScreen({ quest }: { quest: Quest }) {
             </div>
           )}
         </div>
+        {scrollHint && (
+          <button
+            onClick={() => footerRef.current?.scrollBy({ top: 160, behavior: 'smooth' })}
+            className="pointer-events-auto absolute inset-x-0 bottom-0 flex justify-center bg-gradient-to-t from-night-950 via-night-950/90 to-transparent pb-[calc(env(safe-area-inset-bottom)+6px)] pt-6 text-[11px] font-bold text-gold-300"
+          >
+            <span className="animate-bounce">▼ 続きの選択肢</span>
+          </button>
+        )}
       </footer>
     </div>
   );

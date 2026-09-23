@@ -35,6 +35,10 @@ interface GameState {
   jobId: JobId;
   completedLectures: string[];
   questRecords: Record<string, QuestRecord>;
+  /** 業界用語集で正解済みの用語ID */
+  masteredTerms: string[];
+  /** 用語テストの累計回答数・正解数（偏差値の正答率ボーナスに使う） */
+  glossaryStats: { answered: number; correct: number };
   soundOn: boolean;
   bgmOn: boolean;
   tab: Tab;
@@ -59,6 +63,7 @@ interface GameState {
   gainReward: (exp: number, gold: number) => RewardResult;
   spendGold: (amount: number) => boolean;
   completeLecture: (id: string, exp: number, gold: number) => RewardResult | null;
+  answerTerm: (id: string, correct: boolean) => RewardResult | null;
   recordQuestClear: (questId: string, turns: number, perfect: boolean) => void;
   changeJob: (id: JobId) => void;
   toggleSound: () => void;
@@ -82,12 +87,17 @@ const initialProgress = {
   jobId: 'villager' as JobId,
   completedLectures: [] as string[],
   questRecords: {} as Record<string, QuestRecord>,
+  masteredTerms: [] as string[],
+  glossaryStats: { answered: 0, correct: 0 },
   soundOn: true,
   bgmOn: false,
   tab: 'academy' as Tab,
   guildIndustry: 'it',
   onboarded: false,
 };
+
+/** 用語テストで初めて正解したときの報酬 */
+export const TERM_REWARD = { exp: 12, gold: 5 } as const;
 
 export const NAME_MAX = 10;
 
@@ -148,6 +158,16 @@ export const useGame = create<GameState>()(
         return get().gainReward(exp, gold);
       },
 
+      answerTerm: (id, correct) => {
+        const s = get();
+        const firstTime = correct && !s.masteredTerms.includes(id);
+        set({
+          glossaryStats: { answered: s.glossaryStats.answered + 1, correct: s.glossaryStats.correct + (correct ? 1 : 0) },
+          masteredTerms: firstTime ? [...s.masteredTerms, id] : s.masteredTerms,
+        });
+        return firstTime ? get().gainReward(TERM_REWARD.exp, TERM_REWARD.gold) : null;
+      },
+
       recordQuestClear: (questId, turns, perfect) =>
         set((s) => {
           const prev = s.questRecords[questId];
@@ -187,6 +207,8 @@ export const useGame = create<GameState>()(
           jobId: s.jobId,
           completedLectures: [...s.completedLectures],
           questRecords: { ...s.questRecords },
+          masteredTerms: [...s.masteredTerms],
+          glossaryStats: { ...s.glossaryStats },
         };
       },
       loadSnapshot: (snap) =>
@@ -198,6 +220,8 @@ export const useGame = create<GameState>()(
           jobId: JOBS[snap.jobId] ? snap.jobId : 'villager',
           completedLectures: [...(snap.completedLectures ?? [])],
           questRecords: { ...(snap.questRecords ?? {}) },
+          masteredTerms: [...(snap.masteredTerms ?? [])],
+          glossaryStats: snap.glossaryStats ? { ...snap.glossaryStats } : { answered: 0, correct: 0 },
           onboarded: true,
           tab: 'academy',
           activeQuestId: null,
@@ -218,6 +242,8 @@ export const useGame = create<GameState>()(
         jobId: s.jobId,
         completedLectures: s.completedLectures,
         questRecords: s.questRecords,
+        masteredTerms: s.masteredTerms,
+        glossaryStats: s.glossaryStats,
         soundOn: s.soundOn,
         bgmOn: s.bgmOn,
         tab: s.tab,

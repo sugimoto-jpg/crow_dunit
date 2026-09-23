@@ -179,3 +179,23 @@ export interface Quest {
   /** 討伐（商談合意）時のモンスターのセリフ */
   victoryLine: string;
 }
+
+// ------------------------------------------------------------
+// 業界用語集（アイドマ学園）
+// ------------------------------------------------------------
+export type GlossaryCategoryId = 'sales' | IndustryId;
+
+export interface GlossaryTerm {
+  id: string;
+  category: GlossaryCategoryId;
+  /** 用語 例: 「SES」 */
+  term: string;
+  /** 読み・正式名称（任意） 例: 「システムエンジニアリングサービス」 */
+  reading?: string;
+  /** 正しい意味（4択の正解として表示。60字以内） */
+  meaning: string;
+  /** もっともらしい誤りの意味×3（4択の不正解） */
+  distractors: [string, string, string];
+  /** 解説：営業トークでの使いどころ・顧客の本音との関係（2〜3文） */
+  detail: string;
+}

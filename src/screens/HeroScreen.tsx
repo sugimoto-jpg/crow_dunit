@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { BookMarked, Check, Coins, Heart, Music, Pencil, RotateCcw, Sparkles, Swords, Trophy, Wand2 } from 'lucide-react';
+import { BookMarked, Check, Coins, GraduationCap, Heart, Library, Music, Pencil, RotateCcw, Sparkles, Swords, Trophy, Wand2 } from 'lucide-react';
 import { useGame, useLevel, maxHpFor, usePlayerName, NAME_MAX, sanitizeName } from '../store/gameStore';
 import { JOBS } from '../data/jobs';
 import { QUESTS } from '../data/quests';
@@ -7,6 +7,8 @@ import { LECTURES } from '../data/lectures';
 import { CharacterStage } from '../components/CharacterStage';
 import { PixelTitle, Modal } from '../components/ui';
 import { sfx } from '../audio/sfx';
+import { useHensachi } from '../components/Glossary';
+import { GLOSSARY } from '../data/glossary';
 import type { Gender } from '../data/types';
 
 export function HeroScreen() {
@@ -37,6 +39,8 @@ export function HeroScreen() {
     sfx.confirm();
   };
   const job = JOBS[jobId];
+  const hensachi = useHensachi();
+  const masteredTerms = useGame((s) => s.masteredTerms.length);
   const cleared = QUESTS.filter((q) => records[q.id]).length;
   const perfect = QUESTS.filter((q) => records[q.id]?.perfect).length;
 
@@ -125,6 +129,8 @@ export function HeroScreen() {
               <Stat icon={<Coins className="h-4 w-4 text-gold-400" />} label="ゴールド" value={`${gold}G`} />
               <Stat icon={<Trophy className="h-4 w-4 text-gold-300" />} label="討伐" value={`${cleared}/${QUESTS.length}`} />
               <Stat icon={<Trophy className="h-4 w-4 text-emerald-300" />} label="虎の巻" value={`${lectures.length}/${LECTURES.length}`} />
+              <Stat icon={<GraduationCap className="h-4 w-4 text-sky-300" />} label="偏差値" value={hensachi.toFixed(1)} />
+              <Stat icon={<Library className="h-4 w-4 text-emerald-300" />} label="用語" value={`${masteredTerms}/${GLOSSARY.length}`} />
             </dl>
             <div className="mt-3 rounded-lg bg-black/30 p-2.5">
               <div className="text-xs font-bold text-gold-300">スキル：{job.skillName}</div>

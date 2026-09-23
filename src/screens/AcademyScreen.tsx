@@ -22,6 +22,7 @@ import { useGame, useLevel } from '../store/gameStore';
 import { GUILD_UNLOCK_LEVEL } from '../data/levels';
 import { Bar, PixelTitle } from '../components/ui';
 import { sfx } from '../audio/sfx';
+import { GlossarySection, HensachiMeter } from '../components/Glossary';
 
 const ICONS = { phone: Phone, search: Search, gem: Gem } as const;
 
@@ -44,9 +45,12 @@ export function AcademyScreen() {
           <div className="min-w-0">
             <PixelTitle className="text-xl text-gold-300">アイドマ学園</PixelTitle>
             <p className="mt-1 text-sm leading-relaxed text-indigo-100/90">
-              営業の奥義「虎の巻」を学ぶ座学の間。講義を読了し確認問題に正解すると、EXPとゴールドを獲得できる。
+              営業の奥義「虎の巻」と業界用語を学ぶ座学の間。講義の確認問題や用語テストに正解すると、EXPとゴールドを獲得し、営業偏差値が上がる。
             </p>
           </div>
+        </div>
+        <div className="mt-4">
+          <HensachiMeter />
         </div>
         <div className="mt-4">
           <div className="mb-1 flex justify-between text-xs text-indigo-200">
@@ -123,6 +127,8 @@ export function AcademyScreen() {
           );
         })}
       </div>
+
+      <GlossarySection />
 
       {open && <LectureReader lecture={open} onClose={() => setOpen(null)} />}
     </div>
