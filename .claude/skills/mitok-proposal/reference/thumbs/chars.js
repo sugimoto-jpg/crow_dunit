@@ -98,4 +98,18 @@ function worker(size = 300) {
   </svg>`;
 }
 
-module.exports = { worker, daughter, staff, elder, heart, house, teacher, child, mother: daughter };
+function accountant(size = 300) {
+  return `<svg width="${size}" height="${size * 1.25}" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
+    <path d="M36 250 Q38 162 100 158 Q162 162 164 250 Z" fill="#262A52"/>
+    <path d="M80 160 L100 250 L120 160 Z" fill="#FFFFFF"/>
+    <path d="M95 168 L105 168 L108 215 L100 226 L92 215 Z" fill="#D4A437"/>
+    <path d="M80 160 L100 200 L70 200 Z" fill="#3A3F73"/><path d="M120 160 L100 200 L130 200 Z" fill="#3A3F73"/>
+    <path d="M86 146 h28 v20 h-28z" fill="${SKIN}"/>
+    <ellipse cx="100" cy="100" rx="40" ry="46" fill="${SKIN}"/>
+    <path d="M58 98 Q52 48 100 46 Q150 48 142 98 Q138 72 118 66 Q96 76 70 70 Q60 80 58 98Z" fill="#3A3A3A"/>
+    <circle cx="84" cy="102" r="5" fill="#2B2B2B"/><circle cx="116" cy="102" r="5" fill="#2B2B2B"/>
+    <path d="M88 122 q12 9 24 0" stroke="#B5533F" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+
+module.exports = { accountant, worker, daughter, staff, elder, heart, house, teacher, child, mother: daughter };
