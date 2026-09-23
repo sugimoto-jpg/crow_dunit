@@ -4,6 +4,6 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // スプライトをJSに埋め込み、単一HTMLでも配布できるようにする
-  build: { assetsInlineLimit: 100_000_000 },
+  // 相対パスで出力し、どこに置いても（サブパス配信でも）画像を読めるようにする
+  base: './',
 });
