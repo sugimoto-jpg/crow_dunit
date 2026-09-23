@@ -26,16 +26,45 @@ for (let i = 0; i < args.length; i++) {
   if (args[i] === '--tol') { flags.tol = Number(args[++i]); continue; }
   if (args[i] === '--erode') { flags.erode = Number(args[++i]); continue; }
   if (args[i] === '--cuts') { flags.cuts = args[++i]; continue; }
+  if (args[i] === '--save-boxes') { flags.saveBoxes = args[++i]; continue; }
+  if (args[i] === '--boxes') { flags.boxes = args[++i]; continue; }
+  if (args[i] === '--grow') { flags.grow = args[++i]; continue; }
   files.push(args[i]);
 }
 if (files.length < 2) {
   console.error('使い方: node tools/art-slice.js <一覧表の画像> <出し先フォルダ> [--min-h 60]');
+  console.error('  --save-boxes <file>  見つけた囲みを保存する');
+  console.error('  --boxes <file> --grow 14,56  保存した囲みで切る（横,縦に広げる）');
   process.exit(1);
 }
 const [src, outDir] = files;
 const MIN_H = flags.minH || 60;
 const TOL = flags.tol == null ? 22 : flags.tol;
 const ERODE = flags.erode == null ? 4 : flags.erode;
+
+/* 同じ並びの一覧表が何枚もあるとき（構え・振りかぶり・振り下ろしなど）、
+ * 1枚目で見つけた囲みを保存して、残りの枚数でも同じ囲みを使う。
+ *
+ *   node tools/art-slice.js 構え.jpg  out/hold  --save-boxes boxes.json
+ *   node tools/art-slice.js 振り上げ.jpg out/up  --boxes boxes.json --grow 24
+ *
+ * こうする理由：
+ *   武器を持った絵は、剣や弓が隣の人に触れてしまい、機械では分けきれない。
+ *   人物の位置はどの枚数でも同じなので、武器を持たない絵で位置を決めて、
+ *   そこを少し広げて（--grow）他の枚数を切ると、全部が同じ番号で揃う。
+ *   番号が揃っていれば、1体分の4枚をそのまま動きの絵として使える。 */
+/* --grow 24 で四方に、--grow 14,56 で「横,縦」に、
+ * --grow 14,56,0 で「横,上,下」に分けて広げられる。
+ * 名前の文字は絵の下に書いてあるので、下は広げないほうがよい。
+ * 振り上げた剣は上に伸びるので、縦を大きく、横は小さくする。
+ * 横を大きくすると隣の人が入り込む。 */
+const G2 = String(flags.grow == null ? 0 : flags.grow).split(',').map(Number);
+const GROW = {
+  x: G2[0] || 0,
+  up: (G2.length > 1 ? G2[1] : G2[0]) || 0,
+  down: (G2.length > 2 ? G2[2] : (G2.length > 1 ? G2[1] : G2[0])) || 0,
+};
+const BOXES = flags.boxes ? JSON.parse(fs.readFileSync(flags.boxes, 'utf8')) : null;
 
 /* 自動で分けられない重なりを、手で指定して分ける。
  *   --cuts "36:0.33,0.70 40:0.55"
@@ -51,7 +80,7 @@ const EXE = ['/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
   '/opt/pw-browsers/chromium/chrome-linux/chrome'].find(p => fs.existsSync(p));
 const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp' };
 
-function cut({ url, MIN_H, TOL, ERODE, CUTS }) {
+function cut({ url, MIN_H, TOL, ERODE, CUTS, BOXES, GROW }) {
   return (async () => {
     const img = new Image(); img.src = url; await img.decode();
     const w = img.width, h = img.height;
@@ -118,6 +147,65 @@ function cut({ url, MIN_H, TOL, ERODE, CUTS }) {
         for (let x = 0; x < w; x++) bg[y * w + x] = 1;
       }
     })();
+
+    /* 囲みの下にくっついた名前の行を切り落とす。
+     * 絵と名前のあいだには、必ず横一列の切れ目がある。
+     * 下から3割の範囲でその切れ目を探し、下に絵が残っていればそこで切る。 */
+    function trimName(x0, x1, y0, y1) {
+      const ink = [];
+      for (let y = y0; y <= y1; y++) {
+        let n2 = 0;
+        for (let x = x0; x <= x1; x++) if (!bg[y * w + x]) n2++;
+        ink.push(n2);
+      }
+      const thin = Math.max(1, Math.round((x1 - x0 + 1) * 0.02));
+      const from = Math.floor(ink.length * 0.65);
+      for (let k = ink.length - 1; k >= from; k--) {
+        if (ink[k] > thin) continue;
+        let below = 0;
+        for (let j = k + 1; j < ink.length; j++) below += ink[j];
+        if (below < 40) continue;
+        return y0 + k - 1;
+      }
+      return y1;
+    }
+
+    /* --- 囲みを渡されたときは、探さずにそのまま使う ---
+     * 渡された囲みは、武器を持たない絵で見つけたもの。
+     * 振り上げた剣がはみ出すので、少し広げてから切る。 */
+    if (BOXES) {
+      for (let i = 0; i < w * h; i++) if (bg[i]) d[i * 4 + 3] = 0;
+      cx.putImageData(id, 0, 0);
+      const out0 = [];
+      for (const bx of BOXES) {
+        const x0 = Math.max(0, bx.x - GROW.x), y0 = Math.max(0, bx.y - GROW.up);
+        const x1 = Math.min(w - 1, bx.x + bx.w - 1 + GROW.x);
+        const y1 = Math.min(h - 1, bx.y + bx.h - 1 + GROW.down);
+        const bw = x1 - x0 + 1, bh = y1 - y0 + 1;
+        const o = document.createElement('canvas'); o.width = bw; o.height = bh;
+        const oc = o.getContext('2d');
+        oc.drawImage(c, x0, y0, bw, bh, 0, 0, bw, bh);
+        /* 名前の行は一覧表ごとに位置が違うので、一覧表ごとに探して消す。
+         * 切り取る高さは変えない。変えると、同じ番号どうしで
+         * 大きさが食い違い、動きの絵を重ねたときに位置がずれる。 */
+        const yCut = trimName(x0, x1, y0, y1);
+        if (yCut < y1) oc.clearRect(0, yCut - y0 + 1, bw, bh - (yCut - y0 + 1));
+        out0.push({ png: o.toDataURL('image/png'), w: bw, h: bh, x: x0, y: y0 });
+      }
+      const pv0 = document.createElement('canvas'); pv0.width = w; pv0.height = h;
+      const px0 = pv0.getContext('2d');
+      px0.fillStyle = '#1d1636'; px0.fillRect(0, 0, w, h);
+      px0.drawImage(c, 0, 0);
+      px0.font = 'bold 22px sans-serif'; px0.textBaseline = 'top';
+      out0.forEach((it, i) => {
+        px0.strokeStyle = '#f2c14e'; px0.lineWidth = 2;
+        px0.strokeRect(it.x - 2, it.y - 2, it.w + 4, it.h + 4);
+        const label = String(i + 1);
+        px0.fillStyle = '#f2c14e'; px0.fillRect(it.x - 2, it.y - 26, 14 + label.length * 12, 24);
+        px0.fillStyle = '#1d1636'; px0.fillText(label, it.x + 4, it.y - 24);
+      });
+      return { w, h, count: out0.length, items: out0, preview: pv0.toDataURL('image/png') };
+    }
 
     /* --- 数える前に、細い繋がりを切る ---
      * ラベルの文字が、にじみでキャラクターと繋がっていることがある。
@@ -225,6 +313,15 @@ function cut({ url, MIN_H, TOL, ERODE, CUTS }) {
     const ordered = [];
     for (const r of rows) { r.items.sort((a, b) => a.minX - b.minX); ordered.push(...r.items); }
 
+    /* --- 下にくっついた名前の行を切り落とす ---
+     * 名前の文字は絵のすぐ下に書かれていて、光のにじみで絵と繋がることがある。
+     * 繋がるとその文字まで1体ぶんの囲みに入ってしまう。
+     * 囲みの下のほうに横一列の切れ目があり、その下が小さければ、そこで切る。 */
+    for (const it of ordered) {
+      const y2 = trimName(it.minX, it.maxX, it.minY, it.maxY);
+      if (y2 < it.maxY) { it.maxY = y2; it.h = it.maxY - it.minY + 1; }
+    }
+
     /* --- 手で指定された分け方を当てる ---
      * 触れ合っていて機械では分けきれない絵を、割合の位置で切る。 */
     if (Object.keys(CUTS).length) {
@@ -288,7 +385,7 @@ function cut({ url, MIN_H, TOL, ERODE, CUTS }) {
   const page = await browser.newPage();
   const url = `data:${MIME[path.extname(src).toLowerCase()] || 'image/png'};base64,`
     + fs.readFileSync(src).toString('base64');
-  const r = await page.evaluate(cut, { url, MIN_H, TOL, ERODE, CUTS });
+  const r = await page.evaluate(cut, { url, MIN_H, TOL, ERODE, CUTS, BOXES, GROW });
   await browser.close();
 
   if (r.error) { console.error(r.error); process.exit(1); }
@@ -304,5 +401,11 @@ function cut({ url, MIN_H, TOL, ERODE, CUTS }) {
   const hs = r.items.map(i => i.h);
   console.log(`  高さ: ${Math.min(...hs)}〜${Math.max(...hs)}px`);
   console.log(`  出し先: ${outDir}/01.png 〜 ${String(r.count).padStart(2, '0')}.png`);
-  console.log(`  番号入りの確認用: ${outDir}/_一覧.png\n`);
+  console.log(`  番号入りの確認用: ${outDir}/_一覧.png`);
+  if (flags.saveBoxes) {
+    const boxes = r.items.map(it => ({ x: it.x, y: it.y, w: it.w, h: it.h }));
+    fs.writeFileSync(flags.saveBoxes, JSON.stringify(boxes));
+    console.log(`  囲みの位置: ${flags.saveBoxes}（--boxes で他の一覧表にも使えます）`);
+  }
+  console.log('');
 })().catch(e => { console.error('切り出しに失敗:', e.message); process.exit(1); });
