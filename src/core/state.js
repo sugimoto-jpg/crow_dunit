@@ -39,6 +39,11 @@ G.State = {
       examAvailable: false,
       guild: { registered: false, rank: 0, clears: 0, totalClears: 0, promoReady: false },
       demon: { unlocked: false, floor: 0, cleared: [] },
+      /* 探索の進み具合。地点の解放条件はデータ側から毎回計算するので、
+       * ここには「行ったことがある」「倒した」だけを持つ。 */
+      explore: { at: G.SPOT_START, visited: [G.SPOT_START], cleared: [], trip: null, run: 0, dry: 0 },
+      /* 受注中の依頼。目的地はここから読む。 */
+      quest: { active: null, target: null, reached: false },
       flags: {},
       bestiary: {},
       log: [],
@@ -93,6 +98,28 @@ G.State = {
       { battles: 0, wins: 0, escapes: 0, wipes: 0, quests: 0, lessons: 0, gold: 0 }, d.stats || {});
     d.guild = Object.assign({ registered: false, rank: 0, clears: 0, totalClears: 0, promoReady: false }, d.guild || {});
     d.demon = Object.assign({ unlocked: false, floor: 0, cleared: [] }, d.demon || {});
+
+    /* 探索のデータ。無いセーブ（探索の追加より前のもの）でも読めるようにする。 */
+    d.explore = Object.assign({ at: G.SPOT_START, visited: [], cleared: [], trip: null, run: 0, dry: 0 }, d.explore || {});
+    if (!G.SPOTS[d.explore.at]) d.explore.at = G.SPOT_START;
+    if (!Array.isArray(d.explore.visited)) d.explore.visited = [];
+    if (!Array.isArray(d.explore.cleared)) d.explore.cleared = [];
+    d.explore.visited = d.explore.visited.filter(x => G.SPOTS[x]);
+    d.explore.cleared = d.explore.cleared.filter(x => G.SPOTS[x]);
+    if (!d.explore.visited.includes(G.SPOT_START)) d.explore.visited.unshift(G.SPOT_START);
+    /* 移動の途中で終了したセーブは、その場に留めず出発地点に戻す。
+     * 中途半端な歩数を復元しても、遊ぶ人には何が起きたか分からないため。 */
+    if (d.explore.trip) {
+      const from = d.explore.trip.from;
+      d.explore.at = G.SPOTS[from] ? from : d.explore.at;
+      d.explore.trip = null;
+    }
+
+    d.quest = Object.assign({ active: null, target: null, reached: false }, d.quest || {});
+    if (d.quest.active && !G.QUESTS.some(q => q.id === d.quest.active)) {
+      d.quest = { active: null, target: null, reached: false };
+    }
+    if (d.quest.target && !G.SPOTS[d.quest.target]) d.quest.target = null;
     d.subjects = d.subjects || {};
     for (const id of G.SUBJECT_IDS) if (typeof d.subjects[id] !== 'number') d.subjects[id] = 0;
 
