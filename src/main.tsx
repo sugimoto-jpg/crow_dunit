@@ -13,6 +13,8 @@ function Root() {
   const [ready, setReady] = useState(() => getSaveManager() != null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
+    // index.html の起動見張り（JS が動かない時の案内）に「起動した」と伝える
+    (window as unknown as { __AQ_BOOTED?: boolean }).__AQ_BOOTED = true;
     bootSaveSystem()
       .then(() => setReady(true))
       .catch((e: Error) => setError(e.message || String(e)));

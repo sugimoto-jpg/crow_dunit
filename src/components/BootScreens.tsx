@@ -6,8 +6,13 @@ import { JOBS } from '../data/jobs';
 import { levelFromExp } from '../data/levels';
 import { SaveCodePanel } from './SaveCodePanel';
 
-/** セーブデータ読み込み中 */
+/** セーブデータ読み込み中（長引いたら案内と再読み込みボタンを出す） */
 export function BootLoading({ error }: { error?: string | null }) {
+  const [slow, setSlow] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setSlow(true), 4000);
+    return () => clearTimeout(t);
+  }, []);
   return (
     <div className="bg-sky safe-top safe-bottom fixed inset-0 grid place-items-center px-6 text-center">
       <div>
@@ -18,6 +23,14 @@ export function BootLoading({ error }: { error?: string | null }) {
           <p className="mt-4 flex items-center justify-center gap-2 text-sm text-indigo-200">
             <Loader2 className="h-4 w-4 animate-spin" /> 冒険の記録を読み込み中…
           </p>
+        )}
+        {(slow || error) && (
+          <div className="mt-4 text-xs leading-relaxed text-indigo-300">
+            {!error && <p>時間がかかっています。まもなく予備の保存先で起動します。</p>}
+            <button onClick={() => location.reload()} className="mt-3 rounded-lg bg-white/10 px-4 py-2 text-sm font-bold text-indigo-50 ring-1 ring-white/20">
+              再読み込み
+            </button>
+          </div>
         )}
       </div>
     </div>

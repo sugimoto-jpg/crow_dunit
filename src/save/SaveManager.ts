@@ -148,6 +148,8 @@ export class SaveManager {
   private toastSeq = 0;
   private readonly tabId = Math.random().toString(36).slice(2);
   private channelName: string | null;
+  /** 起動が間に合わず別のマネージャーに切り替えた（以後、何もしない） */
+  private cancelled = false;
 
   constructor(opts: SaveManagerOptions) {
     this.stores = opts.stores;
@@ -182,6 +184,7 @@ export class SaveManager {
     return () => this.listeners.delete(fn);
   };
   private patch(p: Partial<SaveStatus>) {
+    if (this.cancelled) return;
     this.status = { ...this.status, ...p };
     this.listeners.forEach((l) => l());
   }
@@ -243,11 +246,11 @@ export class SaveManager {
         this.patch({ phase: 'needs-decision', boot });
       } else if (!this.status.durable) {
         boot = { kind: 'storage_unavailable', message: 'この環境では保存領域が使えないため、進行は保存されません。', hasSlots };
-        this.bridge.reset();
+        if (!this.cancelled) this.bridge.reset();
         this.finishBoot(boot);
       } else {
         boot = { kind: 'first_launch', message: 'ようこそ！', hasSlots };
-        this.bridge.reset();
+        if (!this.cancelled) this.bridge.reset();
         this.finishBoot(boot);
       }
     }
@@ -258,6 +261,7 @@ export class SaveManager {
   }
 
   private finishBoot(boot: BootResult) {
+    if (this.cancelled) return;
     this.visibleSince = this.now();
     this.patch({ phase: 'ready', boot, saveCount: this.meta?.saveCount ?? 0, lastSavedAt: this.meta?.lastSaveAt || null });
     this.startWatching();
@@ -323,7 +327,7 @@ export class SaveManager {
   }
 
   private async doSave(reason: string, opts: { announce?: boolean }): Promise<boolean> {
-    if (this.status.phase !== 'ready') return false;
+    if (this.cancelled || this.status.phase !== 'ready') return false;
     if (this.status.conflict) {
       if (opts.announce) this.notify('error', '別のタブで進行が更新されたため、このタブではセーブできません。再読み込みしてください。');
       return false;
@@ -492,6 +496,7 @@ export class SaveManager {
   // 低レベル処理
   // ------------------------------------------------------------
   private applyData(data: SaveData) {
+    if (this.cancelled) return;
     this.playTimeBase = data.stats.playTimeSec;
     this.bridge.apply(data);
   }
@@ -631,6 +636,17 @@ export class SaveManager {
     this.meta = { ...m, lastSaveAt: now, saveCount: m.saveCount + 1, lastRevision: revision };
     const text = JSON.stringify(this.meta);
     for (const s of this.stores) await s.set(KEYS.meta, text).catch(() => undefined);
+  }
+
+  /** 起動が遅すぎて見切った場合：以後はゲーム状態にも保存領域にも触れない */
+  cancel() {
+    this.cancelled = true;
+    this.dispose();
+  }
+
+  /** 「消されにくい保存」の許可状況を後から反映する */
+  setPersisted(v: boolean | null) {
+    this.patch({ persisted: v });
   }
 
   /** 監視を止める（テスト・画面の破棄用） */
