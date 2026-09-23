@@ -1,13 +1,12 @@
 import { useEffect, useImperativeHandle, useRef, type Ref } from 'react';
-import type { Gender, JobId, MonsterSpec } from '../data/types';
-import { JOBS } from '../data/jobs';
+import type { Gender, JobId } from '../data/types';
+import { HERO_SPRITES, type SpriteInfo } from '../data/sprites';
 import { Stage, type StageMode } from '../three/stage';
-import type { HeroAnim } from '../three/heroModel';
-import type { MonsterAnim } from '../three/monsterModel';
+import type { ActorAnim } from '../three/spriteActor';
 
 export interface StageHandle {
-  playHero: (a: HeroAnim) => void;
-  playMonster: (a: MonsterAnim) => void;
+  playHero: (a: ActorAnim) => void;
+  playMonster: (a: ActorAnim) => void;
   burst: (target: 'hero' | 'monster', color: string, count?: number) => void;
   reviveMonster: () => void;
   resetView: () => void;
@@ -17,13 +16,13 @@ interface Props {
   mode: StageMode;
   jobId: JobId;
   gender: Gender;
-  monster?: MonsterSpec | null;
+  monster?: SpriteInfo | null;
   bossScale?: number;
   className?: string;
   ref?: Ref<StageHandle>;
 }
 
-/** Three.js ステージを React に載せるラッパー。リサイズ/タッチは Stage 側が処理する */
+/** Three.js ステージ（魔法陣の台座＋2Dスプライト）を React に載せるラッパー */
 export function CharacterStage({ mode, jobId, gender, monster = null, bossScale = 1, className, ref }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Stage | null>(null);
@@ -45,7 +44,7 @@ export function CharacterStage({ mode, jobId, gender, monster = null, bossScale 
   }, [mode]);
 
   useEffect(() => {
-    stageRef.current?.setHero(JOBS[jobId], gender);
+    stageRef.current?.setHero(HERO_SPRITES[jobId][gender]);
   }, [jobId, gender, mode]);
 
   useEffect(() => {

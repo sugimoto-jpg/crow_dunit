@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Check, Coins, Heart, Move3d, Pencil, RotateCcw, Sparkles, Swords, Trophy, Wand2 } from 'lucide-react';
+import { BookMarked, Check, Coins, Heart, Music, Pencil, RotateCcw, Sparkles, Swords, Trophy, Wand2 } from 'lucide-react';
 import { useGame, useLevel, maxHpFor, usePlayerName, NAME_MAX, sanitizeName } from '../store/gameStore';
 import { JOBS } from '../data/jobs';
 import { QUESTS } from '../data/quests';
@@ -19,6 +19,11 @@ export function HeroScreen() {
   const records = useGame((s) => s.questRecords);
   const lectures = useGame((s) => s.completedLectures);
   const setJobModalOpen = useGame((s) => s.setJobModalOpen);
+  const setSaveMenu = useGame((s) => s.setSaveMenu);
+  const bgmOn = useGame((s) => s.bgmOn);
+  const soundOn = useGame((s) => s.soundOn);
+  const toggleBgm = useGame((s) => s.toggleBgm);
+  const toggleSound = useGame((s) => s.toggleSound);
   const resetAll = useGame((s) => s.resetAll);
   const [confirmReset, setConfirmReset] = useState(false);
   const playerName = usePlayerName();
@@ -38,16 +43,13 @@ export function HeroScreen() {
   return (
     <div className="mx-auto max-w-3xl px-3 pb-6 pt-4">
       <div className="grid gap-4 md:grid-cols-2">
-        {/* 3Dビューア */}
+        {/* キャラクター表示 */}
         <section className="rpg-window relative overflow-hidden">
           <div className="relative h-[46dvh] min-h-[300px] md:h-[440px]">
             <CharacterStage mode="viewer" jobId={jobId} gender={gender} className="absolute inset-0" />
             <div className="pointer-events-none absolute left-3 top-3">
               <div className="font-pixel text-xs text-gold-300">Lv.{level} {job.style}</div>
               <PixelTitle className="text-2xl">{job.name}</PixelTitle>
-            </div>
-            <div className="pointer-events-none absolute bottom-2 right-3 flex items-center gap-1 rounded-full bg-black/50 px-2 py-1 text-[10px] text-indigo-100">
-              <Move3d className="h-3.5 w-3.5" /> ドラッグ/スワイプで回転・ピンチで拡大
             </div>
           </div>
           <div className="grid grid-cols-2 gap-1 border-t border-white/10 p-2">
@@ -137,6 +139,33 @@ export function HeroScreen() {
             className="anim-glow flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-orange-500 py-3.5 font-bold text-night-950"
           >
             <Wand2 className="h-5 w-5" /> 転職の神殿へ
+          </button>
+
+          <button
+            onClick={() => {
+              sfx.confirm();
+              setSaveMenu('save');
+            }}
+            className="flex items-center justify-center gap-2 rounded-xl bg-night-700 py-3 font-bold ring-1 ring-gold-400/40"
+          >
+            <BookMarked className="h-5 w-5 text-gold-300" /> 冒険の書（セーブ／ロード）
+          </button>
+
+          <button
+            role="switch"
+            aria-checked={bgmOn && soundOn}
+            onClick={() => {
+              if (!soundOn) toggleSound();
+              toggleBgm();
+              sfx.select();
+            }}
+            className="flex items-center gap-2 rounded-xl bg-night-800 px-4 py-3 text-sm font-bold ring-1 ring-white/10"
+          >
+            <Music className="h-4 w-4 text-indigo-200" />
+            <span className="flex-1 text-left">BGM（8bitチップチューン）</span>
+            <span className={`rounded-full px-2.5 py-0.5 text-xs ${bgmOn && soundOn ? 'bg-emerald-500 text-night-950' : 'bg-white/10 text-indigo-200'}`}>
+              {bgmOn && soundOn ? 'ON' : 'OFF'}
+            </span>
           </button>
 
           <button

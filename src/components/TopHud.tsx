@@ -1,6 +1,7 @@
-import { Coins, Music, Volume2, VolumeX } from 'lucide-react';
+import { BookMarked, Coins, Volume2, VolumeX } from 'lucide-react';
 import { useGame, usePlayerName } from '../store/gameStore';
 import { JOBS } from '../data/jobs';
+import { HERO_SPRITES } from '../data/sprites';
 import { levelProgress } from '../data/levels';
 import { Bar } from './ui';
 import { sfx } from '../audio/sfx';
@@ -11,21 +12,22 @@ export function TopHud() {
   const jobId = useGame((s) => s.jobId);
   const name = usePlayerName();
   const soundOn = useGame((s) => s.soundOn);
-  const bgmOn = useGame((s) => s.bgmOn);
   const toggleSound = useGame((s) => s.toggleSound);
-  const toggleBgm = useGame((s) => s.toggleBgm);
+  const setSaveMenu = useGame((s) => s.setSaveMenu);
   const prog = levelProgress(exp);
   const job = JOBS[jobId];
+  const gender = useGame((s) => s.gender);
+  const portrait = HERO_SPRITES[jobId][gender].src;
 
   return (
     <header className="safe-top safe-x sticky top-0 z-30 border-b border-white/10 bg-night-900/90 backdrop-blur">
       <div className="mx-auto flex max-w-3xl items-center gap-3 px-3 py-2">
         <div
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-lg font-black ring-2 ring-white/30"
+          className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl ring-2 ring-white/30"
           style={{ background: `linear-gradient(135deg, ${job.palette.armor}, ${job.palette.cape})` }}
           aria-hidden
         >
-          {[...name][0]}
+          <img src={portrait} alt="" className="absolute left-1/2 top-0 w-[150%] max-w-none -translate-x-1/2" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-2">
@@ -47,15 +49,14 @@ export function TopHud() {
           <span className="font-pixel text-sm tabular-nums text-gold-300">{gold.toLocaleString()}</span>
         </div>
         <button
-          className={`grid h-9 w-9 shrink-0 place-items-center rounded-full ring-1 ring-white/20 ${bgmOn && soundOn ? 'bg-indigo-500/40' : 'bg-black/30'}`}
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold-400/20 ring-1 ring-gold-400/50"
           onClick={() => {
-            if (!soundOn) toggleSound();
-            toggleBgm();
-            sfx.select();
+            sfx.confirm();
+            setSaveMenu('save');
           }}
-          aria-label="BGM切替"
+          aria-label="冒険の書（セーブ・ロード）"
         >
-          <Music className={`h-4 w-4 ${bgmOn && soundOn ? 'text-white' : 'text-white/40'}`} />
+          <BookMarked className="h-4 w-4 text-gold-300" />
         </button>
         <button
           className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/30 ring-1 ring-white/20"

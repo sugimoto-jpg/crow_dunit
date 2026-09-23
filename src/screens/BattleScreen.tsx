@@ -17,6 +17,7 @@ import { DIFFICULTY, INDUSTRY_MAP, PHASE_DESCRIPTIONS, PHASE_NAMES } from '../da
 import { JOBS } from '../data/jobs';
 import { maxHpFor, useGame, useLevel, usePlayerName } from '../store/gameStore';
 import { CharacterStage, type StageHandle } from '../components/CharacterStage';
+import { monsterSprite } from '../data/sprites';
 import { Bar } from '../components/ui';
 import { playBgm, sfx } from '../audio/sfx';
 
@@ -65,7 +66,7 @@ export function BattleScreen({ quest }: { quest: Quest }) {
   const diff = DIFFICULTY[quest.difficulty];
   const industry = INDUSTRY_MAP[quest.industry];
   const playerMax = maxHpFor(level, jobId);
-  const bossScale = quest.difficulty === 'maou' ? 1.3 : quest.difficulty === 'advanced' ? 1.12 : 1;
+  const monsterArt = monsterSprite(quest.id);
 
   const [attempt, setAttempt] = useState(0);
   const phasesChoices = useMemo(() => quest.phases.map((p) => shuffle(p.choices)), [quest, attempt]);
@@ -298,15 +299,14 @@ export function BattleScreen({ quest }: { quest: Quest }) {
         </div>
       </header>
 
-      {/* ===== 中央：3Dステージ ===== */}
+      {/* ===== 中央：ステージ ===== */}
       <div className="relative min-h-[180px] flex-1">
         <CharacterStage
           ref={stage}
           mode="battle"
           jobId={jobId}
           gender={gender}
-          monster={quest.monster}
-          bossScale={bossScale}
+          monster={monsterArt}
           className="absolute inset-0"
         />
 

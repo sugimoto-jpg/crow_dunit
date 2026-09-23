@@ -6,6 +6,7 @@ import { BottomNav } from './components/BottomNav';
 import { LevelUpModal } from './components/LevelUpModal';
 import { JobChangeModal } from './components/JobChangeModal';
 import { Onboarding } from './components/Onboarding';
+import { SaveMenu } from './components/SaveMenu';
 import { AcademyScreen } from './screens/AcademyScreen';
 import { GuildScreen } from './screens/GuildScreen';
 import { HeroScreen } from './screens/HeroScreen';
@@ -60,6 +61,7 @@ export function App() {
       <JobChangeModal />
       <LevelUpModal />
       <Onboarding />
+      <SaveMenu />
     </div>
   );
 }

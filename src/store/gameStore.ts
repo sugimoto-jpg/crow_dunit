@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Gender, JobId } from '../data/types';
 import { CHARACTER_NAMES, JOBS, JOB_ORDER } from '../data/jobs';
 import { basePlayerHp, levelFromExp } from '../data/levels';
+import type { SaveSnapshot } from './saveSlots';
 
 export type Tab = 'academy' | 'guild' | 'hero';
 
@@ -46,6 +47,8 @@ interface GameState {
   jobModalOpen: boolean;
   /** 講義リーダー表示中はレベルアップ演出を保留する */
   lectureOpen: boolean;
+  /** 冒険の書（セーブ/ロード）画面 */
+  saveMenu: 'save' | 'load' | null;
 
   // ---- actions ----
   setTab: (tab: Tab) => void;
@@ -65,6 +68,9 @@ interface GameState {
   dismissLevelUp: () => void;
   setJobModalOpen: (open: boolean) => void;
   setLectureOpen: (open: boolean) => void;
+  setSaveMenu: (mode: 'save' | 'load' | null) => void;
+  takeSnapshot: () => SaveSnapshot;
+  loadSnapshot: (snap: SaveSnapshot) => void;
   resetAll: () => void;
 }
 
@@ -103,6 +109,7 @@ export const useGame = create<GameState>()(
       levelUpEvent: null,
       jobModalOpen: false,
       lectureOpen: false,
+      saveMenu: null,
 
       setTab: (tab) => set({ tab }),
       setGender: (gender) => set({ gender }),
@@ -169,7 +176,36 @@ export const useGame = create<GameState>()(
       dismissLevelUp: () => set({ levelUpEvent: null }),
       setJobModalOpen: (jobModalOpen) => set({ jobModalOpen }),
       setLectureOpen: (lectureOpen) => set({ lectureOpen }),
-      resetAll: () => set({ ...initialProgress, activeQuestId: null, levelUpEvent: null, jobModalOpen: false }),
+      setSaveMenu: (saveMenu) => set({ saveMenu }),
+      takeSnapshot: () => {
+        const s = get();
+        return {
+          gender: s.gender,
+          playerName: s.playerName,
+          exp: s.exp,
+          gold: s.gold,
+          jobId: s.jobId,
+          completedLectures: [...s.completedLectures],
+          questRecords: { ...s.questRecords },
+        };
+      },
+      loadSnapshot: (snap) =>
+        set({
+          gender: snap.gender,
+          playerName: sanitizeName(snap.playerName ?? ''),
+          exp: Math.max(0, snap.exp),
+          gold: Math.max(0, snap.gold),
+          jobId: JOBS[snap.jobId] ? snap.jobId : 'villager',
+          completedLectures: [...(snap.completedLectures ?? [])],
+          questRecords: { ...(snap.questRecords ?? {}) },
+          onboarded: true,
+          tab: 'academy',
+          activeQuestId: null,
+          levelUpEvent: null,
+          jobModalOpen: false,
+          saveMenu: null,
+        }),
+      resetAll: () => set({ ...initialProgress, activeQuestId: null, levelUpEvent: null, jobModalOpen: false, saveMenu: null }),
     }),
     {
       name: 'aidma-sales-quest-v1',

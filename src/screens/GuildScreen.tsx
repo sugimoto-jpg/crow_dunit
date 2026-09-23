@@ -1,4 +1,5 @@
-import { Coins, Crown, Lock, ScrollText, Sparkles, Swords, Trophy } from 'lucide-react';
+import { Coins, Lock, ScrollText, Sparkles, Swords, Trophy } from 'lucide-react';
+import { monsterSprite } from '../data/sprites';
 import { INDUSTRIES, INDUSTRY_MAP, DIFFICULTY } from '../data/industries';
 import { QUESTS, isQuestUnlocked } from '../data/quests';
 import { useGame, useLevel } from '../store/gameStore';
@@ -117,11 +118,11 @@ export function GuildScreen() {
               )}
               <div className="relative flex items-start gap-3">
                 <div
-                  className="grid h-14 w-14 shrink-0 place-items-center rounded-full ring-2 ring-white/40"
-                  style={{ background: `radial-gradient(circle at 35% 30%, ${q.monster.accentColor}, ${q.monster.bodyColor})` }}
+                  className="relative grid h-20 w-20 shrink-0 place-items-end justify-center overflow-hidden rounded-xl ring-2 ring-white/25"
+                  style={{ background: `radial-gradient(circle at 50% 80%, ${diff.color}55, #0b1026 75%)` }}
                   aria-hidden
                 >
-                  {q.difficulty === 'maou' ? <Crown className="h-6 w-6 text-white drop-shadow" /> : <span className="text-2xl">👾</span>}
+                  <img src={monsterSprite(q.id).src} alt="" className="max-h-[76px] max-w-[76px] object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.6)]" loading="lazy" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-1.5">

@@ -2,7 +2,7 @@
 
 @theme {
   --font-sans: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Noto Sans JP', system-ui, sans-serif;
-  --font-pixel: 'DotGothic16', 'M PLUS Rounded 1c', monospace;
+  --font-pixel: 'Dela Gothic One', 'M PLUS Rounded 1c', 'Hiragino Sans', sans-serif;
   --color-night-950: #070a1c;
   --color-night-900: #0b1026;
   --color-night-800: #121a3a;
@@ -176,6 +176,22 @@ button:disabled {
   background-clip: text;
   color: transparent;
   animation: shine-sweep 2.5s linear infinite;
+  /* 背景に溶けないよう濃い縁取りを重ねる */
+  filter: drop-shadow(0 2px 0 #3a1d00) drop-shadow(0 0 1px #3a1d00);
+}
+
+/* タイトルロゴ：太いゴシック＋金のグラデーション＋濃い縁取り */
+.logo-title {
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  background: linear-gradient(180deg, #fff6d0 0%, #ffd166 45%, #f29a1f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 3px 0 #4a2200) drop-shadow(0 0 1.5px #4a2200) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.55));
+  text-wrap: balance;
 }
 
 @keyframes rays {

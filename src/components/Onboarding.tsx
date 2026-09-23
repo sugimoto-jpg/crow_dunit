@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Sparkles } from 'lucide-react';
+import { BookMarked, Sparkles } from 'lucide-react';
+import { hasAnySlot } from '../store/saveSlots';
 import { NAME_MAX, sanitizeName, useGame } from '../store/gameStore';
 import { CHARACTER_NAMES } from '../data/jobs';
 import type { Gender } from '../data/types';
 import { CharacterStage } from './CharacterStage';
-import { PixelTitle } from './ui';
 import { sfx, unlockAudio } from '../audio/sfx';
 
 export function Onboarding() {
@@ -18,6 +18,8 @@ function OnboardingInner() {
   const setGender = useGame((s) => s.setGender);
   const setPlayerName = useGame((s) => s.setPlayerName);
   const finish = useGame((s) => s.finishOnboarding);
+  const setSaveMenu = useGame((s) => s.setSaveMenu);
+  const [hasSave] = useState(hasAnySlot);
   const [name, setName] = useState<string>(CHARACTER_NAMES[gender]);
   const [touched, setTouched] = useState(false);
   const valid = sanitizeName(name).length > 0;
@@ -42,8 +44,8 @@ function OnboardingInner() {
     <div className="bg-sky safe-top safe-x safe-bottom fixed inset-0 z-50 flex flex-col overflow-y-auto overflow-x-hidden">
       <div className="mx-auto flex w-full max-w-lg flex-1 flex-col px-4 py-4">
         <div className="text-center">
-          <div className="font-pixel text-xs tracking-widest text-indigo-300">AIDMA SALES QUEST</div>
-          <PixelTitle className="mt-1 text-3xl text-shine">アイドマ営業クエスト</PixelTitle>
+          <div className="text-[11px] font-bold tracking-[0.3em] text-indigo-300">AIDMA SALES QUEST</div>
+          <h1 className="logo-title mt-1 text-[34px] sm:text-4xl">アイドマ営業クエスト</h1>
           <p className="mt-2 text-sm leading-relaxed text-indigo-100">
             キミは営業カバン一つで旅立つ見習い営業「村人」。
             <br />
@@ -103,6 +105,18 @@ function OnboardingInner() {
             <Sparkles className="h-5 w-5" /> 冒険をはじめる
           </button>
         </form>
+        {hasSave && (
+          <button
+            onClick={() => {
+              unlockAudio();
+              sfx.confirm();
+              setSaveMenu('load');
+            }}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-night-800 py-3 font-bold ring-2 ring-gold-400/50"
+          >
+            <BookMarked className="h-5 w-5 text-gold-300" /> 冒険の書から再開する
+          </button>
+        )}
       </div>
     </div>
   );

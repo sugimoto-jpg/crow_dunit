@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Check, Lock, Wand2, X } from 'lucide-react';
 import { useGame, useLevel } from '../store/gameStore';
 import { JOBS, JOB_ORDER } from '../data/jobs';
+import { HERO_SPRITES } from '../data/sprites';
 import type { JobId } from '../data/types';
 import { CharacterStage } from './CharacterStage';
 import { PixelTitle } from './ui';
@@ -112,8 +113,17 @@ function JobChangeInner() {
                     {id === current && <span className="rounded bg-emerald-500 px-1 text-[9px] font-bold">装備中</span>}
                     {!ok && <Lock className="h-3.5 w-3.5 text-white/70" />}
                   </div>
-                  <div className="mt-0.5 text-sm font-black text-shadow-rpg">{j.name}</div>
-                  <div className="text-[10px] text-indigo-100">{j.style}</div>
+                  <div className="flex items-end gap-2">
+                    <img
+                      src={HERO_SPRITES[id][gender].src}
+                      alt=""
+                      className={`h-16 w-12 shrink-0 object-contain object-bottom ${ok ? '' : 'brightness-0 opacity-60'}`}
+                    />
+                    <div className="min-w-0 pb-1">
+                      <div className="text-sm font-black text-shadow-rpg">{j.name}</div>
+                      <div className="text-[10px] text-indigo-100">{j.style}</div>
+                    </div>
+                  </div>
                 </button>
               );
             })}

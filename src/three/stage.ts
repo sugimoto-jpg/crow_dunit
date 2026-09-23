@@ -1,7 +1,6 @@
 import * as THREE from 'three';
-import type { Gender, Job, MonsterSpec } from '../data/types';
-import { HeroModel, type HeroAnim } from './heroModel';
-import { MonsterModel, type MonsterAnim } from './monsterModel';
+import type { SpriteInfo } from '../data/sprites';
+import { SpriteActor, type ActorAnim } from './spriteActor';
 
 export type StageMode = 'viewer' | 'battle';
 
@@ -23,8 +22,8 @@ export class Stage {
   private clock = new THREE.Clock();
   private raf = 0;
   private ro: ResizeObserver;
-  private hero: HeroModel | null = null;
-  private monster: MonsterModel | null = null;
+  private hero: SpriteActor | null = null;
+  private monster: SpriteActor | null = null;
   private bursts: Burst[] = [];
   private ring: THREE.Mesh;
 
@@ -46,7 +45,7 @@ export class Stage {
   constructor(private container: HTMLElement, private mode: StageMode) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.enabled = false;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -130,16 +129,16 @@ export class Stage {
   }
 
   // ------------------------------------------------------------
-  setHero(job: Job, gender: Gender) {
+  setHero(sprite: SpriteInfo) {
     if (this.hero) {
       this.turntable.remove(this.hero.root);
       this.hero.dispose();
     }
-    this.hero = new HeroModel(job, gender);
-    if (this.mode === 'battle') {
-      this.hero.setBasePosition(new THREE.Vector3(-1.45, 0, 0.2));
-      this.hero.root.rotation.y = 1.05;
-      this.hero.attackVector.set(1.7, 0, -0.1);
+    const battle = this.mode === 'battle';
+    this.hero = new SpriteActor(sprite, { face: battle ? 'right' : 'front' });
+    if (battle) {
+      this.hero.setBasePosition(new THREE.Vector3(-1.55, 0, 0.25));
+      this.hero.attackVector.set(1.8, 0, -0.1);
     } else {
       this.hero.setBasePosition(new THREE.Vector3(0, 0, 0));
       this.hero.attackVector.set(0, 0, 0.9);
@@ -147,25 +146,24 @@ export class Stage {
     this.turntable.add(this.hero.root);
   }
 
-  setMonster(spec: MonsterSpec | null, bossScale = 1) {
+  setMonster(sprite: SpriteInfo | null, bossScale = 1) {
     if (this.monster) {
       this.turntable.remove(this.monster.root);
       this.monster.dispose();
       this.monster = null;
     }
-    if (!spec) return;
-    this.monster = new MonsterModel(spec, bossScale);
-    this.monster.setBasePosition(new THREE.Vector3(1.5, 0, -0.1));
-    this.monster.root.rotation.y = -1.0;
-    this.monster.attackVector.set(-1.6, 0, 0.1);
+    if (!sprite) return;
+    this.monster = new SpriteActor(sprite, { face: 'left', scale: bossScale, floating: sprite.floating });
+    this.monster.setBasePosition(new THREE.Vector3(1.55, 0, -0.1));
+    this.monster.attackVector.set(-1.7, 0, 0.1);
     this.turntable.add(this.monster.root);
   }
 
-  playHero(anim: HeroAnim) {
+  playHero(anim: ActorAnim) {
     this.hero?.play(anim);
   }
 
-  playMonster(anim: MonsterAnim) {
+  playMonster(anim: ActorAnim) {
     this.monster?.play(anim);
   }
 
@@ -270,8 +268,8 @@ export class Stage {
     this.camera.position.set(0, lookY + Math.sin(camPitch) * dist, Math.cos(camPitch) * dist);
     this.camera.lookAt(0, lookY, 0);
 
-    this.hero?.update(dt, time);
-    this.monster?.update(dt, time);
+    this.hero?.update(dt, time, this.yaw);
+    this.monster?.update(dt, time, this.yaw);
 
     const inner = this.turntable.getObjectByName('inner');
     if (inner) inner.rotation.z = time * 0.3;
