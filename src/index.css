@@ -1,0 +1,211 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Noto Sans JP', system-ui, sans-serif;
+  --font-pixel: 'Dela Gothic One', 'M PLUS Rounded 1c', 'Hiragino Sans', sans-serif;
+  --color-night-950: #070a1c;
+  --color-night-900: #0b1026;
+  --color-night-800: #121a3a;
+  --color-night-700: #1c2653;
+  --color-night-600: #2a376e;
+  --color-gold-300: #ffe08a;
+  --color-gold-400: #ffd166;
+  --color-gold-500: #f4b400;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  background: var(--color-night-950);
+  color: #eef2ff;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+#root {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.safe-x {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* 夜空のグラデーション背景 */
+.bg-sky {
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #2a3a8a55, transparent 60%),
+    radial-gradient(800px 400px at 110% 20%, #7b2ff733, transparent 60%),
+    linear-gradient(180deg, #0b1026 0%, #070a1c 100%);
+}
+.bg-battle {
+  background:
+    radial-gradient(600px 300px at 25% 70%, #3b82f633, transparent 70%),
+    radial-gradient(600px 300px at 75% 60%, #ef444433, transparent 70%),
+    linear-gradient(180deg, #151c44 0%, #0b1026 60%, #05071a 100%);
+}
+
+/* RPG風ウィンドウ */
+.rpg-window {
+  background: linear-gradient(180deg, rgba(22, 30, 72, 0.96), rgba(12, 17, 44, 0.96));
+  border: 2px solid #e8ecff;
+  box-shadow:
+    0 0 0 2px #0b1026,
+    0 0 0 4px #6a7bd8,
+    0 8px 24px rgba(0, 0, 0, 0.45);
+  border-radius: 12px;
+}
+.rpg-window-gold {
+  background: linear-gradient(180deg, rgba(48, 36, 10, 0.96), rgba(22, 16, 4, 0.96));
+  border: 2px solid #ffe08a;
+  box-shadow:
+    0 0 0 2px #1a1204,
+    0 0 0 4px #b8860b,
+    0 8px 24px rgba(0, 0, 0, 0.45);
+  border-radius: 12px;
+}
+
+.text-shadow-rpg {
+  text-shadow: 0 2px 0 #000, 0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+/* 吹き出し */
+.bubble {
+  position: relative;
+  background: #fffdf5;
+  color: #1b1b2a;
+  border-radius: 14px;
+  border: 2px solid #1b1b2a;
+  box-shadow: 0 4px 0 #1b1b2a;
+}
+.bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  right: 28%;
+  border-width: 12px 10px 0 10px;
+  border-style: solid;
+  border-color: #1b1b2a transparent transparent transparent;
+}
+
+/* ---- アニメーション ---- */
+@keyframes slash {
+  0% { clip-path: polygon(0 0, 0 0, 0 0); opacity: 0; transform: scale(0.8) rotate(-18deg); }
+  20% { opacity: 1; }
+  60% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 1; transform: scale(1.05) rotate(-18deg); }
+  100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 0; transform: scale(1.15) rotate(-18deg); }
+}
+.anim-slash { animation: slash 0.55s ease-out forwards; }
+
+@keyframes flash-screen {
+  0% { opacity: 0; }
+  15% { opacity: 0.85; }
+  100% { opacity: 0; }
+}
+.anim-flash { animation: flash-screen 0.5s ease-out forwards; }
+
+@keyframes damage-pop {
+  0% { transform: translate(-50%, 10px) scale(0.4); opacity: 0; }
+  20% { transform: translate(-50%, -20px) scale(1.35); opacity: 1; }
+  40% { transform: translate(-50%, -26px) scale(1); }
+  100% { transform: translate(-50%, -70px) scale(1); opacity: 0; }
+}
+.anim-damage { animation: damage-pop 1.3s ease-out forwards; }
+
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-8px, 3px); }
+  30% { transform: translate(7px, -4px); }
+  45% { transform: translate(-6px, 2px); }
+  60% { transform: translate(5px, -2px); }
+  75% { transform: translate(-3px, 1px); }
+}
+.anim-shake { animation: shake 0.45s ease-in-out; }
+
+@keyframes pop-in {
+  0% { transform: scale(0.85) translateY(12px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.anim-pop { animation: pop-in 0.28s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+
+@keyframes slide-up {
+  0% { transform: translateY(24px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.anim-slide-up { animation: slide-up 0.3s ease-out both; }
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 209, 102, 0.55); }
+  50% { box-shadow: 0 0 0 10px rgba(255, 209, 102, 0); }
+}
+.anim-glow { animation: glow-pulse 1.6s ease-in-out infinite; }
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.anim-float { animation: float-y 2.4s ease-in-out infinite; }
+
+@keyframes shine-sweep {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.text-shine {
+  background: linear-gradient(90deg, #ffd166 0%, #fff7d6 25%, #ffd166 50%, #f4b400 75%, #ffd166 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine-sweep 2.5s linear infinite;
+  /* 背景に溶けないよう濃い縁取りを重ねる */
+  filter: drop-shadow(0 2px 0 #3a1d00) drop-shadow(0 0 1px #3a1d00);
+}
+
+/* タイトルロゴ：太いゴシック＋金のグラデーション＋濃い縁取り */
+.logo-title {
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  background: linear-gradient(180deg, #fff6d0 0%, #ffd166 45%, #f29a1f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 3px 0 #4a2200) drop-shadow(0 0 1.5px #4a2200) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.55));
+  text-wrap: balance;
+}
+
+@keyframes rays {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+.anim-rays { animation: rays 12s linear infinite; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
