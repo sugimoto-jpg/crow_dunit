@@ -199,7 +199,30 @@ function boot(resume) {
   G.UI.show('title');
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+/* 保存先の差し替えが終わるのを待つ。
+ *
+ * アプリ版（端末の保存領域）も配信ページ（消えない保存領域）も、
+ * 差し替えは「待つ」形でしか終わらない。
+ * 待たずに始めると、まだブラウザ側を見ている状態で
+ * 「セーブが無い」と判断され、タイトルに「つづきから」が出ない。
+ *
+ * 返事が来ない環境もあるので、上限を決めて待つ。
+ * 上限を過ぎたらブラウザ側のまま始める（遊べなくなるよりよい）。 */
+const STORAGE_WAIT_MS = 7000;
+
+function storageReady() {
+  const waits = [];
+  if (G.Native && G.Native.ready) waits.push(G.Native.ready);
+  if (G.CloudSave && G.CloudSave.ready) waits.push(G.CloudSave.ready);
+  if (!waits.length) return Promise.resolve();
+  return Promise.race([
+    Promise.all(waits.map(p => Promise.resolve(p).catch(() => false))),
+    new Promise(r => setTimeout(r, STORAGE_WAIT_MS)),
+  ]);
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+  await storageReady();
   const hot = (typeof window !== 'undefined' && window.claude) ? window.claude.hot : null;
   if (hot && hot.snapshot) {
     hot.snapshot(() => {
