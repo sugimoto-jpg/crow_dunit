@@ -9,6 +9,7 @@ import { PixelTitle, Modal } from '../components/ui';
 import { sfx } from '../audio/sfx';
 import { getSaveManager } from '../save';
 import { SaveStatusPanel } from '../components/SaveStatusPanel';
+import { InstallHint } from '../components/InstallHint';
 import { useHensachi } from '../components/Glossary';
 import { GLOSSARY } from '../data/glossary';
 import type { Gender } from '../data/types';
@@ -179,6 +180,7 @@ export function HeroScreen() {
             </span>
           </button>
 
+          <InstallHint />
           <SaveStatusPanel />
 
           <button

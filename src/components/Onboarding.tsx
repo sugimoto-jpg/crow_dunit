@@ -6,6 +6,7 @@ import { NAME_MAX, sanitizeName, useGame } from '../store/gameStore';
 import { CHARACTER_NAMES } from '../data/jobs';
 import type { Gender } from '../data/types';
 import { CharacterStage } from './CharacterStage';
+import { InstallHint } from './InstallHint';
 import { sfx, unlockAudio } from '../audio/sfx';
 
 export function Onboarding() {
@@ -123,6 +124,9 @@ function OnboardingInner() {
             <BookMarked className="h-5 w-5 text-gold-300" /> 冒険の書から再開する
           </button>
         )}
+        <div className="mt-3">
+          <InstallHint compact />
+        </div>
       </div>
     </div>
   );
