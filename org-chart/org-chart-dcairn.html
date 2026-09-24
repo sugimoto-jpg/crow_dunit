@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>組織図</title>
+<style>
+  @page { size: A4 landscape; margin: 9mm 11mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "IPAGothic", "IPAPGothic", sans-serif;
+         color: #1a1a1a; font-size: 10px; line-height: 1.5; }
+
+  .sheet-title { font-size: 15px; font-weight: bold; letter-spacing: .08em; }
+  .sheet-head { display: flex; align-items: baseline; justify-content: space-between;
+                border-bottom: 2px solid #2f5496; padding-bottom: 5px; margin-bottom: 16px; }
+  .sheet-head .date { font-size: 10px; color: #555; }
+
+  .box { border: 1px solid #8ea9c9; background: #fff; text-align: center; }
+  .box .ttl { background: #d9e4f1; border-bottom: 1px solid #8ea9c9;
+              font-weight: bold; padding: 5px 6px; font-size: 11px; white-space: nowrap; }
+  .box .body { padding: 7px; }
+  .lead { font-size: 9.5px; color: #333; }
+  .lead b { font-size: 10.5px; }
+
+  .company { width: 74mm; margin: 0 auto; }
+  .company .ttl { background: #2f5496; color: #fff; border-color: #2f5496; font-size: 12px; }
+
+  .ceo { width: 74mm; margin: 0 auto; }
+  .ceo .ttl { background: #bcd0e8; font-size: 11px; }
+  .ceo .name { font-size: 15px; font-weight: bold; padding: 8px; }
+
+  .v { width: 2px; background: #7f7f7f; margin: 0 auto; }
+  .v14 { height: 20mm; }
+
+  .bus-wrap { position: relative; height: 2px; }
+  .bus-wrap .hline { position: absolute; top: 0; left: calc(31% - 2.5px); right: calc(19% - 2.5px);
+                     height: 2px; background: #7f7f7f; }
+
+  .ceo-row { position: relative; min-height: 25mm; }
+  .partner { position: absolute; right: 0; top: 0; width: 54mm; border-color: #a6a6a6; }
+  .partner .ttl { background: #e8e8e8; border-color: #a6a6a6; }
+  .ceo-row .side-line { position: absolute; top: 34px; height: 2px; background: #7f7f7f;
+                        left: calc(50% + 37mm); width: calc(50% - 37mm - 54mm); }
+
+  .units { display: flex; gap: 10px; align-items: stretch; min-height: 52mm; }
+  .col-main { flex: 0 0 calc(62% - 5px); display: flex; flex-direction: column; }
+  .col-sub  { flex: 0 0 calc(38% - 5px); display: flex; flex-direction: column; }
+  .col-main .drop, .col-sub .drop { width: 2px; height: 20mm; background: #7f7f7f; margin: 0 auto; }
+  .col-sub .body { justify-content: center; }
+  .unit { flex: 1; display: flex; flex-direction: column; }
+  .unit .body { flex: 1; display: flex; flex-direction: column; gap: 7px; padding: 9px; }
+
+  .roles { display: flex; gap: 7px; }
+  .role { flex: 1; border: 1px solid #c9d6e6; background: #f4f8fc; padding: 9px 5px; font-size: 10px; }
+  .role .org { display: block; color: #44546a; font-size: 9px; margin-bottom: 1px; }
+  .role .cnt { font-weight: bold; }
+  .role-note { font-size: 9px; color: #6b7785; margin-top: 3px; }
+
+  .tasks { border-top: 1px dashed #b7c6d8; padding-top: 7px; font-size: 9.5px; color: #333; }
+  .tasks .cap { display: block; font-size: 8.5px; color: #7f7f7f; margin-bottom: 4px; letter-spacing: .04em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+  .chip { border: 1px solid #b7c6d8; background: #eef3f9; border-radius: 2px; padding: 4px 9px; font-size: 10px; }
+</style>
+</head>
+<body>
+
+<div class="sheet-head">
+  <div class="sheet-title">組織図</div>
+  <div class="date">合同会社Ｄｃａｉｒｎ　御中</div>
+</div>
+
+<div class="box company">
+  <div class="ttl">合同会社Ｄｃａｉｒｎ</div>
+</div>
+<div class="v v14"></div>
+
+<div class="ceo-row">
+  <div class="box ceo">
+    <div class="ttl">代表社員</div>
+    <div class="name">宇都口　千美　様</div>
+  </div>
+  <div class="side-line"></div>
+  <div class="box partner">
+    <div class="ttl">紹介パートナー</div>
+    <div class="body">
+      <div class="lead">アイドマ・ホールディングス<br><b>杉本賢亮</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="v v14"></div>
+
+<div class="bus-wrap"><div class="hline"></div></div>
+
+<div class="units">
+
+  <div class="col-main">
+    <div class="drop"></div>
+    <div class="box unit">
+      <div class="ttl">在宅構築支援</div>
+      <div class="body">
+        <div class="roles">
+          <div class="role"><span class="org">アイドマ・ホールディングス</span>プロジェクトマネージャー<span class="cnt">1名</span></div>
+          <div class="role"><span class="org">アイドマ・ホールディングス</span>アナリスト<span class="cnt">1名</span></div>
+          <div class="role"><span class="org">在宅メンバー</span>約<span class="cnt">6名</span></div>
+        </div>
+        <div class="tasks">
+          <span class="cap">主な業務</span>
+          <div class="chips">
+            <span class="chip">組織全体のご提案</span>
+            <span class="chip">ワークフロー作成</span>
+            <span class="chip">マニュアル作成</span>
+            <span class="chip">契約書準備</span>
+            <span class="chip">書類選考</span>
+            <span class="chip">1次面接代行</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sub">
+    <div class="drop"></div>
+    <div class="box unit">
+      <div class="ttl">マネジメント代行</div>
+      <div class="body">
+        <div class="roles">
+          <div class="role"><span class="org">アイドマ・ホールディングス</span>プロジェクトマネージャー<span class="cnt">2名</span>
+            <div class="role-note">※在宅ワーカーさんのマネジメント代行</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
