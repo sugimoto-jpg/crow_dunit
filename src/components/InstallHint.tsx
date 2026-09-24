@@ -46,7 +46,9 @@ export function InstallHint({ compact = false }: { compact?: boolean }) {
   }, []);
 
   const cloud = s.backends.some((b) => b.startsWith('クラウド'));
-  if (cloud || hidden || isStandalone() || !isMobile()) return null;
+  // claude.ai の中で開いているとき（アーティファクト）はホーム画面に追加しても保存は残らないので出さない
+  const inClaude = 'claude' in window;
+  if (cloud || inClaude || hidden || isStandalone() || !isMobile()) return null;
 
   const dismiss = () => {
     setHidden(true);
