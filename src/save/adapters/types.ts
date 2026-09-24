@@ -3,7 +3,7 @@
  * 失敗は例外で知らせる（握りつぶさない）。値はすべて文字列。
  */
 export interface StorageAdapter {
-  readonly id: 'preferences' | 'indexeddb' | 'localstorage' | 'memory';
+  readonly id: 'cloud' | 'preferences' | 'indexeddb' | 'localstorage' | 'memory';
   /** 表示用の名前 */
   readonly label: string;
   /** アプリを閉じても残る保存先か（memory は false） */

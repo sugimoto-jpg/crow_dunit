@@ -126,6 +126,8 @@ export interface SaveManagerOptions {
   persisted?: boolean | null;
   /** 複数タブ間の通知に使う BroadcastChannel 名（null で無効） */
   channelName?: string | null;
+  /** 手動セーブの完了時に、遅れて送る保存先（クラウド）への送信を待つ。false=まだ届いていない */
+  commit?: (() => Promise<boolean>) | null;
 }
 
 export class SaveManager {
@@ -148,6 +150,7 @@ export class SaveManager {
   private toastSeq = 0;
   private readonly tabId = Math.random().toString(36).slice(2);
   private channelName: string | null;
+  private commit: (() => Promise<boolean>) | null;
   /** 起動が間に合わず別のマネージャーに切り替えた（以後、何もしない） */
   private cancelled = false;
 
@@ -157,6 +160,7 @@ export class SaveManager {
     this.legacy = opts.legacy ?? null;
     this.emergency = opts.emergency ?? null;
     this.now = opts.now ?? Date.now;
+    this.commit = opts.commit ?? null;
     this.channelName = opts.channelName === undefined ? 'aidma-sales-quest-save' : opts.channelName;
     const durable = this.stores.some((s) => s.durable);
     this.status = {
@@ -210,7 +214,8 @@ export class SaveManager {
       const b = res.best;
       this.applyData(b.data);
       this.patch({ revision: Math.max(b.env.revision, this.meta?.lastRevision ?? 0) });
-      const primaryOk = b.storeIndex === 0 && b.gen === 'current';
+      // クラウドが主保存先のときは、端末内ミラーの方が新しくても（送信前に閉じた等）正常な読み込みとみなす
+      const primaryOk = b.gen === 'current' && (b.storeIndex === 0 || this.stores[0]?.id === 'cloud');
       if (!primaryOk) {
         boot = { kind: 'recovered_from_backup', message: 'セーブデータの一部が読めなかったため、バックアップから復旧しました。', hasSlots, fromVersion: b.fromVersion };
       } else {
@@ -347,12 +352,24 @@ export class SaveManager {
       await this.bumpMeta(revision);
       this.channel?.postMessage({ tab: this.tabId, revision });
       this.patch({ saving: false, lastError: null, revision, lastSavedAt: this.now(), saveCount: this.meta?.saveCount ?? 0 });
-      if (opts.announce) this.notify('success', 'セーブしました');
+      if (opts.announce) await this.announceSaved('セーブしました');
     } else {
       this.patch({ saving: false });
       this.notify('error', `セーブに失敗しました（${this.status.lastError ?? '保存領域に書き込めません'}）。保存コードで控えを取ってください。`);
     }
     return ok;
+  }
+
+  /** 手動セーブの完了通知。クラウドへの送信が済むまで待ち、届かなければその旨を伝える */
+  private async announceSaved(text: string) {
+    let synced = true;
+    try {
+      synced = this.commit ? await this.commit() : true;
+    } catch {
+      synced = false;
+    }
+    if (synced) this.notify('success', text);
+    else this.notify('warn', `${text}（この端末に保存済み。クラウドへは通信が戻り次第送ります）`);
   }
 
   /** ページを閉じる/バックグラウンドへ移る瞬間：同期で書ける保存先へ緊急保存し、非同期保存も走らせる */
@@ -429,8 +446,8 @@ export class SaveManager {
     const text = sealEnvelope(this.currentData(), (prev.best?.env.revision ?? 0) + 1, 'manual', this.now());
     const ok = await this.writeAll(KEYS.slot(i), text);
     if (ok) {
-      this.notify('success', `冒険の書${i}にセーブしました`);
       await this.saveNow('manual');
+      await this.announceSaved(`冒険の書${i}にセーブしました`);
     } else this.notify('error', `冒険の書${i}へのセーブに失敗しました（${this.status.lastError ?? '保存領域に書き込めません'}）`);
     return ok;
   }
