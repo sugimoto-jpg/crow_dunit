@@ -29,11 +29,7 @@
   .ceo .name { font-size: 15px; font-weight: bold; padding: 8px; }
 
   .v { width: 2px; background: #7f7f7f; margin: 0 auto; }
-  .v14 { height: 20mm; }
-
-  .bus-wrap { position: relative; height: 2px; }
-  .bus-wrap .hline { position: absolute; top: 0; left: calc(31% - 2.5px); right: calc(19% - 2.5px);
-                     height: 2px; background: #7f7f7f; }
+  .v14 { height: 15mm; }
 
   .ceo-row { position: relative; min-height: 25mm; }
   .partner { position: absolute; right: 0; top: 0; width: 54mm; border-color: #a6a6a6; }
@@ -41,11 +37,9 @@
   .ceo-row .side-line { position: absolute; top: 34px; height: 2px; background: #7f7f7f;
                         left: calc(50% + 37mm); width: calc(50% - 37mm - 54mm); }
 
-  .units { display: flex; gap: 10px; align-items: stretch; min-height: 52mm; }
-  .col-main { flex: 0 0 calc(62% - 5px); display: flex; flex-direction: column; }
-  .col-sub  { flex: 0 0 calc(38% - 5px); display: flex; flex-direction: column; }
-  .col-main .drop, .col-sub .drop { width: 2px; height: 20mm; background: #7f7f7f; margin: 0 auto; }
-  .col-sub .body { justify-content: center; }
+  .units { display: flex; justify-content: center; min-height: 48mm; }
+  .col-main { flex: 0 0 74%; display: flex; flex-direction: column; }
+    .col-main .drop { width: 2px; height: 14mm; background: #7f7f7f; margin: 0 auto; }
   .unit { flex: 1; display: flex; flex-direction: column; }
   .unit .body { flex: 1; display: flex; flex-direction: column; gap: 7px; padding: 9px; }
 
@@ -89,8 +83,6 @@
 
 <div class="v v14"></div>
 
-<div class="bus-wrap"><div class="hline"></div></div>
-
 <div class="units">
 
   <div class="col-main">
@@ -112,20 +104,6 @@
             <span class="chip">契約書準備</span>
             <span class="chip">書類選考</span>
             <span class="chip">1次面接代行</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-sub">
-    <div class="drop"></div>
-    <div class="box unit">
-      <div class="ttl">マネジメント代行</div>
-      <div class="body">
-        <div class="roles">
-          <div class="role"><span class="org">アイドマ・ホールディングス</span>プロジェクトマネージャー<span class="cnt">2名</span>
-            <div class="role-note">※在宅ワーカーさんのマネジメント代行</div>
           </div>
         </div>
       </div>
