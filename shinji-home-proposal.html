@@ -1,0 +1,763 @@
+<style>
+@page { size: A4; margin: 0; }
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#14213D; --navy2:#1E3159; --navy3:#2A4675;
+  --blue:#2563EB; --blue-s:#EAF1FE;
+  --teal:#0E8A7D; --teal-s:#E3F4F1;
+  --amber:#C2700A; --amber-s:#FBEEDC;
+  --violet:#6D48C7; --violet-s:#EFE9FA;
+  --rose:#BE3455; --rose-s:#FBE7EC;
+  --ink:#16191F; --ink2:#454B56; --ink3:#767C88;
+  --rule:#DFE3EA; --rule2:#C3C9D4; --bg:#F5F7FA;
+}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{
+  font-family:"Noto Sans CJK JP","IPAPGothic",sans-serif;
+  color:var(--ink); font-size:9.6pt; line-height:1.75;
+  font-feature-settings:"palt" 1;
+}
+.page{
+  width:210mm; height:297mm; padding:16mm 15mm 13mm; position:relative;
+  background:#fff; overflow:hidden; page-break-after:always;
+}
+.page:last-child{page-break-after:auto}
+
+/* ---- running head / foot ---- */
+.rh{position:absolute;top:8mm;left:15mm;right:15mm;display:flex;justify-content:space-between;
+  align-items:baseline;font-size:7.4pt;color:var(--ink3);border-bottom:.6pt solid var(--rule);padding-bottom:2mm}
+.rh b{color:var(--navy);font-weight:700;letter-spacing:.02em}
+.rf{position:absolute;bottom:8mm;left:15mm;right:15mm;display:flex;justify-content:space-between;
+  font-size:7.2pt;color:var(--ink3);border-top:.6pt solid var(--rule);padding-top:2mm}
+.rf .pn{font-weight:700;color:var(--ink2)}
+
+/* ---- section heading ---- */
+.eyebrow{font-size:7.4pt;letter-spacing:.16em;font-weight:700;color:var(--blue)}
+h2.sec{font-size:17pt;font-weight:700;line-height:1.35;color:var(--navy);margin:1.5mm 0 1mm;letter-spacing:.01em}
+.sec-sub{font-size:8.6pt;color:var(--ink2);line-height:1.7;max-width:170mm}
+.divider{height:1.6pt;background:linear-gradient(90deg,var(--blue) 0 22mm,var(--rule) 22mm 100%);margin:4mm 0 5mm}
+h3.blk{font-size:11pt;font-weight:700;color:var(--navy);margin:0 0 1.5mm;
+  padding-left:3mm;border-left:2.4pt solid var(--blue);line-height:1.4}
+.blk-sub{font-size:8pt;color:var(--ink3);margin:0 0 3mm;padding-left:3mm}
+
+/* ---- cover ---- */
+.cover{background:linear-gradient(155deg,#14213D 0%,#1E3159 55%,#274273 100%);color:#fff;
+  padding:0;display:flex;flex-direction:column}
+.cv-top{padding:30mm 18mm 0}
+.cv-brand{display:flex;align-items:center;gap:4mm;margin-bottom:26mm}
+.cv-mark{width:13mm;height:13mm;border-radius:2.6mm;background:linear-gradient(140deg,#4E8DF5,#7C6BE8);
+  display:flex;align-items:center;justify-content:center;font-size:14pt;font-weight:700;color:#fff}
+.cv-brand .nm{font-size:13pt;font-weight:700;letter-spacing:.03em}
+.cv-brand .sb{font-size:7.6pt;color:#A9BCDD;margin-top:.6mm}
+.cv-tag{display:inline-block;font-size:7.8pt;font-weight:700;letter-spacing:.1em;
+  border:.8pt solid rgba(255,255,255,.45);border-radius:1.2mm;padding:1.4mm 4mm;color:#CFE0FF}
+.cv-title{font-size:21pt;font-weight:700;line-height:1.5;margin:9mm 0 0;letter-spacing:.005em}
+.cv-title em{font-style:normal;color:#8FC2FF}
+.cv-lead{font-size:9.4pt;line-height:2;color:#C6D4EC;margin-top:7mm;max-width:150mm}
+.cv-rule{height:.8pt;background:rgba(255,255,255,.22);margin:10mm 0 0}
+.cv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:10mm}
+.cv-cell{padding:0 4mm;border-left:.8pt solid rgba(255,255,255,.2)}
+.cv-cell:first-child{padding-left:0;border-left:0}
+.cv-cell .k{font-size:7pt;color:#8DA3C8;letter-spacing:.06em}
+.cv-cell .v{font-size:12.5pt;font-weight:700;margin-top:1.5mm;line-height:1.35}
+.cv-cell .n{font-size:7.2pt;color:#93A9CE;margin-top:1mm;line-height:1.55}
+.cv-bottom{margin-top:auto;padding:0 18mm 16mm;display:flex;justify-content:space-between;align-items:flex-end}
+.cv-to .k{font-size:7.2pt;color:#8DA3C8;letter-spacing:.08em}
+.cv-to .v{font-size:12pt;font-weight:700;margin-top:1.5mm}
+.cv-to .n{font-size:8pt;color:#A9BCDD;margin-top:1mm}
+.cv-from{text-align:right;font-size:8pt;color:#A9BCDD;line-height:1.8}
+.cv-from b{display:block;color:#fff;font-size:9.6pt;font-weight:700}
+
+/* ---- generic cards ---- */
+.grid{display:grid;gap:3.2mm}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.card{border:.7pt solid var(--rule);border-radius:2mm;padding:4mm 4.4mm;background:#fff}
+.card h4{font-size:9.6pt;font-weight:700;color:var(--navy);line-height:1.45;margin-bottom:1.6mm}
+.card p{font-size:8.2pt;color:var(--ink2);line-height:1.72}
+.card.tint{background:var(--bg);border-color:transparent}
+
+.stat{border:.7pt solid var(--rule);border-radius:2mm;padding:3.4mm 4mm;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;top:0;left:0;right:0;height:1.6pt;background:var(--blue)}
+.stat.t::before{background:var(--teal)} .stat.a::before{background:var(--amber)}
+.stat.v::before{background:var(--violet)} .stat.r::before{background:var(--rose)}
+.stat .k{font-size:7.4pt;color:var(--ink3);font-weight:700}
+.stat .v{font-size:16pt;font-weight:700;color:var(--navy);line-height:1.3;margin-top:.8mm;letter-spacing:-.01em}
+.stat .v small{font-size:9pt;font-weight:700;margin-left:.6mm}
+.stat .n{font-size:7.2pt;color:var(--ink3);line-height:1.55;margin-top:.8mm}
+.stat.t .v{color:var(--teal)} .stat.a .v{color:var(--amber)}
+.stat.v .v{color:var(--violet)} .stat.r .v{color:var(--rose)}
+
+.callout{border-radius:2mm;padding:3.6mm 4.4mm;font-size:8.2pt;line-height:1.75;color:var(--ink2);background:var(--blue-s)}
+.callout b{color:var(--navy)}
+.callout.warn{background:var(--amber-s)} .callout.warn b{color:var(--amber)}
+.callout.ok{background:var(--teal-s)} .callout.ok b{color:var(--teal)}
+
+/* ---- reason blocks ---- */
+.reason{border:.7pt solid var(--rule);border-radius:2mm;overflow:hidden;margin-bottom:3.4mm}
+.reason .rh2{display:flex;align-items:flex-start;gap:3.4mm;padding:3.6mm 4.4mm 0}
+.reason .idx{font-size:20pt;font-weight:700;line-height:1;color:var(--blue);min-width:9mm}
+.reason.t .idx{color:var(--teal)} .reason.a .idx{color:var(--amber)}
+.reason .kick{display:flex;gap:2mm;margin-bottom:1.4mm;flex-wrap:wrap}
+.chip{font-size:6.8pt;font-weight:700;padding:.8mm 2.4mm;border-radius:1mm;background:var(--blue-s);color:var(--blue);white-space:nowrap}
+.chip.t{background:var(--teal-s);color:var(--teal)} .chip.a{background:var(--amber-s);color:var(--amber)}
+.chip.g{background:#EEF0F4;color:var(--ink2)}
+.reason h4{font-size:11pt;font-weight:700;color:var(--navy);line-height:1.45}
+.reason .rb{padding:2.4mm 4.4mm 4mm 16.8mm}
+.reason p{font-size:8.2pt;color:var(--ink2);line-height:1.78}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:2.6mm;margin:3mm 0}
+.fact{background:var(--bg);border-radius:1.4mm;padding:2.4mm 3mm}
+.fact .fv{font-size:11.5pt;font-weight:700;color:var(--navy);line-height:1.25}
+.fact .fv small{font-size:7.6pt;margin-left:.4mm}
+.fact .fk{font-size:6.9pt;color:var(--ink3);line-height:1.5;margin-top:.6mm}
+.sowhat{border-top:.7pt solid var(--rule);padding-top:2.8mm;margin-top:.5mm;font-size:8.2pt;line-height:1.78;color:var(--ink2)}
+.sowhat b.lb{color:var(--blue)} .reason.t .sowhat b.lb{color:var(--teal)} .reason.a .sowhat b.lb{color:var(--amber)}
+
+/* ---- phases ---- */
+.phase{border:.7pt solid var(--rule);border-radius:2mm;padding:0;overflow:hidden}
+.phase .ph{padding:2.6mm 3.6mm;font-size:8pt;font-weight:700;color:#fff;background:var(--blue)}
+.phase.t .ph{background:var(--teal)} .phase.a .ph{background:var(--amber)}
+.phase .pb{padding:3.4mm 3.8mm}
+.phase h4{font-size:9.4pt;font-weight:700;color:var(--navy);line-height:1.45;margin-bottom:2mm}
+.phase ul{list-style:none;display:flex;flex-direction:column;gap:1.8mm}
+.phase li{font-size:7.9pt;color:var(--ink2);line-height:1.65;padding-left:3.4mm;position:relative}
+.phase li::before{content:"";position:absolute;left:0;top:1.6mm;width:1.6mm;height:1.6mm;border-radius:50%;background:var(--rule2)}
+.phase li b{color:var(--ink)}
+
+/* ---- task groups ---- */
+.tg{border:.7pt solid var(--rule);border-radius:2mm;overflow:hidden}
+.tg header{padding:2.6mm 3.4mm;background:var(--bg);border-bottom:.7pt solid var(--rule)}
+.tg header h4{font-size:9pt;font-weight:700;color:var(--navy);line-height:1.35}
+.tg header .hs{font-size:7pt;color:var(--ink3);margin-top:.5mm}
+.tg ul{list-style:none;padding:1.6mm 0}
+.tg li{padding:1.8mm 3.4mm;font-size:7.8pt;line-height:1.6;color:var(--ink2);border-bottom:.5pt solid #EEF1F5}
+.tg li:last-child{border-bottom:0}
+.tg li b{display:block;color:var(--ink);font-weight:700;font-size:8.1pt}
+
+/* ---- table ---- */
+table.t30{width:100%;border-collapse:collapse;font-size:7.2pt;line-height:1.55}
+table.t30 thead th{background:var(--navy);color:#fff;font-size:7pt;font-weight:700;text-align:left;
+  padding:2.2mm 2.4mm;letter-spacing:.02em}
+table.t30 td{padding:1.7mm 2.2mm;border-bottom:.5pt solid var(--rule);vertical-align:top;color:var(--ink2)}
+table.t30 tr:nth-child(even) td{background:#FAFBFC}
+table.t30 td.no{font-weight:700;color:var(--ink3);text-align:center}
+table.t30 .no{text-align:center;width:7mm}
+table.t30 td.nm{font-weight:700;color:var(--ink)}
+table.t30 .nm{width:34mm}
+table.t30 .ct{width:22mm}
+table.t30 td.cn{font-weight:700;color:var(--navy)}
+table.t30 .cn{text-align:right;width:13mm;white-space:nowrap}
+.cat{display:inline-block;font-size:6.5pt;font-weight:700;padding:.5mm 1.8mm;border-radius:.8mm;white-space:nowrap}
+.cat.A{background:var(--blue-s);color:var(--blue)}
+.cat.B{background:var(--teal-s);color:var(--teal)}
+.cat.C{background:var(--amber-s);color:var(--amber)}
+.cat.D{background:var(--violet-s);color:var(--violet)}
+.cat.E{background:var(--rose-s);color:var(--rose)}
+
+/* ---- roi param rows ---- */
+.prow{display:grid;grid-template-columns:1fr auto;gap:2mm;padding:2.6mm 0;border-bottom:.5pt solid var(--rule);align-items:baseline}
+.prow:last-child{border-bottom:0}
+.prow .pk{font-size:8.2pt;font-weight:700;color:var(--ink)}
+.prow .pn{font-size:7.2pt;color:var(--ink3);line-height:1.55;margin-top:.4mm}
+.prow .pv{font-size:11pt;font-weight:700;color:var(--blue);white-space:nowrap}
+.prow .pv small{font-size:7.6pt;margin-left:.4mm;color:var(--ink2)}
+.costbox{background:var(--navy);color:#fff;border-radius:2mm;padding:3.6mm 4.2mm;margin-top:3mm}
+.costbox .cr{display:flex;justify-content:space-between;font-size:8.2pt;padding:1.4mm 0;color:#C6D4EC}
+.costbox .cr b{color:#fff;font-weight:700}
+.costbox .tot{border-top:.8pt solid rgba(255,255,255,.25);margin-top:1.6mm;padding-top:2.4mm;font-size:9.4pt}
+.costbox .tot b{font-size:12pt;color:#8FC2FF}
+
+.concl{background:linear-gradient(120deg,#14213D,#274273);color:#fff;border-radius:2mm;padding:4.6mm 5mm;margin-top:4mm}
+.concl .ct2{font-size:10.5pt;font-weight:700;margin-bottom:1.8mm;color:#8FC2FF}
+.concl p{font-size:8.6pt;line-height:1.8;color:#D3DEF0}
+
+.srcs{font-size:7.2pt;color:var(--ink3);line-height:1.85}
+.srcs b{color:var(--ink2)}
+.step{display:grid;grid-template-columns:16mm 1fr;gap:3mm;padding:3.2mm 0;border-top:.7pt solid var(--rule)}
+.step:first-of-type{border-top:0}
+.step .sd{font-size:8pt;font-weight:700;color:var(--blue)}
+.step h4{font-size:9.6pt;font-weight:700;color:var(--navy);margin-bottom:1.4mm}
+.step p{font-size:8.2pt;color:var(--ink2);line-height:1.72}
+svg{display:block;width:100%;height:auto}
+</style>
+
+<!-- ============ P1 COVER ============ -->
+<div class="page cover">
+  <div class="cv-top">
+    <div class="cv-brand">
+      <div class="cv-mark">S</div>
+      <div>
+        <div class="nm">シンジホーム株式会社</div>
+        <div class="sb">代表取締役　上原 真二 氏　／　沖縄県宜野湾市我如古</div>
+      </div>
+    </div>
+    <span class="cv-tag">事業戦略提案書</span>
+    <h1 class="cv-title">「マンション管理士 <em>×</em> 不動産」のシナジーで、<br>後悔のない安心な取引と住環境を創る</h1>
+    <p class="cv-lead">業界30年以上の知見と、ご実家での不動産トラブルという原体験を原動力に、沖縄県内の分譲マンション管理組合と不動産オーナーへ寄り添う品質本位のサービスを展開されています。本提案書は、<b style="color:#fff">代表1名という体制の限界を突破し、10年ビジョン（社員10名・2支店・自社物件保有）を実現する</b>ための実行戦略をまとめたものです。</p>
+    <div class="cv-rule"></div>
+    <div class="cv-grid">
+      <div class="cv-cell"><div class="k">現在の組織体制</div><div class="v">代表1名</div><div class="n">属人化が最大のボトルネック</div></div>
+      <div class="cv-cell"><div class="k">核となる強み</div><div class="v">業界30年<br>＋AI活用</div><div class="n">高難度な合意形成に対応</div></div>
+      <div class="cv-cell"><div class="k">新規収益基盤</div><div class="v">不動産<br>×管理士</div><div class="n">売買・賃貸・管理・見守り</div></div>
+      <div class="cv-cell"><div class="k">10年後のゴール</div><div class="v">社員10名<br>2支店</div><div class="n">自社アパート保有・不労収益</div></div>
+    </div>
+  </div>
+  <div class="cv-bottom">
+    <div class="cv-to">
+      <div class="k">提出先</div>
+      <div class="v">シンジホーム株式会社 御中</div>
+      <div class="n">代表取締役　上原 真二 様</div>
+    </div>
+    <div class="cv-from">
+      <b>株式会社アイドマ・ホールディングス</b>
+      営業支援ユニット ／ 生産性向上支援ユニット<br>
+      2026年9月27日
+    </div>
+  </div>
+</div>
+
+<!-- ============ P2 現状分析 ============ -->
+<div class="page">
+  <div class="rh"><span><b>シンジホーム株式会社</b>　事業戦略提案書</span><span>01　経営診断</span></div>
+  <div class="eyebrow">CURRENT ANALYSIS</div>
+  <h2 class="sec">現状分析と、3つのボトルネック</h2>
+  <p class="sec-sub">強みは十分にあります。課題は「良いサービスがつくれるか」ではなく、<b>それを届ける件数を、1人でどう増やすか</b>です。</p>
+  <div class="divider"></div>
+
+  <h3 class="blk">いま起きている3つのボトルネック</h3>
+  <p class="blk-sub">いずれも能力の問題ではなく、1名体制という構造から生まれています</p>
+  <div class="grid g3" style="margin-bottom:6mm">
+    <div class="card">
+      <div class="chip a" style="margin-bottom:2mm">ボトルネック 01</div>
+      <h4>認知不足と、1件あたりの獲得コスト</h4>
+      <p>マンション管理士という役割が住民側に浸透しておらず、案件ごとに「何をする人か」の説明から始まります。結果として1件あたりの工数が大きく、件数を伸ばそうとするほど時間が足りなくなります。</p>
+    </div>
+    <div class="card">
+      <div class="chip a" style="margin-bottom:2mm">ボトルネック 02</div>
+      <h4>理事会の高齢化と、合意形成の遅延</h4>
+      <p>理事の高齢化となり手不足により、理事会運営が形骸化しがちです。規約改正や修繕計画の議論が前に進まず、1組合あたりの伴走期間が長期化します。</p>
+    </div>
+    <div class="card">
+      <div class="chip a" style="margin-bottom:2mm">ボトルネック 03</div>
+      <h4>営業・事務・実務の全兼務</h4>
+      <p>ターゲットリストの作成、議事録、契約書類、登記の取得。これらすべてを代表が担っているため、<b>本来最も価値を生む「対面での提案と合意形成」に使える時間が削られています</b>。</p>
+    </div>
+  </div>
+
+  <h3 class="blk">解決の方向：2つのユニットを同時に入れる</h3>
+  <p class="blk-sub">片方だけでは効きません。理由は下記のとおりです</p>
+  <div class="grid g2" style="margin-bottom:5mm">
+    <div class="card tint">
+      <h4 style="color:var(--blue)">営業支援ユニット｜件数をつくる</h4>
+      <p>ターゲット30選への架電・手紙・訪問日程の調整までを外に出します。代表は「会って決める」ところだけを担当します。<b>いま最も不足しているのは商談の母数</b>です。</p>
+    </div>
+    <div class="card tint">
+      <h4 style="color:var(--teal)">生産性向上支援ユニット｜時間をつくる</h4>
+      <p>議事録、登記取得、資料作成、一次受付を在宅ワーカーへ移管します。<b>営業支援だけを入れてもアポイントに出る時間がなければ意味がありません。</b>だから同時に入れます。</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>なぜ「同時」なのか。</b>商談が増えれば事務も増えます。1名体制のまま営業支援だけを入れると、増えたアポイントに対応できず、かえって信用を落とします。逆に在宅ワーカーだけを入れても、空いた時間を使う先がありません。<b>件数をつくる仕組みと、時間をつくる仕組みは、対で初めて機能します。</b>
+  </div>
+
+  <div class="rf"><span>株式会社アイドマ・ホールディングス　共創提案</span><span class="pn">2</span></div>
+</div>
+
+<!-- ============ P3 理由1-2 ============ -->
+<div class="page">
+  <div class="rh"><span><b>シンジホーム株式会社</b>　事業戦略提案書</span><span>02　今すぐやる3つの理由</span></div>
+  <div class="eyebrow">CRUCIAL TIMING</div>
+  <h2 class="sec">今の経営課題を「今すぐ」解決しなければならない<br>3つの決定的理由</h2>
+  <p class="sec-sub">いずれも御社の意思とは関係なく、外側で日付が決まっているものです。とくに1つ目は<b>すでに施行済み</b>で、県内のすべての管理組合が同じ用件を抱えています。</p>
+  <div class="divider"></div>
+
+  <div class="reason">
+    <div class="rh2">
+      <div class="idx">01</div>
+      <div>
+        <div class="kick"><span class="chip">法律</span><span class="chip g">2026年4月1日 施行済み</span></div>
+        <h4>区分所有法の大改正。全組合が規約を見直す用件を持っている</h4>
+      </div>
+    </div>
+    <div class="rb">
+      <p>2025年5月23日に成立した改正区分所有法（令和7年法律第47号）が、<b>2026年4月1日から施行されました</b>。集会の決議が出席者の多数決を基礎とする形に改められ、所在等不明の区分所有者を決議の母数から外す仕組みが導入されました。建替え決議は原則4/5を維持しつつ客観的事由のある5類型で3/4に緩和。さらに<b>更新（一棟リノベーション）・建物敷地売却・取壊し敷地売却・取壊しの4決議が、従来の「全員合意」から4/5（または3/4）へ</b>と変わっています。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">2026.04.01</div><div class="fk">改正区分所有法の施行日</div></div>
+        <div class="fact"><div class="fv">全員合意→4/5</div><div class="fk">一棟リノベ・売却・取壊しの決議要件</div></div>
+        <div class="fact"><div class="fv">年1<small>回</small></div><div class="fk">総会。逃すと次は1年後</div></div>
+      </div>
+      <div class="sowhat"><b class="lb">シンジホームの勝機：</b>規約が旧法を前提のままなら、実務が法と噛み合いません。そして<b>規約改正には総会の決議が必要</b>です。総会は年1回、会計年度は組合ごとにバラバラ。つまり施行から1年半ほどのあいだに、県内の全組合が順番に「次の総会で規約改正を議題にするか」を決める時期を迎えます。<b>その波は、いま県内を順番に通過している最中です。</b>認知度がなくても「法改正への対応はお済みですか」の一言はどの組合にも通じます。これほど当たる理由が明確な時期は、この先10年ありません。</div>
+    </div>
+  </div>
+
+  <div class="reason t">
+    <div class="rh2">
+      <div class="idx">02</div>
+      <div>
+        <div class="kick"><span class="chip t">制度</span><span class="chip g">2024年6月 ガイドライン公表</span></div>
+        <h4>「管理者型管理」の広がりが、管理会社ではない第三者を必要としている</h4>
+      </div>
+    </div>
+    <div class="rb">
+      <p>国土交通省は2024年6月7日、<b>「マンションにおける外部管理者方式等に関するガイドライン」</b>を公表しました。従来はマンション管理士等の専門家が管理者になることを前提としていた指針に、管理業者が管理者になる方式の留意点を加えたものです。背景には、管理者業務を受託する管理業者のうち<b>約7割が理事会を設置しない方式</b>を採用している実態があります。ガイドラインは利益相反取引の情報開示と、<b>監事の設置と監査のあり方</b>を整理しました。あわせて、管理計画認定制度（2022年4月開始）では認定を受けると固定資産税の減額やフラット35の金利引下げが受けられます。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">約7<small>割</small></div><div class="fk">理事会を置かない方式を採る管理業者</div></div>
+        <div class="fact"><div class="fv">監事の設置</div><div class="fk">ガイドラインが求めるチェック機能</div></div>
+        <div class="fact"><div class="fv">1/6〜1/2</div><div class="fk">管理計画認定による固定資産税の減額</div></div>
+      </div>
+      <div class="sowhat"><b class="lb">シンジホームの勝機：</b>管理会社が管理者になると、<b>工事の発注先が自分自身になりうる</b>——この構造上の問題があるため、ガイドラインは監事の設置と情報開示を求めています。<b>ここに、管理業者ではないマンション管理士の席があります。</b>御社は管理業者ではないため、この利益相反から距離があります。「管理会社が管理者をやる形にするなら、第三者の目を1つ入れておきませんか」は、管理会社と正面から争わずに組合へ入れる数少ない切り口です。理事のなり手不足に悩む組合ほど、この話は通じます。</div>
+    </div>
+  </div>
+
+  <div class="rf"><span>株式会社アイドマ・ホールディングス　共創提案</span><span class="pn">3</span></div>
+</div>
+
+<!-- ============ P4 理由3 + ロードマップ ============ -->
+<div class="page">
+  <div class="rh"><span><b>シンジホーム株式会社</b>　事業戦略提案書</span><span>02　今すぐやる3つの理由</span></div>
+
+  <div class="reason a" style="margin-top:2mm">
+    <div class="rh2">
+      <div class="idx">03</div>
+      <div>
+        <div class="kick"><span class="chip a">世の中の流れ</span><span class="chip g">2027年3月31日 期限</span></div>
+        <h4>相続登記の義務化と、築40年超マンションの急増が同時に来る</h4>
+      </div>
+    </div>
+    <div class="rb">
+      <p>2024年4月1日から相続登記が義務化され、相続を知った日から3年以内の登記申請が義務となりました。正当な理由なく怠れば<b>10万円以下の過料</b>です。この義務は<b>施行前に発生した相続にも遡って適用され、その期限が2027年3月31日</b>。さらに2026年4月1日からは住所等変更登記も義務化されています。一方で建物側も、築40年以上のマンションは<b>2023年末の約137万戸から、10年後に約274万戸、20年後には約464万戸</b>へ。築40年超では<b>世帯主が70歳以上の住戸が5割を超えています</b>。沖縄では塩害・台風・強い紫外線によりRC造の劣化が本土より進みやすく、国交省ガイドラインの12〜15年周期をそのまま当てはめるのは危険だと指摘されています。</p>
+      <div class="facts">
+        <div class="fact"><div class="fv">2027.03.31</div><div class="fk">施行前の相続分の登記期限</div></div>
+        <div class="fact"><div class="fv">137→464<small>万戸</small></div><div class="fk">築40年超マンション（20年後）</div></div>
+        <div class="fact"><div class="fv">5<small>割超</small></div><div class="fk">築40年超で世帯主70歳以上の住戸</div></div>
+      </div>
+      <div class="sowhat"><b class="lb">シンジホームの勝機：</b>登記を済ませた相続人の次の問いは、必ず<b>「この部屋をどうするか」</b>です。売るのか、貸すのか、持ち続けるのか。県外にお住まいの相続人であればなおさら、建物の状態も管理組合の事情も分かりません。<b>管理を知っている不動産会社にしか答えられない問い</b>です。そして御社の原体験——不動産の知識不足による後悔をしてほしくない——が最も効くのが、まさにこの場面です。この層は待ってくれません。判断が遅れるほど、建物の価値も本人の判断力も落ちていきます。</div>
+    </div>
+  </div>
+
+  <h3 class="blk" style="margin-top:6mm">シンジホーム 10カ年 拡大成長ロードマップ</h3>
+  <p class="blk-sub">先に仕組みをつくり、1人での上限に当たってから人を増やす——この順番が最短です</p>
+  <div class="grid g3">
+    <div class="phase">
+      <div class="ph">PHASE 1　1〜2年目</div>
+      <div class="pb">
+        <h4>基盤確立と、1人体制からの機能脱却</h4>
+        <ul>
+          <li>県内管理組合の<b>全数台帳</b>を構築し、決算月順の訪問計画へ落とす</li>
+          <li>在宅ワーカーへ資料作成・登記取得を移譲し、<b>代表は対面商談に専念</b></li>
+          <li>「管理士×不動産」の成功モデルを確立</li>
+        </ul>
+      </div>
+    </div>
+    <div class="phase t">
+      <div class="ph">PHASE 2　3〜5年目</div>
+      <div class="pb">
+        <h4>組織化と、第1号支店の開設</h4>
+        <ul>
+          <li>宜野湾本社にスタッフを<b>5名規模</b>まで採用・育成</li>
+          <li>中部エリアへ第1号支店を開設</li>
+          <li>管理者方式（理事会を置かない形）の受託管理を<b>30組合</b>まで拡大</li>
+        </ul>
+      </div>
+    </div>
+    <div class="phase a">
+      <div class="ph">PHASE 3　6〜10年目</div>
+      <div class="pb">
+        <h4>自社物件保有と、10名規模体制</h4>
+        <ul>
+          <li>自社アパート・マンションの取得／建築による<b>保有へ</b></li>
+          <li>賃料収入による安定したキャッシュフロー基盤</li>
+          <li>2支店＋本社、<b>スタッフ10名規模</b>で県内屈指の総合支援企業へ</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="rf"><span>株式会社アイドマ・ホールディングス　共創提案</span><span class="pn">4</span></div>
+</div>
+
+<!-- ============ P5 在宅ワーカー業務 ============ -->
+<div class="page">
+  <div class="rh"><span><b>シンジホーム株式会社</b>　事業戦略提案書</span><span>03　生産性向上支援ユニット</span></div>
+  <div class="eyebrow">PRODUCTIVITY INNOVATION</div>
+  <h2 class="sec">在宅ワーカーへの業務切り出し</h2>
+  <p class="sec-sub">上原代表が<b>「対面での提案獲得とクロージング」だけに100%集中できる</b>分業体制を確立します。</p>
+  <div class="divider"></div>
+
+  <div class="callout ok" style="margin-bottom:5mm">
+    <b>なぜ在宅ワーカーなのか。</b>沖縄でのフルタイム正社員採用（月額30万円＋社会保険）は、1名体制の会社にとって重い固定費です。在宅ワーカーであれば<b>必要な業務量に応じた変動費</b>で、即戦力チームを短期間で組成できます。採用・教育・労務のリスクを負わずに、実質スタッフ5〜6名相当の生産力を確保できます。</p>
+  </div>
+
+  <div class="grid g2" style="margin-bottom:4mm">
+    <div class="tg">
+      <header><h4>① 資料作成・総会サポート</h4><div class="hs">代表の思考時間を、作業から解放する</div></header>
+      <ul>
+        <li><b>規約改正の新旧対照表の作成</b>現行規約と標準管理規約を条文単位で突き合わせ、改正案の下書きまで</li>
+        <li><b>理事会・総会の議案書と議事録</b>代表の口述メモをWord／パワーポイントへ整形（内容確定は代表）</li>
+        <li><b>修繕履歴・管理費の積算グラフ化</b>決算書から数値を起こし、住民向けの分かりやすい図解シートへ</li>
+      </ul>
+    </div>
+    <div class="tg">
+      <header><h4>② 調査・登記簿・リサーチ</h4><div class="hs">動かない時間を、価値ある情報へ</div></header>
+      <ul>
+        <li><b>登記事項証明書・公図・図面の取得代行</b>登記情報提供サービスでの一括取得</li>
+        <li><b>県内分譲マンション台帳の整備</b>築年数・戸数・管理会社・決算月のデータベース化</li>
+        <li><b>売買成約事例・賃料相場の調査</b>レインズ等から該当エリアのデータを抽出・整理</li>
+      </ul>
+    </div>
+  </div>
+  <div class="grid g2">
+    <div class="tg">
+      <header><h4>③ 広報・メディア・SNS運用</h4><div class="hs">メディア掲載実績の二次活用まで</div></header>
+      <ul>
+        <li><b>HP・ブログのコラム記事執筆</b>「沖縄のマンション大規模修繕のリアル」等のSEO記事</li>
+        <li><b>Instagram／Facebookの開設と投稿</b>管理トラブル相談事例のカルーセル作成</li>
+        <li><b>ニュースレター・DMの制作</b>顧問組合・既存顧客向け季刊紙（A4両面）の編集と印刷発注</li>
+      </ul>
+    </div>
+    <div class="tg">
+      <header><h4>④ 事務・一次受付・外部連携</h4><div class="hs">代表が電話に追われない環境をつくる</div></header>
+      <ul>
+        <li><b>電話・メールの一次受付</b>要件のヒアリングと日程調整、代表へのチャット連携</li>
+        <li><b>請求書発行・入金消込・記帳補助</b>クラウド会計での記帳と領収書整理</li>
+        <li><b>提携パートナーとの連携手配</b>修繕業者・士業・司法書士への見積依頼と窓口管理</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout warn" style="margin-top:5mm">
+    <b>外に出さないもの。</b>規約改正の内容判断、総会での説明と合意形成、重要事項説明、不動産の価格査定は、<b>資格と経験を持つ上原代表にしかできません</b>。とくに管理組合の議事録は法的な効力を持つ文書です。<b>「書く」ところまでを在宅ワーカー、「内容を確定する」のは代表</b>——この線引きを最初に決めておくことが、品質を守る唯一の方法です。
+  </div>
+
+  <div class="rf"><span>株式会社アイドマ・ホールディングス　共創提案</span><span class="pn">5</span></div>
+</div>
+
+<!-- ============ P6 組織図 ============ -->
+<div class="page">
+  <div class="rh"><span><b>シンジホーム株式会社</b>　事業戦略提案書</span><span>03　生産性向上支援ユニット</span></div>
+  <div class="eyebrow">ORGANIZATION DESIGN</div>
+  <h2 class="sec">在宅ワーカー活用時の想定組織体制</h2>
+  <p class="sec-sub">上原代表の負荷を最小化し、在宅ディレクターを介した<b>ハイブリッド体制</b>を構築します。実質スタッフ5〜6名相当の生産力を、代表お一人でコントロールできる形です。</p>
+  <div class="divider"></div>
+
+  <div style="border:.7pt solid var(--rule);border-radius:2mm;padding:5mm 4mm">
+    <svg viewBox="0 0 760 452" role="img">
+      <!-- CEO -->
+      <rect x="215" y="8" width="330" height="62" rx="8" fill="#14213D"/>
+      <text x="380" y="27" fill="#8FC2FF" font-size="9" font-weight="700" text-anchor="middle" font-family="Noto Sans CJK JP">CHIEF EXECUTIVE OFFICER</text>
+      <text x="380" y="45" fill="#FFFFFF" font-size="14" font-weight="700" text-anchor="middle" font-family="Noto Sans CJK JP">上原 真二 代表取締役</text>
+      <text x="380" y="61" fill="#B9C9E4" font-size="9.5" text-anchor="middle" font-family="Noto Sans CJK JP">マンション管理士・宅地建物取引士</text>
+
+      <rect x="150" y="78" width="460" height="24" rx="4" fill="#EAF1FE"/>
+      <text x="380" y="94" fill="#2563EB" font-size="9.5" font-weight="700" text-anchor="middle" font-family="Noto Sans CJK JP">【専任領域】対面折衝・合意形成コンサル・最終査定／契約・修繕判断・重要パートナーとの提携</text>
+
+      <path d="M 380 102 L 380 126" stroke="#C3C9D4" stroke-width="1.6" fill="none"/>
+
+      <!-- Director -->
+      <rect x="230" y="126" width="300" height="52" rx="8" fill="#FFFFFF" stroke="#0E8A7D" stroke-width="1.8"/>
+      <text x="380" y="144" fill="#0E8A7D" font-size="9" font-weight="700" text-anchor="middle" font-family="Noto Sans CJK JP">アイドマ 在宅ディレクター（窓口）</text>
+      <text x="380" y="161" fill="#16191F" font-size="12" font-weight="700" text-anchor="middle" font-family="Noto Sans CJK JP">ワーカー管理＆業務差配（1名）</text>
+      <text x="380" y="174" fill="#767C88" font-size="8.5" text-anchor="middle" font-family="Noto Sans CJK JP">代表の大まかな指示をタスク分解し、各ワーカーへ指示・品質チェック・納期管理</text>
+
+      <path d="M 380 178 L 380 202 L 128 202 L 128 226" stroke="#C3C9D4" stroke-width="1.6" fill="none"/>
+      <path d="M 380 178 L 380 226" stroke="#C3C9D4" stroke-width="1.6" fill="none"/>
+      <path d="M 380 178 L 380 202 L 632 202 L 632 226" stroke="#C3C9D4" stroke-width="1.6" fill="none"/>
+
+      <!-- three teams -->
+      <rect x="8" y="226" width="240" height="210" rx="8" fill="#FAFBFC" stroke="#2563EB" stroke-width="1.4"/>
+      <text x="24" y="250" fill="#2563EB" font-size="11.5" font-weight="700" font-family="Noto Sans CJK JP">資料作成・修繕調査班</text>
+      <text x="24" y="266" fill="#767C88" font-size="9" font-family="Noto Sans CJK JP">在宅ワーカー 1〜2名（士業事務所経験者）</text>
+      <line x1="24" y1="276" x2="232" y2="276" stroke="#DFE3EA" stroke-width="1"/>
+      <text x="24" y="302" fill="#454B56" font-size="9.5" font-family="Noto Sans CJK JP">・総会議案書／議事録の作成</text>
+      <text x="24" y="332" fill="#454B56" font-size="9.5" font-family="Noto Sans CJK JP">・修繕履歴／積算の集計とグラフ化</text>
+      <text x="24" y="362" fill="#454B56" font-size="9.5" font-family="Noto Sans CJK JP">・規約新旧対照表の下書き</text>
+      <text x="24" y="392" fill="#454B56" font-size="9.5" font-family="Noto Sans CJK JP">・契約書類の整理と保存</text>
+
+      <rect x="260" y="226" width="240" height="210" rx="8" fill="#FAFBFC" stroke="#0E8A7D" stroke-width="1.4"/>
+      <text x="276" y="250" fill="#0E8A7D" font-size="11.5" font-weight="700" font-family="Noto Sans CJK JP">リサーチ＆Web広報班</text>
+      <text x="276" y="266" fill="#767C88" font-size="9" font-family="Noto Sans CJK JP">在宅ワーカー 1〜2名（マーケ・デザイン）</text>
+      <line x1="276" y1="276" x2="484" y2="276" stroke="#DFE3EA" stroke-width="1"/>
+      <text x="276" y="302" fill="#454B56" font-size="9.5" font-family="Noto Sans CJK JP">・県内マンション台帳の整備</text>
+      <text x="276" y="332" fill="#454B56" font-size="9.5" font-family="Noto Sans CJK JP">・登記簿／公図の取得代行</text>
+      <text x="276" y="362" fill="#454B56" font-size="9.5" font-family="Noto Sans CJK JP">・事例コラム／SNS画像の作成</text>
+      <text x="276" y="392" fill="#454B56" font-size="9.5" font-family="Noto Sans CJK JP">・県外オーナー向けDMの発送</text>
+
+      <rect x="512" y="226" width="240" height="210" rx="8" fill="#FAFBFC" stroke="#C2700A" stroke-width="1.4"/>
+      <text x="528" y="250" fill="#C2700A" font-size="11.5" font-weight="700" font-family="Noto Sans CJK JP">営業ユニット（コール・アポ）</text>
+      <text x="528" y="266" fill="#767C88" font-size="9" font-family="Noto Sans CJK JP">アイドマ専門チーム 2名</text>
+      <line x1="528" y1="276" x2="736" y2="276" stroke="#DFE3EA" stroke-width="1"/>
+      <text x="528" y="302" fill="#454B56" font-size="9.5" font-family="Noto Sans CJK JP">・ターゲット30選への架電・手紙</text>
+      <text x="528" y="332" fill="#454B56" font-size="9.5" font-family="Noto Sans CJK JP">・決算月に合わせた定期接触</text>
+      <text x="528" y="362" fill="#454B56" font-size="9.5" font-family="Noto Sans CJK JP">・上原代表の訪問日程の調整</text>
+      <text x="528" y="392" fill="#454B56" font-size="9.5" font-family="Noto Sans CJK JP">・反応の記録とリスト精度の改善</text>
+    </svg>
+  </div>
+
+  <div class="grid g2" style="margin-top:5mm">
+    <div class="card tint">
+      <h4>代表の時間は、こう変わります</h4>
+      <p>資料作成・調査・事務に費やしていた月80時間前後が、<b>対面での商談と合意形成に振り替わります</b>。マンション管理士の報酬は「会って信頼を得た時間」から生まれるため、時間の振替がそのまま売上の増加につながります。</p>
+    </div>
+    <div class="card tint">
+      <h4>採用リスクを負わずに拡大できます</h4>
+      <p>Phase 2で正社員採用に進む前に、<b>業務が標準化された状態</b>をつくれます。在宅ワーカーへ渡すために手順を言語化する作業が、そのまま将来の社員教育マニュアルになります。</p>
+    </div>
+  </div>
+
+  <div class="rf"><span>株式会社アイドマ・ホールディングス　共創提案</span><span class="pn">6</span></div>
+</div>
+
+<!-- ============ P7 ターゲット30（1） ============ -->
+<div class="page">
+  <div class="rh"><span><b>シンジホーム株式会社</b>　事業戦略提案書</span><span>04　営業ターゲット30選</span></div>
+  <div class="eyebrow">TARGET ARCHITECTURE</div>
+  <h2 class="sec">想定される営業ターゲット先 30選</h2>
+  <p class="sec-sub">管理組合は<b>築年数で課題がほぼ決まる</b>ため、その軸で区切ると提案内容がそのまま決まります。母数は沖縄県内・推計です。</p>
+  <div class="divider"></div>
+
+  <div class="grid g4" style="margin-bottom:4mm">
+    <div class="stat"><div class="k">Tier A｜管理組合</div><div class="v">850<small>組合</small></div><div class="n">県内の全数を台帳に載せられる規模</div></div>
+    <div class="stat t"><div class="k">Tier B｜士業・専門家</div><div class="v">1,395<small>件</small></div><div class="n">相続・登記から案件が流れてくる</div></div>
+    <div class="stat a"><div class="k">Tier C｜個人オーナー</div><div class="v">12,400<small>名</small></div><div class="n">売却・相続・賃貸化の相談元</div></div>
+    <div class="stat v"><div class="k">1年目の目標</div><div class="v">10<small>組合</small></div><div class="n">母数の約1.2％で足ります</div></div>
+  </div>
+
+  <table class="t30"><thead><tr><th class="no">No</th><th class="ct">カテゴリ</th><th class="nm">想定ターゲット先</th><th>営業する理由（なぜ刺さるか）</th><th>アプローチの切り口・初回トーク</th><th class="cn">母数</th></tr></thead><tbody>
+<tr><td class="no">01</td><td><span class="cat A">管理組合</span></td><td class="nm">築45年超の管理組合</td><td>建替え・売却・取壊しが現実の議題に。改正法で決議要件が緩和され、全員合意で止まっていた案件が動き出す。</td><td>「法改正で、一棟リノベも敷地売却も全員合意が要らなくなりました。選択肢が増えています」</td><td class="cn">55</td></tr>
+<tr><td class="no">02</td><td><span class="cat A">管理組合</span></td><td class="nm">築40〜45年の管理組合</td><td>3回目の大規模修繕と積立金不足が同時に来る。世帯主70歳以上が半数超で、理事のなり手もいない最も困っている層。</td><td>「次の修繕、積立金は足りていますか。足りない前提での選択肢を整理できます」</td><td class="cn">65</td></tr>
+<tr><td class="no">03</td><td><span class="cat A">管理組合</span></td><td class="nm">築35〜40年の管理組合</td><td>まだ手が打てる最後の時期。ここで長期修繕計画を立て直せるかで10年後の資産価値が変わる。提案が最も効く。</td><td>「いま計画を見直せば間に合います。40年を超えてからでは選択肢が減ります」</td><td class="cn">85</td></tr>
+<tr><td class="no">04</td><td><span class="cat A">管理組合</span></td><td class="nm">築30〜35年の管理組合</td><td>2回目の大規模修繕の前後。修繕委員会が立ち上がることが多く、外部専門家を入れる合意が取りやすい。</td><td>「修繕委員会に、管理会社とは別の目を1つ入れておきませんか」</td><td class="cn">95</td></tr>
+<tr><td class="no">05</td><td><span class="cat A">管理組合</span></td><td class="nm">築25〜30年の管理組合</td><td>給排水・エレベーター等の設備更新が視野に。沖縄は塩害でこの時期の劣化が本土より早く、診断の価値が高い。</td><td>「沖縄の建物は本土のガイドライン通りにはいきません。実際の状態を見ませんか」</td><td class="cn">110</td></tr>
+<tr><td class="no">06</td><td><span class="cat A">管理組合</span></td><td class="nm">築20〜25年の管理組合</td><td>1回目の修繕が終わり管理が惰性になりやすい。規約が分譲時のまま放置されているケースが多い。</td><td>「規約、分譲時のままではありませんか。2026年4月の法改正に合っていない可能性があります」</td><td class="cn">100</td></tr>
+<tr><td class="no">07</td><td><span class="cat A">管理組合</span></td><td class="nm">築15〜20年の管理組合</td><td>最初の大規模修繕を迎える層。何を基準に業者を選べばよいか分からず、外部の助言を最も必要とする。</td><td>「初めての大規模修繕ですよね。業者選びの進め方だけでもご説明できます」</td><td class="cn">90</td></tr>
+<tr><td class="no">08</td><td><span class="cat A">管理組合</span></td><td class="nm">築10〜15年の管理組合</td><td>まだ困っていないが長期修繕計画の見直し時期。早期に関係を作れればその後30年の顧問先になる。</td><td>「まだ先の話ですが、長期修繕計画は5年ごとの見直しが推奨されています」</td><td class="cn">85</td></tr>
+<tr><td class="no">09</td><td><span class="cat A">管理組合</span></td><td class="nm">築10年未満の管理組合</td><td>母数は最大だが緊急性は低い。ただし規約は分譲時のままで、改正法への対応が必要なのは同じ。長期の仕込み先。</td><td>「新しい建物でも、規約は法改正に合わせる必要があります。確認だけでもいかがですか」</td><td class="cn">140</td></tr>
+<tr><td class="no">10</td><td><span class="cat A">管理組合</span></td><td class="nm">新築分譲予定・引渡し前</td><td>原始規約の段階から関与できれば最も理想的。1件取れれば長期の顧問契約になる。</td><td>「引渡し後の管理の立ち上げを、第三者の立場でお手伝いできます」</td><td class="cn">25</td></tr>
+<tr><td class="no">11</td><td><span class="cat B">士業連携</span></td><td class="nm">税理士・会計事務所</td><td>管理組合の会計を見ている事務所があり、相続相談も集まる。県内で最も母数が大きく紹介の質も高い。</td><td>「顧問先で、マンションの相続や管理のご相談を受けられることはありませんか」</td><td class="cn">380</td></tr>
+</tbody></table>
+
+  <div class="rf"><span>株式会社アイドマ・ホールディングス　共創提案</span><span class="pn">7</span></div>
+</div>
+
+<!-- ============ P8 ターゲット30（2） ============ -->
+<div class="page">
+  <div class="rh"><span><b>シンジホーム株式会社</b>　事業戦略提案書</span><span>04　営業ターゲット30選</span></div>
+  <table class="t30" style="margin-top:2mm"><thead><tr><th class="no">No</th><th class="ct">カテゴリ</th><th class="nm">想定ターゲット先</th><th>営業する理由（なぜ刺さるか）</th><th>アプローチの切り口・初回トーク</th><th class="cn">母数</th></tr></thead><tbody>
+<tr><td class="no">12</td><td><span class="cat B">士業連携</span></td><td class="nm">司法書士事務所</td><td>相続登記の義務化以降、相続案件が集中。マンションの相続は「登記の次に中身をどうするか」が必ず出る。</td><td>「相続登記の後、その住戸をどうするかというご相談はありませんか」</td><td class="cn">210</td></tr>
+<tr><td class="no">13</td><td><span class="cat B">士業連携</span></td><td class="nm">弁護士事務所</td><td>管理費滞納、専有部分のトラブル、規約の解釈。法律問題として持ち込まれた案件の実務側の受け皿になれる。</td><td>「訴訟までは要らないが、規約の整備で解決する案件はありませんか」</td><td class="cn">290</td></tr>
+<tr><td class="no">14</td><td><span class="cat B">士業連携</span></td><td class="nm">建築設計事務所</td><td>大規模修繕の設計監理を担う立場。管理士とは競合せず補完関係で、組合を一緒に支える形が作れる。</td><td>「設計監理はお願いできませんが、組合側の合意形成はお手伝いできます」</td><td class="cn">320</td></tr>
+<tr><td class="no">15</td><td><span class="cat B">士業連携</span></td><td class="nm">大規模修繕の施工・監理会社</td><td>工事の前後で組合と深く関わる。工事を取りたい側なので、組合側に立つ管理士とは役割が分かれ組みやすい。</td><td>「組合側の取りまとめが進まず、工事が止まる案件はありませんか」</td><td class="cn">85</td></tr>
+<tr><td class="no">16</td><td><span class="cat B">士業連携</span></td><td class="nm">マンション管理会社（県内）</td><td>競合に見えるが、管理者方式の監事や第三者チェックとしてなら組める。1社で多数の組合を持つ。</td><td>「管理者方式にされる場合、監事の設置が求められます。第三者としてお受けできます」</td><td class="cn">45</td></tr>
+<tr><td class="no">17</td><td><span class="cat D">金融・保険</span></td><td class="nm">損害保険代理店（マンション総合保険）</td><td>全管理組合が保険に入っており、代理店は理事長と直接つながる。築年数と修繕履歴も把握している。</td><td>「保険の更新時に、建物の状態のご相談を受けられることはありませんか」</td><td class="cn">340</td></tr>
+<tr><td class="no">18</td><td><span class="cat D">金融・保険</span></td><td class="nm">金融機関の支店（銀行・信金・信組）</td><td>積立金の運用、共用部分リフォーム融資、区分所有者の住宅ローン。組合と所有者の両方に接点を持つ。</td><td>「管理計画認定を取るとフラット35の金利が下がります。ご存じの取引先はありませんか」</td><td class="cn">270</td></tr>
+<tr><td class="no">19</td><td><span class="cat D">行政・団体</span></td><td class="nm">自治体の住宅部門・県マンション管理士会</td><td>公的な立場からの紹介は信用の裏付けになる。相談窓口やセミナーの機会がそのまま営業になる。</td><td>「管理組合向けの相談会や勉強会で、お手伝いできることはありませんか」</td><td class="cn">45</td></tr>
+<tr><td class="no">20</td><td><span class="cat D">行政・団体</span></td><td class="nm">管理組合の理事長・役員経験者</td><td>一度理事を務めた人は管理の難しさを知っている。他の組合の役員とも横のつながりを持つ。</td><td>「理事をされたときに困られたこと、他の組合でも同じことが起きています」</td><td class="cn">150</td></tr>
+<tr><td class="no">21</td><td><span class="cat C">個人オーナー</span></td><td class="nm">賃貸中住戸の区分所有オーナー</td><td>総会に来ない層だが、管理の質が利回りに直結する。賃貸管理の受託と将来の売却の両方につながる。</td><td>「お部屋の管理、どちらにお願いされていますか。建物全体の状態もあわせてご説明できます」</td><td class="cn">4,800</td></tr>
+<tr><td class="no">22</td><td><span class="cat C">個人オーナー</span></td><td class="nm">高齢単身の区分所有者</td><td>見守り・住み替え・相続対策のすべてが必要。見守りサービス構想と直結し、最も社会的意義が大きい層。</td><td>「お一人でお住まいの方に、月に一度お声かけする仕組みをご用意しています」</td><td class="cn">3,100</td></tr>
+</tbody></table>
+
+  
+
+  <div class="rf"><span>株式会社アイドマ・ホールディングス　共創提案</span><span class="pn">8</span></div>
+</div>
+
+<!-- ============ P9 ターゲット30（3） ============ -->
+<div class="page">
+  <div class="rh"><span><b>シンジホーム株式会社</b>　事業戦略提案書</span><span>04　営業ターゲット30選</span></div>
+  <table class="t30" style="margin-top:2mm"><thead><tr><th class="no">No</th><th class="ct">カテゴリ</th><th class="nm">想定ターゲット先</th><th>営業する理由（なぜ刺さるか）</th><th>アプローチの切り口・初回トーク</th><th class="cn">母数</th></tr></thead><tbody>
+<tr><td class="no">23</td><td><span class="cat C">個人オーナー</span></td><td class="nm">県外在住の区分所有者</td><td>総会に出られず建物の状態も分からない。困っても頼る先がなく、情報提供がそのまま信頼になる。</td><td>「県外にお住まいだと建物の様子が分かりませんよね。年に一度、状況をお送りできます」</td><td class="cn">2,200</td></tr>
+<tr><td class="no">24</td><td><span class="cat C">個人オーナー</span></td><td class="nm">空室・空き家になっている住戸の所有者</td><td>管理費だけが出ていく状態。売るか貸すかの判断を先送りしている人が多く、背中を押す情報を持つ強み。</td><td>「空室のまま管理費だけ払われていませんか。売る・貸す、両方の試算をお出しできます」</td><td class="cn">1,400</td></tr>
+<tr><td class="no">25</td><td><span class="cat C">個人オーナー</span></td><td class="nm">相続が発生した区分所有者</td><td>相続登記の義務化で動かざるを得ない層。感情的にも難しく、急かさず整理してくれる相手が求められる。</td><td>「相続されたお部屋、急いで決める必要はありません。選択肢だけ整理しましょう」</td><td class="cn">900</td></tr>
+<tr><td class="no">26</td><td><span class="cat E">介護・福祉</span></td><td class="nm">介護事業者・地域包括支援センター</td><td>高齢の区分所有者の住み替え・施設入居に伴う売却が発生。公的性格を持つ相手なので誠実さが評価される。</td><td>「施設に移られる際、お住まいの処分でお困りの方はいらっしゃいませんか」</td><td class="cn">160</td></tr>
+<tr><td class="no">27</td><td><span class="cat E">介護・福祉</span></td><td class="nm">遺品整理・残置物処分事業者</td><td>相続と売却の直前工程を担い、案件の発生をほぼ確実に把握している。連携構想の相手として最適。</td><td>「片付けの後、その住戸をどうするかというご相談を受けられることはありませんか」</td><td class="cn">75</td></tr>
+<tr><td class="no">28</td><td><span class="cat E">事業者連携</span></td><td class="nm">リフォーム・リノベーション会社</td><td>専有部分の工事で所有者と接点を持つ。売却前のリフォーム相談から仲介の依頼につながる経路。</td><td>「売却前提のリフォームのご相談、査定とセットでお受けできます」</td><td class="cn">420</td></tr>
+<tr><td class="no">29</td><td><span class="cat E">事業者連携</span></td><td class="nm">ハウスクリーニング・原状回復事業者</td><td>退去・売却の直前に必ず入る業者。案件の発生を最も早く知る立場で、情報の鮮度が高い。</td><td>「退去後のお部屋、その後どうされるか決まっていないケースはありませんか」</td><td class="cn">290</td></tr>
+<tr><td class="no">30</td><td><span class="cat E">事業者連携</span></td><td class="nm">県外向け移住・セカンドハウス媒体</td><td>県外の購入希望者に届く経路。母数は最小だが、管理まで分かる売主側の情報は希少価値が高い。</td><td>「沖縄のマンションは管理の差が大きい。買う前に見るべき点を記事にできます」</td><td class="cn">35</td></tr>
+</tbody></table>
+  <div class="callout" style="margin-top:5mm">
+    <b>沖縄だからこそ成立する戦略です。</b>県内の分譲マンション管理組合は推計で1,000組合に届きません。本土の主要都市なら数千〜数万です。つまり<b>全組合の「築年数・戸数・管理会社・決算月」を1枚の台帳に載せることが、物理的に可能</b>だということです。管理組合は年1回の総会でしか意思決定できず、提案すべきは総会の3〜4ヶ月前。<b>決算月順に並べた台帳があれば、毎月訪問すべき先が自動的に決まります。</b>この台帳づくりこそ、在宅ワーカーに最初にお願いすべき仕事です。
+  </div>
+  <div class="rf"><span>株式会社アイドマ・ホールディングス　共創提案</span><span class="pn">9</span></div>
+</div>
+
+<!-- ============ P9 ROI ============ -->
+<div class="page">
+  <div class="rh"><span><b>シンジホーム株式会社</b>　事業戦略提案書</span><span>05　投資対効果</span></div>
+  <div class="eyebrow">RETURN ON INVESTMENT</div>
+  <h2 class="sec">営業＆生産性支援ユニット 導入ROIシミュレーション</h2>
+  <p class="sec-sub">案件獲得数・単価と、削減できる作業時間から投資回収率を算出しています。</p>
+  <div class="divider"></div>
+
+  <div style="display:grid;grid-template-columns:82mm 1fr;gap:5mm">
+    <div>
+      <div style="border:.7pt solid var(--rule);border-radius:2mm;padding:4mm 4.4mm">
+        <div style="font-size:8.6pt;font-weight:700;color:var(--navy);margin-bottom:2mm">前提条件</div>
+        <div class="prow">
+          <div><div class="pk">月間獲得アポイント（商談）数</div><div class="pn">アイドマ営業支援によるターゲット30選への架電・手紙</div></div>
+          <div class="pv">10<small>件/月</small></div>
+        </div>
+        <div class="prow">
+          <div><div class="pk">商談成約率</div><div class="pn">上原代表の対面折衝力（業界30年の信頼）による高い成約率</div></div>
+          <div class="pv">15<small>%</small></div>
+        </div>
+        <div class="prow">
+          <div><div class="pk">案件平均粗利</div><div class="pn">規約改定・顧問報酬（50万円〜）と売買仲介手数料（100万円〜）の平均</div></div>
+          <div class="pv">85<small>万円</small></div>
+        </div>
+        <div class="prow">
+          <div><div class="pk">在宅ワーカーへの移管時間</div><div class="pn">登記取得・資料作成・SNS運用等の代行による創出時間</div></div>
+          <div class="pv">60<small>時間/月</small></div>
+        </div>
+      </div>
+
+      <div class="costbox">
+        <div class="cr"><span>アイドマ営業ユニット 月額想定</span><b>45 万円</b></div>
+        <div class="cr"><span>生産性向上（在宅ワーカー）月額想定</span><b>15 万円</b></div>
+        <div class="cr tot"><span>合計月間投資額</span><b>60 万円</b></div>
+        <div style="font-size:7.6pt;color:#8DA3C8;text-align:right;margin-top:1mm">年換算 720 万円</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="grid g2" style="margin-bottom:3.2mm">
+        <div class="stat"><div class="k">年間想定 新規獲得件数</div><div class="v">18.0<small>件/年</small></div><div class="n">月間およそ 1.5 件</div></div>
+        <div class="stat t"><div class="k">年間創出 売上粗利</div><div class="v">1,530<small>万円</small></div><div class="n">営業支援経由の粗利効果</div></div>
+      </div>
+      <div class="grid g2" style="margin-bottom:4mm">
+        <div class="stat a"><div class="k">代表の年間創出時間価値</div><div class="v">360<small>万円</small></div><div class="n">年720時間の営業・折衝シフト</div></div>
+        <div class="stat v"><div class="k">総合投資対効果（ROI）</div><div class="v">+163<small>%</small></div><div class="n">投資額720万円に対する回収倍率 2.63倍</div></div>
+      </div>
+
+      <div style="border:.7pt solid var(--rule);border-radius:2mm;padding:4mm">
+        <div style="font-size:8.6pt;font-weight:700;color:var(--navy);margin-bottom:1mm">年間収支シミュレーション（投資 vs リターン）</div>
+        <div style="font-size:7pt;color:var(--ink3);margin-bottom:2mm">単位：万円</div>
+        <svg viewBox="0 0 420 230" role="img">
+          <line x1="44" y1="190" x2="412" y2="190" stroke="#C3C9D4" stroke-width="1"/>
+          <line x1="44" y1="145" x2="412" y2="145" stroke="#EEF1F5" stroke-width="1"/>
+          <line x1="44" y1="100" x2="412" y2="100" stroke="#EEF1F5" stroke-width="1"/>
+          <line x1="44" y1="55" x2="412" y2="55" stroke="#EEF1F5" stroke-width="1"/>
+          <line x1="44" y1="10" x2="412" y2="10" stroke="#EEF1F5" stroke-width="1"/>
+          <text x="38" y="193" fill="#767C88" font-size="9" text-anchor="end" font-family="Noto Sans CJK JP">0</text>
+          <text x="38" y="148" fill="#767C88" font-size="9" text-anchor="end" font-family="Noto Sans CJK JP">500</text>
+          <text x="38" y="103" fill="#767C88" font-size="9" text-anchor="end" font-family="Noto Sans CJK JP">1,000</text>
+          <text x="38" y="58" fill="#767C88" font-size="9" text-anchor="end" font-family="Noto Sans CJK JP">1,500</text>
+          <text x="38" y="13" fill="#767C88" font-size="9" text-anchor="end" font-family="Noto Sans CJK JP">2,000</text>
+
+          <rect x="66" y="125.2" width="58" height="64.8" rx="3" fill="#9AA3B2"/>
+          <text x="95" y="120" fill="#454B56" font-size="10" font-weight="700" text-anchor="middle" font-family="Noto Sans CJK JP">720</text>
+          <text x="95" y="206" fill="#454B56" font-size="9" text-anchor="middle" font-family="Noto Sans CJK JP">アイドマ</text>
+          <text x="95" y="219" fill="#454B56" font-size="9" text-anchor="middle" font-family="Noto Sans CJK JP">年間投資額</text>
+
+          <rect x="156" y="52.3" width="58" height="137.7" rx="3" fill="#2563EB"/>
+          <text x="185" y="47" fill="#2563EB" font-size="10" font-weight="700" text-anchor="middle" font-family="Noto Sans CJK JP">1,530</text>
+          <text x="185" y="206" fill="#454B56" font-size="9" text-anchor="middle" font-family="Noto Sans CJK JP">新規売上</text>
+          <text x="185" y="219" fill="#454B56" font-size="9" text-anchor="middle" font-family="Noto Sans CJK JP">粗利</text>
+
+          <rect x="246" y="157.6" width="58" height="32.4" rx="3" fill="#0E8A7D"/>
+          <text x="275" y="152" fill="#0E8A7D" font-size="10" font-weight="700" text-anchor="middle" font-family="Noto Sans CJK JP">360</text>
+          <text x="275" y="206" fill="#454B56" font-size="9" text-anchor="middle" font-family="Noto Sans CJK JP">創出時間</text>
+          <text x="275" y="219" fill="#454B56" font-size="9" text-anchor="middle" font-family="Noto Sans CJK JP">価値</text>
+
+          <rect x="336" y="19.9" width="58" height="170.1" rx="3" fill="#6D48C7"/>
+          <text x="365" y="15" fill="#6D48C7" font-size="10" font-weight="700" text-anchor="middle" font-family="Noto Sans CJK JP">1,890</text>
+          <text x="365" y="206" fill="#454B56" font-size="9" text-anchor="middle" font-family="Noto Sans CJK JP">総合</text>
+          <text x="365" y="219" fill="#454B56" font-size="9" text-anchor="middle" font-family="Noto Sans CJK JP">リターン計</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="concl">
+    <div class="ct2">結論：1年目から黒字化し、10年ビジョンの初速をつくる</div>
+    <p>上原代表が<b style="color:#fff">月間1〜2件の新規案件を獲得するだけ</b>で、年間投資額720万円は<b style="color:#fff">およそ4〜5ヶ月で回収</b>できます。さらに重要なのは、創出される年720時間が「対面で信頼を得る時間」に振り替わることです。マンション管理士の報酬はその時間からしか生まれません。<b style="color:#fff">時間の振替そのものが、この投資の本体です。</b></p>
+  </div>
+
+  <div class="callout warn" style="margin-top:4mm">
+    <b>この試算の前提について。</b>成約率15％と案件平均粗利85万円は、上原代表の対面折衝力を前提とした想定値です。<b>実際の顧問料水準と、直近の成約実績をお聞かせいただければ、この試算は実物に置き換わります。</b>また管理組合は総会でしか意思決定できないため、初回接触から契約までに3〜4ヶ月の時間差が生じます。1年目は契約が出そろう前に終わる点はご承知おきください。
+  </div>
+
+  <div class="rf"><span>株式会社アイドマ・ホールディングス　共創提案</span><span class="pn">10</span></div>
+</div>
+
+<!-- ============ P10 次のステップ ============ -->
+<div class="page">
+  <div class="rh"><span><b>シンジホーム株式会社</b>　事業戦略提案書</span><span>06　次のステップ</span></div>
+  <div class="eyebrow">NEXT ACTION</div>
+  <h2 class="sec">90日で、何を作るか</h2>
+  <p class="sec-sub">90日の目標は契約数ではなく、<b>県内全組合の台帳を完成させること</b>です。台帳は一度作れば10年使えます。</p>
+  <div class="divider"></div>
+
+  <div style="border:.7pt solid var(--rule);border-radius:2mm;padding:4mm 5mm;margin-bottom:5mm">
+    <div class="step">
+      <div class="sd">DAY 1-30</div>
+      <div>
+        <h4>台帳をつくる</h4>
+        <p>在宅ワーカーへの移管を県内マンションの基礎台帳づくりから開始します。項目は所在地・築年・戸数・管理会社・<b>決算月・総会時期</b>。並行して築35年以上の組合へ先行接触し、切り口は「法改正への対応はお済みですか」に一本化して反応を検証します。<br><b>30日目の到達点：</b>台帳の骨格が完成し、築35年以上の組合への接触が始まっている状態。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sd">DAY 31-60</div>
+      <div>
+        <h4>決算月順に当たりはじめる</h4>
+        <p>台帳から「3〜4ヶ月後に総会を迎える組合」を抽出し、そこに集中します。商談では<b>管理と仲介の関係（利益相反）を最初に書面で開示</b>します。議事録作成を在宅ワーカーへ移管（内容確定は代表）。士業連携（司法書士・税理士・保険代理店）への接触も開始します。<br><b>60日目の到達点：</b>顧問契約1〜2組合。決算月ベースの訪問計画が回りはじめている状態。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sd">DAY 61-90</div>
+      <div>
+        <h4>来年の総会シーズンに備える</h4>
+        <p>顧問契約2〜3組合。<b>単発の規約改正で終わらせず、継続の顧問関係に変える</b>ことが最重要です。台帳を完成させ、今後12ヶ月の月別訪問計画に落とします。顧問先の区分所有者へ相談窓口の存在だけを静かに知らせます（売り込まない）。<br><b>90日目の到達点：</b>台帳完成と顧問契約2〜3組合。ここから先は台帳が営業を決めます。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-bottom:5mm">
+    <div class="card">
+      <h4 style="color:var(--rose)">留意点①　管理の顧客を、売るための手段にしない</h4>
+      <p>不動産の出口が見えると、つい管理先を「見込み客リスト」として扱いたくなります。<b>それをやった瞬間にこの構造は死にます。</b>管理組合の世界は狭く、沖縄はさらに狭い。1件の評判が全県に伝わります。管理は管理として完結させ、不動産は相談されたときだけ受ける——この線を守ることが、結果として最も多くの案件を生みます。</p>
+    </div>
+    <div class="card">
+      <h4 style="color:var(--rose)">留意点②　1人で持てる組合数には上限がある</h4>
+      <p>総会、理事会、日常の相談。1組合あたり月4時間としても、25組合で月100時間です。そこに不動産の実務が重なれば破綻します。<b>上限に近づいた時点で、人を増やすか顧問料を上げるかの判断が必要</b>になります。Phase 2の採用は、その判断の結果として行うものです。</p>
+    </div>
+  </div>
+
+  <div class="rf"><span>株式会社アイドマ・ホールディングス　共創提案</span><span class="pn">11</span></div>
+</div>
+
+<!-- ============ P12 確認事項・出典 ============ -->
+<div class="page">
+  <div class="rh"><span><b>シンジホーム株式会社</b>　事業戦略提案書</span><span>06　次のステップ</span></div>
+  <div class="eyebrow">CONFIRMATION &amp; SOURCES</div>
+  <h2 class="sec">ご確認事項と、本提案書の出典</h2>
+  <p class="sec-sub">本提案書の試算は公開情報と一般的な水準に基づく想定値です。下記をお聞かせいただければ、実データに置き換えてご提出し直します。</p>
+  <div class="divider"></div>
+  <h3 class="blk">ご確認いただきたい事項</h3>
+  <p class="blk-sub">下記をお聞かせいただければ、本提案書の試算は実データに置き換わります</p>
+  <div class="grid g3" style="margin-bottom:6mm">
+    <div class="card tint"><h4>① 現在の顧問契約</h4><p>いま顧問契約している管理組合の数と、1組合あたりの月額顧問料。</p></div>
+    <div class="card tint"><h4>② 1組合あたりの時間</h4><p>総会・理事会・日常相談を合計した、1組合あたりの月平均対応時間。</p></div>
+    <div class="card tint"><h4>③ 不動産事業の実績</h4><p>開始以降に受けたご相談の件数と、その入り方（紹介・問い合わせ等）。</p></div>
+  </div>
+
+  <h3 class="blk">出典</h3>
+  <div class="srcs">
+    ・改正区分所有法（令和7年法律第47号／2025年5月23日成立・2026年4月1日施行／出席者多数決、建替え決議の3/4への緩和、更新・売却・取壊し決議の全員合意から4/5への変更、所在等不明区分所有者への対応）：法務省・国土交通省および各法律事務所の解説<br>
+    ・マンションにおける外部管理者方式等に関するガイドライン（2024年6月7日公表／利益相反取引の情報開示、監事の設置と監査／理事会を設置しない方式を採用する管理業者が約7割）：国土交通省<br>
+    ・マンション管理計画認定制度（2022年4月開始／固定資産税の減額1/6〜1/2、フラット35の金利引下げ）：国土交通省<br>
+    ・相続登記の義務化（2024年4月1日施行／3年以内・過料10万円以下／施行前の相続分は2027年3月31日期限）、住所等変更登記の義務化（2026年4月1日）：法務省<br>
+    ・築40年以上のマンション戸数（2023年末 約137万戸→10年後 約274万戸→20年後 約464万戸／築40年超で世帯主70歳以上の住戸が5割超）：国土交通省<br>
+    ・大規模修繕の周期の目安（12〜15年）および沖縄における塩害・台風・紫外線によるRC造の劣化：国土交通省ガイドラインおよび沖縄県内事業者の解説<br>
+    <br>
+    <b>推計であることの明示。</b>ターゲット30選の母数、とくに沖縄県内の分譲マンション管理組合数（約850組合）は公的統計で直接確認した数字ではなく、本提案書における推計です。台帳づくりの最初の成果は、この数字を実データに置き換えることでもあります。ROIシミュレーションの各数値は想定値であり、実績の共有により精度が上がります。
+  </div>
+
+  
+  <div class="concl" style="margin-top:6mm">
+    <div class="ct2">最後に</div>
+    <p>上原代表がお持ちの「業界30年の知見」と「後悔してほしくないという原体験」は、後から買えるものではありません。不足しているのは、それを届ける<b style="color:#fff">件数</b>と、届けるための<b style="color:#fff">時間</b>だけです。本提案書の2つのユニットは、そのどちらもを外から補うためのものです。まずは県内全組合の台帳づくりから、ご一緒させてください。</p>
+  </div>
+  <div class="rf"><span>株式会社アイドマ・ホールディングス　共創提案</span><span class="pn">12</span></div>
+</div>
