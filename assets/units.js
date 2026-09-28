@@ -101,6 +101,21 @@ window.UNIT_MASTER = [
     items: ['For Japan出演', 'BS放送＋TVer配信', '公式SNSでの切り抜き配信']
   },
   {
+    key: 'b2b-conference', name: 'B2Bカンファレンス', short: 'B2Bカンファレンス',
+    role: 'BtoB接点の創出', desc: 'カンファレンスでのピッチ登壇・ブース出展から、リスト提供や動画制作まで',
+    price: 30, months: 13, members: 3,
+    items: [
+      'ピッチ登壇',
+      'ブース出展',
+      'リスト提供',
+      '冊子内チラシ',
+      'For JAPAN出演',
+      '切り抜き動画制作',
+      'ブース装飾松',
+      'ピッチ制作サポート'
+    ]
+  },
+  {
     key: 'secretary', name: '秘書ユニット', short: '秘書',
     role: '管理サポートの整備', desc: '役員秘書・営業事務・各種連絡業務やリサーチ業務の代行',
     price: 10, months: 13, members: 2,

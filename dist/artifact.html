@@ -468,6 +468,21 @@ window.UNIT_MASTER = [
     items: ['For Japan出演', 'BS放送＋TVer配信', '公式SNSでの切り抜き配信']
   },
   {
+    key: 'b2b-conference', name: 'B2Bカンファレンス', short: 'B2Bカンファレンス',
+    role: 'BtoB接点の創出', desc: 'カンファレンスでのピッチ登壇・ブース出展から、リスト提供や動画制作まで',
+    price: 30, months: 13, members: 3,
+    items: [
+      'ピッチ登壇',
+      'ブース出展',
+      'リスト提供',
+      '冊子内チラシ',
+      'For JAPAN出演',
+      '切り抜き動画制作',
+      'ブース装飾松',
+      'ピッチ制作サポート'
+    ]
+  },
+  {
     key: 'secretary', name: '秘書ユニット', short: '秘書',
     role: '管理サポートの整備', desc: '役員秘書・営業事務・各種連絡業務やリサーチ業務の代行',
     price: 10, months: 13, members: 2,
@@ -768,10 +783,14 @@ window.UNIT_MASTER = [
     });
     return best;
   }
+  /* プランごとに実施内容を差し替えている場合はそちらを使う */
+  function itemsOf(u) {
+    return (u && u.items && u.items.length) ? u.items : master(u.key).items;
+  }
   function unitItems(p) {
     var out = [];
     p.units.forEach(function (u) {
-      master(u.key).items.forEach(function (it) { if (out.indexOf(it) < 0) out.push(it); });
+      itemsOf(u).forEach(function (it) { if (out.indexOf(it) < 0) out.push(it); });
     });
     return out;
   }
@@ -1029,12 +1048,20 @@ window.UNIT_MASTER = [
     } else {
       p.units.forEach(function (u, ui) {
         var base = 'plans.' + k + '.units.' + ui + '.';
+        var items = itemsOf(u), custom = !!(u.items && u.items.length);
         h.push('<div class="urow"><div class="un">' + esc(master(u.key).name) +
-          '<span class="k">' + master(u.key).items.length + '項目</span></div>' +
+          '<span class="k">' + items.length + '項目' + (custom ? '・変更あり' : '') + '</span></div>' +
           '<div class="row">' +
           '<div><span class="mini">料金（万円/月）</span><input type="number" step="any" min="0" data-path="' + base + 'price" data-type="num" value="' + esc(u.price) + '"></div>' +
           '<div><span class="mini">支援期間（ヶ月）</span><input type="number" step="any" min="0" data-path="' + base + 'months" data-type="num" value="' + esc(u.months) + '"></div>' +
           '<div><span class="mini">人数（名）</span><input type="number" step="any" min="0" data-path="' + base + 'members" data-type="num" value="' + esc(u.members) + '"></div>' +
+          '</div>' +
+          '<div style="margin-top:8px">' +
+          (custom
+            ? '<span class="mini">実施内容（' + esc(p.label) + 'だけの内容・1行1項目）</span>' +
+            '<textarea data-path="' + base + 'items" data-type="lines" style="min-height:104px">' + esc(items.join('\n')) + '</textarea>' +
+            '<button type="button" class="ghost mini-btn" style="margin-top:6px" data-act="items-reset" data-plan="' + k + '" data-i="' + ui + '">共通の実施内容に戻す</button>'
+            : '<button type="button" class="ghost mini-btn" data-act="items-edit" data-plan="' + k + '" data-i="' + ui + '">このプランだけ実施内容を変更</button>') +
           '</div></div>');
       });
     }
@@ -1230,7 +1257,7 @@ window.UNIT_MASTER = [
       });
       var picks = [];
       if (delta.length && delta.length <= 2) {
-        delta.forEach(function (u) { master(u.key).items.slice(0, 2).forEach(function (i) { picks.push(i); }); });
+        delta.forEach(function (u) { itemsOf(u).slice(0, 2).forEach(function (i) { picks.push(i); }); });
       } else {
         picks = delta.map(function (u) { return master(u.key).name; });
       }
@@ -1238,7 +1265,7 @@ window.UNIT_MASTER = [
       return out;
     }
     if (p.units.length === 1) {
-      return master(p.units[0].key).items.slice(0, 4).map(function (t) { return { t: t }; });
+      return itemsOf(p.units[0]).slice(0, 4).map(function (t) { return { t: t }; });
     }
     return p.units.slice(0, 4).map(function (u) { return { t: master(u.key).name }; });
   }
@@ -1657,14 +1684,18 @@ window.UNIT_MASTER = [
       state.basic.recommend = r === i ? -1 : (r > i ? r - 1 : r);
     } else if (act === 'basic-rec') {
       state.basic.recommend = i;
+    } else if (act === 'items-edit' || act === 'items-reset') {
+      var pk = el.getAttribute('data-plan'), pu = state.plans[pk] && state.plans[pk].units[i];
+      if (!pu) return;
+      if (act === 'items-edit') pu.items = master(pu.key).items.slice();
+      else delete pu.items;
     } else { return; }
     save(); renderAll();
   }
 
   document.addEventListener('click', function (e) {
     var el = e.target.closest ? e.target.closest('[data-act]') : null;
-    if (el && el.closest('#form') && el.getAttribute('data-act').indexOf('basic-') === 0
-      && el.tagName === 'BUTTON') onAction(el);
+    if (el && el.closest('#form') && el.tagName === 'BUTTON') onAction(el);
   });
 
   document.addEventListener('input', function (e) {
