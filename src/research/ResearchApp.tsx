@@ -21,9 +21,9 @@ import {
 } from 'lucide-react';
 import { csvToRecords, toCsv } from './csv';
 import { CATEGORIES, CATEGORY_BY_ID, type CategoryId } from './industries';
-import { buildCompanies, type Company } from './model';
+import { buildCompanies, staffNames, type Company } from './model';
 import { recommend, targetCategories, type Query, type Reason, type Recommendation } from './recommend';
-import { clearDataset, loadDataset, saveDataset, type Dataset } from './storage';
+import { DATA_VERSION, clearDataset, loadDataset, saveDataset, type Dataset } from './storage';
 
 const PREFECTURES = '北海道 青森県 岩手県 宮城県 秋田県 山形県 福島県 茨城県 栃木県 群馬県 埼玉県 千葉県 東京都 神奈川県 新潟県 富山県 石川県 福井県 山梨県 長野県 岐阜県 静岡県 愛知県 三重県 滋賀県 京都府 大阪府 兵庫県 奈良県 和歌山県 鳥取県 島根県 岡山県 広島県 山口県 徳島県 香川県 愛媛県 高知県 福岡県 佐賀県 長崎県 熊本県 大分県 宮崎県 鹿児島県 沖縄県'.split(' ');
 const EXAMPLES = ['建設', '飲食', '介護', '不動産', '製造', '税理士', 'IT', '美容'];
@@ -59,6 +59,7 @@ export function ResearchApp() {
       const records = csvToRecords(await readText(file));
       if (!records.length || !('企業名' in records[0])) throw new Error('「企業名」列が見つかりません。受注一覧の CSV を選んでください。');
       const d: Dataset = {
+        version: DATA_VERSION,
         companies: buildCompanies(records),
         fileName: file.name,
         importedAt: new Date().toLocaleString('ja-JP'),
@@ -109,6 +110,12 @@ export function ResearchApp() {
           <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
             このブラウザでは保存できなかったため、ページを閉じると再度 CSV の読み込みが必要です。
           </p>
+        )}
+        {!loading && data && data.version !== DATA_VERSION && (
+          <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+            <span className="flex-1">アプリが更新されました。支援担当者での絞り込みを使うには、受注一覧 CSV を再取込してください。</span>
+            <FilePicker onFile={importFile} compact />
+          </div>
         )}
         {loading ? (
           <p className="py-20 text-center text-slate-500">読み込み中…</p>
@@ -196,6 +203,8 @@ function Finder({ companies }: { companies: Company[] }) {
     status: 'current',
     includeHubs: true,
     requireContact: false,
+    staff: '',
+    staffScope: 'support',
   });
   const [view, setView] = useState<'all' | 'direct' | 'hub'>('all');
   const [limit, setLimit] = useState(PAGE);
@@ -206,6 +215,16 @@ function Finder({ companies }: { companies: Company[] }) {
     companies.forEach((c) => c.industry && c.industry !== 'その他' && count.set(c.industry, (count.get(c.industry) ?? 0) + 1));
     return [...count.entries()].sort((a, b) => b[1] - a[1]);
   }, [companies]);
+
+  // 担当者の候補（担当している企業数の多い順）
+  const staffList = useMemo(() => {
+    const count = new Map<string, number>();
+    for (const c of companies) {
+      const names = new Set(c.orders.flatMap((o) => staffNames(o, query.staffScope)));
+      names.forEach((n) => !n.includes('ダミー') && count.set(n, (count.get(n) ?? 0) + 1));
+    }
+    return [...count.entries()].sort((a, b) => b[1] - a[1]);
+  }, [companies, query.staffScope]);
 
   const results = useMemo(() => recommend(companies, deferred), [companies, deferred]);
   const shown = results.filter((r) => view === 'all' || r.type === view);
@@ -218,13 +237,13 @@ function Finder({ companies }: { companies: Company[] }) {
     update({ categories: query.categories.includes(id) ? query.categories.filter((c) => c !== id) : [...query.categories, id] });
 
   function exportCsv() {
-    const header = ['順位', 'おすすめ度', '区分', '企業名', '代表者役職', '代表者名', '電話番号', 'メール', 'HP', '都道府県', '住所', '業種', '事業内容', '従業員数', '支援状況', '社内担当', 'おすすめ理由'];
+    const header = ['順位', 'おすすめ度', '区分', '企業名', '代表者役職', '代表者名', '電話番号', 'メール', 'HP', '都道府県', '住所', '業種', '事業内容', '従業員数', '支援状況', '支援担当者', '受注担当者', 'おすすめ理由'];
     const rows = shown.map((r, i) => {
       const c = r.company;
       return [
         i + 1,
         r.score,
-        r.type === 'direct' ? '該当業界' : '橋渡し役',
+        r.type === 'hub' ? '橋渡し役' : industryQuery ? '該当業界' : '担当企業',
         c.name,
         c.repTitle,
         c.repName,
@@ -237,6 +256,7 @@ function Finder({ companies }: { companies: Company[] }) {
         [c.products, c.summary].filter(Boolean).join(' / '),
         c.employees ?? '',
         c.orders[0]?.status ?? '',
+        [...new Set(c.orders.flatMap((o) => o.supporters ?? []))].join('、'),
         c.orders[0]?.owner ?? '',
         r.reasons.map((x) => x.text).join(' / '),
       ];
@@ -249,7 +269,8 @@ function Finder({ companies }: { companies: Company[] }) {
     URL.revokeObjectURL(a.href);
   }
 
-  const hasQuery = !!(deferred.text.trim() || deferred.categories.length);
+  const industryQuery = !!(deferred.text.trim() || deferred.categories.length);
+  const hasQuery = industryQuery || !!deferred.staff.trim();
 
   return (
     <div className="space-y-5">
@@ -303,7 +324,7 @@ function Finder({ companies }: { companies: Company[] }) {
           })}
         </div>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <label className="text-xs font-semibold text-slate-600">
             地域
             <select value={query.prefecture} onChange={(e) => update({ prefecture: e.target.value })} className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-2 py-2 text-sm">
@@ -321,6 +342,36 @@ function Finder({ companies }: { companies: Company[] }) {
               <option value="all">すべて</option>
             </select>
           </label>
+          <div className="text-xs font-semibold text-slate-600">
+            <label htmlFor="staff">{query.staffScope === 'support' ? '支援担当者' : '担当者（支援・受注・責任者）'}</label>
+            <div className="relative mt-1">
+              <User className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <input
+                id="staff"
+                list="staff-list"
+                value={query.staff}
+                onChange={(e) => update({ staff: e.target.value })}
+                placeholder="名前で絞り込み（姓だけでも可）"
+                className="block w-full rounded-lg border border-slate-300 bg-white py-2 pl-7 pr-2 text-sm font-normal"
+              />
+              <datalist id="staff-list">
+                {staffList.map(([name, n]) => (
+                  <option key={name} value={name}>
+                    {n}社
+                  </option>
+                ))}
+              </datalist>
+            </div>
+            <label className="mt-1.5 flex cursor-pointer items-center gap-1.5 font-normal text-slate-600">
+              <input
+                type="checkbox"
+                checked={query.staffScope === 'any'}
+                onChange={(e) => update({ staffScope: e.target.checked ? 'any' : 'support' })}
+                className="h-3.5 w-3.5 accent-indigo-600"
+              />
+              受注担当者・責任者も含める
+            </label>
+          </div>
           <div className="flex flex-col justify-end gap-1.5 text-sm">
             <Toggle checked={query.includeHubs} onChange={(v) => update({ includeHubs: v })} label="橋渡し役の企業も探す" />
             <Toggle checked={query.requireContact} onChange={(v) => update({ requireContact: v })} label="連絡先がある企業のみ" />
@@ -341,7 +392,7 @@ function Finder({ companies }: { companies: Company[] }) {
               {(
                 [
                   ['all', 'すべて', results.length],
-                  ['direct', '該当業界の企業', results.filter((r) => r.type === 'direct').length],
+                  ['direct', industryQuery ? '該当業界の企業' : '担当企業', results.filter((r) => r.type === 'direct').length],
                   ['hub', '橋渡し役', results.filter((r) => r.type === 'hub').length],
                 ] as const
               ).map(([id, label, n]) => (
@@ -363,7 +414,7 @@ function Finder({ companies }: { companies: Company[] }) {
           ) : (
             <div className="space-y-3">
               {shown.slice(0, limit).map((r, i) => (
-                <ResultCard key={r.company.key} rec={r} rank={i + 1} />
+                <ResultCard key={r.company.key} rec={r} rank={i + 1} industryQuery={industryQuery} />
               ))}
               {shown.length > limit && (
                 <button onClick={() => setLimit((l) => l + PAGE)} className="w-full rounded-xl border border-slate-200 bg-white py-3 text-sm font-semibold text-indigo-700 hover:bg-indigo-50">
@@ -452,10 +503,11 @@ function stars(score: number) {
   return '★'.repeat(n) + '☆'.repeat(5 - n);
 }
 
-function ResultCard({ rec, rank }: { rec: Recommendation; rank: number }) {
+function ResultCard({ rec, rank, industryQuery }: { rec: Recommendation; rank: number; industryQuery: boolean }) {
   const [open, setOpen] = useState(false);
   const c = rec.company;
   const latest = c.orders[0];
+  const supporters = [...new Set(c.orders.flatMap((o) => o.supporters ?? []))];
   const business = [c.products, c.summary].filter(Boolean);
   const google = `https://www.google.com/search?q=${encodeURIComponent(`${c.name} ${c.prefecture}`)}`;
   return (
@@ -466,7 +518,7 @@ function ResultCard({ rec, rank }: { rec: Recommendation; rank: number }) {
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <h3 className="text-base font-bold text-slate-900">{c.name}</h3>
             <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${rec.type === 'direct' ? 'bg-indigo-100 text-indigo-700' : 'bg-teal-100 text-teal-700'}`}>
-              {rec.type === 'direct' ? '該当業界' : '橋渡し役'}
+              {rec.type === 'hub' ? '橋渡し役' : industryQuery ? '該当業界' : '担当企業'}
             </span>
             {latest && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">{latest.status}</span>}
             <span className="ml-auto text-sm tracking-tight text-amber-500" title={`スコア ${rec.score}`}>
@@ -476,6 +528,7 @@ function ResultCard({ rec, rank }: { rec: Recommendation; rank: number }) {
           <p className="mt-0.5 text-xs text-slate-500">
             {c.industry || '業種未登録'}
             {c.employees ? ` ・ 従業員${c.employees.toLocaleString()}名` : ''}
+            {supporters.length > 0 && ` ・ 支援担当：${supporters.join('、')}`}
           </p>
 
           <div className="mt-3 grid gap-x-4 gap-y-1.5 text-sm sm:grid-cols-2">
@@ -572,7 +625,11 @@ function ResultCard({ rec, rank }: { rec: Recommendation; rank: number }) {
                       <td className="py-1 pr-2 tabular-nums">{o.date || '日付なし'}</td>
                       <td className="py-1 pr-2">{o.service}</td>
                       <td className="py-1 pr-2">{o.status}</td>
-                      <td className="hidden py-1 pr-2 sm:table-cell">{o.owner}</td>
+                      <td className="hidden py-1 pr-2 sm:table-cell">
+                        {o.supporters?.length ? `支援：${o.supporters.join('、')}` : ''}
+                        {o.supporters?.length && o.owner ? ' / ' : ''}
+                        {o.owner ? `受注：${o.owner}` : ''}
+                      </td>
                       <td className="py-1 text-right tabular-nums">{o.amount ? `${o.amount.toLocaleString()}円` : ''}</td>
                     </tr>
                   ))}
