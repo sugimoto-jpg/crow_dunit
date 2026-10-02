@@ -57,6 +57,16 @@ function yearsSince(date: string, now: Date): number {
   return Number.isNaN(t) ? Infinity : (now.getTime() - t) / (365.25 * 24 * 3600 * 1000);
 }
 
+/** 地域・取引状況・連絡先の条件に合う企業か（おすすめ検索と業界別グラフで共通） */
+export function passesFilters(c: Company, q: Pick<Query, 'status' | 'prefecture' | 'requireContact'>): boolean {
+  const anyActive = c.orders.some((o) => statusGroup(o.status) === 'active');
+  if (q.status === 'active' && !anyActive) return false;
+  if (q.status === 'current' && !anyActive && statusGroup(c.orders[0]?.status ?? '') === 'cancelled') return false;
+  if (q.prefecture && c.prefecture !== q.prefecture) return false;
+  if (q.requireContact && !c.phone && !c.hp && !c.email) return false;
+  return true;
+}
+
 export function recommend(companies: Company[], q: Query, now = new Date()): Recommendation[] {
   const terms = splitTerms(q.text);
   const targets = targetCategories(q);
@@ -77,11 +87,7 @@ export function recommend(companies: Company[], q: Query, now = new Date()): Rec
   const out: Recommendation[] = [];
   for (const c of companies) {
     const group = statusGroup(c.orders[0]?.status ?? '');
-    const anyActive = c.orders.some((o) => statusGroup(o.status) === 'active');
-    if (q.status === 'active' && !anyActive) continue;
-    if (q.status === 'current' && !anyActive && group === 'cancelled') continue;
-    if (q.prefecture && c.prefecture !== q.prefecture) continue;
-    if (q.requireContact && !c.phone && !c.hp && !c.email) continue;
+    if (!passesFilters(c, q)) continue;
     let staffOrder: Order | undefined;
     let staffName = '';
     if (staff) {
