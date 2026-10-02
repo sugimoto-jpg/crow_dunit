@@ -1,5 +1,5 @@
 import { CATEGORY_BY_ID, COLOR_TIPS, HUBS, UNIVERSAL_HUB_INDUSTRIES, categorize, type CategoryId } from './industries';
-import { statusGroup, type Company } from './model';
+import { staffNames, statusGroup, type Company, type Order } from './model';
 
 export interface Query {
   /** 繋がりたい業界・キーワード（空白・読点区切りで複数可） */
@@ -12,6 +12,9 @@ export interface Query {
   /** 橋渡し役（関連業界の企業）も含めるか */
   includeHubs: boolean;
   requireContact: boolean;
+  /** 担当者名（部分一致。空なら絞り込まない） */
+  staff: string;
+  staffScope: 'support' | 'any';
 }
 
 export type ReasonKind = 'match' | 'hub' | 'relation' | 'contact' | 'caution';
@@ -57,7 +60,8 @@ function yearsSince(date: string, now: Date): number {
 export function recommend(companies: Company[], q: Query, now = new Date()): Recommendation[] {
   const terms = splitTerms(q.text);
   const targets = targetCategories(q);
-  if (!terms.length && !targets.length) return [];
+  const staff = q.staff.trim();
+  if (!terms.length && !targets.length && !staff) return [];
 
   // 橋渡し役になれる大分類と、その理由
   const hubWhy = new Map<CategoryId, string[]>();
@@ -78,6 +82,18 @@ export function recommend(companies: Company[], q: Query, now = new Date()): Rec
     if (q.status === 'current' && !anyActive && group === 'cancelled') continue;
     if (q.prefecture && c.prefecture !== q.prefecture) continue;
     if (q.requireContact && !c.phone && !c.hp && !c.email) continue;
+    let staffOrder: Order | undefined;
+    let staffName = '';
+    if (staff) {
+      for (const o of c.orders) {
+        staffName = staffNames(o, q.staffScope).find((n) => n.includes(staff)) ?? '';
+        if (staffName) {
+          staffOrder = o;
+          break;
+        }
+      }
+      if (!staffOrder) continue;
+    }
 
     const reasons: Reason[] = [];
     let fit = 0;
@@ -131,7 +147,16 @@ export function recommend(companies: Company[], q: Query, now = new Date()): Rec
         reasons.push({ kind: 'hub', text: `「${c.industry}」は業界を問わず多くの顧問先・顧客を持つため、${targetLabels}の企業を紹介してもらえる可能性があります` });
       }
     }
+    // 業界の指定がなく担当者だけで探すときは、その担当者の企業をすべて候補にする
+    if (!terms.length && !targets.length) fit = 10;
     if (!fit) continue;
+    if (staffOrder) {
+      const role = staffOrder.supporters?.includes(staffName) ? '支援担当' : staffOrder.manager === staffName ? '責任者' : '受注担当';
+      reasons.unshift({
+        kind: 'relation',
+        text: `${staffName}さんが${role}（${staffOrder.date || '日付なし'}・${staffOrder.service}）で、直接お願いしやすい関係です`,
+      });
+    }
 
     // 4) アイドマとの関係の深さ（紹介をお願いしやすいか）
     let rel = 0;
@@ -140,7 +165,7 @@ export function recommend(companies: Company[], q: Query, now = new Date()): Rec
       rel += 20;
       reasons.push({
         kind: 'relation',
-        text: `現在アイドマが支援中（${activeOrder.status}・${activeOrder.service}）で、担当の${activeOrder.owner || '社内担当者'}さん経由で相談しやすい`,
+        text: `現在アイドマが支援中（${activeOrder.status}・${activeOrder.service}）で、担当の${activeOrder.supporters?.length ? activeOrder.supporters.join('・') : activeOrder.owner || '社内担当者'}さん経由で相談しやすい`,
       });
     }
     if (c.orders.length >= 2) {

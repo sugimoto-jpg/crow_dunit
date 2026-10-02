@@ -6,7 +6,12 @@ export interface Order {
   amount: number;
   service: string;
   status: string;
+  /** 受注担当者（空なら責任者） */
   owner: string;
+  /** 責任者 */
+  manager: string;
+  /** 支援担当者（「、」区切りで複数いることがある） */
+  supporters: string[];
   kind: string;
 }
 
@@ -64,6 +69,17 @@ function clean(v: string | undefined): string {
   return /^(n\/a|なし|不明|-|－)$/i.test(s) ? '' : s;
 }
 
+/** 「山田 太郎、佐藤 花子」のような複数名の欄を分ける */
+export function splitNames(v: string | undefined): string[] {
+  return [...new Set(clean(v).split(/[、,，/／\n]+/).map((s) => s.trim()).filter(Boolean))];
+}
+
+/** 担当者で絞り込むときに見る名前（scope: support は支援担当者だけ、any は受注担当者・責任者も含む） */
+export function staffNames(o: Order, scope: 'support' | 'any'): string[] {
+  const support = o.supporters ?? [];
+  return scope === 'support' ? support : [...new Set([...support, o.owner, o.manager ?? ''].filter(Boolean))];
+}
+
 function normalizeUrl(v: string): string {
   const s = clean(v);
   if (!s) return '';
@@ -102,6 +118,8 @@ export function buildCompanies(records: Record<string, string>[]): Company[] {
       service: clean(r['受注サービス']).replace(/\s*\(無効\)$/, ''),
       status: clean(r['支援状況']),
       owner: clean(r['受注担当者']) || clean(r['責任者']),
+      manager: clean(r['責任者']),
+      supporters: splitNames(r['支援担当者']),
       kind: clean(r['アポイント種別']),
     };
 
