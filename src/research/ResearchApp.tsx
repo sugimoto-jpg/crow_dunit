@@ -22,7 +22,7 @@ import {
 import { csvToRecords, toCsv } from './csv';
 import { CATEGORIES, CATEGORY_BY_ID, type CategoryId } from './industries';
 import { buildCompanies, staffNames, type Company } from './model';
-import { recommend, targetCategories, type Query, type Reason, type Recommendation } from './recommend';
+import { passesFilters, recommend, targetCategories, type Query, type Reason, type Recommendation } from './recommend';
 import { DATA_VERSION, clearDataset, loadDataset, saveDataset, type Dataset } from './storage';
 
 const PREFECTURES = '北海道 青森県 岩手県 宮城県 秋田県 山形県 福島県 茨城県 栃木県 群馬県 埼玉県 千葉県 東京都 神奈川県 新潟県 富山県 石川県 福井県 山梨県 長野県 岐阜県 静岡県 愛知県 三重県 滋賀県 京都府 大阪府 兵庫県 奈良県 和歌山県 鳥取県 島根県 岡山県 広島県 山口県 徳島県 香川県 愛媛県 高知県 福岡県 佐賀県 長崎県 熊本県 大分県 宮崎県 鹿児島県 沖縄県'.split(' ');
@@ -226,6 +226,20 @@ function Finder({ companies }: { companies: Company[] }) {
     return [...count.entries()].sort((a, b) => b[1] - a[1]);
   }, [companies, query.staffScope]);
 
+  // 地域・取引状況・連絡先の条件だけを当てた企業（業界別グラフ用）
+  const { prefecture, status, requireContact } = query;
+  const scoped = useMemo(
+    () => companies.filter((c) => passesFilters(c, { prefecture, status, requireContact })),
+    [companies, prefecture, status, requireContact],
+  );
+  const scopeLabel = [
+    prefecture || '全国',
+    { current: '解約先を除く', active: '支援中のみ', all: 'すべての取引状況' }[status],
+    requireContact ? '連絡先あり' : '',
+  ]
+    .filter(Boolean)
+    .join('・');
+
   const results = useMemo(() => recommend(companies, deferred), [companies, deferred]);
   const shown = results.filter((r) => view === 'all' || r.type === view);
   const targets = targetCategories(deferred);
@@ -380,7 +394,7 @@ function Finder({ companies }: { companies: Company[] }) {
       </section>
 
       {!hasQuery ? (
-        <Overview companies={companies} industries={industries} onPick={(t) => update({ text: t })} onCategory={(id) => update({ categories: [id] })} />
+        <Overview companies={scoped} scope={scopeLabel} onPick={(t) => update({ text: t })} onCategory={(id) => update({ categories: [id] })} />
       ) : (
         <section>
           <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -440,30 +454,46 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
 
 function Overview({
   companies,
-  industries,
+  scope,
   onPick,
   onCategory,
 }: {
   companies: Company[];
-  industries: [string, number][];
+  scope: string;
   onPick: (t: string) => void;
   onCategory: (id: CategoryId) => void;
 }) {
-  const byCat = useMemo(() => {
+  const { byCat, uncategorized, industries } = useMemo(() => {
     const m = new Map<CategoryId, number>();
-    companies.forEach((c) => c.categories.forEach((cat) => m.set(cat, (m.get(cat) ?? 0) + 1)));
-    return CATEGORIES.map((c) => [c, m.get(c.id) ?? 0] as const).sort((a, b) => b[1] - a[1]);
+    const ind = new Map<string, number>();
+    let none = 0;
+    for (const c of companies) {
+      c.categories.forEach((cat) => m.set(cat, (m.get(cat) ?? 0) + 1));
+      if (!c.categories.length) none++;
+      if (c.industry && c.industry !== 'その他') ind.set(c.industry, (ind.get(c.industry) ?? 0) + 1);
+    }
+    return {
+      byCat: CATEGORIES.map((c) => [c, m.get(c.id) ?? 0] as const).sort((a, b) => b[1] - a[1]),
+      uncategorized: none,
+      industries: [...ind.entries()].sort((a, b) => b[1] - a[1]),
+    };
   }, [companies]);
-  const max = byCat[0]?.[1] || 1;
+  const max = Math.max(byCat[0]?.[1] ?? 0, uncategorized, 1);
   return (
     <section className="grid gap-4 md:grid-cols-2">
       <div className="rounded-2xl border border-slate-200 bg-white p-4">
-        <h3 className="text-sm font-bold">業界別の受注先数</h3>
+        <div className="flex items-baseline justify-between gap-2">
+          <h3 className="text-sm font-bold">業界別の受注先数</h3>
+          <p className="text-xs text-slate-500">
+            合計 <b className="text-lg tabular-nums text-slate-900">{companies.length.toLocaleString()}</b> 社
+          </p>
+        </div>
+        <p className="mt-0.5 text-xs text-slate-500">対象：{scope}</p>
         <ul className="mt-3 space-y-1.5">
           {byCat.map(([c, n]) => (
             <li key={c.id}>
               <button onClick={() => onCategory(c.id)} className="group flex w-full items-center gap-2 text-left text-xs">
-                <span className="w-32 shrink-0 truncate text-slate-600 group-hover:text-indigo-700">{c.label}</span>
+                <span className="w-40 shrink-0 truncate text-slate-600 group-hover:text-indigo-700">{c.label}</span>
                 <span className="h-2.5 flex-1 overflow-hidden rounded-full bg-slate-100">
                   <span className="block h-full rounded-full bg-indigo-500" style={{ width: `${(n / max) * 100}%` }} />
                 </span>
@@ -471,7 +501,17 @@ function Overview({
               </button>
             </li>
           ))}
+          <li className="flex items-center gap-2 text-xs">
+            <span className="w-40 shrink-0 truncate text-slate-400">業界未分類</span>
+            <span className="h-2.5 flex-1 overflow-hidden rounded-full bg-slate-100">
+              <span className="block h-full rounded-full bg-slate-300" style={{ width: `${(uncategorized / max) * 100}%` }} />
+            </span>
+            <span className="w-14 text-right tabular-nums text-slate-400">{uncategorized.toLocaleString()}社</span>
+          </li>
         </ul>
+        <p className="mt-3 text-[11px] leading-relaxed text-slate-400">
+          1社が複数の業界に当てはまることがあるため、各業界の社数を足すと合計より多くなります。「業界未分類」は業種が「その他」などで分類できなかった企業です。
+        </p>
       </div>
       <div className="rounded-2xl border border-slate-200 bg-white p-4">
         <h3 className="text-sm font-bold">受注の多い業種</h3>

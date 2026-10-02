@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { csvToRecords, parseCsv } from '../csv';
 import { buildCompanies, extractSummary } from '../model';
-import { recommend, type Query } from '../recommend';
+import { passesFilters, recommend, type Query } from '../recommend';
 
 const HEADER = '支援担当者,責任者,企業名,法人番号,住所,受注日,受注金額,支援状況,受注サービス,受注担当者,代表者役職,代表者名,電話番号（代表）,メールアドレス（代表）,取引先HP URL,業種,サービス/商品名,従業員数,社長（決裁者）の想定カラー,受注経緯・メッセージ';
 const CSV = [
@@ -87,5 +87,12 @@ describe('recommend', () => {
     const res = recommend(companies, q({ staff: '永田', staffScope: 'any' }), now);
     expect(res.map((r) => r.company.name).sort()).toEqual(['その他商事', 'テスト建設株式会社'].sort());
     expect(res.find((r) => r.company.name === 'その他商事')!.reasons[0].text).toContain('責任者');
+  });
+
+  it('passesFilters scopes the overview by region and status', () => {
+    const names = (patch: Partial<Query>) => companies.filter((c) => passesFilters(c, q(patch))).map((c) => c.name).sort();
+    expect(names({ prefecture: '東京都' })).toEqual(['テスト建設株式会社']);
+    expect(names({})).not.toContain('解約食品');
+    expect(names({ status: 'all' })).toHaveLength(4);
   });
 });
