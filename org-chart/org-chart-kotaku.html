@@ -24,7 +24,7 @@
   .company .ttl { background: #2f5496; color: #fff; border-color: #2f5496;
                   font-size: 14px; padding: 9px; letter-spacing: .05em; }
 
-  .top-row { position: relative; min-height: 15mm; }
+  .top-row { position: relative; min-height: 14mm; }
   .partner { position: absolute; right: 0; top: 0; width: 52mm; border-color: #a6a6a6; text-align: center; }
   .partner .ttl { background: #e8e8e8; border-color: #a6a6a6; font-size: 10px; }
   .partner .body { text-align: center; padding: 6px; font-size: 10px; }
@@ -32,7 +32,7 @@
                         left: calc(50% + 38mm); width: calc(50% - 38mm - 52mm); }
 
   .v { width: 2px; background: #7f7f7f; margin: 0 auto; }
-  .v10 { height: 11mm; }
+  .v10 { height: 9mm; }
 
   /* 4列×2段 */
   .bus { position: relative; height: 2px; }
@@ -40,12 +40,12 @@
                 height: 2px; background: #7f7f7f; }
   .row { display: flex; gap: 14px; align-items: stretch; }
   .col { flex: 1 1 0; display: flex; flex-direction: column; }
-  .col .drop { width: 2px; height: 9mm; background: #7f7f7f; margin: 0 auto; }
+  .col .drop { width: 2px; height: 8mm; background: #7f7f7f; margin: 0 auto; }
   .unit { flex: 1; display: flex; flex-direction: column; }
 
   /* 1段目と2段目をつなぐ中央の縦線（列間の隙間を通す） */
-  .spine { position: relative; height: 11mm; }
-  .spine .v2 { position: absolute; left: 50%; margin-left: -1px; top: -0.1mm; width: 2px; height: 11mm; background: #7f7f7f; }
+  .spine { position: relative; height: 9mm; }
+  .spine .v2 { position: absolute; left: 50%; margin-left: -1px; top: -0.1mm; width: 2px; height: 9mm; background: #7f7f7f; }
   .row-gap { height: 4mm; position: relative; }
   .row-gap .v2 { position: absolute; left: 50%; margin-left: -1px; top: 0; width: 2px; height: 4mm; background: #7f7f7f; }
 
@@ -54,6 +54,15 @@
   ul.items li:before { content: ""; position: absolute; left: 0; top: 7px;
                        width: 4px; height: 4px; background: #8ea9c9; border-radius: 50%; }
   .kpi { color: #2f5496; font-weight: bold; }
+
+  /* お申込み済みユニット */
+  .applied { border-color: #e0a800; }
+  .applied .ttl { background: #ffe600; border-color: #e0a800; box-shadow: inset 0 0 0 2px #f2b800; }
+  .applied .sub { color: #7a5200; }
+
+  .legend { margin-top: 3mm; font-size: 10px; color: #444; display: flex; align-items: center; gap: 7px; }
+  .legend .swatch { display: inline-block; width: 26px; height: 12px; background: #ffe600;
+                    border: 1px solid #e0a800; box-shadow: inset 0 0 0 2px #f2b800; }
 
   .tagline { border-top: 1px dashed #b7c6d8; margin-top: 6px; padding-top: 6px; }
   .tagline .cap { display: block; font-size: 9px; color: #7f7f7f; margin-bottom: 3px; }
@@ -86,7 +95,7 @@
 <div class="row">
   <div class="col">
     <div class="drop"></div>
-    <div class="box unit">
+    <div class="box unit applied">
       <div class="ttl">営業支援ユニット<br><span class="sub">新規アプローチ部門</span></div>
       <div class="body">
         <ul class="items">
@@ -109,7 +118,7 @@
 
   <div class="col">
     <div class="drop"></div>
-    <div class="box unit">
+    <div class="box unit applied">
       <div class="ttl">セールスユニット<br><span class="sub">追いかけ部門／オンライン商談部門</span></div>
       <div class="body">
         <ul class="items">
@@ -127,7 +136,7 @@
 
   <div class="col">
     <div class="drop"></div>
-    <div class="box unit">
+    <div class="box unit applied">
       <div class="ttl">営業基盤</div>
       <div class="body">
         <ul class="items">
@@ -228,6 +237,8 @@
     </div>
   </div>
 </div>
+
+<div class="legend"><span class="swatch"></span>黄色：お申込み済みのユニット（営業支援ユニット／セールスユニット／営業基盤）</div>
 
 </body>
 </html>
