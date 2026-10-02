@@ -11,7 +11,7 @@
 
   .sheet-title { font-size: 15px; font-weight: bold; letter-spacing: .08em; }
   .sheet-head { display: flex; align-items: baseline; justify-content: space-between;
-                border-bottom: 2px solid #2f5496; padding-bottom: 5px; margin-bottom: 12px; }
+                border-bottom: 2px solid #2f5496; padding-bottom: 4px; margin-bottom: 9px; }
   .sheet-head .date { font-size: 10px; color: #555; }
 
   .box { border: 1px solid #8ea9c9; background: #fff; text-align: center; }
@@ -22,17 +22,18 @@
 
   .company { width: 76mm; margin: 0 auto; }
   .company .ttl { background: #2f5496; color: #fff; border-color: #2f5496;
-                  font-size: 14px; padding: 9px; letter-spacing: .05em; }
+                  font-size: 13px; padding: 7px; letter-spacing: .05em; }
+  .company .name { font-size: 14px; font-weight: bold; padding: 7px; letter-spacing: .03em; }
 
-  .top-row { position: relative; min-height: 14mm; }
+  .top-row { position: relative; min-height: 20mm; }
   .partner { position: absolute; right: 0; top: 0; width: 52mm; border-color: #a6a6a6; text-align: center; }
   .partner .ttl { background: #e8e8e8; border-color: #a6a6a6; font-size: 10px; }
   .partner .body { text-align: center; padding: 6px; font-size: 10px; }
-  .top-row .side-line { position: absolute; top: 15px; height: 2px; background: #7f7f7f;
+  .top-row .side-line { position: absolute; top: 28px; height: 2px; background: #7f7f7f;
                         left: calc(50% + 38mm); width: calc(50% - 38mm - 52mm); }
 
   .v { width: 2px; background: #7f7f7f; margin: 0 auto; }
-  .v10 { height: 9mm; }
+  .v10 { height: 8mm; }
 
   /* 4列×2段 */
   .bus { position: relative; height: 2px; }
@@ -40,12 +41,12 @@
                 height: 2px; background: #7f7f7f; }
   .row { display: flex; gap: 14px; align-items: stretch; }
   .col { flex: 1 1 0; display: flex; flex-direction: column; }
-  .col .drop { width: 2px; height: 8mm; background: #7f7f7f; margin: 0 auto; }
+  .col .drop { width: 2px; height: 7mm; background: #7f7f7f; margin: 0 auto; }
   .unit { flex: 1; display: flex; flex-direction: column; }
 
   /* 1段目と2段目をつなぐ中央の縦線（列間の隙間を通す） */
-  .spine { position: relative; height: 9mm; }
-  .spine .v2 { position: absolute; left: 50%; margin-left: -1px; top: -0.1mm; width: 2px; height: 9mm; background: #7f7f7f; }
+  .spine { position: relative; height: 8mm; }
+  .spine .v2 { position: absolute; left: 50%; margin-left: -1px; top: -0.1mm; width: 2px; height: 8mm; background: #7f7f7f; }
   .row-gap { height: 4mm; position: relative; }
   .row-gap .v2 { position: absolute; left: 50%; margin-left: -1px; top: 0; width: 2px; height: 4mm; background: #7f7f7f; }
 
@@ -80,6 +81,7 @@
 <div class="top-row">
   <div class="box company">
     <div class="ttl">株式会社興拓</div>
+    <div class="name">長谷部　しおん　様</div>
   </div>
   <div class="side-line"></div>
   <div class="box partner">
