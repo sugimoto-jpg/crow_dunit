@@ -1,0 +1,741 @@
+<title>組織図ビルダー</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+/* レイアウト: 左に入力パネル、右にA4横のプレビュー。狭い画面では縦に積む。 */
+:root{
+  --bg:#eef1f6; --surface:#ffffff; --surface-2:#f7f9fc; --line:#d5dde8;
+  --ink:#1c2535; --muted:#66748a; --accent:#2f5496; --accent-soft:#dbe5f3;
+  --mark:#ffe600; --mark-line:#e0a800; --danger:#b4232a;
+  --font: "Noto Sans JP", system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#111722; --surface:#19212e; --surface-2:#1f2836; --line:#2d394b;
+  --ink:#e7ecf4; --muted:#9aa8bd; --accent:#8db0ea; --accent-soft:#24314a;
+  color-scheme: dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#111722; --surface:#19212e; --surface-2:#1f2836; --line:#2d394b;
+  --ink:#e7ecf4; --muted:#9aa8bd; --accent:#8db0ea; --accent-soft:#24314a;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:var(--font); margin:0;}
+.wrap{padding-block:18px; padding-left:16px; padding-right:16px; max-width:1500px; margin:0 auto;}
+
+header.app{display:flex; flex-wrap:wrap; gap:10px 18px; align-items:baseline; justify-content:space-between; margin-bottom:14px;}
+header.app h1{font-size:19px; margin:0; letter-spacing:.04em;}
+header.app p{margin:0; color:var(--muted); font-size:12.5px;}
+
+.cols{display:grid; grid-template-columns:minmax(320px,380px) minmax(0,1fr); gap:18px; align-items:start;}
+@media (max-width:980px){ .cols{grid-template-columns:1fr;} }
+
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px;}
+.panel + .panel{margin-top:12px;}
+.panel h2{font-size:12px; letter-spacing:.1em; color:var(--muted); margin:0 0 10px; font-weight:700;}
+.field{display:flex; flex-direction:column; gap:4px; margin-bottom:10px;}
+.field label{font-size:11.5px; color:var(--muted);}
+input[type=text], textarea, select{
+  font-family:var(--font); font-size:13px; color:var(--ink); background:var(--surface-2);
+  border:1px solid var(--line); border-radius:6px; padding:7px 9px; width:100%;
+}
+textarea{resize:vertical; line-height:1.6;}
+input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+.row2{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+.check{display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink);}
+
+button{font-family:var(--font); cursor:pointer; border-radius:6px; border:1px solid var(--line);
+  background:var(--surface-2); color:var(--ink); font-size:12.5px; padding:7px 11px;}
+button:hover{border-color:var(--accent);}
+button.primary{background:var(--accent); border-color:var(--accent); color:#fff; font-weight:700;}
+button.primary:hover{filter:brightness(1.08);}
+button.ghost{background:transparent;}
+button.tiny{padding:2px 7px; font-size:11px;}
+.btn-row{display:flex; flex-wrap:wrap; gap:8px;}
+
+/* ユニット選択 */
+.catalog{display:flex; flex-direction:column; gap:5px; max-height:none;}
+.cat-item{display:flex; align-items:center; gap:8px; font-size:12.5px; padding:4px 6px; border-radius:6px;}
+.cat-item:hover{background:var(--surface-2);}
+.cat-item input{accent-color:var(--accent);}
+
+/* 選択済みユニットの編集 */
+.unit-card{border:1px solid var(--line); border-radius:8px; margin-bottom:8px; background:var(--surface-2);}
+.unit-head{display:flex; align-items:center; gap:6px; padding:7px 9px;}
+.unit-head .nm{flex:1; min-width:0; font-size:12.5px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.unit-head .mark-dot{width:11px; height:11px; border-radius:2px; background:var(--mark); border:1px solid var(--mark-line);}
+.unit-body{padding:0 9px 9px; display:none;}
+.unit-card.open .unit-body{display:block;}
+.hint{font-size:11px; color:var(--muted); margin:-4px 0 8px;}
+
+/* プレビュー */
+.preview-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; margin-bottom:10px;}
+.preview-bar .note{font-size:11.5px; color:var(--muted);}
+.stage{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px; overflow:hidden;}
+.paper-fit{overflow:hidden;}
+.paper-scaler{transform-origin:top left; box-shadow:0 2px 10px rgba(16,32,64,.16);}
+.msg{font-size:12px; margin-top:8px; min-height:17px; color:var(--muted);}
+.msg.ok{color:var(--accent); font-weight:700;}
+.msg.err{color:var(--danger); font-weight:700;}
+</style>
+
+<style id="chart-css">
+/* ===== 出力される組織図（A4横・白地固定） ===== */
+.paper{
+  width:1123px; height:794px; background:#ffffff; color:#1a1a1a;
+  font-family:"Noto Sans JP", system-ui, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  padding:30px 36px; display:flex; flex-direction:column;
+  --cfs:1;
+}
+.paper *{box-sizing:border-box;}
+.p-head{display:flex; align-items:baseline; justify-content:space-between;
+  border-bottom:2px solid #2f5496; padding-bottom:5px; margin-bottom:12px;}
+.p-head .t{font-size:19px; font-weight:700; letter-spacing:.09em; color:#1a1a1a;}
+.p-head .to{font-size:12px; color:#555;}
+.p-main{flex:1; position:relative; display:flex; flex-direction:column;}
+
+.hdr-zone{position:relative; display:flex; justify-content:center;}
+.hdr-box{width:300px; border:1px solid #2f5496; text-align:center; background:#fff;}
+.hdr-box .co{background:#2f5496; color:#fff; font-weight:700; font-size:15px; padding:8px 10px; letter-spacing:.05em;}
+.hdr-box .pn{font-size:15px; font-weight:700; padding:8px 10px; border-top:1px solid #2f5496;}
+.partner-box{position:absolute; right:0; top:0; width:215px; border:1px solid #a6a6a6; background:#fff; text-align:center;}
+.partner-box .lb{background:#ececec; border-bottom:1px solid #a6a6a6; font-weight:700; font-size:11.5px; padding:5px;}
+.partner-box .bd{padding:7px 6px; font-size:11.5px; line-height:1.5;}
+.partner-box .bd b{font-size:12.5px;}
+
+.grid-zone{position:relative; flex:1; margin-top:0; display:flex; flex-direction:column;}
+.u-row{display:flex; gap:12px; align-items:stretch; flex:1 1 auto; max-height:330px;}
+.u-box{flex:1 1 0; min-width:0; border:1px solid #8ea9c9; background:#fff; display:flex; flex-direction:column;}
+.u-box .hd{background:#d9e4f1; border-bottom:1px solid #8ea9c9; text-align:center; padding:5px 6px;}
+.u-box .hd .n{font-weight:700; font-size:calc(12px * var(--cfs)); line-height:1.35;}
+.u-box .hd .s{font-size:calc(9.5px * var(--cfs)); color:#44546a; line-height:1.35;}
+.u-box .bd{padding:calc(9px * var(--cfs)); flex:1;}
+.u-box ul{margin:0; padding:0; list-style:none;}
+.u-box li{position:relative; padding-left:11px; font-size:calc(11px * var(--cfs));
+  line-height:1.55; margin-bottom:calc(2px * var(--cfs));}
+.u-box li:before{content:""; position:absolute; left:0; top:calc(7px * var(--cfs));
+  width:4px; height:4px; border-radius:50%; background:#8ea9c9;}
+.u-box.mark{border-color:#e0a800;}
+.u-box.mark .hd{background:#ffe600; border-color:#e0a800; box-shadow:inset 0 0 0 2px #f2b800;}
+.u-box.mark .hd .s{color:#7a5200;}
+
+.line{position:absolute; background:#7f7f7f;}
+.p-legend{display:flex; align-items:center; gap:7px; font-size:11px; color:#444; margin-top:10px;}
+.p-legend .sw{width:26px; height:12px; background:#ffe600; border:1px solid #e0a800; box-shadow:inset 0 0 0 2px #f2b800;}
+</style>
+
+<div class="wrap">
+  <header class="app">
+    <div>
+      <h1>組織図ビルダー</h1>
+      <p>企業名を入れてユニットを選ぶと、提案用の組織図ができます。詳細は自由に書き換えられます。</p>
+    </div>
+    <div class="btn-row">
+      <button id="btn-pdf" class="primary">PDFをダウンロード</button>
+      <button id="btn-html">印刷用HTML</button>
+      <button id="btn-save">設定を保存</button>
+      <button id="btn-load" class="ghost">設定を読み込む</button>
+      <input type="file" id="file-load" accept="application/json,.json" hidden>
+    </div>
+  </header>
+
+  <div class="cols">
+    <div>
+      <div class="panel">
+        <h2>お客様情報</h2>
+        <div class="field">
+          <label for="f-company">企業名</label>
+          <input type="text" id="f-company" placeholder="株式会社◯◯">
+        </div>
+        <div class="field">
+          <label for="f-person">宛名（ご担当者名）</label>
+          <input type="text" id="f-person" placeholder="山田　太郎　様">
+        </div>
+        <label class="check"><input type="checkbox" id="f-showperson" checked>宛名を表示する</label>
+      </div>
+
+      <div class="panel">
+        <h2>紹介パートナー</h2>
+        <label class="check" style="margin-bottom:9px"><input type="checkbox" id="f-showpartner" checked>右上に表示する</label>
+        <div class="field">
+          <label for="f-plabel">見出し</label>
+          <input type="text" id="f-plabel" placeholder="紹介パートナー">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="f-porg">会社名</label>
+            <input type="text" id="f-porg">
+          </div>
+          <div class="field">
+            <label for="f-pname">担当者名</label>
+            <input type="text" id="f-pname">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>ユニットを選ぶ</h2>
+        <div class="catalog" id="catalog"></div>
+        <div class="btn-row" style="margin-top:10px">
+          <button id="btn-add" class="tiny">空のユニットを追加</button>
+          <button id="btn-clear" class="tiny ghost">すべて外す</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>ユニットの詳細</h2>
+        <p class="hint">クリックで開きます。黄色の塗りつぶしは「お申込み済み」などの強調に使えます。</p>
+        <div id="units"></div>
+      </div>
+
+      <div class="panel">
+        <h2>レイアウト</h2>
+        <div class="field">
+          <label for="f-rows">段組み</label>
+          <select id="f-rows">
+            <option value="auto">自動</option>
+            <option value="1">1段</option>
+            <option value="2">2段</option>
+            <option value="3">3段</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-legend">凡例（黄色のユニットがあるときに表示）</label>
+          <input type="text" id="f-legend">
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="preview-bar">
+        <div class="note">プレビュー（A4横・1ページ）</div>
+        <div class="note" id="fit-note"></div>
+      </div>
+      <div class="stage">
+        <div class="paper-fit" id="paper-fit">
+          <div class="paper-scaler" id="paper-scaler">
+            <div class="paper" id="paper"></div>
+          </div>
+        </div>
+      </div>
+      <div class="msg" id="msg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const CATALOG = [
+  {key:"eigyo", name:"営業支援ユニット", sub:"新規アプローチ部門", items:[
+    "営業戦略立案","680万件の法人データ","営業システムの提供（SalesCrowd）","トークスクリプト制作",
+    "決裁者マッチングアプリのご利用","新規開拓で電話、メール、FAX、DM、手紙、フォームアプローチ"]},
+  {key:"sales", name:"セールスユニット", sub:"追いかけ部門／オンライン商談部門", items:[
+    "フォロー関係値構築のリレーション部隊で電話、メール、オンライン商談の対応"]},
+  {key:"kiban", name:"営業基盤", sub:"", items:[
+    "営業資料作成","料金表作成","簡単な挨拶用のWebページ制作","追加でフォームアプローチが可能"]},
+  {key:"field", name:"フィールドワークユニット", sub:"", items:[
+    "現場業務マニュアル作成","現場スタッフの教育","47都道府県42,000人現地スタッフ"]},
+  {key:"kurapuro", name:"クラプロユニット", sub:"", items:[
+    "Webマーケティング戦略立案","HP・LP・ECサイト作成","SEO・MEO対策","SNS制作運用","メルマガ"]},
+  {key:"seisan", name:"生産性向上支援ユニット", sub:"", items:[
+    "組織図作成","ワークフローマニュアル作成","業務委託書作成","報酬のアドバイザリー","求人執筆",
+    "スカウト配信","書類選考","1次面接","面接フィードバック"]},
+  {key:"manage", name:"マネジメント代行ユニット", sub:"", items:[
+    "運用のマネジメント代行","ワークフローマニュアル改善"]},
+  {key:"forjapan", name:"For Japanユニット", sub:"", items:[
+    "For Japan出演","BS放送＋TVer配信","公式SNSでの切り抜き配信"]},
+  {key:"hr", name:"HRユニット", sub:"", items:[
+    "母集団形成","求人SNS、HP、LP作成","求人ライティング","オンライン面接","退職防止策",
+    "人事評価制度","各種人事労務書作成"]},
+  {key:"back", name:"バックオフィスユニット", sub:"", items:[
+    "ワークフロー構築","労務業務","経理","採用事務","営業事務","コスト管理","見積もり作成",
+    "月次レポート作成","マニュアル・カリキュラム作成"]},
+  {key:"hisho", name:"秘書ユニット", sub:"", items:[
+    "役員秘書","営業事務","各種連絡業務","リサーチ業務","法務","マニュアル・カリキュラム作成","月次レポート作成"]},
+  {key:"ai", name:"Aiユニット", sub:"", items:[
+    "フレームワーク構築","AIツールの選定","AIオリエンテーション","ワークフロー構築","データ整理",
+    "マニュアル・カリキュラム作成"]},
+  {key:"cfo", name:"CFOユニット", sub:"", items:[
+    "財務支援から月次決算化・事業計画策定・IPO/M&A支援まで"]},
+  {key:"b2b", name:"B2Bカンファレンス", sub:"", items:[
+    "カンファレンスでのピッチ登壇・ブース出展から、リスト提供や動画制作まで"]}
+];
+
+const DEFAULT_STATE = {
+  company:"株式会社興拓",
+  person:"長谷部　しおん　様",
+  showPerson:true,
+  partner:{show:true, label:"紹介パートナー", org:"アイドマ・ホールディングス", name:"杉本賢亮"},
+  rows:"auto",
+  legend:"黄色：お申込み済みのユニット",
+  units:["eigyo","sales","kiban","field","kurapuro"].map(k=>{
+    const c = CATALOG.find(x=>x.key===k);
+    return {key:c.key, name:c.name, sub:c.sub, items:c.items.slice(), mark:(k==="eigyo"||k==="sales"||k==="kiban")};
+  })
+};
+
+let state = load() || structuredClone(DEFAULT_STATE);
+
+function load(){
+  try{
+    const raw = localStorage.getItem("orgchart-state");
+    if(!raw) return null;
+    const s = JSON.parse(raw);
+    if(!s || !Array.isArray(s.units)) return null;
+    return s;
+  }catch(e){ return null; }
+}
+function persist(){
+  try{ localStorage.setItem("orgchart-state", JSON.stringify(state)); }catch(e){}
+}
+
+/* ---------- 入力パネル ---------- */
+const $ = id => document.getElementById(id);
+
+function buildCatalog(){
+  const box = $("catalog");
+  box.textContent = "";
+  CATALOG.forEach(c=>{
+    const row = document.createElement("label");
+    row.className = "cat-item";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = state.units.some(u=>u.key===c.key);
+    cb.addEventListener("change", ()=>{
+      if(cb.checked){
+        if(!state.units.some(u=>u.key===c.key))
+          state.units.push({key:c.key, name:c.name, sub:c.sub, items:c.items.slice(), mark:false});
+      }else{
+        state.units = state.units.filter(u=>u.key!==c.key);
+      }
+      sync(true);
+    });
+    const span = document.createElement("span");
+    span.textContent = c.name;
+    row.append(cb, span);
+    box.append(row);
+  });
+}
+
+function buildUnitEditors(){
+  const box = $("units");
+  box.textContent = "";
+  if(state.units.length===0){
+    const p = document.createElement("p");
+    p.className = "hint";
+    p.textContent = "ユニットを選ぶと、ここで詳細を編集できます。";
+    box.append(p);
+    return;
+  }
+  state.units.forEach((u,i)=>{
+    const card = document.createElement("div");
+    card.className = "unit-card";
+
+    const head = document.createElement("div");
+    head.className = "unit-head";
+    const nm = document.createElement("div");
+    nm.className = "nm";
+    nm.textContent = u.name || "（名称未設定）";
+    const toggle = document.createElement("button");
+    toggle.className = "tiny ghost";
+    toggle.type = "button";
+    toggle.textContent = "編集";
+    toggle.addEventListener("click", ()=> card.classList.toggle("open"));
+    const up = document.createElement("button");
+    up.className = "tiny ghost"; up.type="button"; up.textContent="↑"; up.title="上へ";
+    up.addEventListener("click", ()=>{ if(i>0){ const a=state.units; [a[i-1],a[i]]=[a[i],a[i-1]]; sync(true);} });
+    const down = document.createElement("button");
+    down.className = "tiny ghost"; down.type="button"; down.textContent="↓"; down.title="下へ";
+    down.addEventListener("click", ()=>{ const a=state.units; if(i<a.length-1){ [a[i+1],a[i]]=[a[i],a[i+1]]; sync(true);} });
+    const del = document.createElement("button");
+    del.className = "tiny ghost"; del.type="button"; del.textContent="削除";
+    del.addEventListener("click", ()=>{ state.units.splice(i,1); sync(true); });
+    head.append(nm);
+    if(u.mark){ const d=document.createElement("span"); d.className="mark-dot"; head.append(d); }
+    head.append(up, down, toggle, del);
+
+    const body = document.createElement("div");
+    body.className = "unit-body";
+
+    body.append(field("ユニット名", u.name, v=>{ u.name=v; nm.textContent=v||"（名称未設定）"; sync(false); }));
+    body.append(field("補足（ユニット名の下・空欄可）", u.sub, v=>{ u.sub=v; sync(false); }));
+
+    const ta = document.createElement("textarea");
+    ta.rows = Math.min(12, Math.max(3, u.items.length+1));
+    ta.value = u.items.join("\n");
+    ta.id = "items-"+u.key+"-"+i;
+    ta.addEventListener("input", ()=>{
+      u.items = ta.value.split("\n").map(s=>s.trim()).filter(Boolean);
+      sync(false);
+    });
+    const lab = document.createElement("label");
+    lab.setAttribute("for", ta.id);
+    lab.textContent = "詳細（1行に1項目）";
+    const wrap = document.createElement("div");
+    wrap.className = "field";
+    wrap.append(lab, ta);
+    body.append(wrap);
+
+    const mk = document.createElement("label");
+    mk.className = "check";
+    const mcb = document.createElement("input");
+    mcb.type = "checkbox"; mcb.checked = !!u.mark;
+    mcb.addEventListener("change", ()=>{ u.mark = mcb.checked; sync(true); });
+    mk.append(mcb, document.createTextNode("タイトルを黄色で塗りつぶす"));
+    body.append(mk);
+
+    card.append(head, body);
+    box.append(card);
+  });
+}
+
+function field(labelText, value, oninput){
+  const w = document.createElement("div");
+  w.className = "field";
+  const l = document.createElement("label");
+  l.textContent = labelText;
+  const i = document.createElement("input");
+  i.type = "text"; i.value = value || "";
+  i.addEventListener("input", ()=>oninput(i.value));
+  const id = "f-"+Math.random().toString(36).slice(2,8);
+  i.id = id; l.setAttribute("for", id);
+  w.append(l, i);
+  return w;
+}
+
+function bindBasics(){
+  const map = [
+    ["f-company", v=>state.company=v, ()=>state.company],
+    ["f-person", v=>state.person=v, ()=>state.person],
+    ["f-plabel", v=>state.partner.label=v, ()=>state.partner.label],
+    ["f-porg", v=>state.partner.org=v, ()=>state.partner.org],
+    ["f-pname", v=>state.partner.name=v, ()=>state.partner.name],
+    ["f-legend", v=>state.legend=v, ()=>state.legend]
+  ];
+  map.forEach(([id,set,get])=>{
+    const el = $(id);
+    el.value = get() || "";
+    el.addEventListener("input", ()=>{ set(el.value); sync(false); });
+  });
+  $("f-showperson").checked = state.showPerson;
+  $("f-showperson").addEventListener("change", e=>{ state.showPerson = e.target.checked; sync(false); });
+  $("f-showpartner").checked = state.partner.show;
+  $("f-showpartner").addEventListener("change", e=>{ state.partner.show = e.target.checked; sync(false); });
+  $("f-rows").value = state.rows;
+  $("f-rows").addEventListener("change", e=>{ state.rows = e.target.value; sync(false); });
+
+  $("btn-add").addEventListener("click", ()=>{
+    state.units.push({key:"custom-"+Date.now(), name:"新しいユニット", sub:"", items:["項目を入力"], mark:false});
+    sync(true);
+  });
+  $("btn-clear").addEventListener("click", ()=>{ state.units = []; sync(true); });
+}
+
+/* ---------- 組織図の描画 ---------- */
+function layoutRows(n){
+  let rows;
+  if(state.rows === "auto") rows = n<=5 ? 1 : (n<=10 ? 2 : 3);
+  else rows = Math.min(parseInt(state.rows,10), Math.max(1,n));
+  rows = Math.max(1, Math.min(rows, Math.max(1,n)));
+  let cols = Math.ceil(n/rows);
+  if(rows > 1 && cols % 2 === 1) cols += 1;     // 段をつなぐ縦線を列の隙間に通すため偶数列にする
+  rows = Math.ceil(n/cols) || 1;
+  const out = [];
+  for(let i=0;i<n;i+=cols) out.push(state.units.slice(i, i+cols));
+  return {rows:out, cols};
+}
+
+function el(tag, cls, text){
+  const e = document.createElement(tag);
+  if(cls) e.className = cls;
+  if(text != null) e.textContent = text;
+  return e;
+}
+
+function renderChart(){
+  const paper = $("paper");
+  paper.textContent = "";
+  paper.style.setProperty("--cfs", 1);
+
+  const head = el("div","p-head");
+  head.append(el("div","t","組織図"));
+  head.append(el("div","to", (state.company||"") + "　御中"));
+  paper.append(head);
+
+  const main = el("div","p-main");
+
+  // 見出し（会社＋宛名）とパートナー
+  const hz = el("div","hdr-zone");
+  const hb = el("div","hdr-box");
+  hb.append(el("div","co", state.company || "企業名"));
+  if(state.showPerson && (state.person||"").trim()) hb.append(el("div","pn", state.person));
+  hz.append(hb);
+  if(state.partner.show){
+    const pb = el("div","partner-box");
+    pb.append(el("div","lb", state.partner.label || "紹介パートナー"));
+    const bd = el("div","bd");
+    if(state.partner.org) { bd.append(document.createTextNode(state.partner.org)); bd.append(el("br")); }
+    const b = el("b", null, state.partner.name || "");
+    bd.append(b);
+    pb.append(bd);
+    hz.append(pb);
+  }
+  main.append(hz);
+
+  // ユニット
+  const gz = el("div","grid-zone");
+  const {rows} = layoutRows(state.units.length);
+  const rowEls = [];
+  rows.forEach((group, ri)=>{
+    const r = el("div","u-row");
+    r.style.marginTop = (ri===0 ? "0px" : "0px");
+    group.forEach(u=>{
+      const b = el("div","u-box" + (u.mark ? " mark" : ""));
+      const hd = el("div","hd");
+      hd.append(el("div","n", u.name || ""));
+      if((u.sub||"").trim()) hd.append(el("div","s", u.sub));
+      const bd = el("div","bd");
+      const ul = document.createElement("ul");
+      (u.items||[]).forEach(it=> ul.append(el("li", null, it)));
+      bd.append(ul);
+      b.append(hd, bd);
+      r.append(b);
+    });
+    // 最終段が埋まらない場合も幅を揃える
+    const cols = rows[0].length;
+    for(let k=group.length; k<cols; k++){
+      const sp = el("div","u-box");
+      sp.style.visibility = "hidden";
+      r.append(sp);
+    }
+    gz.append(r);
+    rowEls.push(r);
+  });
+  main.append(gz);
+  paper.append(main);
+
+  if(state.units.some(u=>u.mark) && (state.legend||"").trim()){
+    const lg = el("div","p-legend");
+    lg.append(el("span","sw"));
+    lg.append(document.createTextNode(state.legend));
+    paper.append(lg);
+  }
+
+  fitAndConnect(gz, rowEls, hz);
+}
+
+const TRUNK = 34, DROP = 24, ROWGAP = 34;   // 幹線・ユニットへの引き込み・段間（px）
+
+function fitAndConnect(gz, rowEls, hz){
+  const paper = $("paper");
+  if(rowEls.length === 0){ $("fit-note").textContent = ""; return; }
+
+  // 段間の余白を確保してから高さを合わせる
+  rowEls.forEach((r,i)=> r.style.marginTop = (i===0 ? TRUNK + DROP + "px" : ROWGAP + DROP + "px"));
+
+  let scale = 1;
+  paper.style.setProperty("--cfs", scale);
+  for(let guard=0; guard<14; guard++){
+    const needed = $("paper").scrollHeight;
+    if(needed <= $("paper").clientHeight) break;
+    scale -= 0.05;
+    if(scale < 0.6){ scale = 0.6; paper.style.setProperty("--cfs", scale); break; }
+    paper.style.setProperty("--cfs", scale);
+  }
+  $("fit-note").textContent = scale < 1 ? "収まるよう文字を" + Math.round(scale*100) + "%に縮小しています" : "";
+
+  // 既存の線を消して引き直す
+  gz.querySelectorAll(".line").forEach(l=>l.remove());
+
+  const centerX = gz.offsetWidth / 2;
+  const busY = [];
+  rowEls.forEach((r)=>{
+    const boxes = Array.from(r.children).filter(b=> b.style.visibility !== "hidden");
+    if(boxes.length === 0){ busY.push(null); return; }
+    const top = r.offsetTop;
+    const y = top - DROP;
+    busY.push(y);
+    const cx = boxes.map(b=> b.offsetLeft + b.offsetWidth/2);
+    addLine(gz, Math.min(...cx), y, Math.max(...cx) - Math.min(...cx), 2);
+    cx.forEach(x=> addLine(gz, x, y, 2, DROP));
+  });
+
+  // 見出し → 1段目
+  addLine(gz, centerX, busY[0] - TRUNK, 2, TRUNK);
+
+  // 段と段をつなぐ縦線（ボックスの隙間を通す）
+  for(let i=0;i<rowEls.length-1;i++){
+    if(busY[i]==null || busY[i+1]==null) continue;
+    const x = gutterX(rowEls[i], centerX);
+    addLine(gz, x, busY[i], 2, busY[i+1] - busY[i]);
+  }
+}
+
+function gutterX(rowEl, centerX){
+  const boxes = Array.from(rowEl.children);
+  let best = centerX, bestD = Infinity;
+  for(let i=0;i<boxes.length-1;i++){
+    const a = boxes[i], b = boxes[i+1];
+    const x = (a.offsetLeft + a.offsetWidth + b.offsetLeft) / 2;
+    const d = Math.abs(x - centerX);
+    if(d < bestD){ bestD = d; best = x; }
+  }
+  return best;
+}
+
+function addLine(parent, x, y, w, h){
+  const d = document.createElement("div");
+  d.className = "line";
+  d.style.left = (w === 2 ? Math.round(x) - 1 : Math.round(x)) + "px";
+  d.style.top = Math.round(y) + "px";
+  d.style.width = Math.round(w) + "px";
+  d.style.height = Math.round(h) + "px";
+  parent.append(d);
+  return d;
+}
+
+/* ---------- プレビューの拡縮 ---------- */
+function fitPreview(){
+  const fit = $("paper-fit");
+  const scaler = $("paper-scaler");
+  const w = fit.clientWidth;
+  const k = Math.min(1, w / 1123);
+  scaler.style.transform = "scale(" + k + ")";
+  fit.style.height = Math.round(794 * k) + "px";
+}
+
+/* ---------- 書き出し ---------- */
+const CHART_CSS = () => document.getElementById("chart-css").textContent;
+
+function standaloneHTML(){
+  const paper = $("paper").cloneNode(true);
+  const css = CHART_CSS();
+  return '<!doctype html><html lang="ja"><head><meta charset="utf-8">'
+    + '<title>組織図</title>'
+    + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap">'
+    + '<style>@page{size:A4 landscape; margin:0;} html,body{margin:0;padding:0;background:#fff;}'
+    + '@media print{.paper{box-shadow:none;}}' + css + '</style></head><body>'
+    + paper.outerHTML + '</body></html>';
+}
+
+function fileBase(){
+  const c = (state.company || "組織図").replace(/[\\/:*?"<>|]/g, "");
+  return "組織図_" + c;
+}
+
+function say(text, kind){
+  const m = $("msg");
+  m.textContent = text || "";
+  m.className = "msg" + (kind ? " " + kind : "");
+}
+
+async function getDownloads(){
+  try{ return (window.claude && window.claude.use) ? await window.claude.use("downloads") : null; }
+  catch(e){ return null; }
+}
+
+function errText(e){
+  const code = e && e.code;
+  if(code === "declined") return "ダウンロードをキャンセルしました。";
+  if(code === "rate_limited") return "少し待ってからもう一度お試しください。";
+  if(code === "too_large") return "ファイルが大きすぎます。ユニット数を減らしてお試しください。";
+  return "ダウンロードできませんでした。" + (e && e.message ? "（" + e.message + "）" : "");
+}
+
+async function downloadPDF(){
+  say("PDFを作成しています…");
+  const dl = await getDownloads();
+  if(!dl){ say("このビューではダウンロードを利用できません。印刷用HTMLをコピーしてご利用ください。", "err"); return; }
+  const holder = document.createElement("div");
+  holder.style.cssText = "position:fixed; left:-20000px; top:0; width:1123px;";
+  const clone = $("paper").cloneNode(true);
+  holder.append(clone);
+  document.body.append(holder);
+  try{
+    const canvas = await html2canvas(clone, {scale:3, backgroundColor:"#ffffff", width:1123, height:794,
+      windowWidth:1123, windowHeight:794, logging:false, useCORS:true});
+    const img = canvas.toDataURL("image/png");
+    const {jsPDF} = window.jspdf;
+    const pdf = new jsPDF({orientation:"landscape", unit:"pt", format:"a4"});
+    pdf.addImage(img, "PNG", 0, 0, 841.89, 595.28, undefined, "FAST");
+    const blob = pdf.output("blob");
+    await dl.save({filename: fileBase() + ".pdf", data: blob});
+    say("PDFを保存しました。", "ok");
+  }catch(e){
+    say(errText(e), "err");
+  }finally{
+    holder.remove();
+  }
+}
+
+async function downloadHTML(){
+  const dl = await getDownloads();
+  const html = standaloneHTML();
+  if(!dl){
+    try{
+      await navigator.clipboard.writeText(html);
+      say("HTMLをコピーしました。テキストエディタに貼り付けて .html で保存し、ブラウザの印刷からPDFにできます。", "ok");
+    }catch(e){
+      say("このビューでは書き出しできません。", "err");
+    }
+    return;
+  }
+  try{
+    await dl.save({filename: fileBase() + ".html", data: html});
+    say("印刷用HTMLを保存しました。ブラウザで開き、印刷（用紙A4・横・余白なし）でPDFにできます。", "ok");
+  }catch(e){ say(errText(e), "err"); }
+}
+
+async function saveConfig(){
+  const dl = await getDownloads();
+  const json = JSON.stringify(state, null, 2);
+  if(!dl){
+    try{ await navigator.clipboard.writeText(json); say("設定をコピーしました。", "ok"); }
+    catch(e){ say("このビューでは保存できません。", "err"); }
+    return;
+  }
+  try{
+    await dl.save({filename: fileBase() + "_設定.json", data: json});
+    say("設定を保存しました。次回は「設定を読み込む」から復元できます。", "ok");
+  }catch(e){ say(errText(e), "err"); }
+}
+
+function loadConfig(file){
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const s = JSON.parse(String(r.result));
+      if(!s || !Array.isArray(s.units)) throw new Error("形式が違います");
+      state = s;
+      if(!state.partner) state.partner = structuredClone(DEFAULT_STATE.partner);
+      bindBasics();
+      sync(true);
+      say("設定を読み込みました。", "ok");
+    }catch(e){ say("この設定ファイルは読み込めませんでした。", "err"); }
+  };
+  r.readAsText(file);
+}
+
+/* ---------- まとめ ---------- */
+function sync(rebuildEditors){
+  if(rebuildEditors){ buildCatalog(); buildUnitEditors(); }
+  renderChart();
+  fitPreview();
+  persist();
+}
+
+buildCatalog();
+buildUnitEditors();
+bindBasics();
+$("btn-pdf").addEventListener("click", downloadPDF);
+$("btn-html").addEventListener("click", downloadHTML);
+$("btn-save").addEventListener("click", saveConfig);
+$("btn-load").addEventListener("click", ()=> $("file-load").click());
+$("file-load").addEventListener("change", e=>{ if(e.target.files[0]) loadConfig(e.target.files[0]); e.target.value=""; });
+window.addEventListener("resize", ()=>{ renderChart(); fitPreview(); });
+
+sync(false);
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(()=>{ renderChart(); fitPreview(); }); }
+</script>
