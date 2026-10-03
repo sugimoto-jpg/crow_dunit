@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { csvToRecords, toCsv } from './csv';
 import { CATEGORIES, CATEGORY_BY_ID, type CategoryId } from './industries';
-import { buildCompanies, staffNames, type Company } from './model';
+import { STAFF_ROLE_LABEL, buildCompanies, staffNames, type Company, type StaffRole } from './model';
 import { passesFilters, recommend, targetCategories, type Query, type Reason, type Recommendation } from './recommend';
 import { DATA_VERSION, clearDataset, loadDataset, saveDataset, type Dataset } from './storage';
 
@@ -113,7 +113,7 @@ export function ResearchApp() {
         )}
         {!loading && data && data.version !== DATA_VERSION && (
           <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-            <span className="flex-1">アプリが更新されました。支援担当者での絞り込みを使うには、受注一覧 CSV を再取込してください。</span>
+            <span className="flex-1">アプリが更新されました。担当者での絞り込みを正しく使うには、受注一覧 CSV を再取込してください。</span>
             <FilePicker onFile={importFile} compact />
           </div>
         )}
@@ -271,7 +271,7 @@ function Finder({ companies }: { companies: Company[] }) {
         c.employees ?? '',
         c.orders[0]?.status ?? '',
         [...new Set(c.orders.flatMap((o) => o.supporters ?? []))].join('、'),
-        c.orders[0]?.owner ?? '',
+        c.orders[0]?.owner || c.orders[0]?.manager || '',
         r.reasons.map((x) => x.text).join(' / '),
       ];
     });
@@ -357,34 +357,39 @@ function Finder({ companies }: { companies: Company[] }) {
             </select>
           </label>
           <div className="text-xs font-semibold text-slate-600">
-            <label htmlFor="staff">{query.staffScope === 'support' ? '支援担当者' : '担当者（支援・受注・責任者）'}</label>
-            <div className="relative mt-1">
-              <User className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input
-                id="staff"
-                list="staff-list"
-                value={query.staff}
-                onChange={(e) => update({ staff: e.target.value })}
-                placeholder="名前で絞り込み（姓だけでも可）"
-                className="block w-full rounded-lg border border-slate-300 bg-white py-2 pl-7 pr-2 text-sm font-normal"
-              />
-              <datalist id="staff-list">
-                {staffList.map(([name, n]) => (
-                  <option key={name} value={name}>
-                    {n}社
+            <label htmlFor="staff">担当者で絞り込み</label>
+            <div className="mt-1 grid gap-1.5">
+              <select
+                aria-label="担当の種類"
+                value={query.staffScope}
+                onChange={(e) => update({ staffScope: e.target.value as StaffRole })}
+                className="block w-full rounded-lg border border-slate-300 bg-white px-2 py-2 text-sm font-normal"
+              >
+                {(Object.keys(STAFF_ROLE_LABEL) as StaffRole[]).map((r) => (
+                  <option key={r} value={r}>
+                    {STAFF_ROLE_LABEL[r]}
                   </option>
                 ))}
-              </datalist>
+              </select>
+              <div className="relative">
+                <User className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  id="staff"
+                  list="staff-list"
+                  value={query.staff}
+                  onChange={(e) => update({ staff: e.target.value })}
+                  placeholder="名前（姓だけでも可）"
+                  className="block w-full rounded-lg border border-slate-300 bg-white py-2 pl-7 pr-2 text-sm font-normal"
+                />
+                <datalist id="staff-list">
+                  {staffList.map(([name, n]) => (
+                    <option key={name} value={name}>
+                      {n}社
+                    </option>
+                  ))}
+                </datalist>
+              </div>
             </div>
-            <label className="mt-1.5 flex cursor-pointer items-center gap-1.5 font-normal text-slate-600">
-              <input
-                type="checkbox"
-                checked={query.staffScope === 'any'}
-                onChange={(e) => update({ staffScope: e.target.checked ? 'any' : 'support' })}
-                className="h-3.5 w-3.5 accent-indigo-600"
-              />
-              受注担当者・責任者も含める
-            </label>
           </div>
           <div className="flex flex-col justify-end gap-1.5 text-sm">
             <Toggle checked={query.includeHubs} onChange={(v) => update({ includeHubs: v })} label="橋渡し役の企業も探す" />

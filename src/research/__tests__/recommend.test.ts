@@ -82,11 +82,17 @@ describe('recommend', () => {
     expect(recommend(companies, q({ text: '建設', staff: '高橋 二' }), now).map((r) => r.company.name).sort()).toEqual(['みらい不動産', 'テスト建設株式会社'].sort());
   });
 
-  it('includes order owners and managers only when asked', () => {
-    expect(recommend(companies, q({ staff: '永田' }), now)).toHaveLength(0);
-    const res = recommend(companies, q({ staff: '永田', staffScope: 'any' }), now);
-    expect(res.map((r) => r.company.name).sort()).toEqual(['その他商事', 'テスト建設株式会社'].sort());
-    expect(res.find((r) => r.company.name === 'その他商事')!.reasons[0].text).toContain('責任者');
+  it('filters by each staff role separately', () => {
+    const names = (patch: Partial<Query>) => recommend(companies, q(patch), now).map((r) => r.company.name).sort();
+    // 永田さんは責任者のみ、山田さんは受注担当者のみ
+    expect(names({ staff: '永田' })).toEqual([]);
+    expect(names({ staff: '永田', staffScope: 'owner' })).toEqual([]);
+    expect(names({ staff: '永田', staffScope: 'manager' })).toEqual(['その他商事', 'テスト建設株式会社'].sort());
+    expect(names({ staff: '山田', staffScope: 'owner' })).toEqual(['テスト建設株式会社']);
+    expect(names({ staff: '山田', staffScope: 'manager' })).toEqual([]);
+    expect(names({ staff: '永田', staffScope: 'any' })).toEqual(['その他商事', 'テスト建設株式会社'].sort());
+    expect(recommend(companies, q({ staff: '山田', staffScope: 'owner' }), now)[0].reasons[0].text).toContain('山田 太郎さんが受注担当');
+    expect(recommend(companies, q({ staff: '永田', staffScope: 'manager' }), now)[0].reasons[0].text).toContain('責任者');
   });
 
   it('passesFilters scopes the overview by region and status', () => {

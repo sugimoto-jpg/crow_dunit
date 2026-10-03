@@ -5,7 +5,7 @@ const DB = 'aidma-referral-research';
 const STORE = 'kv';
 
 /** 取り込み時に作る項目を増やしたら上げる（古いデータには再取込を案内する） */
-export const DATA_VERSION = 2;
+export const DATA_VERSION = 3;
 
 export interface Dataset {
   version?: number;

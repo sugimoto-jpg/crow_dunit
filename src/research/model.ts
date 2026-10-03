@@ -6,7 +6,7 @@ export interface Order {
   amount: number;
   service: string;
   status: string;
-  /** 受注担当者（空なら責任者） */
+  /** 受注担当者 */
   owner: string;
   /** 責任者 */
   manager: string;
@@ -74,10 +74,22 @@ export function splitNames(v: string | undefined): string[] {
   return [...new Set(clean(v).split(/[、,，/／\n]+/).map((s) => s.trim()).filter(Boolean))];
 }
 
-/** 担当者で絞り込むときに見る名前（scope: support は支援担当者だけ、any は受注担当者・責任者も含む） */
-export function staffNames(o: Order, scope: 'support' | 'any'): string[] {
+export type StaffRole = 'support' | 'owner' | 'manager' | 'any';
+
+export const STAFF_ROLE_LABEL: Record<StaffRole, string> = {
+  support: '支援担当者',
+  owner: '受注担当者',
+  manager: '責任者',
+  any: 'すべての担当者',
+};
+
+/** 担当者で絞り込むときに見る名前（any は支援担当者・受注担当者・責任者のすべて） */
+export function staffNames(o: Order, role: StaffRole): string[] {
   const support = o.supporters ?? [];
-  return scope === 'support' ? support : [...new Set([...support, o.owner, o.manager ?? ''].filter(Boolean))];
+  if (role === 'support') return support;
+  if (role === 'owner') return o.owner ? [o.owner] : [];
+  if (role === 'manager') return o.manager ? [o.manager] : [];
+  return [...new Set([...support, o.owner, o.manager ?? ''].filter(Boolean))];
 }
 
 function normalizeUrl(v: string): string {
@@ -117,7 +129,7 @@ export function buildCompanies(records: Record<string, string>[]): Company[] {
       amount: Number(clean(r['受注金額']).replace(/,/g, '')) || 0,
       service: clean(r['受注サービス']).replace(/\s*\(無効\)$/, ''),
       status: clean(r['支援状況']),
-      owner: clean(r['受注担当者']) || clean(r['責任者']),
+      owner: clean(r['受注担当者']),
       manager: clean(r['責任者']),
       supporters: splitNames(r['支援担当者']),
       kind: clean(r['アポイント種別']),
