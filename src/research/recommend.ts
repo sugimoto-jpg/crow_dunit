@@ -1,5 +1,5 @@
 import { CATEGORY_BY_ID, COLOR_TIPS, HUBS, UNIVERSAL_HUB_INDUSTRIES, categorize, type CategoryId } from './industries';
-import { staffNames, statusGroup, type Company, type Order } from './model';
+import { staffNames, statusGroup, type Company, type Order, type StaffRole } from './model';
 
 export interface Query {
   /** 繋がりたい業界・キーワード（空白・読点区切りで複数可） */
@@ -14,7 +14,7 @@ export interface Query {
   requireContact: boolean;
   /** 担当者名（部分一致。空なら絞り込まない） */
   staff: string;
-  staffScope: 'support' | 'any';
+  staffScope: StaffRole;
 }
 
 export type ReasonKind = 'match' | 'hub' | 'relation' | 'contact' | 'caution';
@@ -109,7 +109,10 @@ export function recommend(companies: Company[], q: Query, now = new Date()): Rec
     for (const term of terms) {
       if (c.industry.includes(term)) {
         fit += 60;
-        reasons.push({ kind: 'match', text: `業種が「${c.industry}」で「${term}」に直接該当します` });
+        // 同じ業種に複数のキーワードが当たったときは、理由を1行にまとめる
+        const prev = reasons.find((r) => r.text.startsWith(`業種が「${c.industry}」で`));
+        if (prev) prev.text = prev.text.replace('に直接該当します', `「${term}」に直接該当します`);
+        else reasons.push({ kind: 'match', text: `業種が「${c.industry}」で「${term}」に直接該当します` });
       } else if (c.products.includes(term)) {
         fit += 45;
         reasons.push({ kind: 'match', text: `扱うサービス・商品「${c.products.slice(0, 40)}」が「${term}」に該当します` });
@@ -157,7 +160,12 @@ export function recommend(companies: Company[], q: Query, now = new Date()): Rec
     if (!terms.length && !targets.length) fit = 10;
     if (!fit) continue;
     if (staffOrder) {
-      const role = staffOrder.supporters?.includes(staffName) ? '支援担当' : staffOrder.manager === staffName ? '責任者' : '受注担当';
+      const role =
+        q.staffScope === 'owner' ? '受注担当'
+        : q.staffScope === 'manager' ? '責任者'
+        : staffOrder.supporters?.includes(staffName) ? '支援担当'
+        : staffOrder.owner === staffName ? '受注担当'
+        : '責任者';
       reasons.unshift({
         kind: 'relation',
         text: `${staffName}さんが${role}（${staffOrder.date || '日付なし'}・${staffOrder.service}）で、直接お願いしやすい関係です`,
@@ -171,7 +179,7 @@ export function recommend(companies: Company[], q: Query, now = new Date()): Rec
       rel += 20;
       reasons.push({
         kind: 'relation',
-        text: `現在アイドマが支援中（${activeOrder.status}・${activeOrder.service}）で、担当の${activeOrder.supporters?.length ? activeOrder.supporters.join('・') : activeOrder.owner || '社内担当者'}さん経由で相談しやすい`,
+        text: `現在アイドマが支援中（${activeOrder.status}・${activeOrder.service}）で、担当の${activeOrder.supporters?.length ? activeOrder.supporters.join('・') : activeOrder.owner || activeOrder.manager || '社内担当者'}さん経由で相談しやすい`,
       });
     }
     if (c.orders.length >= 2) {

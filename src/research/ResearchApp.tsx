@@ -21,8 +21,9 @@ import {
 } from 'lucide-react';
 import { csvToRecords, toCsv } from './csv';
 import { CATEGORIES, CATEGORY_BY_ID, type CategoryId } from './industries';
-import { buildCompanies, staffNames, type Company } from './model';
+import { STAFF_ROLE_LABEL, buildCompanies, staffNames, type Company, type StaffRole } from './model';
 import { passesFilters, recommend, targetCategories, type Query, type Reason, type Recommendation } from './recommend';
+import { AiInput, AiResults, useAiSearch, type AiNote } from './AiSearch';
 import { DATA_VERSION, clearDataset, loadDataset, saveDataset, type Dataset } from './storage';
 
 const PREFECTURES = '北海道 青森県 岩手県 宮城県 秋田県 山形県 福島県 茨城県 栃木県 群馬県 埼玉県 千葉県 東京都 神奈川県 新潟県 富山県 石川県 福井県 山梨県 長野県 岐阜県 静岡県 愛知県 三重県 滋賀県 京都府 大阪府 兵庫県 奈良県 和歌山県 鳥取県 島根県 岡山県 広島県 山口県 徳島県 香川県 愛媛県 高知県 福岡県 佐賀県 長崎県 熊本県 大分県 宮崎県 鹿児島県 沖縄県'.split(' ');
@@ -113,7 +114,7 @@ export function ResearchApp() {
         )}
         {!loading && data && data.version !== DATA_VERSION && (
           <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-            <span className="flex-1">アプリが更新されました。支援担当者での絞り込みを使うには、受注一覧 CSV を再取込してください。</span>
+            <span className="flex-1">アプリが更新されました。担当者での絞り込みを正しく使うには、受注一覧 CSV を再取込してください。</span>
             <FilePicker onFile={importFile} compact />
           </div>
         )}
@@ -206,6 +207,7 @@ function Finder({ companies }: { companies: Company[] }) {
     staff: '',
     staffScope: 'support',
   });
+  const [mode, setMode] = useState<'keyword' | 'ai'>('keyword');
   const [view, setView] = useState<'all' | 'direct' | 'hub'>('all');
   const [limit, setLimit] = useState(PAGE);
   const deferred = useDeferredValue(query);
@@ -215,6 +217,12 @@ function Finder({ companies }: { companies: Company[] }) {
     companies.forEach((c) => c.industry && c.industry !== 'その他' && count.set(c.industry, (count.get(c.industry) ?? 0) + 1));
     return [...count.entries()].sort((a, b) => b[1] - a[1]);
   }, [companies]);
+
+  const ai = useAiSearch(
+    companies,
+    query,
+    industries.map(([name]) => name),
+  );
 
   // 担当者の候補（担当している企業数の多い順）
   const staffList = useMemo(() => {
@@ -271,7 +279,7 @@ function Finder({ companies }: { companies: Company[] }) {
         c.employees ?? '',
         c.orders[0]?.status ?? '',
         [...new Set(c.orders.flatMap((o) => o.supporters ?? []))].join('、'),
-        c.orders[0]?.owner ?? '',
+        c.orders[0]?.owner || c.orders[0]?.manager || '',
         r.reasons.map((x) => x.text).join(' / '),
       ];
     });
@@ -289,6 +297,20 @@ function Finder({ companies }: { companies: Company[] }) {
   return (
     <div className="space-y-5">
       <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+        <div className="mb-4 flex rounded-xl bg-slate-100 p-1 text-sm font-bold">
+          <button onClick={() => setMode('keyword')} className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2 ${mode === 'keyword' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}`}>
+            <Search className="h-4 w-4" />
+            業界・キーワードで探す
+          </button>
+          <button onClick={() => setMode('ai')} className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2 ${mode === 'ai' ? 'bg-white text-violet-700 shadow-sm' : 'text-slate-500'}`}>
+            <Sparkles className="h-4 w-4" />
+            AIで紹介先を探す
+          </button>
+        </div>
+        {mode === 'ai' ? (
+          <AiInput ai={ai} />
+        ) : (
+        <>
         <label className="text-sm font-bold text-slate-700" htmlFor="q">
           繋がりたい業界・キーワード
         </label>
@@ -337,6 +359,8 @@ function Finder({ companies }: { companies: Company[] }) {
             );
           })}
         </div>
+        </>
+        )}
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <label className="text-xs font-semibold text-slate-600">
@@ -357,43 +381,50 @@ function Finder({ companies }: { companies: Company[] }) {
             </select>
           </label>
           <div className="text-xs font-semibold text-slate-600">
-            <label htmlFor="staff">{query.staffScope === 'support' ? '支援担当者' : '担当者（支援・受注・責任者）'}</label>
-            <div className="relative mt-1">
-              <User className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input
-                id="staff"
-                list="staff-list"
-                value={query.staff}
-                onChange={(e) => update({ staff: e.target.value })}
-                placeholder="名前で絞り込み（姓だけでも可）"
-                className="block w-full rounded-lg border border-slate-300 bg-white py-2 pl-7 pr-2 text-sm font-normal"
-              />
-              <datalist id="staff-list">
-                {staffList.map(([name, n]) => (
-                  <option key={name} value={name}>
-                    {n}社
+            <label htmlFor="staff">担当者で絞り込み</label>
+            <div className="mt-1 grid gap-1.5">
+              <select
+                aria-label="担当の種類"
+                value={query.staffScope}
+                onChange={(e) => update({ staffScope: e.target.value as StaffRole })}
+                className="block w-full rounded-lg border border-slate-300 bg-white px-2 py-2 text-sm font-normal"
+              >
+                {(Object.keys(STAFF_ROLE_LABEL) as StaffRole[]).map((r) => (
+                  <option key={r} value={r}>
+                    {STAFF_ROLE_LABEL[r]}
                   </option>
                 ))}
-              </datalist>
+              </select>
+              <div className="relative">
+                <User className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  id="staff"
+                  list="staff-list"
+                  value={query.staff}
+                  onChange={(e) => update({ staff: e.target.value })}
+                  placeholder="名前（姓だけでも可）"
+                  className="block w-full rounded-lg border border-slate-300 bg-white py-2 pl-7 pr-2 text-sm font-normal"
+                />
+                <datalist id="staff-list">
+                  {staffList.map(([name, n]) => (
+                    <option key={name} value={name}>
+                      {n}社
+                    </option>
+                  ))}
+                </datalist>
+              </div>
             </div>
-            <label className="mt-1.5 flex cursor-pointer items-center gap-1.5 font-normal text-slate-600">
-              <input
-                type="checkbox"
-                checked={query.staffScope === 'any'}
-                onChange={(e) => update({ staffScope: e.target.checked ? 'any' : 'support' })}
-                className="h-3.5 w-3.5 accent-indigo-600"
-              />
-              受注担当者・責任者も含める
-            </label>
           </div>
           <div className="flex flex-col justify-end gap-1.5 text-sm">
-            <Toggle checked={query.includeHubs} onChange={(v) => update({ includeHubs: v })} label="橋渡し役の企業も探す" />
+            {mode === 'keyword' && <Toggle checked={query.includeHubs} onChange={(v) => update({ includeHubs: v })} label="橋渡し役の企業も探す" />}
             <Toggle checked={query.requireContact} onChange={(v) => update({ requireContact: v })} label="連絡先がある企業のみ" />
           </div>
         </div>
       </section>
 
-      {!hasQuery ? (
+      {mode === 'ai' ? (
+        <AiResults ai={ai} renderCard={(rec, rank, note) => <ResultCard rec={rec} rank={rank} badge={note.segment} ai={note} />} />
+      ) : !hasQuery ? (
         <Overview companies={scoped} scope={scopeLabel} onPick={(t) => update({ text: t })} onCategory={(id) => update({ categories: [id] })} />
       ) : (
         <section>
@@ -428,7 +459,7 @@ function Finder({ companies }: { companies: Company[] }) {
           ) : (
             <div className="space-y-3">
               {shown.slice(0, limit).map((r, i) => (
-                <ResultCard key={r.company.key} rec={r} rank={i + 1} industryQuery={industryQuery} />
+                <ResultCard key={r.company.key} rec={r} rank={i + 1} badge={r.type === 'hub' ? '橋渡し役' : industryQuery ? '該当業界' : '担当企業'} />
               ))}
               {shown.length > limit && (
                 <button onClick={() => setLimit((l) => l + PAGE)} className="w-full rounded-xl border border-slate-200 bg-white py-3 text-sm font-semibold text-indigo-700 hover:bg-indigo-50">
@@ -543,7 +574,7 @@ function stars(score: number) {
   return '★'.repeat(n) + '☆'.repeat(5 - n);
 }
 
-function ResultCard({ rec, rank, industryQuery }: { rec: Recommendation; rank: number; industryQuery: boolean }) {
+function ResultCard({ rec, rank, badge, ai }: { rec: Recommendation; rank: number; badge: string; ai?: AiNote }) {
   const [open, setOpen] = useState(false);
   const c = rec.company;
   const latest = c.orders[0];
@@ -557,12 +588,12 @@ function ResultCard({ rec, rank, industryQuery }: { rec: Recommendation; rank: n
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <h3 className="text-base font-bold text-slate-900">{c.name}</h3>
-            <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${rec.type === 'direct' ? 'bg-indigo-100 text-indigo-700' : 'bg-teal-100 text-teal-700'}`}>
-              {rec.type === 'hub' ? '橋渡し役' : industryQuery ? '該当業界' : '担当企業'}
+            <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${ai ? 'bg-violet-100 text-violet-700' : rec.type === 'direct' ? 'bg-indigo-100 text-indigo-700' : 'bg-teal-100 text-teal-700'}`}>
+              {badge}
             </span>
             {latest && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">{latest.status}</span>}
-            <span className="ml-auto text-sm tracking-tight text-amber-500" title={`スコア ${rec.score}`}>
-              {stars(rec.score)}
+            <span className="ml-auto text-sm tracking-tight text-amber-500" title={ai?.fit ? `AIの相性 ${ai.fit}/5` : `スコア ${rec.score}`}>
+              {ai?.fit ? '★'.repeat(ai.fit) + '☆'.repeat(5 - ai.fit) : stars(rec.score)}
             </span>
           </div>
           <p className="mt-0.5 text-xs text-slate-500">
@@ -615,8 +646,24 @@ function ResultCard({ rec, rank, industryQuery }: { rec: Recommendation; rank: n
             <p className="mt-1 leading-relaxed text-slate-700">{business.length ? business.join(' ／ ') : c.industry || '登録なし'}</p>
           </div>
 
+          {ai && (
+            <div className="mt-3 rounded-xl border border-violet-200 bg-violet-50/60 p-3 text-sm">
+              <p className="flex items-center gap-1 text-xs font-bold text-violet-700">
+                <Sparkles className="h-3.5 w-3.5" />
+                {ai.fit ? `AIの見立て（相性 ${ai.fit}/5）` : `「${ai.segment}」に紹介する理由`}
+              </p>
+              <p className="mt-1 leading-relaxed text-slate-800">{ai.reason}</p>
+              {ai.approach && (
+                <p className="mt-1.5 text-xs leading-relaxed text-violet-900">
+                  <b>切り出し方：</b>
+                  {ai.approach}
+                </p>
+              )}
+            </div>
+          )}
+
           <div className="mt-3">
-            <p className="text-xs font-bold text-slate-500">おすすめの理由</p>
+            <p className="text-xs font-bold text-slate-500">{ai ? 'データ上の根拠' : 'おすすめの理由'}</p>
             <ul className="mt-1 space-y-1">
               {rec.reasons.map((r, i) => (
                 <li key={i} className={`flex items-start gap-1.5 text-sm ${REASON_STYLE[r.kind].cls}`}>
