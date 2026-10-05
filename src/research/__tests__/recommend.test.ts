@@ -101,4 +101,11 @@ describe('recommend', () => {
     expect(names({})).not.toContain('解約食品');
     expect(names({ status: 'all' })).toHaveLength(4);
   });
+
+  it('merges several keywords that hit the same industry into one reason', () => {
+    const res = recommend(companies, q({ text: '建築 建設' }), now);
+    const lines = res[0].reasons.filter((r) => r.text.startsWith('業種が'));
+    expect(lines).toHaveLength(1);
+    expect(lines[0].text).toBe('業種が「建築・建設」で「建築」「建設」に直接該当します');
+  });
 });

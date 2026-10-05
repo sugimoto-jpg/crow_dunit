@@ -109,7 +109,10 @@ export function recommend(companies: Company[], q: Query, now = new Date()): Rec
     for (const term of terms) {
       if (c.industry.includes(term)) {
         fit += 60;
-        reasons.push({ kind: 'match', text: `業種が「${c.industry}」で「${term}」に直接該当します` });
+        // 同じ業種に複数のキーワードが当たったときは、理由を1行にまとめる
+        const prev = reasons.find((r) => r.text.startsWith(`業種が「${c.industry}」で`));
+        if (prev) prev.text = prev.text.replace('に直接該当します', `「${term}」に直接該当します`);
+        else reasons.push({ kind: 'match', text: `業種が「${c.industry}」で「${term}」に直接該当します` });
       } else if (c.products.includes(term)) {
         fit += 45;
         reasons.push({ kind: 'match', text: `扱うサービス・商品「${c.products.slice(0, 40)}」が「${term}」に該当します` });
