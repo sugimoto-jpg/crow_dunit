@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>SoraWing 営業資料</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Montserrat:wght@500;600;700;800&display=block" rel="stylesheet">
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  :root{
+    --navy:#0B2545; --navy2:#13396B; --sky:#2E9BDA; --sky2:#64B8E8; --sky-l:#EAF5FC;
+    --ink:#1B2533; --sub:#5A6878; --line:#D9E3EC; --bg:#F4F8FB;
+    --amber:#F2A93B; --amber-l:#FEF3E0; --mint:#25A68B; --mint-l:#E2F5F0; --red:#D2553F; --red-l:#FCEBE7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Noto Sans JP",sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .en{font-family:"Montserrat","Noto Sans JP",sans-serif}
+  .slide{width:1280px;height:720px;position:relative;overflow:hidden;background:#fff;break-after:page}
+  .slide:last-child{break-after:auto}
+  .hd{position:absolute;left:64px;top:42px;right:64px}
+  .hd .no{font-family:Montserrat;font-weight:700;color:var(--sky);font-size:14px;letter-spacing:.2em}
+  .hd h2{font-size:33px;font-weight:900;color:var(--navy);margin-top:6px;line-height:1.3}
+  .hd p.lead{font-size:16px;color:var(--sub);margin-top:8px;line-height:1.7}
+  .ft{position:absolute;left:64px;right:64px;bottom:22px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#97A3B0}
+  .ft .logo{font-family:Montserrat;font-weight:700;color:var(--navy);letter-spacing:.14em}
+  .ft .logo span{color:var(--sky)}
+  .bar{position:absolute;left:0;top:0;right:0;height:8px;background:linear-gradient(90deg,var(--navy) 0 60%,var(--sky) 60% 88%,var(--amber) 88%)}
+  .body{position:absolute;left:64px;right:64px;top:160px;bottom:58px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px}
+  .note{font-size:11px;color:#8794A2;line-height:1.5}
+  b.hl{background:linear-gradient(transparent 60%,#BFE2F7 60%);font-weight:900}
+  table{border-collapse:collapse}
+</style>
+</head>
+<body>
+
+<!-- ===== 1 COVER ===== -->
+<section class="slide" style="background:linear-gradient(160deg,#0B2545 0%,#13396B 55%,#2E7FC0 100%)">
+  <svg width="1280" height="720" viewBox="0 0 1280 720" style="position:absolute;inset:0">
+    <!-- clouds -->
+    <g fill="#fff" opacity=".07"><ellipse cx="300" cy="620" rx="320" ry="70"/><ellipse cx="1050" cy="90" rx="260" ry="50"/></g>
+    <!-- building -->
+    <rect x="760" y="70" width="360" height="650" fill="#1D4E86"/>
+    <rect x="760" y="70" width="360" height="22" fill="#163F6E"/>
+    <g fill="#2D6CAE">
+      <!-- window grid 6 cols x 12 rows -->
+      <g id="row">
+        <rect x="780" y="110" width="46" height="36"/><rect x="836" y="110" width="46" height="36"/><rect x="892" y="110" width="46" height="36"/><rect x="948" y="110" width="46" height="36"/><rect x="1004" y="110" width="46" height="36"/><rect x="1060" y="110" width="46" height="36"/>
+      </g>
+      <use href="#row" y="50"/><use href="#row" y="100"/><use href="#row" y="150"/><use href="#row" y="200"/><use href="#row" y="250"/><use href="#row" y="300"/><use href="#row" y="350"/><use href="#row" y="400"/><use href="#row" y="450"/><use href="#row" y="500"/><use href="#row" y="550"/>
+    </g>
+    <!-- cleaned windows (sparkling) -->
+    <g fill="#9ED4F5"><rect x="892" y="260" width="46" height="36"/><rect x="948" y="260" width="46" height="36"/><rect x="892" y="310" width="46" height="36"/><rect x="948" y="310" width="46" height="36"/><rect x="892" y="210" width="46" height="36"/><rect x="948" y="210" width="46" height="36"/></g>
+    <!-- wires from roof corners -->
+    <g stroke="#F2A93B" stroke-width="2.2">
+      <line x1="764" y1="72" x2="925" y2="360"/><line x1="1116" y1="72" x2="965" y2="360"/>
+      <line x1="764" y1="716" x2="925" y2="400"/><line x1="1116" y1="716" x2="965" y2="400"/>
+    </g>
+    <g fill="#F2A93B"><circle cx="764" cy="72" r="7"/><circle cx="1116" cy="72" r="7"/><circle cx="764" cy="712" r="7"/><circle cx="1116" cy="712" r="7"/></g>
+    <!-- robot -->
+    <g transform="translate(945,380)">
+      <rect x="-38" y="-28" width="76" height="56" rx="12" fill="#fff"/>
+      <rect x="-30" y="-20" width="60" height="14" rx="5" fill="#2E9BDA"/>
+      <circle cx="-18" cy="12" r="10" fill="#0B2545"/><circle cx="18" cy="12" r="10" fill="#0B2545"/>
+      <circle cx="-18" cy="12" r="4" fill="#64B8E8"/><circle cx="18" cy="12" r="4" fill="#64B8E8"/>
+    </g>
+    <g fill="#fff"><path d="M1010 320 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4z"/><path d="M870 280 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3 l7 -3z"/></g>
+    <rect x="0" y="700" width="1280" height="20" fill="#F2A93B"/>
+  </svg>
+  <div style="position:absolute;left:80px;top:80px;color:#fff;width:640px">
+    <div class="en" style="font-size:14px;letter-spacing:.3em;color:var(--amber);font-weight:700">HIGH-RISE WINDOW CLEANING ROBOT</div>
+    <h1 style="font-size:60px;font-weight:900;line-height:1.3;margin-top:34px">高所の窓清掃を、<br><span style="color:#9ED4F5">ロボット</span>で<br>安全・省人化へ。</h1>
+    <div style="margin-top:26px;font-size:18px;line-height:1.8;opacity:.92">長崎大学との共同研究から生まれた<br>パラレルワイヤ方式の高所窓清掃ロボット</div>
+    <div style="margin-top:50px">
+      <div class="en" style="font-size:46px;font-weight:800;letter-spacing:.04em">Sora<span style="color:var(--sky2)">Wing</span><sup style="font-size:16px">®</sup></div>
+      <div style="font-size:15px;opacity:.85;margin-top:4px">SoraWing Robotics 株式会社</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 2 CONTENTS ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">CONTENTS</div><h2>本日ご説明する内容</h2></div>
+  <div class="body" style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;top:156px">
+    <div class="card" style="padding:26px 28px"><div class="en" style="font-size:40px;font-weight:800;color:var(--sky)">01</div><div style="font-size:21px;font-weight:900;color:var(--navy);margin-top:6px">高所窓清掃の課題</div><div style="font-size:14px;color:var(--sub);margin-top:8px;line-height:1.7">担い手不足・安全リスク・コスト上昇という構造課題</div></div>
+    <div class="card" style="padding:26px 28px"><div class="en" style="font-size:40px;font-weight:800;color:var(--sky)">02</div><div style="font-size:21px;font-weight:900;color:var(--navy);margin-top:6px">SoraWingとは</div><div style="font-size:14px;color:var(--sub);margin-top:8px;line-height:1.7">製品概要とパラレルワイヤ方式の仕組み</div></div>
+    <div class="card" style="padding:26px 28px"><div class="en" style="font-size:40px;font-weight:800;color:var(--sky)">03</div><div style="font-size:21px;font-weight:900;color:var(--navy);margin-top:6px">導入メリット</div><div style="font-size:14px;color:var(--sub);margin-top:8px;line-height:1.7">従来工法との比較、作業体制の変化</div></div>
+    <div class="card" style="padding:26px 28px"><div class="en" style="font-size:40px;font-weight:800;color:var(--sky)">04</div><div style="font-size:21px;font-weight:900;color:var(--navy);margin-top:6px">活用シーンと実証実績</div><div style="font-size:14px;color:var(--sub);margin-top:8px;line-height:1.7">対象建物、実証実験拠点、今後の展開</div></div>
+    <div class="card" style="padding:26px 28px"><div class="en" style="font-size:40px;font-weight:800;color:var(--sky)">05</div><div style="font-size:21px;font-weight:900;color:var(--navy);margin-top:6px">導入の流れ・提供形態</div><div style="font-size:14px;color:var(--sub);margin-top:8px;line-height:1.7">建物診断から定期運用までのステップ</div></div>
+    <div class="card" style="padding:26px 28px;background:var(--navy);border-color:var(--navy)"><div class="en" style="font-size:40px;font-weight:800;color:var(--amber)">06</div><div style="font-size:21px;font-weight:900;color:#fff;margin-top:6px">FAQ・会社概要</div><div style="font-size:14px;color:#BFD0E3;margin-top:8px;line-height:1.7">よくあるご質問と、お問い合わせのご案内</div></div>
+  </div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>02</div></div>
+</section>
+
+<!-- ===== 3 PAINS ===== -->
+<section class="slide">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">01 ─ ISSUES</div><h2>高所窓清掃の現場は、いま限界に近づいています</h2><p class="lead">ビルオーナー様・管理会社様・ビルメンテナンス会社様から、こんな声が増えています。</p></div>
+  <div class="body" style="top:186px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="height:140px;background:var(--red-l);display:flex;align-items:center;justify-content:center">
+        <svg width="110" height="90" viewBox="0 0 110 90"><polygon points="55,8 104,84 6,84" fill="#D2553F"/><rect x="51" y="34" width="8" height="28" rx="3" fill="#fff"/><circle cx="55" cy="72" r="5" fill="#fff"/></svg></div>
+      <div style="padding:18px 20px"><div style="font-size:19px;font-weight:900;color:var(--navy)">墜落・転落リスク</div><div style="font-size:15px;color:var(--sub);line-height:1.85;margin-top:10px">ゴンドラ・ブランコ（ロープ高所作業）は人が高所に身をさらす作業。安全管理の負担と責任が重い。</div></div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="height:140px;background:var(--amber-l);display:flex;align-items:center;justify-content:center">
+        <svg width="120" height="90" viewBox="0 0 120 90"><g fill="#F2A93B"><circle cx="30" cy="26" r="13"/><rect x="16" y="42" width="28" height="40" rx="10"/><circle cx="90" cy="26" r="13" opacity=".35"/><rect x="76" y="42" width="28" height="40" rx="10" opacity=".35"/></g><circle cx="60" cy="30" r="13" fill="none" stroke="#F2A93B" stroke-width="3" stroke-dasharray="4 4"/><rect x="46" y="46" width="28" height="36" rx="10" fill="none" stroke="#F2A93B" stroke-width="3" stroke-dasharray="4 4"/></svg></div>
+      <div style="padding:18px 20px"><div style="font-size:19px;font-weight:900;color:var(--navy)">熟練作業員の不足</div><div style="font-size:15px;color:var(--sub);line-height:1.85;margin-top:10px">作業員の高齢化と若手不足が進み、繁忙期は「人が確保できず日程が組めない」ことも。</div></div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="height:140px;background:var(--sky-l);display:flex;align-items:center;justify-content:center">
+        <svg width="120" height="90" viewBox="0 0 120 90"><polyline points="10,74 36,62 60,50 84,30 110,12" fill="none" stroke="#2E9BDA" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><polygon points="110,12 96,12 108,24" fill="#2E9BDA"/><text x="20" y="34" font-family="Montserrat" font-weight="800" font-size="26" fill="#0B2545">¥</text></svg></div>
+      <div style="padding:18px 20px"><div style="font-size:19px;font-weight:900;color:var(--navy)">清掃コストの上昇</div><div style="font-size:15px;color:var(--sub);line-height:1.85;margin-top:10px">人件費・安全対策費の上昇で、外窓清掃の見積額が年々上がり、実施頻度を下げざるを得ない。</div></div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="height:140px;background:var(--mint-l);display:flex;align-items:center;justify-content:center">
+        <svg width="120" height="90" viewBox="0 0 120 90"><rect x="26" y="10" width="68" height="74" rx="4" fill="#fff" stroke="#25A68B" stroke-width="3"/><g fill="#25A68B" opacity=".3"><rect x="34" y="18" width="22" height="16"/><rect x="64" y="18" width="22" height="16"/><rect x="34" y="40" width="22" height="16"/><rect x="64" y="40" width="22" height="16"/></g><circle cx="80" cy="62" r="16" fill="#25A68B"/><path d="M80 52 v10 l6 4" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div>
+      <div style="padding:18px 20px"><div style="font-size:19px;font-weight:900;color:var(--navy)">営業・入居者への影響</div><div style="font-size:15px;color:var(--sub);line-height:1.85;margin-top:10px">作業区画の規制や、窓の外に人がいることによるテナント・入居者・来館者への心理的負担。</div></div>
+    </div>
+  </div>
+  <div style="position:absolute;left:64px;right:64px;bottom:52px;background:var(--navy);border-radius:10px;padding:13px 20px;font-size:16px;font-weight:700;color:#fff;text-align:center">
+    ▶ 「人が高所に上がる」前提のままでは、<span style="color:var(--amber)">安全・人手・コストの課題を同時に解決することは困難</span>です。
+  </div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>03</div></div>
+</section>
+
+<!-- ===== 4 STRUCTURE ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">01 ─ BACKGROUND</div><h2>需要は増え、担い手は減る ── 広がる「需給ギャップ」</h2></div>
+  <div class="body" style="top:146px;display:grid;grid-template-columns:1.2fr 1fr;gap:28px">
+    <div class="card" style="padding:22px 26px">
+      <div style="font-size:16px;font-weight:900;color:var(--navy)">高所窓清掃の需給構造（イメージ）</div>
+      <svg width="610" height="380" viewBox="0 0 610 380" style="margin-top:6px">
+        <g font-family="Noto Sans JP" font-size="12" fill="#5A6878">
+          <line x1="50" y1="320" x2="590" y2="320" stroke="#B9C6D3"/><line x1="50" y1="20" x2="50" y2="320" stroke="#B9C6D3"/>
+          <text x="320" y="345" text-anchor="middle">時間の経過 →</text>
+        </g>
+        <!-- gap area -->
+        <path d="M60 170 C200 150 380 110 580 50 L580 280 C380 240 200 200 60 175Z" fill="#F2A93B" opacity=".18"/>
+        <path d="M60 170 C200 150 380 110 580 50" fill="none" stroke="#2E9BDA" stroke-width="5" stroke-linecap="round"/>
+        <path d="M60 175 C200 200 380 240 580 280" fill="none" stroke="#D2553F" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 0"/>
+        <g font-family="Noto Sans JP" font-weight="900">
+          <text x="590" y="44" font-size="15" fill="#2E9BDA" text-anchor="end">清掃需要</text>
+          <text x="590" y="306" font-size="15" fill="#D2553F" text-anchor="end">担い手（熟練作業員）</text>
+        </g>
+        <g transform="translate(470,170)"><rect x="-82" y="-24" width="164" height="48" rx="24" fill="#0B2545"/><text y="-2" text-anchor="middle" font-family="Noto Sans JP" font-size="13" fill="#fff" font-weight="700">需給ギャップ</text><text y="15" text-anchor="middle" font-family="Noto Sans JP" font-size="11" fill="#F2A93B">＝ロボットが担う領域</text></g>
+        <g font-family="Noto Sans JP" font-size="12" fill="#2E9BDA"><text x="70" y="100">高層・大規模ビル、ガラス外装の増加</text></g>
+        <g font-family="Noto Sans JP" font-size="12" fill="#D2553F"><text x="80" y="232">高齢化・若手入職の減少</text></g>
+      </svg>
+      <div class="note">※概念図です。特定の統計値を示すものではありません。</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="padding:18px 22px;border-left:6px solid var(--sky)">
+        <div style="font-size:15px;font-weight:900;color:var(--navy)">需要側の変化</div>
+        <ul style="list-style:none;font-size:14px;line-height:1.8;margin-top:6px;color:var(--ink)">
+          <li>● 都市部を中心とした高層ビル・大型施設の増加</li>
+          <li>● カーテンウォールなどガラス外装の普及</li>
+          <li>● 建物価値・ブランドとしての「外観美観」重視</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:18px 22px;border-left:6px solid var(--red)">
+        <div style="font-size:15px;font-weight:900;color:var(--navy)">供給側の変化</div>
+        <ul style="list-style:none;font-size:14px;line-height:1.8;margin-top:6px;color:var(--ink)">
+          <li>● 作業員の高齢化と担い手不足</li>
+          <li>● 高所作業に関する安全規制・管理の厳格化</li>
+          <li>● 人件費・安全対策費の上昇</li>
+        </ul>
+      </div>
+      <div style="background:var(--navy);color:#fff;border-radius:14px;padding:18px 22px;font-size:15px;line-height:1.8">
+        このギャップを埋める手段として、<b style="color:var(--amber)">「人が上がらない」窓清掃</b>への転換が求められています。
+      </div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>04</div></div>
+</section>
+
+<!-- ===== 5 PRODUCT ===== -->
+<section class="slide">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">02 ─ PRODUCT</div><h2>高所窓清掃ロボット「SoraWing®（ソラウィング）」</h2></div>
+  <div class="body" style="top:136px;display:grid;grid-template-columns:520px 1fr;gap:36px">
+    <div style="background:linear-gradient(180deg,#EAF5FC,#fff);border-radius:20px;position:relative;display:flex;align-items:center;justify-content:center">
+      <svg width="480" height="440" viewBox="0 0 480 440">
+        <!-- wires -->
+        <g stroke="#F2A93B" stroke-width="3"><line x1="30" y1="20" x2="170" y2="170"/><line x1="450" y1="20" x2="310" y2="170"/><line x1="30" y1="420" x2="170" y2="290"/><line x1="450" y1="420" x2="310" y2="290"/></g>
+        <g fill="#F2A93B"><circle cx="30" cy="20" r="9"/><circle cx="450" cy="20" r="9"/><circle cx="30" cy="420" r="9"/><circle cx="450" cy="420" r="9"/></g>
+        <!-- body -->
+        <rect x="160" y="150" width="160" height="150" rx="26" fill="#fff" stroke="#0B2545" stroke-width="4"/>
+        <rect x="178" y="166" width="124" height="34" rx="10" fill="#2E9BDA"/>
+        <text x="240" y="189" text-anchor="middle" font-family="Montserrat" font-weight="800" font-size="16" fill="#fff">SoraWing</text>
+        <!-- brushes -->
+        <g><circle cx="205" cy="250" r="30" fill="#0B2545"/><circle cx="275" cy="250" r="30" fill="#0B2545"/>
+          <g stroke="#64B8E8" stroke-width="3"><line x1="205" y1="226" x2="205" y2="274"/><line x1="181" y1="250" x2="229" y2="250"/><line x1="188" y1="233" x2="222" y2="267"/><line x1="222" y1="233" x2="188" y2="267"/>
+          <line x1="275" y1="226" x2="275" y2="274"/><line x1="251" y1="250" x2="299" y2="250"/><line x1="258" y1="233" x2="292" y2="267"/><line x1="292" y1="233" x2="258" y2="267"/></g></g>
+        <g fill="#2E9BDA"><circle cx="170" cy="160" r="6"/><circle cx="310" cy="160" r="6"/><circle cx="170" cy="290" r="6"/><circle cx="310" cy="290" r="6"/></g>
+        <!-- callouts -->
+        <g font-family="Noto Sans JP" font-size="13" font-weight="700" fill="#0B2545">
+          <line x1="320" y1="250" x2="380" y2="250" stroke="#0B2545"/><text x="384" y="246">回転ブラシ</text><text x="384" y="262" font-size="11" font-weight="400" fill="#5A6878">ガラス面を清掃</text>
+          <line x1="160" y1="200" x2="90" y2="200" stroke="#0B2545"/><text x="86" y="196" text-anchor="end">AI姿勢制御</text><text x="86" y="212" text-anchor="end" font-size="11" font-weight="400" fill="#5A6878">風・揺れを補正</text>
+          <text x="240" y="60" text-anchor="middle">複数ワイヤで吊り支持</text><text x="240" y="76" text-anchor="middle" font-size="11" font-weight="400" fill="#5A6878">パラレルワイヤ方式</text>
+        </g>
+      </svg>
+      <div class="note" style="position:absolute;left:18px;bottom:12px">※イラストは構成説明用のイメージです。</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div style="font-size:20px;font-weight:900;color:var(--navy);line-height:1.6">ビルや高所の窓清掃を<b class="hl">安全かつ効率的に自動化</b>し、<br>省人化とコスト削減を実現するロボットです。</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="card" style="padding:16px 18px"><div style="font-size:12px;color:var(--sub)">本体重量</div><div class="en" style="font-size:40px;font-weight:800;color:var(--sky);line-height:1.1">5<span style="font-size:18px">kg</span></div><div style="font-size:12.5px;color:var(--sub)">軽量で運搬・設置の負担が小さい</div></div>
+        <div class="card" style="padding:16px 18px"><div style="font-size:12px;color:var(--sub)">駆動方式</div><div style="font-size:20px;font-weight:900;color:var(--navy);margin-top:6px">パラレルワイヤ</div><div style="font-size:12.5px;color:var(--sub);margin-top:4px">複数ワイヤの長さ制御で位置決め</div></div>
+        <div class="card" style="padding:16px 18px"><div style="font-size:12px;color:var(--sub)">制御技術</div><div style="font-size:20px;font-weight:900;color:var(--navy);margin-top:6px">AI姿勢制御／制振</div><div style="font-size:12.5px;color:var(--sub);margin-top:4px">高所特有の揺れを抑えて安定清掃</div></div>
+        <div class="card" style="padding:16px 18px"><div style="font-size:12px;color:var(--sub)">開発</div><div style="font-size:20px;font-weight:900;color:var(--navy);margin-top:6px">長崎大学と共同研究</div><div style="font-size:12.5px;color:var(--sub);margin-top:4px">産学連携による独自技術</div></div>
+      </div>
+      <div style="background:var(--amber-l);border-radius:12px;padding:12px 18px;font-size:14px;color:var(--navy)"><b>「SoraWing」「ソラウィング」</b>は商標登録済み（2026年4月）</div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>05</div></div>
+</section>
+
+<!-- ===== 6 MECHANISM ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">02 ─ TECHNOLOGY</div><h2>パラレルワイヤ方式の仕組み</h2><p class="lead">複数のワイヤの長さを同時に制御することで、壁面上の任意の位置へロボットを移動させます。</p></div>
+  <div class="body" style="top:176px;display:grid;grid-template-columns:560px 1fr;gap:30px">
+    <div class="card" style="padding:16px;display:flex;justify-content:center">
+      <svg width="520" height="460" viewBox="0 0 520 460">
+        <!-- facade -->
+        <rect x="70" y="40" width="380" height="400" fill="#EAF5FC" stroke="#13396B" stroke-width="2"/>
+        <g fill="#fff" stroke="#BFD6E8"><g id="wr"><rect x="86" y="56" width="74" height="54"/><rect x="172" y="56" width="74" height="54"/><rect x="258" y="56" width="74" height="54"/><rect x="344" y="56" width="90" height="54"/></g>
+          <use href="#wr" y="66"/><use href="#wr" y="132"/><use href="#wr" y="198"/><use href="#wr" y="264"/><use href="#wr" y="320"/></g>
+        <!-- winch units -->
+        <g fill="#0B2545"><rect x="52" y="22" width="36" height="28" rx="5"/><rect x="432" y="22" width="36" height="28" rx="5"/><rect x="52" y="428" width="36" height="28" rx="5"/><rect x="432" y="428" width="36" height="28" rx="5"/></g>
+        <g font-family="Noto Sans JP" font-size="11" fill="#fff" text-anchor="middle" font-weight="700"><text x="70" y="41">W1</text><text x="450" y="41">W2</text><text x="70" y="447">W3</text><text x="450" y="447">W4</text></g>
+        <!-- wires to robot at (300,210) -->
+        <g stroke="#F2A93B" stroke-width="2.5"><line x1="70" y1="36" x2="282" y2="196"/><line x1="450" y1="36" x2="318" y2="196"/><line x1="70" y1="442" x2="282" y2="224"/><line x1="450" y1="442" x2="318" y2="224"/></g>
+        <!-- ghost path -->
+        <path d="M150 120 H370 V190 H150 V260 H370" fill="none" stroke="#2E9BDA" stroke-width="2" stroke-dasharray="6 6"/>
+        <polygon points="370,254 382,260 370,266" fill="#2E9BDA"/>
+        <rect x="280" y="194" width="40" height="32" rx="7" fill="#0B2545"/><circle cx="292" cy="214" r="5" fill="#64B8E8"/><circle cx="308" cy="214" r="5" fill="#64B8E8"/>
+        <g font-family="Noto Sans JP" font-size="12" fill="#13396B" font-weight="700">
+          <text x="400" y="300" text-anchor="middle">清掃ルート</text>
+        </g>
+        <text x="260" y="18" font-family="Noto Sans JP" font-size="12" text-anchor="middle" fill="#5A6878">ワイヤ巻取りユニット（屋上・地上等に設置）</text>
+      </svg>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="padding:18px 22px;display:flex;gap:16px;align-items:flex-start">
+        <div class="en" style="background:var(--sky);color:#fff;border-radius:10px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0">1</div>
+        <div><div style="font-size:17px;font-weight:900;color:var(--navy)">複数のワイヤで「面」で支える</div><div style="font-size:14px;color:var(--sub);line-height:1.7;margin-top:4px">1本吊りではなく複数のワイヤで機体を支持。各ワイヤの長さを協調制御し、壁面上を縦横に移動します。</div></div>
+      </div>
+      <div class="card" style="padding:18px 22px;display:flex;gap:16px;align-items:flex-start">
+        <div class="en" style="background:var(--sky);color:#fff;border-radius:10px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0">2</div>
+        <div><div style="font-size:17px;font-weight:900;color:var(--navy)">AIで姿勢を補正し、揺れを抑える</div><div style="font-size:14px;color:var(--sub);line-height:1.7;margin-top:4px">高所特有の風や振動に対し、AIを活用した姿勢制御と独自の制振制御で機体を安定させます。</div></div>
+      </div>
+      <div class="card" style="padding:18px 22px;display:flex;gap:16px;align-items:flex-start">
+        <div class="en" style="background:var(--sky);color:#fff;border-radius:10px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0">3</div>
+        <div><div style="font-size:17px;font-weight:900;color:var(--navy)">軽量5kgの機体で、設置をシンプルに</div><div style="font-size:14px;color:var(--sub);line-height:1.7;margin-top:4px">大型ゴンドラ設備に依存せず、軽量な機体とワイヤユニットで清掃体制を構築します。</div></div>
+      </div>
+      <div class="note">※ワイヤ本数・巻取りユニットの設置位置は建物条件により異なります。図は原理説明用のイメージです。</div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>06</div></div>
+</section>
+
+<!-- ===== 7 VALUE ===== -->
+<section class="slide">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">03 ─ VALUE</div><h2>SoraWingが提供する 3つの価値</h2></div>
+  <div class="body" style="top:146px;bottom:130px;display:grid;grid-template-columns:repeat(3,1fr);gap:26px">
+    <div class="card" style="overflow:hidden">
+      <div style="background:var(--navy);padding:34px 24px;color:#fff;position:relative">
+        <div class="en" style="font-size:13px;color:var(--amber);font-weight:700;letter-spacing:.15em">VALUE 01</div>
+        <div style="font-size:30px;font-weight:900;margin-top:4px">安全性</div>
+        <svg width="70" height="70" viewBox="0 0 70 70" style="position:absolute;right:22px;top:22px"><path d="M35 4 L62 14 V34 C62 50 50 62 35 66 C20 62 8 50 8 34 V14Z" fill="#2E9BDA"/><path d="M22 35 l9 9 l17 -18" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="padding:22px 24px">
+        <div style="font-size:20px;font-weight:900;color:var(--navy);line-height:1.55">作業員が高所に<br>身をさらさない</div>
+        <ul style="list-style:none;font-size:15.5px;line-height:2.1;color:var(--sub);margin-top:16px">
+          <li>✔ 墜落・転落リスクの根本的な低減</li><li>✔ 安全管理・労務リスクの軽減</li><li>✔ 発注者としての安全配慮責任を強化</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <div style="background:var(--sky);padding:34px 24px;color:#fff;position:relative">
+        <div class="en" style="font-size:13px;color:#fff;font-weight:700;letter-spacing:.15em;opacity:.85">VALUE 02</div>
+        <div style="font-size:30px;font-weight:900;margin-top:4px">省人化</div>
+        <svg width="70" height="70" viewBox="0 0 70 70" style="position:absolute;right:22px;top:22px"><circle cx="24" cy="22" r="10" fill="#fff"/><rect x="12" y="36" width="24" height="26" rx="9" fill="#fff"/><rect x="42" y="30" width="22" height="18" rx="5" fill="#0B2545"/><circle cx="48" cy="39" r="3" fill="#64B8E8"/><circle cx="58" cy="39" r="3" fill="#64B8E8"/></svg>
+      </div>
+      <div style="padding:22px 24px">
+        <div style="font-size:20px;font-weight:900;color:var(--navy);line-height:1.55">少人数のオペレーターで<br>清掃を実施</div>
+        <ul style="list-style:none;font-size:15.5px;line-height:2.1;color:var(--sub);margin-top:16px">
+          <li>✔ 熟練作業員の確保に依存しない</li><li>✔ 人手不足でも計画どおりに実施</li><li>✔ 繁忙期の日程調整がしやすい</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <div style="background:var(--amber);padding:34px 24px;color:#fff;position:relative">
+        <div class="en" style="font-size:13px;color:#fff;font-weight:700;letter-spacing:.15em;opacity:.9">VALUE 03</div>
+        <div style="font-size:30px;font-weight:900;margin-top:4px">コスト・品質</div>
+        <svg width="70" height="70" viewBox="0 0 70 70" style="position:absolute;right:22px;top:22px"><rect x="8" y="40" width="12" height="22" rx="2" fill="#fff"/><rect x="28" y="28" width="12" height="34" rx="2" fill="#fff"/><rect x="48" y="14" width="12" height="48" rx="2" fill="#fff"/></svg>
+      </div>
+      <div style="padding:22px 24px">
+        <div style="font-size:20px;font-weight:900;color:var(--navy);line-height:1.55">清掃コストを抑え、<br>品質を均一に</div>
+        <ul style="list-style:none;font-size:15.5px;line-height:2.1;color:var(--sub);margin-top:16px">
+          <li>✔ 人件費・安全対策費の抑制</li><li>✔ 機械制御による仕上がりの均一化</li><li>✔ 清掃頻度を上げ、外観美観を維持</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+<div style="position:absolute;left:64px;right:64px;bottom:52px;background:var(--sky-l);border-radius:12px;padding:16px 24px;display:flex;justify-content:space-around;font-size:15px;font-weight:700;color:var(--navy)"><span>🛡 人が上がらない</span><span style="color:var(--sky)">＋</span><span>👤 人に依存しない</span><span style="color:var(--sky)">＋</span><span>✨ 品質がブレない</span><span style="color:var(--sky)">＝</span><span style="color:var(--sky)">持続可能な外窓清掃</span></div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>07</div></div>
+</section>
+
+<!-- ===== 8 COMPARISON ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">03 ─ COMPARISON</div><h2>従来工法との比較</h2></div>
+  <div class="body" style="top:130px">
+    <table style="width:100%;font-size:15px;background:#fff;border-radius:14px;overflow:hidden">
+      <tr>
+        <th style="width:200px;padding:16px;background:#fff"></th>
+        <th style="padding:16px;background:#DCE5EE;color:var(--sub)"><svg width="34" height="28" viewBox="0 0 34 28" style="vertical-align:middle;margin-right:8px"><line x1="5" y1="0" x2="5" y2="10" stroke="#5A6878" stroke-width="2"/><line x1="29" y1="0" x2="29" y2="10" stroke="#5A6878" stroke-width="2"/><rect x="1" y="10" width="32" height="12" rx="2" fill="#5A6878"/></svg>ゴンドラ作業</th>
+        <th style="padding:16px;background:#DCE5EE;color:var(--sub)"><svg width="24" height="28" viewBox="0 0 24 28" style="vertical-align:middle;margin-right:8px"><line x1="12" y1="0" x2="12" y2="12" stroke="#5A6878" stroke-width="2"/><circle cx="12" cy="15" r="4" fill="#5A6878"/><rect x="7" y="20" width="10" height="8" rx="3" fill="#5A6878"/></svg>ブランコ作業</th>
+        <th style="padding:16px;background:var(--navy);color:#fff;font-size:17px"><span class="en" style="font-weight:800">Sora<span style="color:var(--sky2)">Wing</span></span></th>
+      </tr>
+      <tr>
+        <td style="padding:29px 20px;font-weight:900;color:var(--navy);border-bottom:1px solid var(--line)">作業員の高所作業</td>
+        <td style="text-align:center;border-bottom:1px solid var(--line)"><span style="font-size:24px;color:var(--red)">△</span><br><span style="font-size:12.5px;color:var(--sub)">ゴンドラに搭乗して作業</span></td>
+        <td style="text-align:center;border-bottom:1px solid var(--line)"><span style="font-size:24px;color:var(--red)">×</span><br><span style="font-size:12.5px;color:var(--sub)">ロープで吊られて作業</span></td>
+        <td style="text-align:center;border-bottom:1px solid var(--line);background:#F2F9FE"><span style="font-size:24px;color:var(--sky)">◎</span><br><span style="font-size:12.5px;font-weight:700">ロボットが壁面を移動</span></td>
+      </tr>
+      <tr>
+        <td style="padding:29px 20px;font-weight:900;color:var(--navy);border-bottom:1px solid var(--line)">必要な人員</td>
+        <td style="text-align:center;border-bottom:1px solid var(--line)"><span style="font-size:24px;color:var(--amber)">○</span><br><span style="font-size:12.5px;color:var(--sub)">操作員・清掃員・監視員</span></td>
+        <td style="text-align:center;border-bottom:1px solid var(--line)"><span style="font-size:24px;color:var(--red)">△</span><br><span style="font-size:12.5px;color:var(--sub)">熟練作業員＋地上監視</span></td>
+        <td style="text-align:center;border-bottom:1px solid var(--line);background:#F2F9FE"><span style="font-size:24px;color:var(--sky)">◎</span><br><span style="font-size:12.5px;font-weight:700">少人数のオペレーター</span></td>
+      </tr>
+      <tr>
+        <td style="padding:29px 20px;font-weight:900;color:var(--navy);border-bottom:1px solid var(--line)">設備・設置</td>
+        <td style="text-align:center;border-bottom:1px solid var(--line)"><span style="font-size:24px;color:var(--red)">△</span><br><span style="font-size:12.5px;color:var(--sub)">常設／仮設ゴンドラ設備が必要</span></td>
+        <td style="text-align:center;border-bottom:1px solid var(--line)"><span style="font-size:24px;color:var(--amber)">○</span><br><span style="font-size:12.5px;color:var(--sub)">ロープ・アンカーで対応</span></td>
+        <td style="text-align:center;border-bottom:1px solid var(--line);background:#F2F9FE"><span style="font-size:24px;color:var(--sky)">○</span><br><span style="font-size:12.5px;font-weight:700">軽量機体＋ワイヤユニット</span></td>
+      </tr>
+      <tr>
+        <td style="padding:29px 20px;font-weight:900;color:var(--navy);border-bottom:1px solid var(--line)">品質の安定性</td>
+        <td style="text-align:center;border-bottom:1px solid var(--line)"><span style="font-size:24px;color:var(--amber)">○</span><br><span style="font-size:12.5px;color:var(--sub)">作業員の技量に依存</span></td>
+        <td style="text-align:center;border-bottom:1px solid var(--line)"><span style="font-size:24px;color:var(--amber)">○</span><br><span style="font-size:12.5px;color:var(--sub)">作業員の技量に依存</span></td>
+        <td style="text-align:center;border-bottom:1px solid var(--line);background:#F2F9FE"><span style="font-size:24px;color:var(--sky)">◎</span><br><span style="font-size:12.5px;font-weight:700">制御による均一な仕上がり</span></td>
+      </tr>
+      <tr>
+        <td style="padding:29px 20px;font-weight:900;color:var(--navy)">人手不足の影響</td>
+        <td style="text-align:center"><span style="font-size:24px;color:var(--red)">△</span><br><span style="font-size:12.5px;color:var(--sub)">受けやすい</span></td>
+        <td style="text-align:center"><span style="font-size:24px;color:var(--red)">×</span><br><span style="font-size:12.5px;color:var(--sub)">非常に受けやすい</span></td>
+        <td style="text-align:center;background:#F2F9FE"><span style="font-size:24px;color:var(--sky)">◎</span><br><span style="font-size:12.5px;font-weight:700">受けにくい</span></td>
+      </tr>
+    </table>
+    <div class="note" style="margin-top:10px">※一般的な特徴を比較したものです。建物の形状・立地・清掃範囲によって最適な工法は異なります。SoraWingと従来工法の併用もご提案可能です。</div>
+  </div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>08</div></div>
+</section>
+
+<!-- ===== 9 BEFORE / AFTER ===== -->
+<section class="slide">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">03 ─ OPERATION</div><h2>作業体制はこう変わります</h2></div>
+  <div class="body" style="top:136px;display:grid;grid-template-columns:1fr 60px 1fr;align-items:stretch">
+    <div class="card" style="padding:20px 24px;background:#FAFBFC">
+      <div class="tag" style="background:#DCE5EE;color:var(--sub)">従来（ゴンドラ・ブランコ）</div>
+      <svg width="500" height="320" viewBox="0 0 500 320" style="margin-top:10px">
+        <rect x="160" y="20" width="200" height="300" fill="#C9D5E1"/>
+        <g fill="#E4ECF3"><rect x="176" y="40" width="50" height="34"/><rect x="236" y="40" width="50" height="34"/><rect x="296" y="40" width="50" height="34"/><rect x="176" y="90" width="50" height="34"/><rect x="236" y="90" width="50" height="34"/><rect x="296" y="90" width="50" height="34"/><rect x="176" y="140" width="50" height="34"/><rect x="236" y="140" width="50" height="34"/><rect x="296" y="140" width="50" height="34"/><rect x="176" y="190" width="50" height="34"/><rect x="236" y="190" width="50" height="34"/><rect x="296" y="190" width="50" height="34"/><rect x="176" y="240" width="50" height="34"/><rect x="236" y="240" width="50" height="34"/><rect x="296" y="240" width="50" height="34"/></g>
+        <!-- gondola with workers -->
+        <line x1="190" y1="20" x2="190" y2="120" stroke="#5A6878" stroke-width="2"/><line x1="270" y1="20" x2="270" y2="120" stroke="#5A6878" stroke-width="2"/>
+        <rect x="176" y="120" width="108" height="22" rx="3" fill="#5A6878"/>
+        <g fill="#D2553F"><circle cx="205" cy="108" r="7"/><rect x="199" y="114" width="12" height="8"/><circle cx="255" cy="108" r="7"/><rect x="249" y="114" width="12" height="8"/></g>
+        <!-- rope worker -->
+        <line x1="330" y1="20" x2="330" y2="200" stroke="#5A6878" stroke-width="2"/>
+        <circle cx="330" cy="206" r="7" fill="#D2553F"/><rect x="323" y="213" width="14" height="14" rx="3" fill="#D2553F"/>
+        <!-- ground staff -->
+        <g fill="#5A6878"><circle cx="90" cy="282" r="8"/><rect x="82" y="291" width="16" height="22" rx="5"/><circle cx="420" cy="282" r="8"/><rect x="412" y="291" width="16" height="22" rx="5"/></g>
+        <g font-family="Noto Sans JP" font-size="12" fill="#5A6878"><text x="90" y="270" text-anchor="middle">監視員</text><text x="420" y="270" text-anchor="middle">誘導員</text></g>
+        <g font-family="Noto Sans JP" font-size="12" font-weight="700" fill="#D2553F"><text x="120" y="112" text-anchor="end">高所で作業</text><text x="390" y="210">吊られて作業</text></g>
+      </svg>
+      <ul style="list-style:none;font-size:14px;line-height:1.85;color:var(--sub)"><li>✕ 人が高所に出る前提の作業計画</li><li>✕ 熟練者の確保が日程を左右</li><li>✕ 天候・体調による中断リスク</li></ul>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center"><svg width="40" height="70" viewBox="0 0 40 70"><polygon points="4,4 36,35 4,66" fill="#2E9BDA"/></svg></div>
+    <div class="card" style="padding:20px 24px;border:2px solid var(--sky)">
+      <div class="tag" style="background:var(--sky);color:#fff">SoraWing導入後</div>
+      <svg width="500" height="320" viewBox="0 0 500 320" style="margin-top:10px">
+        <rect x="160" y="20" width="200" height="300" fill="#1D4E86"/>
+        <g fill="#2D6CAE"><rect x="176" y="40" width="50" height="34"/><rect x="236" y="40" width="50" height="34"/><rect x="296" y="40" width="50" height="34"/><rect x="176" y="90" width="50" height="34"/><rect x="296" y="90" width="50" height="34"/><rect x="176" y="190" width="50" height="34"/><rect x="236" y="190" width="50" height="34"/><rect x="296" y="190" width="50" height="34"/><rect x="176" y="240" width="50" height="34"/><rect x="236" y="240" width="50" height="34"/><rect x="296" y="240" width="50" height="34"/></g>
+        <g fill="#9ED4F5"><rect x="236" y="90" width="50" height="34"/><rect x="176" y="140" width="50" height="34"/><rect x="236" y="140" width="50" height="34"/><rect x="296" y="140" width="50" height="34"/></g>
+        <g stroke="#F2A93B" stroke-width="2"><line x1="162" y1="22" x2="248" y2="146"/><line x1="358" y1="22" x2="274" y2="146"/><line x1="162" y1="318" x2="248" y2="170"/><line x1="358" y1="318" x2="274" y2="170"/></g>
+        <rect x="244" y="144" width="34" height="28" rx="6" fill="#fff"/><circle cx="254" cy="160" r="4" fill="#0B2545"/><circle cx="268" cy="160" r="4" fill="#0B2545"/>
+        <!-- operator with tablet -->
+        <g><circle cx="90" cy="276" r="9" fill="#2E9BDA"/><rect x="81" y="286" width="18" height="26" rx="6" fill="#2E9BDA"/><rect x="100" y="288" width="20" height="14" rx="2" fill="#0B2545"/></g>
+        <path d="M120 286 Q180 220 240 168" fill="none" stroke="#2E9BDA" stroke-width="2" stroke-dasharray="4 5"/>
+        <g font-family="Noto Sans JP" font-size="12" font-weight="700" fill="#13396B"><text x="90" y="262" text-anchor="middle">オペレーター</text><text x="420" y="160">ロボットが清掃</text></g>
+        <g fill="#fff"><path d="M300 110 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3 l7 -3z"/></g>
+      </svg>
+      <ul style="list-style:none;font-size:14px;line-height:1.85;color:var(--navy);font-weight:500"><li><span style="color:var(--sky)">●</span> 作業員は地上・屋上から操作・監視</li><li><span style="color:var(--sky)">●</span> 少人数で計画的に実施</li><li><span style="color:var(--sky)">●</span> 清掃記録を残し、品質を見える化</li></ul>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>09</div></div>
+</section>
+
+<!-- ===== 10 USE CASES ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">04 ─ USE CASES</div><h2>こんな建物・施設におすすめです</h2></div>
+  <div class="body" style="top:136px">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:128px;gap:18px">
+      <div class="card" style="padding:26px 22px;display:flex;gap:16px;align-items:center">
+        <svg width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#EAF5FC"/><rect x="20" y="10" width="24" height="46" fill="#13396B"/><g fill="#9ED4F5"><rect x="24" y="15" width="6" height="5"/><rect x="34" y="15" width="6" height="5"/><rect x="24" y="24" width="6" height="5"/><rect x="34" y="24" width="6" height="5"/><rect x="24" y="33" width="6" height="5"/><rect x="34" y="33" width="6" height="5"/><rect x="24" y="42" width="6" height="5"/><rect x="34" y="42" width="6" height="5"/></g></svg>
+        <div><div style="font-size:17px;font-weight:900;color:var(--navy)">オフィスビル</div><div style="font-size:13px;color:var(--sub);line-height:1.6;margin-top:2px">中高層ビル、カーテンウォールの外装ガラス</div></div></div>
+      <div class="card" style="padding:26px 22px;display:flex;gap:16px;align-items:center">
+        <svg width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#FEF3E0"/><rect x="8" y="24" width="48" height="30" fill="#F2A93B"/><polygon points="6,24 32,10 58,24" fill="#D98A1C"/><rect x="26" y="38" width="12" height="16" fill="#fff"/><g fill="#fff"><rect x="12" y="30" width="10" height="7"/><rect x="42" y="30" width="10" height="7"/></g></svg>
+        <div><div style="font-size:17px;font-weight:900;color:var(--navy)">商業施設</div><div style="font-size:13px;color:var(--sub);line-height:1.6;margin-top:2px">大型ガラス面、吹き抜け・アトリウム</div></div></div>
+      <div class="card" style="padding:26px 22px;display:flex;gap:16px;align-items:center">
+        <svg width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#E2F5F0"/><rect x="16" y="12" width="32" height="44" fill="#25A68B"/><text x="32" y="38" text-anchor="middle" font-family="Montserrat" font-weight="800" font-size="16" fill="#fff">H</text></svg>
+        <div><div style="font-size:17px;font-weight:900;color:var(--navy)">ホテル・病院</div><div style="font-size:13px;color:var(--sub);line-height:1.6;margin-top:2px">宿泊者・患者様への配慮が必要な施設</div></div></div>
+      <div class="card" style="padding:26px 22px;display:flex;gap:16px;align-items:center">
+        <svg width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#EAF5FC"/><rect x="14" y="8" width="36" height="48" fill="#2E9BDA"/><g fill="#fff"><rect x="18" y="13" width="28" height="3"/><rect x="18" y="21" width="28" height="3"/><rect x="18" y="29" width="28" height="3"/><rect x="18" y="37" width="28" height="3"/><rect x="18" y="45" width="28" height="3"/></g></svg>
+        <div><div style="font-size:17px;font-weight:900;color:var(--navy)">タワーマンション</div><div style="font-size:13px;color:var(--sub);line-height:1.6;margin-top:2px">居住者のプライバシーに配慮した清掃</div></div></div>
+      <div class="card" style="padding:26px 22px;display:flex;gap:16px;align-items:center">
+        <svg width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#FEF3E0"/><polygon points="8,24 32,10 56,24" fill="#F2A93B"/><g fill="#F2A93B"><rect x="12" y="26" width="6" height="24"/><rect x="24" y="26" width="6" height="24"/><rect x="36" y="26" width="6" height="24"/><rect x="46" y="26" width="6" height="24"/></g><rect x="8" y="50" width="48" height="5" fill="#D98A1C"/></svg>
+        <div><div style="font-size:17px;font-weight:900;color:var(--navy)">公共施設・空港・駅</div><div style="font-size:13px;color:var(--sub);line-height:1.6;margin-top:2px">利用者が多く作業区画を取りにくい施設</div></div></div>
+      <div class="card" style="padding:26px 22px;display:flex;gap:16px;align-items:center">
+        <svg width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#E2F5F0"/><rect x="10" y="30" width="44" height="24" fill="#25A68B"/><polygon points="10,30 22,16 34,30" fill="#1E8A73"/><polygon points="30,30 42,16 54,30" fill="#1E8A73"/><rect x="16" y="38" width="32" height="10" fill="#fff" opacity=".7"/></svg>
+        <div><div style="font-size:17px;font-weight:900;color:var(--navy)">工場・物流施設</div><div style="font-size:13px;color:var(--sub);line-height:1.6;margin-top:2px">高所の採光窓、天窓まわり</div></div></div>
+    </div>
+    <div style="margin-top:26px;background:var(--navy);border-radius:16px;padding:20px 26px;display:grid;grid-template-columns:240px 1fr 1fr;gap:20px;align-items:center;color:#fff">
+      <div><div class="en" style="font-size:12px;color:var(--amber);font-weight:700;letter-spacing:.15em">FUTURE</div><div style="font-size:20px;font-weight:900;margin-top:2px">今後の応用展開</div><div style="font-size:12.5px;opacity:.75;margin-top:4px">パラレルワイヤ技術を他分野へ</div></div>
+      <div style="background:rgba(255,255,255,.08);border-radius:12px;padding:14px 18px;display:flex;gap:14px;align-items:center">
+        <svg width="46" height="46" viewBox="0 0 46 46"><polygon points="6,34 14,10 40,10 32,34" fill="#64B8E8"/><g stroke="#0B2545" stroke-width="1.5"><line x1="10" y1="22" x2="36" y2="22"/><line x1="23" y1="10" x2="19" y2="34"/></g><rect x="18" y="34" width="4" height="8" fill="#64B8E8"/></svg>
+        <div><b style="font-size:16px">ソーラーパネル清掃</b><div style="font-size:12.5px;opacity:.8">発電効率の維持に</div></div></div>
+      <div style="background:rgba(255,255,255,.08);border-radius:12px;padding:14px 18px;display:flex;gap:14px;align-items:center">
+        <svg width="46" height="46" viewBox="0 0 46 46"><path d="M2 30 Q23 6 44 30" fill="none" stroke="#F2A93B" stroke-width="3"/><rect x="2" y="30" width="42" height="4" fill="#F2A93B"/><g stroke="#F2A93B" stroke-width="2"><line x1="12" y1="30" x2="12" y2="20"/><line x1="23" y1="30" x2="23" y2="16"/><line x1="34" y1="30" x2="34" y2="20"/></g></svg>
+        <div><b style="font-size:16px">橋梁などインフラ点検</b><div style="font-size:12.5px;opacity:.8">高所・危険箇所の点検に</div></div></div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>10</div></div>
+</section>
+
+<!-- ===== 11 TRACK RECORD ===== -->
+<section class="slide">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">04 ─ TRACK RECORD</div><h2>産学連携と実証実験で、実用化を推進</h2></div>
+  <div class="body" style="top:136px;display:grid;grid-template-columns:460px 1fr;gap:30px">
+    <div class="card" style="padding:20px 22px;position:relative">
+      <div style="font-size:16px;font-weight:900;color:var(--navy)">実証実験拠点</div>
+      <svg width="416" height="400" viewBox="0 0 416 400" style="margin-top:4px">
+        <!-- stylized Japan -->
+        <g fill="#D7E6F2">
+          <path d="M300 30 l40 -10 l30 20 l-10 40 l-40 10 l-30 -20z"/>
+          <path d="M290 110 l30 0 l20 40 l-10 50 l-30 40 l-40 20 l-30 10 l-20 -20 l30 -30 l30 -40 l10 -40z"/>
+          <path d="M210 250 l30 -10 l20 10 l-10 20 l-40 10 l-40 0 l-20 -10 l20 -20z"/>
+          <path d="M175 285 l25 0 l10 15 l-20 10 l-25 -5z"/>
+          <path d="M90 270 l50 -10 l20 30 l-10 50 l-30 20 l-30 -10 l-10 -40z"/>
+        </g>
+        <!-- Tokyo -->
+        <g transform="translate(312,222)"><circle r="12" fill="#2E9BDA" opacity=".3"/><circle r="6" fill="#2E9BDA"/></g>
+        <line x1="318" y1="226" x2="360" y2="290" stroke="#2E9BDA" stroke-width="1.5"/>
+        <g transform="translate(300,290)"><rect width="110" height="56" rx="10" fill="#2E9BDA"/><text x="55" y="22" text-anchor="middle" font-family="Noto Sans JP" font-size="13" font-weight="900" fill="#fff">東京都</text><text x="55" y="42" text-anchor="middle" font-family="Noto Sans JP" font-size="11" fill="#fff">野村不動産様</text></g>
+        <!-- Nagasaki -->
+        <g transform="translate(98,318)"><circle r="12" fill="#F2A93B" opacity=".35"/><circle r="6" fill="#F2A93B"/></g>
+        <line x1="98" y1="312" x2="60" y2="200" stroke="#F2A93B" stroke-width="1.5"/>
+        <g transform="translate(6,146)"><rect width="140" height="56" rx="10" fill="#F2A93B"/><text x="70" y="22" text-anchor="middle" font-family="Noto Sans JP" font-size="13" font-weight="900" fill="#fff">長崎県長崎市</text><text x="70" y="42" text-anchor="middle" font-family="Noto Sans JP" font-size="11" fill="#fff">ゆめタウン夢彩都様</text></g>
+        <!-- Fukuoka HQ -->
+        <g transform="translate(130,282)"><rect x="-6" y="-6" width="12" height="12" fill="#0B2545"/></g>
+        <text x="146" y="270" font-family="Noto Sans JP" font-size="11" fill="#0B2545" font-weight="700">本社（福岡市）</text>
+      </svg>
+      <div class="note">※地図は位置関係を示すイメージです。</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card" style="padding:18px 24px">
+        <div style="font-size:16px;font-weight:900;color:var(--navy)">これまでの歩み</div>
+        <svg width="660" height="160" viewBox="0 0 660 160" style="margin-top:6px">
+          <line x1="40" y1="60" x2="620" y2="60" stroke="#D9E3EC" stroke-width="6" stroke-linecap="round"/>
+          <line x1="40" y1="60" x2="480" y2="60" stroke="#2E9BDA" stroke-width="6" stroke-linecap="round"/>
+          <g font-family="Noto Sans JP" text-anchor="middle">
+            <g transform="translate(60,60)"><circle r="14" fill="#0B2545"/><text y="-26" font-size="12" font-family="Montserrat" font-weight="700" fill="#2E9BDA">STEP</text><text y="36" font-size="14" font-weight="900" fill="#0B2545">共同研究</text><text y="56" font-size="11" fill="#5A6878">長崎サッシ工業</text><text y="72" font-size="11" fill="#5A6878">×長崎大学</text></g>
+            <g transform="translate(230,60)"><circle r="14" fill="#0B2545"/><text y="-26" font-size="12" font-family="Montserrat" font-weight="700" fill="#2E9BDA">2026.4</text><text y="36" font-size="14" font-weight="900" fill="#0B2545">商標登録</text><text y="56" font-size="11" fill="#5A6878">ロゴ・ブランド決定</text></g>
+            <g transform="translate(400,60)"><circle r="14" fill="#2E9BDA"/><text y="-26" font-size="12" font-family="Montserrat" font-weight="700" fill="#2E9BDA">2026.5</text><text y="36" font-size="14" font-weight="900" fill="#0B2545">新会社設立</text><text y="56" font-size="11" fill="#5A6878">SoraWing Robotics</text></g>
+            <g transform="translate(580,60)"><circle r="14" fill="#fff" stroke="#F2A93B" stroke-width="4"/><text y="-26" font-size="12" font-family="Montserrat" font-weight="700" fill="#F2A93B">NEXT</text><text y="36" font-size="14" font-weight="900" fill="#0B2545">サービス展開</text><text y="56" font-size="11" fill="#5A6878">全国・海外へ</text></g>
+          </g>
+        </svg>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div style="background:var(--sky-l);border-radius:14px;padding:18px 20px"><div style="font-size:15px;font-weight:900;color:var(--navy)">🎓 アカデミアの知見</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:6px">長崎大学との共同研究によるパラレルワイヤ制御・姿勢制御技術</div></div>
+        <div style="background:var(--amber-l);border-radius:14px;padding:18px 20px"><div style="font-size:15px;font-weight:900;color:var(--navy)">🪟 窓・サッシの現場知見</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:6px">親会社・長崎サッシ工業が培った窓まわりの施工ノウハウ</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>11</div></div>
+</section>
+
+<!-- ===== 12 FLOW ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">05 ─ FLOW</div><h2>導入までの流れ</h2><p class="lead">建物ごとに適合性を診断し、試験清掃で効果をご確認いただいてから本運用へ移行します。</p></div>
+  <div class="body" style="top:186px">
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px">
+      <div style="text-align:center"><div style="height:96px;display:flex;align-items:center;justify-content:center"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="38" fill="#0B2545"/><path d="M24 30 h32 v20 h-20 l-8 7 v-7 h-4z" fill="#fff"/></svg></div><div class="en" style="font-size:12px;color:var(--sky);font-weight:700;margin-top:6px">STEP 01</div><div style="font-size:17px;font-weight:900;color:var(--navy)">お問い合わせ</div><div style="font-size:12.5px;color:var(--sub);line-height:1.6;margin-top:6px">建物概要・お困りごとをお伺いします</div></div>
+      <div style="text-align:center"><div style="height:96px;display:flex;align-items:center;justify-content:center"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="38" fill="#13396B"/><rect x="28" y="20" width="24" height="40" fill="#fff"/><circle cx="50" cy="50" r="9" fill="none" stroke="#F2A93B" stroke-width="4"/><line x1="56" y1="56" x2="62" y2="62" stroke="#F2A93B" stroke-width="4" stroke-linecap="round"/></svg></div><div class="en" style="font-size:12px;color:var(--sky);font-weight:700;margin-top:6px">STEP 02</div><div style="font-size:17px;font-weight:900;color:var(--navy)">現地調査</div><div style="font-size:12.5px;color:var(--sub);line-height:1.6;margin-top:6px">外装・屋上・周辺環境を確認</div></div>
+      <div style="text-align:center"><div style="height:96px;display:flex;align-items:center;justify-content:center"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="38" fill="#1E5A97"/><rect x="24" y="22" width="32" height="38" rx="3" fill="#fff"/><path d="M30 40 l6 6 l14 -14" stroke="#25A68B" stroke-width="4" fill="none" stroke-linecap="round"/></svg></div><div class="en" style="font-size:12px;color:var(--sky);font-weight:700;margin-top:6px">STEP 03</div><div style="font-size:17px;font-weight:900;color:var(--navy)">適合診断・ご提案</div><div style="font-size:12.5px;color:var(--sub);line-height:1.6;margin-top:6px">清掃範囲・作業計画・お見積り</div></div>
+      <div style="text-align:center"><div style="height:96px;display:flex;align-items:center;justify-content:center"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="38" fill="#2E9BDA"/><rect x="28" y="28" width="24" height="20" rx="5" fill="#fff"/><circle cx="35" cy="40" r="3" fill="#0B2545"/><circle cx="45" cy="40" r="3" fill="#0B2545"/><g stroke="#fff" stroke-width="2"><line x1="16" y1="16" x2="30" y2="30"/><line x1="64" y1="16" x2="50" y2="30"/></g></svg></div><div class="en" style="font-size:12px;color:var(--sky);font-weight:700;margin-top:6px">STEP 04</div><div style="font-size:17px;font-weight:900;color:var(--navy)">試験清掃</div><div style="font-size:12.5px;color:var(--sub);line-height:1.6;margin-top:6px">一部区画で仕上がりをご確認</div></div>
+      <div style="text-align:center"><div style="height:96px;display:flex;align-items:center;justify-content:center"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="38" fill="#F2A93B"/><rect x="22" y="24" width="36" height="34" rx="3" fill="#fff"/><rect x="22" y="24" width="36" height="9" fill="#0B2545"/><g fill="#F2A93B"><rect x="27" y="38" width="6" height="5"/><rect x="37" y="38" width="6" height="5"/><rect x="47" y="38" width="6" height="5"/><rect x="27" y="47" width="6" height="5"/></g></svg></div><div class="en" style="font-size:12px;color:var(--amber);font-weight:700;margin-top:6px">STEP 05</div><div style="font-size:17px;font-weight:900;color:var(--navy)">本運用開始</div><div style="font-size:12.5px;color:var(--sub);line-height:1.6;margin-top:6px">年間計画に沿って定期清掃</div></div>
+      <div style="text-align:center"><div style="height:96px;display:flex;align-items:center;justify-content:center"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="38" fill="#25A68B"/><rect x="22" y="44" width="8" height="14" fill="#fff"/><rect x="36" y="34" width="8" height="24" fill="#fff"/><rect x="50" y="24" width="8" height="34" fill="#fff"/></svg></div><div class="en" style="font-size:12px;color:var(--mint);font-weight:700;margin-top:6px">STEP 06</div><div style="font-size:17px;font-weight:900;color:var(--navy)">報告・改善</div><div style="font-size:12.5px;color:var(--sub);line-height:1.6;margin-top:6px">作業記録のご報告と計画見直し</div></div>
+    </div>
+    <svg width="1152" height="20" viewBox="0 0 1152 20" style="position:absolute;top:38px;left:0;z-index:-1"><line x1="96" y1="10" x2="1056" y2="10" stroke="#C9D7E4" stroke-width="3" stroke-dasharray="6 6"/></svg>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px">
+      <div class="card" style="padding:16px 22px;display:flex;align-items:center;gap:16px">
+        <div style="background:var(--sky);color:#fff;border-radius:10px;padding:8px 14px;font-weight:900;font-size:14px;white-space:nowrap">ここまで無料</div>
+        <div style="font-size:14px;line-height:1.6">お問い合わせ〜適合診断・ご提案までは費用はかかりません。</div>
+      </div>
+      <div class="card" style="padding:16px 22px;display:flex;align-items:center;gap:16px">
+        <div style="background:var(--amber);color:#fff;border-radius:10px;padding:8px 14px;font-weight:900;font-size:14px;white-space:nowrap">併用もOK</div>
+        <div style="font-size:14px;line-height:1.6">建物の一部はロボット、一部は従来工法といった組み合わせもご提案します。</div>
+      </div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>12</div></div>
+</section>
+
+<!-- ===== 13 SERVICE MODEL ===== -->
+<section class="slide">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">05 ─ SERVICE MODEL</div><h2>ご提供形態</h2><p class="lead">建物の状況とご要望に合わせて、最適な形をご提案します。</p></div>
+  <div class="body" style="top:186px;bottom:160px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+    <div class="card" style="padding:0;overflow:hidden;border:2px solid var(--sky)">
+      <div style="background:var(--sky);color:#fff;padding:18px 22px"><div class="tag" style="background:#fff;color:var(--sky)">おすすめ</div><div style="font-size:22px;font-weight:900;margin-top:8px">定期清掃サービス</div><div style="font-size:13px;opacity:.9">年間契約</div></div>
+      <div style="padding:20px 22px;font-size:14px;line-height:1.9">
+        <div style="color:var(--sub)">SoraWingを用いた外窓清掃を、年間計画に沿って当社が実施します。</div>
+        <ul style="list-style:none;margin-top:10px;color:var(--navy);font-weight:500"><li>✔ 年間スケジュールの策定</li><li>✔ 機材・オペレーターは当社手配</li><li>✔ 作業報告書の提出</li></ul>
+      </div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="background:var(--navy);color:#fff;padding:18px 22px"><div class="tag" style="background:rgba(255,255,255,.15);color:#fff">単発</div><div style="font-size:22px;font-weight:900;margin-top:8px">スポット清掃</div><div style="font-size:13px;opacity:.85">1回から</div></div>
+      <div style="padding:20px 22px;font-size:14px;line-height:1.9">
+        <div style="color:var(--sub)">竣工・リニューアル前、イベント前など、必要なタイミングで実施します。</div>
+        <ul style="list-style:none;margin-top:10px;color:var(--navy);font-weight:500"><li>✔ 1回からご依頼可能</li><li>✔ まずは効果を確かめたい方に</li><li>✔ 定期契約への切替も可能</li></ul>
+      </div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="background:var(--amber);color:#fff;padding:18px 22px"><div class="tag" style="background:rgba(255,255,255,.25);color:#fff">共創</div><div style="font-size:22px;font-weight:900;margin-top:8px">実証・協業パートナー</div><div style="font-size:13px;opacity:.9">企業・施設様向け</div></div>
+      <div style="padding:20px 22px;font-size:14px;line-height:1.9">
+        <div style="color:var(--sub)">実証実験の場のご提供や、ビルメンテナンス事業者様との協業を募集しています。</div>
+        <ul style="list-style:none;margin-top:10px;color:var(--navy);font-weight:500"><li>✔ 先進的な取り組みとしてPR</li><li>✔ 運用データの共有</li><li>✔ 自社サービスへの組込み検討</li></ul>
+      </div>
+    </div>
+  </div>
+<div style="position:absolute;left:64px;right:64px;bottom:86px;background:var(--sky-l);border-radius:12px;padding:16px 24px;display:flex;justify-content:space-around;font-size:15px;font-weight:700;color:var(--navy)"><span>✔ 現地調査・適合診断は無料</span><span>✔ 全プランで作業報告書付き</span><span>✔ 従来工法との併用もご提案</span></div>
+  <div style="position:absolute;left:64px;right:64px;bottom:52px;font-size:12px;color:#8794A2">※料金は建物規模・清掃面積・設置条件により個別にお見積りいたします。提供形態の詳細は担当者までお問い合わせください。</div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>13</div></div>
+</section>
+
+<!-- ===== 14 FAQ ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">06 ─ FAQ</div><h2>よくあるご質問</h2></div>
+  <div class="body" style="top:132px;display:grid;grid-template-columns:1fr 1fr;gap:16px 22px">
+    <div class="card" style="padding:16px 20px"><div style="display:flex;gap:12px"><span class="en" style="background:var(--navy);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">Q</span><b style="font-size:16px;color:var(--navy);line-height:1.6">どんな建物でも対応できますか？</b></div><div style="display:flex;gap:12px;margin-top:10px"><span class="en" style="background:var(--sky);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">A</span><div style="font-size:14px;line-height:1.7;color:var(--sub)">外装形状や屋上の条件によって異なります。現地調査で適合性を診断し、最適な方法をご提案します。</div></div></div>
+    <div class="card" style="padding:16px 20px"><div style="display:flex;gap:12px"><span class="en" style="background:var(--navy);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">Q</span><b style="font-size:16px;color:var(--navy);line-height:1.6">風が強い日でも作業できますか？</b></div><div style="display:flex;gap:12px;margin-top:10px"><span class="en" style="background:var(--sky);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">A</span><div style="font-size:14px;line-height:1.7;color:var(--sub)">AI姿勢制御と制振制御で揺れを抑えます。安全を最優先し、気象条件に応じた作業基準で運用します。</div></div></div>
+    <div class="card" style="padding:16px 20px"><div style="display:flex;gap:12px"><span class="en" style="background:var(--navy);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">Q</span><b style="font-size:16px;color:var(--navy);line-height:1.6">ゴンドラ設備がない建物でも使えますか？</b></div><div style="display:flex;gap:12px;margin-top:10px"><span class="en" style="background:var(--sky);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">A</span><div style="font-size:14px;line-height:1.7;color:var(--sub)">ワイヤユニットの設置場所が確保できれば検討可能です。設置条件は現地調査で確認します。</div></div></div>
+    <div class="card" style="padding:16px 20px"><div style="display:flex;gap:12px"><span class="en" style="background:var(--navy);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">Q</span><b style="font-size:16px;color:var(--navy);line-height:1.6">今の清掃業者と併用できますか？</b></div><div style="display:flex;gap:12px;margin-top:10px"><span class="en" style="background:var(--sky);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">A</span><div style="font-size:14px;line-height:1.7;color:var(--sub)">可能です。ロボットに適した面はSoraWing、それ以外は従来工法といった役割分担もご提案します。</div></div></div>
+    <div class="card" style="padding:16px 20px"><div style="display:flex;gap:12px"><span class="en" style="background:var(--navy);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">Q</span><b style="font-size:16px;color:var(--navy);line-height:1.6">テナントや入居者への影響は？</b></div><div style="display:flex;gap:12px;margin-top:10px"><span class="en" style="background:var(--sky);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">A</span><div style="font-size:14px;line-height:1.7;color:var(--sub)">窓の外に作業員がいない清掃のため、プライバシーや心理的な負担の軽減が期待できます。</div></div></div>
+    <div class="card" style="padding:16px 20px"><div style="display:flex;gap:12px"><span class="en" style="background:var(--navy);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">Q</span><b style="font-size:16px;color:var(--navy);line-height:1.6">対応エリアはどこですか？</b></div><div style="display:flex;gap:12px;margin-top:10px"><span class="en" style="background:var(--sky);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">A</span><div style="font-size:14px;line-height:1.7;color:var(--sub)">九州・東京での実証を起点に、全国への展開を進めています。所在地をお知らせください。</div></div></div>
+  </div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>14</div></div>
+</section>
+
+<!-- ===== 15 HEARING ===== -->
+<section class="slide">
+  <div class="bar"></div>
+  <div class="hd"><div class="no">06 ─ HEARING SHEET</div><h2>建物ヒアリングシート</h2><p class="lead">商談の場でご記入ください。適合診断とお見積りに活用いたします。</p></div>
+  <div class="body" style="top:180px;display:grid;grid-template-columns:1fr 1fr;gap:28px">
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
+      <div style="font-weight:900;color:var(--navy);font-size:15px">■ 建物用途</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><div>☐ オフィス</div><div>☐ 商業施設</div><div>☐ ホテル</div><div>☐ 病院</div><div>☐ マンション</div><div>☐ その他（　　）</div></div>
+      <div style="font-weight:900;color:var(--navy);font-size:15px;margin-top:6px">■ 現在の窓清掃方法</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><div>☐ 常設ゴンドラ</div><div>☐ 仮設ゴンドラ</div><div>☐ ブランコ</div><div>☐ 高所作業車</div><div>☐ 実施していない</div></div>
+      <div style="font-weight:900;color:var(--navy);font-size:15px;margin-top:6px">■ 清掃頻度</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px"><div>☐ 年1回</div><div>☐ 年2回</div><div>☐ 年4回以上</div><div>☐ 不定期</div></div>
+      <div style="font-weight:900;color:var(--navy);font-size:15px;margin-top:6px">■ 課題に感じていること（複数可）</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"><div>☐ 安全面</div><div>☐ コスト</div><div>☐ 業者・人員の確保</div><div>☐ 仕上がり品質</div><div>☐ テナントへの影響</div><div>☐ 清掃頻度を上げたい</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:170px 1fr;border-top:2px solid var(--navy);font-size:14px;align-content:start">
+      <div style="background:var(--bg);padding:13px 12px;border-bottom:1px solid var(--line);font-weight:700">建物名・所在地</div><div style="border-bottom:1px solid var(--line)"></div>
+      <div style="background:var(--bg);padding:13px 12px;border-bottom:1px solid var(--line);font-weight:700">階数・高さ</div><div style="border-bottom:1px solid var(--line)"></div>
+      <div style="background:var(--bg);padding:13px 12px;border-bottom:1px solid var(--line);font-weight:700">外装（ガラス面積）</div><div style="border-bottom:1px solid var(--line)"></div>
+      <div style="background:var(--bg);padding:13px 12px;border-bottom:1px solid var(--line);font-weight:700">屋上の状況</div><div style="border-bottom:1px solid var(--line)"></div>
+      <div style="background:var(--bg);padding:13px 12px;border-bottom:1px solid var(--line);font-weight:700">現在の年間費用</div><div style="border-bottom:1px solid var(--line)"></div>
+      <div style="background:var(--bg);padding:13px 12px;border-bottom:1px solid var(--line);font-weight:700;height:104px">ご要望・備考</div><div style="border-bottom:1px solid var(--line)"></div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">Sora<span>Wing</span> Robotics</div><div>15</div></div>
+</section>
+
+<!-- ===== 16 CONTACT ===== -->
+<section class="slide" style="background:linear-gradient(160deg,#0B2545 0%,#13396B 70%,#1E5A97 100%)">
+  <svg width="1280" height="720" style="position:absolute;inset:0"><circle cx="1150" cy="110" r="250" fill="#fff" opacity=".04"/><circle cx="1150" cy="110" r="140" fill="#fff" opacity=".05"/><rect x="0" y="700" width="1280" height="20" fill="#F2A93B"/></svg>
+  <div style="position:absolute;left:80px;top:64px;right:80px;display:grid;grid-template-columns:1fr 520px;gap:50px;color:#fff">
+    <div>
+      <div class="en" style="font-size:14px;letter-spacing:.3em;color:var(--amber);font-weight:700">CONTACT</div>
+      <h2 style="font-size:40px;font-weight:900;line-height:1.45;margin-top:14px">まずは<span style="color:#9ED4F5">建物の適合診断</span>から<br>お気軽にご相談ください。</h2>
+      <div style="margin-top:26px;display:flex;flex-direction:column;gap:12px;font-size:16px">
+        <div style="display:flex;align-items:center;gap:12px"><span style="background:var(--amber);border-radius:6px;padding:3px 10px;font-weight:900;font-size:13px;color:var(--navy)">無料</span>現地調査・適合診断・お見積り</div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="background:var(--amber);border-radius:6px;padding:3px 10px;font-weight:900;font-size:13px;color:var(--navy)">募集</span>実証実験・協業パートナー企業様</div>
+      </div>
+      <div style="margin-top:36px;background:#fff;color:var(--navy);border-radius:16px;padding:22px 28px;display:flex;align-items:center;gap:20px;width:fit-content">
+        <svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="27" fill="#2E9BDA"/><circle cx="27" cy="27" r="14" fill="none" stroke="#fff" stroke-width="3"/><ellipse cx="27" cy="27" rx="6" ry="14" fill="none" stroke="#fff" stroke-width="2.5"/><line x1="13" y1="27" x2="41" y2="27" stroke="#fff" stroke-width="2.5"/></svg>
+        <div><div style="font-size:13px;color:var(--sub)">Webサイトからお問い合わせ</div><div class="en" style="font-size:30px;font-weight:800">sorawing-robotics.com</div></div>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:26px 30px;margin-top:20px">
+      <div style="font-size:18px;font-weight:900;border-bottom:2px solid var(--amber);padding-bottom:8px">会社概要</div>
+      <table style="width:100%;font-size:14px;margin-top:8px;line-height:1.6">
+        <tr><td style="padding:10px 0;color:#9FB5CE;width:100px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.12)">会社名</td><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,.12)">SoraWing Robotics 株式会社</td></tr>
+        <tr><td style="padding:10px 0;color:#9FB5CE;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.12)">設立</td><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,.12)">2026年5月30日</td></tr>
+        <tr><td style="padding:10px 0;color:#9FB5CE;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.12)">所在地</td><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,.12)">福岡県福岡市</td></tr>
+        <tr><td style="padding:10px 0;color:#9FB5CE;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.12)">事業内容</td><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,.12)">高所窓清掃ロボット「SoraWing」の<br>開発・運用・清掃サービスの提供</td></tr>
+        <tr><td style="padding:10px 0;color:#9FB5CE;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.12)">親会社</td><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,.12)">有限会社長崎サッシ工業（長崎県波佐見町）</td></tr>
+        <tr><td style="padding:10px 0;color:#9FB5CE;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.12)">共同研究</td><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,.12)">国立大学法人 長崎大学</td></tr>
+        <tr><td style="padding:10px 0;color:#9FB5CE;vertical-align:top">Web</td><td style="padding:10px 0" class="en">www.sorawing-robotics.com</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
