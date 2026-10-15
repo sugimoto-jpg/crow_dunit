@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>お見合いトラベル 提案資料</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Montserrat:wght@500;600;700;800&display=block" rel="stylesheet">
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  :root{
+    --plum:#2A2340; --plum2:#40355E; --rose:#E4577A; --rose-l:#FDECF0; --leaf:#3E9E74; --leaf-l:#E4F4EC;
+    --sun:#F2AE3A; --sun-l:#FEF4E1; --sky:#4F8BD6; --sky-l:#E9F1FB; --ink:#262233; --sub:#655F73; --line:#E6E1E8; --bg:#FBF7F5;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Noto Sans JP",sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .en{font-family:"Montserrat","Noto Sans JP",sans-serif}
+  .slide{width:1280px;height:720px;position:relative;overflow:hidden;background:#fff;break-after:page}
+  .slide:last-child{break-after:auto}
+  .hd{position:absolute;left:64px;top:44px;right:64px}
+  .hd .no{font-family:Montserrat;font-weight:700;color:var(--rose);font-size:14px;letter-spacing:.2em}
+  .hd h2{font-size:33px;font-weight:900;color:var(--plum);margin-top:6px;line-height:1.3}
+  .hd p.lead{font-size:16px;color:var(--sub);margin-top:8px;line-height:1.7}
+  .ft{position:absolute;left:64px;right:64px;bottom:22px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#A39CAD}
+  .ft .logo{font-weight:900;color:var(--plum);letter-spacing:.06em}
+  .ft .logo span{color:var(--rose)}
+  .top{position:absolute;left:0;right:0;top:0;height:8px;background:linear-gradient(90deg,var(--rose) 0 50%,var(--sun) 50% 70%,var(--leaf) 70% 88%,var(--sky) 88%)}
+  .body{position:absolute;left:64px;right:64px;top:160px;bottom:58px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px}
+  .note{font-size:11px;color:#9A93A6;line-height:1.5}
+  b.hl{background:linear-gradient(transparent 60%,#F9C9D6 60%);font-weight:900}
+  table{border-collapse:collapse}
+</style>
+</head>
+<body>
+
+<!-- ===== 1 COVER ===== -->
+<section class="slide" style="background:linear-gradient(135deg,#2A2340 0%,#40355E 60%,#6A4470 100%)">
+  <svg width="1280" height="720" viewBox="0 0 1280 720" style="position:absolute;inset:0">
+    <!-- mountains & countryside -->
+    <path d="M620 720 L780 470 L880 560 L1000 400 L1140 560 L1280 470 V720Z" fill="#3E9E74" opacity=".85"/>
+    <path d="M620 720 C760 600 900 640 1020 610 C1120 585 1200 600 1280 580 V720Z" fill="#2F8462"/>
+    <path d="M1000 400 L1040 445 L1020 450 L1000 430 L980 450 L960 445Z" fill="#fff" opacity=".8"/>
+    <!-- sun -->
+    <circle cx="1120" cy="200" r="70" fill="#F2AE3A"/>
+    <!-- train route dashed from city (left top) to countryside -->
+    <path d="M700 150 C820 160 860 260 940 300 S1050 360 1080 470" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/>
+    <!-- city -->
+    <g fill="#5A4C80"><rect x="650" y="90" width="26" height="70"/><rect x="680" y="70" width="30" height="90"/><rect x="714" y="100" width="22" height="60"/></g>
+    <!-- heart pin at destination -->
+    <g transform="translate(1080,470)">
+      <path d="M0 18 C-30 -6 -24 -34 -6 -34 C0 -34 0 -28 0 -28 C0 -28 0 -34 6 -34 C24 -34 30 -6 0 18Z" fill="#E4577A" stroke="#fff" stroke-width="3"/>
+    </g>
+    <!-- two people -->
+    <g transform="translate(900,600)">
+      <circle cx="0" cy="-58" r="14" fill="#FDECF0"/><path d="M-16 -40 h32 l6 40 h-44z" fill="#E4577A"/>
+      <circle cx="54" cy="-62" r="14" fill="#FDECF0"/><rect x="40" y="-44" width="28" height="44" rx="6" fill="#4F8BD6"/>
+    </g>
+    <path d="M934 548 C940 538 952 540 952 548 C952 556 940 562 934 568 C928 562 916 556 916 548 C916 540 928 538 934 548Z" fill="#fff"/>
+    <rect x="0" y="700" width="1280" height="20" fill="#E4577A"/>
+  </svg>
+  <div style="position:absolute;left:80px;top:80px;color:#fff;width:720px">
+    <div class="en" style="font-size:14px;letter-spacing:.3em;color:#F9C9D6;font-weight:700">PROPOSAL FOR LOCAL GOVERNMENTS &amp; PARTNERS</div>
+    <div style="font-size:20px;margin-top:40px;opacity:.92">地方の独身男性 × 全国の婚活女性</div>
+    <h1 style="font-size:50px;font-weight:900;line-height:1.38;margin-top:14px">旅が、出会いになる。<br>出会いが、<span style="color:#F9A8BC">まちの未来</span>へ。</h1>
+    <div style="margin-top:24px;font-size:17px;line-height:1.8;opacity:.9">婚活 × 旅 × 地域PRで、結婚支援と移住促進を同時に。</div>
+    <div style="margin-top:44px;display:flex;align-items:center;gap:16px">
+      <svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="28" fill="#E4577A"/><path d="M28 40 C14 30 16 18 23 18 C26 18 28 21 28 21 C28 21 30 18 33 18 C40 18 42 30 28 40Z" fill="#fff"/></svg>
+      <div><div style="font-size:30px;font-weight:900;letter-spacing:.06em">お見合いトラベル</div><div style="font-size:14px;opacity:.85">株式会社Hyatt</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 2 CONTENTS ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="top"></div>
+  <div class="hd"><div class="no">CONTENTS</div><h2>本日ご説明する内容</h2></div>
+  <div class="body" style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;top:156px">
+    <div class="card" style="padding:26px 28px"><div class="en" style="font-size:40px;font-weight:800;color:var(--rose)">01</div><div style="font-size:21px;font-weight:900;color:var(--plum);margin-top:6px">地方の結婚・人口の課題</div><div style="font-size:14px;color:var(--sub);margin-top:8px;line-height:1.7">婚姻数の減少と、地方婚活イベントの“よくある壁”</div></div>
+    <div class="card" style="padding:26px 28px"><div class="en" style="font-size:40px;font-weight:800;color:var(--rose)">02</div><div style="font-size:21px;font-weight:900;color:var(--plum);margin-top:6px">お見合いトラベルとは</div><div style="font-size:14px;color:var(--sub);margin-top:8px;line-height:1.7">「地方婚活旅」の仕組みと連携体制</div></div>
+    <div class="card" style="padding:26px 28px"><div class="en" style="font-size:40px;font-weight:800;color:var(--rose)">03</div><div style="font-size:21px;font-weight:900;color:var(--plum);margin-top:6px">選ばれる理由</div><div style="font-size:14px;color:var(--sub);margin-top:8px;line-height:1.7">女性会員アプリと集客力、地域PR効果</div></div>
+    <div class="card" style="padding:26px 28px"><div class="en" style="font-size:40px;font-weight:800;color:var(--rose)">04</div><div style="font-size:21px;font-weight:900;color:var(--plum);margin-top:6px">自治体様にとっての効果</div><div style="font-size:14px;color:var(--sub);margin-top:8px;line-height:1.7">出会い → 関係人口 → 移住・定住へ</div></div>
+    <div class="card" style="padding:26px 28px"><div class="en" style="font-size:40px;font-weight:800;color:var(--rose)">05</div><div style="font-size:21px;font-weight:900;color:var(--plum);margin-top:6px">開催の流れ・協賛プラン</div><div style="font-size:14px;color:var(--sub);margin-top:8px;line-height:1.7">開催までのスケジュールと企業様向けプラン</div></div>
+    <div class="card" style="padding:26px 28px;background:var(--plum);border-color:var(--plum)"><div class="en" style="font-size:40px;font-weight:800;color:#F9A8BC">06</div><div style="font-size:21px;font-weight:900;color:#fff;margin-top:6px">FAQ・会社概要</div><div style="font-size:14px;color:#C9C1DA;margin-top:8px;line-height:1.7">よくあるご質問と、お問い合わせのご案内</div></div>
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>02</div></div>
+</section>
+
+<!-- ===== 3 MARKET ===== -->
+<section class="slide">
+  <div class="top"></div>
+  <div class="hd"><div class="no">01 ─ BACKGROUND</div><h2>結婚の減少は、地域の未来を左右する課題に</h2></div>
+  <div class="body" style="top:140px;display:grid;grid-template-columns:1.25fr 1fr;gap:26px">
+    <div class="card" style="padding:22px 26px">
+      <div style="font-size:16px;font-weight:900;color:var(--plum)">全国の婚姻件数の推移</div>
+      <div class="note">出典：厚生労働省「人口動態統計」</div>
+      <svg width="620" height="380" viewBox="0 0 620 380" style="margin-top:6px">
+        <g font-family="Noto Sans JP" font-size="12" fill="#655F73">
+          <line x1="50" y1="320" x2="600" y2="320" stroke="#D8D2DC"/>
+          <line x1="50" y1="245" x2="600" y2="245" stroke="#F1EDF3"/><line x1="50" y1="170" x2="600" y2="170" stroke="#F1EDF3"/><line x1="50" y1="95" x2="600" y2="95" stroke="#F1EDF3"/>
+          <text x="42" y="324" text-anchor="end">0</text><text x="42" y="249" text-anchor="end">30</text><text x="42" y="174" text-anchor="end">60</text><text x="42" y="99" text-anchor="end">90</text>
+          <text x="8" y="50" font-size="11">（万組）</text>
+        </g>
+        <!-- scale: 1万組 = 2.5px ; 102.9→257, 79.8→200, 70.0→175, 52.6→132, 47.5→119 -->
+        <g font-family="Montserrat" font-weight="700" text-anchor="middle" font-size="15">
+          <rect x="80" y="63" width="70" height="257" rx="5" fill="#D9CFE3"/><text x="115" y="54" fill="#40355E">102.9</text>
+          <rect x="190" y="120" width="70" height="200" rx="5" fill="#C2B3D3"/><text x="225" y="111" fill="#40355E">79.8</text>
+          <rect x="300" y="145" width="70" height="175" rx="5" fill="#A894C1"/><text x="335" y="136" fill="#40355E">70.0</text>
+          <rect x="410" y="188" width="70" height="132" rx="5" fill="#8C77AA"/><text x="445" y="179" fill="#40355E">52.6</text>
+          <rect x="520" y="201" width="70" height="119" rx="5" fill="#E4577A"/><text x="555" y="192" fill="#E4577A" font-size="17">47.5</text>
+        </g>
+        <g font-family="Montserrat" font-size="13" fill="#655F73" text-anchor="middle"><text x="115" y="342">1970</text><text x="225" y="342">2000</text><text x="335" y="342">2010</text><text x="445" y="342">2020</text><text x="555" y="342" fill="#E4577A" font-weight="700">2023</text></g>
+        <g transform="translate(400,70)"><rect x="-10" y="-22" width="210" height="44" rx="22" fill="#FDECF0"/><text x="95" y="6" text-anchor="middle" font-family="Noto Sans JP" font-size="14" font-weight="900" fill="#E4577A">約50年で半分以下に</text></g>
+      </svg>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="padding:18px 22px">
+        <div style="font-size:14px;color:var(--sub)">50歳時点で一度も結婚していない人の割合（2020年）</div>
+        <div style="display:flex;gap:24px;margin-top:8px;align-items:flex-end">
+          <div><div style="font-size:13px;font-weight:700;color:var(--sky)">男性</div><div class="en" style="font-size:42px;font-weight:800;color:var(--sky);line-height:1">28.3<span style="font-size:18px">%</span></div></div>
+          <div><div style="font-size:13px;font-weight:700;color:var(--rose)">女性</div><div class="en" style="font-size:42px;font-weight:800;color:var(--rose);line-height:1">17.8<span style="font-size:18px">%</span></div></div>
+        </div>
+        <div class="note" style="margin-top:6px">出典：国勢調査（2020年）に基づく集計</div>
+      </div>
+      <div class="card" style="padding:18px 22px">
+        <div style="font-size:14px;color:var(--sub)">「消滅可能性自治体」とされた市区町村</div>
+        <div class="en" style="font-size:46px;font-weight:800;color:var(--plum);line-height:1.1;margin-top:4px">744<span style="font-size:18px;font-family:'Noto Sans JP'"> 自治体</span></div>
+        <div style="font-size:13px;color:var(--sub);line-height:1.6;margin-top:4px">若年女性人口の減少が大きな要因とされています。</div>
+        <div class="note">出典：人口戦略会議「地方自治体『持続可能性』分析レポート」（2024年）</div>
+      </div>
+      <div style="background:var(--plum);color:#fff;border-radius:16px;padding:16px 22px;font-size:15px;line-height:1.75">地方では、<b style="color:#F9A8BC">若い女性の流出</b>と<b style="color:#F9A8BC">男性の未婚化</b>が重なり、地元の中だけでは出会いが生まれにくい構造があります。</div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>03</div></div>
+</section>
+
+<!-- ===== 4 WALLS ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="top"></div>
+  <div class="hd"><div class="no">01 ─ ISSUES</div><h2>自治体の婚活支援、こんな“壁”にぶつかっていませんか？</h2></div>
+  <div class="body" style="top:146px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
+    <div class="card" style="overflow:hidden">
+      <div style="height:180px;background:var(--rose-l);display:flex;align-items:center;justify-content:center">
+        <svg width="170" height="134" viewBox="0 0 140 110"><g fill="#4F8BD6"><circle cx="24" cy="30" r="11"/><rect x="13" y="44" width="22" height="34" rx="8"/><circle cx="56" cy="30" r="11"/><rect x="45" y="44" width="22" height="34" rx="8"/><circle cx="88" cy="30" r="11"/><rect x="77" y="44" width="22" height="34" rx="8"/></g><circle cx="120" cy="30" r="11" fill="none" stroke="#E4577A" stroke-width="3" stroke-dasharray="4 4"/><path d="M108 44 h24 l5 34 h-34z" fill="none" stroke="#E4577A" stroke-width="3" stroke-dasharray="4 4"/><rect x="6" y="90" width="128" height="6" rx="3" fill="#E6E1E8"/></svg></div>
+      <div style="padding:24px 22px"><div style="font-size:20px;font-weight:900;color:var(--plum)">女性参加者が集まらない</div><div style="font-size:15.5px;color:var(--sub);line-height:1.9;margin-top:10px">男性の申込みは多いのに女性が少なく、男女比が合わずに開催が難しい。</div></div>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <div style="height:180px;background:var(--sun-l);display:flex;align-items:center;justify-content:center">
+        <svg width="170" height="134" viewBox="0 0 140 110"><circle cx="70" cy="55" r="44" fill="none" stroke="#F2AE3A" stroke-width="4"/><g fill="#F2AE3A"><circle cx="55" cy="45" r="7"/><circle cx="85" cy="45" r="7"/><circle cx="70" cy="70" r="7"/></g><path d="M55 45 L85 45 L70 70Z" fill="none" stroke="#F2AE3A" stroke-width="2"/></svg></div>
+      <div style="padding:24px 22px"><div style="font-size:20px;font-weight:900;color:var(--plum)">地元同士では顔なじみ</div><div style="font-size:15.5px;color:var(--sub);line-height:1.9;margin-top:10px">参加者が地域内に限られると、新しい出会いが生まれにくく固定化しがち。</div></div>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <div style="height:180px;background:var(--sky-l);display:flex;align-items:center;justify-content:center">
+        <svg width="170" height="134" viewBox="0 0 140 110"><rect x="20" y="20" width="100" height="70" rx="8" fill="#fff" stroke="#4F8BD6" stroke-width="3"/><path d="M36 70 l16 -18 l14 10 l20 -24 l18 14" fill="none" stroke="#4F8BD6" stroke-width="3"/><circle cx="104" cy="52" r="14" fill="#E4577A"/><text x="104" y="58" text-anchor="middle" font-family="Montserrat" font-weight="800" font-size="16" fill="#fff">?</text></svg></div>
+      <div style="padding:24px 22px"><div style="font-size:20px;font-weight:900;color:var(--plum)">集客・広報のノウハウ不足</div><div style="font-size:15.5px;color:var(--sub);line-height:1.9;margin-top:10px">チラシや広報誌だけでは、都市部の若い世代に情報が届かない。</div></div>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <div style="height:180px;background:var(--leaf-l);display:flex;align-items:center;justify-content:center">
+        <svg width="170" height="134" viewBox="0 0 140 110"><circle cx="34" cy="55" r="18" fill="#3E9E74"/><circle cx="106" cy="55" r="18" fill="#3E9E74"/><path d="M54 55 h32" stroke="#3E9E74" stroke-width="4" stroke-dasharray="6 6"/><line x1="62" y1="40" x2="78" y2="70" stroke="#E4577A" stroke-width="5" stroke-linecap="round"/></svg></div>
+      <div style="padding:24px 22px"><div style="font-size:20px;font-weight:900;color:var(--plum)">イベント後が続かない</div><div style="font-size:15.5px;color:var(--sub);line-height:1.9;margin-top:10px">当日はカップルが成立しても、その後の交際や成婚・移住まで追えない。</div></div>
+    </div>
+  </div>
+  <div style="position:absolute;left:64px;right:64px;bottom:52px;background:var(--plum);border-radius:12px;padding:14px 22px;font-size:16px;font-weight:700;color:#fff;text-align:center">
+    ▶ 必要なのは、<span style="color:#F9A8BC">「地域の外から女性を呼び込み」「出会いの後まで伴走する」</span>仕組みです。
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>04</div></div>
+</section>
+
+<!-- ===== 5 WHAT IS ===== -->
+<section class="slide">
+  <div class="top"></div>
+  <div class="hd"><div class="no">02 ─ SERVICE</div><h2>お見合いトラベルとは ──「地方婚活旅」</h2><p class="lead">全国の独身女性が、地方在住の独身男性との集団お見合いイベントに“旅”として訪れるサービスです。</p></div>
+  <div class="body" style="top:196px;display:grid;grid-template-columns:1fr 380px;gap:28px">
+    <div class="card" style="padding:10px 16px;background:linear-gradient(180deg,#FBF7F5,#fff)">
+      <svg width="720" height="420" viewBox="0 0 720 420">
+        <!-- city side -->
+        <g transform="translate(120,140)">
+          <circle r="96" fill="#FDECF0"/>
+          <g fill="#C9B9DA"><rect x="-50" y="-40" width="24" height="70"/><rect x="-22" y="-60" width="30" height="90"/><rect x="12" y="-30" width="26" height="60"/></g>
+          <g transform="translate(0,46)"><g fill="#E4577A"><circle cx="-30" cy="-12" r="9"/><path d="M-41 0 h22 l4 22 h-30z"/><circle cx="0" cy="-12" r="9"/><path d="M-11 0 h22 l4 22 h-30z"/><circle cx="30" cy="-12" r="9"/><path d="M19 0 h22 l4 22 h-30z"/></g></g>
+        </g>
+        <text x="120" y="268" text-anchor="middle" font-family="Noto Sans JP" font-size="18" font-weight="900" fill="#2A2340">全国の婚活女性</text>
+        <text x="120" y="292" text-anchor="middle" font-family="Noto Sans JP" font-size="13" fill="#655F73">アプリ会員から参加</text>
+        <!-- journey -->
+        <path d="M230 140 C320 60 400 60 490 140" fill="none" stroke="#E4577A" stroke-width="4" stroke-dasharray="3 10" stroke-linecap="round"/>
+        <polygon points="482,128 498,146 474,146" fill="#E4577A"/>
+        <g transform="translate(360,74)"><rect x="-58" y="-20" width="116" height="40" rx="20" fill="#E4577A"/><text y="6" text-anchor="middle" font-family="Noto Sans JP" font-size="15" font-weight="900" fill="#fff">✈ 旅として訪問</text></g>
+        <!-- countryside -->
+        <g transform="translate(600,140)">
+          <circle r="96" fill="#E4F4EC"/>
+          <path d="M-80 30 L-40 -30 L-10 0 L30 -50 L80 30Z" fill="#3E9E74"/>
+          <path d="M30 -50 L42 -36 L30 -32 L18 -36Z" fill="#fff"/>
+          <g transform="translate(0,46)"><g fill="#4F8BD6"><circle cx="-30" cy="-12" r="9"/><rect x="-40" y="0" width="20" height="24" rx="5"/><circle cx="0" cy="-12" r="9"/><rect x="-10" y="0" width="20" height="24" rx="5"/><circle cx="30" cy="-12" r="9"/><rect x="20" y="0" width="20" height="24" rx="5"/></g></g>
+        </g>
+        <text x="600" y="268" text-anchor="middle" font-family="Noto Sans JP" font-size="18" font-weight="900" fill="#2A2340">地方在住の独身男性</text>
+        <text x="600" y="292" text-anchor="middle" font-family="Noto Sans JP" font-size="13" fill="#655F73">自治体・地域から募集</text>
+        <!-- center event -->
+        <g transform="translate(360,200)"><circle r="44" fill="#fff" stroke="#E4577A" stroke-width="3"/><path d="M0 18 C-24 0 -20 -22 -6 -22 C0 -22 0 -16 0 -16 C0 -16 0 -22 6 -22 C20 -22 24 0 0 18Z" fill="#E4577A"/></g>
+        <text x="360" y="268" text-anchor="middle" font-family="Noto Sans JP" font-size="15" font-weight="900" fill="#E4577A">集団お見合い</text>
+        <!-- bottom 3 boxes -->
+        <g font-family="Noto Sans JP" text-anchor="middle">
+          <g transform="translate(130,360)"><rect x="-110" y="-30" width="220" height="60" rx="14" fill="#FEF4E1"/><text y="-4" font-size="15" font-weight="900" fill="#2A2340">🏞 地域の観光・体験</text><text y="17" font-size="12" fill="#655F73">まちの魅力を知ってもらう</text></g>
+          <g transform="translate(360,360)"><rect x="-110" y="-30" width="220" height="60" rx="14" fill="#FDECF0"/><text y="-4" font-size="15" font-weight="900" fill="#2A2340">💬 出会い・交流</text><text y="17" font-size="12" fill="#655F73">少人数で自然に話せる場</text></g>
+          <g transform="translate(590,360)"><rect x="-110" y="-30" width="220" height="60" rx="14" fill="#E4F4EC"/><text y="-4" font-size="15" font-weight="900" fill="#2A2340">🏡 その後のフォロー</text><text y="17" font-size="12" fill="#655F73">結婚相談所が交際を支援</text></g>
+        </g>
+      </svg>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="background:var(--rose);color:#fff;border-radius:16px;padding:20px 24px">
+        <div style="font-size:13px;opacity:.9">女性限定 会員制アプリ</div>
+        <div style="font-size:24px;font-weight:900;margin-top:2px">「お見合いトラベル」</div>
+        <div style="display:flex;align-items:baseline;gap:6px;margin-top:10px"><span style="font-size:14px">会員</span><span class="en" style="font-size:52px;font-weight:800;line-height:1">1</span><span style="font-size:22px;font-weight:900">万人</span></div>
+        <div style="font-size:12px;opacity:.85;margin-top:4px">※2026年2月時点の媒体資料より</div>
+      </div>
+      <div class="card" style="padding:16px 20px"><div style="font-size:15px;font-weight:900;color:var(--plum)">📱 2025年3月 アプリリリース</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:4px">全国の婚活女性が、各地のツアー情報を見て参加申込みできます。</div></div>
+      <div class="card" style="padding:16px 20px"><div style="font-size:15px;font-weight:900;color:var(--plum)">🤝 自治体・結婚相談所と連携</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:4px">地域と専門家が組むことで、出会いから成婚・移住まで伴走します。</div></div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>05</div></div>
+</section>
+
+<!-- ===== 6 STRUCTURE ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="top"></div>
+  <div class="hd"><div class="no">02 ─ SCHEME</div><h2>三者連携で「出会い」から「成婚・移住」までをつなぐ</h2></div>
+  <div class="body" style="top:136px;display:grid;grid-template-columns:680px 1fr;gap:26px">
+    <div class="card" style="padding:10px;display:flex;justify-content:center;align-items:center">
+      <svg width="650" height="480" viewBox="0 0 650 480">
+        <!-- triangle links -->
+        <g stroke="#D8D2DC" stroke-width="3"><line x1="325" y1="110" x2="130" y2="330"/><line x1="325" y1="110" x2="520" y2="330"/><line x1="130" y1="330" x2="520" y2="330"/></g>
+        <g font-family="Noto Sans JP" text-anchor="middle">
+          <!-- Hyatt -->
+          <g transform="translate(325,100)"><circle r="78" fill="#2A2340"/><text y="-10" font-size="13" fill="#F9A8BC" font-weight="700">企画・運営・集客</text><text y="16" font-size="22" font-weight="900" fill="#fff">Hyatt</text><text y="38" font-size="11" fill="#C9C1DA">お見合いトラベル</text></g>
+          <!-- Gov -->
+          <g transform="translate(130,330)"><circle r="78" fill="#3E9E74"/><text y="-10" font-size="13" fill="#E4F4EC" font-weight="700">地域PR・男性募集</text><text y="16" font-size="22" font-weight="900" fill="#fff">自治体</text><text y="38" font-size="11" fill="#E4F4EC">会場・地域資源</text></g>
+          <!-- Agency -->
+          <g transform="translate(520,330)"><circle r="78" fill="#4F8BD6"/><text y="-10" font-size="13" fill="#E9F1FB" font-weight="700">成婚までフォロー</text><text y="16" font-size="20" font-weight="900" fill="#fff">結婚相談所</text><text y="38" font-size="11" fill="#E9F1FB">各都道府県2社限定</text></g>
+          <!-- center -->
+          <g transform="translate(325,262)"><rect x="-88" y="-40" width="176" height="80" rx="40" fill="#E4577A"/><text y="-6" font-size="15" font-weight="900" fill="#fff">参加者</text><text y="16" font-size="12" fill="#fff">女性会員 × 地元男性</text></g>
+          <!-- edge labels -->
+          <g font-size="12" fill="#655F73"><text x="196" y="200">連携・共催</text><text x="456" y="200">連携・紹介</text><text x="325" y="352">交際・成婚サポート</text></g>
+        </g>
+        <!-- arrows to center -->
+        <g stroke="#E4577A" stroke-width="2" stroke-dasharray="4 4"><line x1="325" y1="180" x2="325" y2="222"/><line x1="196" y1="290" x2="238" y2="270"/><line x1="454" y1="290" x2="412" y2="270"/></g>
+      </svg>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="padding:16px 20px;border-left:6px solid var(--plum)"><div style="font-size:16px;font-weight:900;color:var(--plum)">株式会社Hyatt</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:4px">ツアーの企画・運営、女性会員アプリでの集客、Meta広告などによる全国への告知。</div></div>
+      <div class="card" style="padding:16px 20px;border-left:6px solid var(--leaf)"><div style="font-size:16px;font-weight:900;color:var(--plum)">自治体様</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:4px">地域の魅力や移住支援情報の提供、地元男性参加者への周知、会場・観光資源のご協力。</div></div>
+      <div class="card" style="padding:16px 20px;border-left:6px solid var(--sky)"><div style="font-size:16px;font-weight:900;color:var(--plum)">結婚相談所（各都道府県2社限定）</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:4px">イベント後の交際・成婚までをプロが伴走。単発で終わらせない仕組み。</div></div>
+      <div style="background:var(--rose-l);border-radius:14px;padding:14px 20px;font-size:14.5px;color:var(--plum);font-weight:700;line-height:1.7">自治体様は<b style="color:var(--rose)">「地域の魅力づくり」に集中</b>でき、集客・運営・アフターフォローは専門チームが担います。</div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>06</div></div>
+</section>
+
+<!-- ===== 7 STRENGTHS ===== -->
+<section class="slide">
+  <div class="top"></div>
+  <div class="hd"><div class="no">03 ─ STRENGTHS</div><h2>お見合いトラベルが選ばれる 3つの理由</h2></div>
+  <div class="body" style="top:146px;bottom:120px;display:grid;grid-template-columns:repeat(3,1fr);gap:26px">
+    <div class="card" style="overflow:hidden">
+      <div style="background:var(--rose);color:#fff;padding:34px 26px;position:relative">
+        <div class="en" style="font-size:13px;font-weight:700;letter-spacing:.15em;opacity:.9">REASON 01</div>
+        <div style="font-size:24px;font-weight:900;margin-top:6px;line-height:1.4">女性会員1万人の<br>専用アプリ</div>
+        <svg width="54" height="80" viewBox="0 0 54 80" style="position:absolute;right:24px;top:22px"><rect width="54" height="80" rx="10" fill="#fff"/><rect x="5" y="10" width="44" height="58" rx="3" fill="#FDECF0"/><path d="M27 50 C14 41 16 30 22 30 C25 30 27 33 27 33 C27 33 29 30 32 30 C38 30 40 41 27 50Z" fill="#E4577A"/></svg>
+      </div>
+      <div style="padding:26px 28px;font-size:16.5px;color:var(--sub);line-height:2.05">地方の男性との出会いに前向きな女性が集まる、<b style="color:var(--plum)">女性限定の会員制アプリ</b>。最大の課題である女性参加者の確保に直結します。</div>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <div style="background:var(--plum);color:#fff;padding:34px 26px;position:relative">
+        <div class="en" style="font-size:13px;font-weight:700;letter-spacing:.15em;color:#F9A8BC">REASON 02</div>
+        <div style="font-size:24px;font-weight:900;margin-top:6px;line-height:1.4">Webマーケティングの<br>集客力</div>
+        <svg width="70" height="70" viewBox="0 0 70 70" style="position:absolute;right:22px;top:26px"><circle cx="35" cy="35" r="30" fill="none" stroke="#F9A8BC" stroke-width="4"/><circle cx="35" cy="35" r="18" fill="none" stroke="#F9A8BC" stroke-width="4"/><circle cx="35" cy="35" r="6" fill="#E4577A"/></svg>
+      </div>
+      <div style="padding:26px 28px;font-size:16.5px;color:var(--sub);line-height:2.05">インフルエンサーマーケティングを手がける会社だからこそ、<b style="color:var(--plum)">Meta広告やSNSで全国の女性へ</b>ツアー情報を届けられます。</div>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <div style="background:var(--leaf);color:#fff;padding:34px 26px;position:relative">
+        <div class="en" style="font-size:13px;font-weight:700;letter-spacing:.15em;opacity:.9">REASON 03</div>
+        <div style="font-size:24px;font-weight:900;margin-top:6px;line-height:1.4">婚活と同時に<br>地域PRもできる</div>
+        <svg width="70" height="64" viewBox="0 0 70 64" style="position:absolute;right:22px;top:28px"><path d="M4 60 L24 22 L36 38 L50 14 L66 60Z" fill="#fff"/><circle cx="56" cy="10" r="7" fill="#F2AE3A"/></svg>
+      </div>
+      <div style="padding:26px 28px;font-size:16.5px;color:var(--sub);line-height:2.05">参加者が<b style="color:var(--plum)">“旅人”としてまちを体験</b>。観光・食・暮らしの魅力が伝わり、告知そのものが地域のプロモーションになります。</div>
+    </div>
+  </div>
+  <div style="position:absolute;left:64px;right:64px;bottom:52px;background:var(--bg);border-radius:14px;padding:16px 24px;display:flex;justify-content:space-around;align-items:center;font-size:15px;font-weight:700;color:var(--plum)">
+    <span>👩 女性を呼べる</span><span style="color:var(--rose)">＋</span><span>📣 全国に届く</span><span style="color:var(--rose)">＋</span><span>🏞 まちが伝わる</span><span style="color:var(--rose)">＝</span><span style="color:var(--rose)">出会いが生まれる婚活イベント</span>
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>07</div></div>
+</section>
+
+<!-- ===== 8 MODEL DAY ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="top"></div>
+  <div class="hd"><div class="no">02 ─ MODEL PLAN</div><h2>ツアー当日のモデルプラン</h2><p class="lead">地域の魅力を体験しながら、自然な会話が生まれる流れを設計します。</p></div>
+  <div class="body" style="top:200px">
+    <svg width="1152" height="300" viewBox="0 0 1152 300">
+      <line x1="70" y1="90" x2="1082" y2="90" stroke="#E6E1E8" stroke-width="8" stroke-linecap="round"/>
+      <line x1="70" y1="90" x2="1082" y2="90" stroke="#E4577A" stroke-width="8" stroke-dasharray="1 26" stroke-linecap="round"/>
+      <g font-family="Noto Sans JP" text-anchor="middle">
+        <g transform="translate(90,90)"><circle r="46" fill="#2A2340"/><text y="-4" font-size="26">🚃</text><text y="22" font-family="Montserrat" font-weight="700" font-size="12" fill="#F9A8BC">10:00</text>
+          <text y="80" font-size="17" font-weight="900" fill="#2A2340">現地集合</text><text y="102" font-size="12.5" fill="#655F73">駅・観光拠点で</text><text y="120" font-size="12.5" fill="#655F73">女性参加者をお迎え</text></g>
+        <g transform="translate(292,90)"><circle r="46" fill="#3E9E74"/><text y="-4" font-size="26">🏞</text><text y="22" font-family="Montserrat" font-weight="700" font-size="12" fill="#E4F4EC">10:30</text>
+          <text y="80" font-size="17" font-weight="900" fill="#2A2340">地域体験</text><text y="102" font-size="12.5" fill="#655F73">観光・農業体験など</text><text y="120" font-size="12.5" fill="#655F73">男女混合グループで</text></g>
+        <g transform="translate(494,90)"><circle r="46" fill="#F2AE3A"/><text y="-4" font-size="26">🍱</text><text y="22" font-family="Montserrat" font-weight="700" font-size="12" fill="#fff">12:30</text>
+          <text y="80" font-size="17" font-weight="900" fill="#2A2340">地元グルメ</text><text y="102" font-size="12.5" fill="#655F73">特産品を囲んで</text><text y="120" font-size="12.5" fill="#655F73">会話のきっかけに</text></g>
+        <g transform="translate(696,90)"><circle r="46" fill="#E4577A"/><text y="-4" font-size="26">💬</text><text y="22" font-family="Montserrat" font-weight="700" font-size="12" fill="#fff">14:00</text>
+          <text y="80" font-size="17" font-weight="900" fill="#2A2340">お見合いタイム</text><text y="102" font-size="12.5" fill="#655F73">1対1トーク・</text><text y="120" font-size="12.5" fill="#655F73">フリータイム</text></g>
+        <g transform="translate(898,90)"><circle r="46" fill="#4F8BD6"/><text y="-4" font-size="26">💌</text><text y="22" font-family="Montserrat" font-weight="700" font-size="12" fill="#fff">16:00</text>
+          <text y="80" font-size="17" font-weight="900" fill="#2A2340">マッチング</text><text y="102" font-size="12.5" fill="#655F73">気になる相手を投票</text><text y="120" font-size="12.5" fill="#655F73">カップル発表</text></g>
+        <g transform="translate(1082,90)"><circle r="46" fill="#40355E"/><text y="-4" font-size="26">🏡</text><text y="22" font-family="Montserrat" font-weight="700" font-size="12" fill="#F9A8BC">後日</text>
+          <text y="80" font-size="17" font-weight="900" fill="#2A2340">交際フォロー</text><text y="102" font-size="12.5" fill="#655F73">結婚相談所が</text><text y="120" font-size="12.5" fill="#655F73">再訪・交際を支援</text></g>
+      </g>
+    </svg>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:6px">
+      <div class="card" style="padding:22px 24px;border-top:5px solid var(--leaf)"><div style="font-size:15px;font-weight:900;color:var(--plum)">地域の「らしさ」を企画に</div><div style="font-size:14.5px;color:var(--sub);line-height:1.8;margin-top:6px">温泉・農業・祭り・伝統工芸など、自治体様の資源を活かしたプランをご一緒に設計します。</div></div>
+      <div class="card" style="padding:22px 24px;border-top:5px solid var(--rose)"><div style="font-size:15px;font-weight:900;color:var(--plum)">緊張をほぐす進行</div><div style="font-size:14.5px;color:var(--sub);line-height:1.8;margin-top:6px">体験や食事を挟むことで、初対面同士でも自然に会話が生まれる構成にしています。</div></div>
+      <div class="card" style="padding:22px 24px;border-top:5px solid var(--sky)"><div style="font-size:15px;font-weight:900;color:var(--plum)">移住相談コーナーも</div><div style="font-size:14.5px;color:var(--sub);line-height:1.8;margin-top:6px">住まい・仕事・子育て支援など、自治体様の移住施策をその場でご紹介いただけます。</div></div>
+    </div>
+    <div class="note" style="margin-top:8px">※行程はモデル例です。開催地・季節・ご要望に応じて内容は個別に設計します。</div>
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>08</div></div>
+</section>
+
+<!-- ===== 9 EFFECT ===== -->
+<section class="slide">
+  <div class="top"></div>
+  <div class="hd"><div class="no">04 ─ IMPACT</div><h2>自治体様にとっての効果 ── 出会いを「関係人口」「移住」へ</h2></div>
+  <div class="body" style="top:146px;display:grid;grid-template-columns:660px 1fr;gap:28px">
+    <div class="card" style="padding:16px 20px;display:flex;align-items:center;justify-content:center">
+      <svg width="620" height="440" viewBox="0 0 620 440">
+        <!-- staircase -->
+        <g font-family="Noto Sans JP">
+          <rect x="20" y="330" width="140" height="90" rx="10" fill="#FDECF0"/>
+          <rect x="170" y="260" width="140" height="160" rx="10" fill="#F9C9D6"/>
+          <rect x="320" y="180" width="140" height="240" rx="10" fill="#EE8FA6"/>
+          <rect x="470" y="90" width="140" height="330" rx="10" fill="#E4577A"/>
+          <g text-anchor="middle">
+            <text x="90" y="360" font-size="13" font-family="Montserrat" font-weight="700" fill="#E4577A">STEP 1</text><text x="90" y="384" font-size="17" font-weight="900" fill="#2A2340">認知</text><text x="90" y="404" font-size="11.5" fill="#655F73">告知でまちを知る</text>
+            <text x="240" y="290" font-size="13" font-family="Montserrat" font-weight="700" fill="#C23C60">STEP 2</text><text x="240" y="314" font-size="17" font-weight="900" fill="#2A2340">来訪・体験</text><text x="240" y="334" font-size="11.5" fill="#655F73">ツアーで実際に訪れる</text>
+            <text x="390" y="210" font-size="13" font-family="Montserrat" font-weight="700" fill="#fff">STEP 3</text><text x="390" y="234" font-size="17" font-weight="900" fill="#fff">関係人口</text><text x="390" y="254" font-size="11.5" fill="#fff">交際で何度も通う</text>
+            <text x="540" y="120" font-size="13" font-family="Montserrat" font-weight="700" fill="#fff">STEP 4</text><text x="540" y="144" font-size="17" font-weight="900" fill="#fff">成婚・移住</text><text x="540" y="164" font-size="11.5" fill="#fff">まちで新しい家族に</text>
+          </g>
+          <path d="M60 300 C200 230 340 150 560 50" fill="none" stroke="#2A2340" stroke-width="3" stroke-dasharray="6 6"/>
+          <polygon points="560,40 572,54 552,58" fill="#2A2340"/>
+        </g>
+      </svg>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card" style="padding:16px 20px;display:flex;gap:14px;align-items:flex-start"><div style="background:var(--rose-l);border-radius:10px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">💍</div><div><div style="font-size:16px;font-weight:900;color:var(--plum)">結婚支援施策の推進</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:2px">地元男性に、地域の外の女性との出会いの機会を提供。</div></div></div>
+      <div class="card" style="padding:16px 20px;display:flex;gap:14px;align-items:flex-start"><div style="background:var(--leaf-l);border-radius:10px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏡</div><div><div style="font-size:16px;font-weight:900;color:var(--plum)">移住・定住の入口づくり</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:2px">“パートナーのまち”として、移住を具体的に考えるきっかけに。</div></div></div>
+      <div class="card" style="padding:16px 20px;display:flex;gap:14px;align-items:flex-start"><div style="background:var(--sun-l);border-radius:10px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">📣</div><div><div style="font-size:16px;font-weight:900;color:var(--plum)">シティプロモーション</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:2px">全国の女性に向けた告知が、そのまま地域の魅力発信に。</div></div></div>
+      <div class="card" style="padding:16px 20px;display:flex;gap:14px;align-items:flex-start"><div style="background:var(--sky-l);border-radius:10px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">⏱</div><div><div style="font-size:16px;font-weight:900;color:var(--plum)">職員様の負担軽減</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:2px">企画・集客・運営・フォローを一括して任せられます。</div></div></div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>09</div></div>
+</section>
+
+<!-- ===== 10 COMPARISON ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="top"></div>
+  <div class="hd"><div class="no">04 ─ COMPARISON</div><h2>従来の自治体婚活イベントとの違い</h2></div>
+  <div class="body" style="top:136px">
+    <table style="width:100%;font-size:15px;background:#fff;border-radius:16px;overflow:hidden">
+      <tr>
+        <th style="width:220px;padding:18px;background:#fff"></th>
+        <th style="padding:18px;background:#EEEAF1;color:var(--sub)">従来の婚活イベント（自主開催）</th>
+        <th style="padding:18px;background:var(--rose);color:#fff;font-size:17px">お見合いトラベル</th>
+      </tr>
+      <tr><td style="padding:31px 22px;font-weight:900;color:var(--plum);border-bottom:1px solid var(--line)">女性参加者の集客</td>
+        <td style="padding:16px 22px;border-bottom:1px solid var(--line);color:var(--sub)"><span style="color:#C9A100;font-size:20px">△</span>　広報誌・チラシ中心で、地域内に限られがち</td>
+        <td style="padding:16px 22px;border-bottom:1px solid var(--line);background:#FFF7F9;font-weight:700"><span style="color:var(--rose);font-size:20px">◎</span>　女性会員1万人のアプリ＋Meta広告で全国から</td></tr>
+      <tr><td style="padding:31px 22px;font-weight:900;color:var(--plum);border-bottom:1px solid var(--line)">出会いの新鮮さ</td>
+        <td style="padding:16px 22px;border-bottom:1px solid var(--line);color:var(--sub)"><span style="color:#C9A100;font-size:20px">△</span>　顔なじみ同士になりやすい</td>
+        <td style="padding:16px 22px;border-bottom:1px solid var(--line);background:#FFF7F9;font-weight:700"><span style="color:var(--rose);font-size:20px">◎</span>　地域の外から新しい出会いを呼び込む</td></tr>
+      <tr><td style="padding:31px 22px;font-weight:900;color:var(--plum);border-bottom:1px solid var(--line)">地域PR効果</td>
+        <td style="padding:16px 22px;border-bottom:1px solid var(--line);color:var(--sub)"><span style="color:#C9A100;font-size:20px">△</span>　婚活のみで完結</td>
+        <td style="padding:16px 22px;border-bottom:1px solid var(--line);background:#FFF7F9;font-weight:700"><span style="color:var(--rose);font-size:20px">◎</span>　観光・体験と組み合わせ、まちの魅力を発信</td></tr>
+      <tr><td style="padding:31px 22px;font-weight:900;color:var(--plum);border-bottom:1px solid var(--line)">イベント後のフォロー</td>
+        <td style="padding:16px 22px;border-bottom:1px solid var(--line);color:var(--sub)"><span style="color:#D2553F;font-size:20px">×</span>　当日のカップル成立で終了しがち</td>
+        <td style="padding:16px 22px;border-bottom:1px solid var(--line);background:#FFF7F9;font-weight:700"><span style="color:var(--rose);font-size:20px">◎</span>　提携結婚相談所が交際・成婚まで伴走</td></tr>
+      <tr><td style="padding:31px 22px;font-weight:900;color:var(--plum)">職員様の負担</td>
+        <td style="padding:16px 22px;color:var(--sub)"><span style="color:#D2553F;font-size:20px">×</span>　企画・集客・当日運営まで職員が担当</td>
+        <td style="padding:16px 22px;background:#FFF7F9;font-weight:700"><span style="color:var(--rose);font-size:20px">◎</span>　企画・集客・運営を専門チームが一括対応</td></tr>
+    </table>
+    <div class="note" style="margin-top:10px">※一般的な傾向を比較したものです。</div>
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>10</div></div>
+</section>
+
+<!-- ===== 11 TRACK ===== -->
+<section class="slide">
+  <div class="top"></div>
+  <div class="hd"><div class="no">03 ─ TRACK RECORD</div><h2>開催実績とこれまでの歩み</h2></div>
+  <div class="body" style="top:140px;display:grid;grid-template-columns:1fr 1fr;gap:28px">
+    <div class="card" style="padding:22px 26px">
+      <div style="font-size:16px;font-weight:900;color:var(--plum)">これまでの歩み</div>
+      <svg width="530" height="400" viewBox="0 0 530 400" style="margin-top:6px">
+        <line x1="40" y1="20" x2="40" y2="380" stroke="#E6E1E8" stroke-width="5" stroke-linecap="round"/>
+        <g font-family="Noto Sans JP">
+          <g transform="translate(40,40)"><circle r="12" fill="#2A2340"/><text x="30" y="-4" font-family="Montserrat" font-weight="700" font-size="14" fill="#E4577A">2017.11</text><text x="30" y="18" font-size="16" font-weight="900" fill="#2A2340">株式会社Hyatt 設立</text><text x="30" y="38" font-size="12.5" fill="#655F73">Webマーケティング・インフルエンサーマーケティング事業</text></g>
+          <g transform="translate(40,140)"><circle r="12" fill="#40355E"/><text x="30" y="-4" font-family="Montserrat" font-weight="700" font-size="14" fill="#E4577A">STEP</text><text x="30" y="18" font-size="16" font-weight="900" fill="#2A2340">集団お見合いイベントの企画・運営</text><text x="30" y="38" font-size="12.5" fill="#655F73">自治体・結婚相談所と連携し「地方婚活旅」を展開</text></g>
+          <g transform="translate(40,240)"><circle r="12" fill="#E4577A"/><text x="30" y="-4" font-family="Montserrat" font-weight="700" font-size="14" fill="#E4577A">2025.3</text><text x="30" y="18" font-size="16" font-weight="900" fill="#2A2340">女性限定アプリ「お見合いトラベル」リリース</text><text x="30" y="38" font-size="12.5" fill="#655F73">全国の婚活女性が各地のツアーに申し込める仕組みに</text></g>
+          <g transform="translate(40,340)"><circle r="14" fill="#fff" stroke="#E4577A" stroke-width="5"/><text x="30" y="-4" font-family="Montserrat" font-weight="700" font-size="14" fill="#E4577A">2026.2</text><text x="30" y="18" font-size="16" font-weight="900" fill="#2A2340">アプリ会員 1万人に</text><text x="30" y="38" font-size="12.5" fill="#655F73">企業協賛プランの提供も開始</text></g>
+        </g>
+      </svg>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card" style="overflow:hidden">
+        <div style="background:linear-gradient(120deg,#3E9E74,#2F8462);color:#fff;padding:22px 26px;position:relative">
+          <svg width="160" height="90" viewBox="0 0 160 90" style="position:absolute;right:16px;top:14px;opacity:.35"><path d="M0 90 L50 20 L80 50 L120 10 L160 90Z" fill="#fff"/></svg>
+          <div class="tag" style="background:rgba(255,255,255,.2);color:#fff">開催例</div>
+          <div style="font-size:26px;font-weight:900;margin-top:8px">福島県 会津若松市</div>
+          <div style="font-size:14px;opacity:.9;margin-top:4px">婚活ツアーを開催</div>
+        </div>
+        <div style="padding:16px 26px;font-size:14px;color:var(--sub);line-height:1.8">城下町の歴史・食文化など、地域ならではの魅力と組み合わせた婚活旅として実施しました。</div>
+      </div>
+      <div class="card" style="padding:18px 24px">
+        <div style="font-size:15px;font-weight:900;color:var(--plum)">実績として整理・ご報告する項目（例）</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+          <div style="background:var(--rose-l);border-radius:10px;padding:10px 14px;font-size:13.5px"><b>参加者数</b>（男女別）</div>
+          <div style="background:var(--rose-l);border-radius:10px;padding:10px 14px;font-size:13.5px"><b>カップル成立数</b></div>
+          <div style="background:var(--leaf-l);border-radius:10px;padding:10px 14px;font-size:13.5px"><b>交際継続・成婚</b>の状況</div>
+          <div style="background:var(--leaf-l);border-radius:10px;padding:10px 14px;font-size:13.5px"><b>参加者アンケート</b></div>
+          <div style="background:var(--sun-l);border-radius:10px;padding:10px 14px;font-size:13.5px"><b>告知のリーチ数</b></div>
+          <div style="background:var(--sun-l);border-radius:10px;padding:10px 14px;font-size:13.5px"><b>移住相談</b>の件数</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>11</div></div>
+</section>
+
+<!-- ===== 12 FLOW ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="top"></div>
+  <div class="hd"><div class="no">05 ─ FLOW</div><h2>開催までの流れ（自治体様）</h2><p class="lead">ご相談から開催・フォローまで、約2〜3か月を目安に進めます。</p></div>
+  <div class="body" style="top:196px">
+    <div style="display:flex;align-items:stretch">
+      <div style="flex:1;background:var(--plum);color:#fff;height:170px;clip-path:polygon(0 0,90% 0,100% 50%,90% 100%,0 100%);padding:22px 30px 0 22px"><div class="en" style="font-size:13px;color:#F9A8BC;font-weight:700">STEP 1</div><div style="font-size:20px;font-weight:900;margin-top:6px">ご相談</div><div style="font-size:12.5px;opacity:.85;margin-top:8px;line-height:1.6">課題・目的・<br>ご予算のヒアリング</div></div>
+      <div style="flex:1;margin-left:-10px;background:var(--plum2);color:#fff;height:170px;clip-path:polygon(0 0,90% 0,100% 50%,90% 100%,0 100%,10% 50%);padding:22px 30px 0 40px"><div class="en" style="font-size:13px;color:#F9A8BC;font-weight:700">STEP 2</div><div style="font-size:20px;font-weight:900;margin-top:6px">企画設計</div><div style="font-size:12.5px;opacity:.85;margin-top:8px;line-height:1.6">行程・体験内容・<br>会場のご提案</div></div>
+      <div style="flex:1;margin-left:-10px;background:#6A4470;color:#fff;height:170px;clip-path:polygon(0 0,90% 0,100% 50%,90% 100%,0 100%,10% 50%);padding:22px 30px 0 40px"><div class="en" style="font-size:13px;color:#F9A8BC;font-weight:700">STEP 3</div><div style="font-size:20px;font-weight:900;margin-top:6px">参加者募集</div><div style="font-size:12.5px;opacity:.85;margin-top:8px;line-height:1.6">女性：アプリ・広告<br>男性：自治体様と連携</div></div>
+      <div style="flex:1;margin-left:-10px;background:#C8466B;color:#fff;height:170px;clip-path:polygon(0 0,90% 0,100% 50%,90% 100%,0 100%,10% 50%);padding:22px 30px 0 40px"><div class="en" style="font-size:13px;color:#FFE0E8;font-weight:700">STEP 4</div><div style="font-size:20px;font-weight:900;margin-top:6px">ツアー開催</div><div style="font-size:12.5px;opacity:.9;margin-top:8px;line-height:1.6">当日の進行・運営を<br>当社が担当</div></div>
+      <div style="flex:1;margin-left:-10px;background:var(--rose);color:#fff;height:170px;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,10% 50%);padding:22px 20px 0 40px"><div class="en" style="font-size:13px;color:#FFE9EE;font-weight:700">STEP 5</div><div style="font-size:20px;font-weight:900;margin-top:6px">フォロー・報告</div><div style="font-size:12.5px;opacity:.9;margin-top:8px;line-height:1.6">相談所による交際支援<br>実施報告書の提出</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:10px;font-size:12px;color:var(--sub);text-align:center;font-weight:700">
+      <div>開催の3か月前〜</div><div>2〜3か月前</div><div>1〜2か月前</div><div>開催日</div><div>開催後</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px">
+      <div class="card" style="padding:16px 22px;display:flex;align-items:center;gap:16px"><div style="background:var(--leaf);color:#fff;border-radius:10px;padding:8px 14px;font-weight:900;font-size:14px;white-space:nowrap">予算化のご相談</div><div style="font-size:14px;line-height:1.6">年度予算・補正予算への計上や、国の交付金活用の可能性も含めてご相談ください。</div></div>
+      <div class="card" style="padding:16px 22px;display:flex;align-items:center;gap:16px"><div style="background:var(--sun);color:#fff;border-radius:10px;padding:8px 14px;font-weight:900;font-size:14px;white-space:nowrap">年間プラン</div><div style="font-size:14px;line-height:1.6">季節ごとの複数回開催で、地域の魅力を継続的に発信するプランもご提案可能です。</div></div>
+    </div>
+  </div>
+<div style="position:absolute;left:64px;right:64px;bottom:52px;background:var(--rose-l);border-radius:12px;padding:16px 24px;display:flex;justify-content:space-around;font-size:15px;font-weight:700;color:var(--plum)"><span>📝 企画書・行程表をご用意</span><span>📣 告知ページ・広告を制作</span><span>📊 実施報告書を提出</span></div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>12</div></div>
+</section>
+
+<!-- ===== 13 ROLES ===== -->
+<section class="slide">
+  <div class="top"></div>
+  <div class="hd"><div class="no">05 ─ ROLES</div><h2>役割分担のイメージ</h2><p class="lead">自治体様のご負担を最小限にしながら、地域の強みを最大限に活かします。</p></div>
+  <div class="body" style="top:190px">
+    <table style="width:100%;font-size:14.5px">
+      <tr>
+        <th style="text-align:left;padding:14px 18px;background:var(--bg);width:220px;border-radius:12px 0 0 0">業務</th>
+        <th style="padding:14px;background:var(--plum);color:#fff">Hyatt</th>
+        <th style="padding:14px;background:var(--leaf);color:#fff">自治体様</th>
+        <th style="padding:14px;background:var(--sky);color:#fff;border-radius:0 12px 0 0">結婚相談所</th>
+      </tr>
+      <tr><td style="padding:16px 18px;font-weight:700;border-bottom:1px solid var(--line)">企画・行程設計</td><td style="text-align:center;font-size:22px;color:var(--rose);border-bottom:1px solid var(--line)">●</td><td style="text-align:center;font-size:22px;color:var(--leaf);border-bottom:1px solid var(--line)">○</td><td style="text-align:center;border-bottom:1px solid var(--line);color:#C7C1CF">―</td></tr>
+      <tr><td style="padding:16px 18px;font-weight:700;border-bottom:1px solid var(--line)">女性参加者の集客</td><td style="text-align:center;font-size:22px;color:var(--rose);border-bottom:1px solid var(--line)">●</td><td style="text-align:center;border-bottom:1px solid var(--line);color:#C7C1CF">―</td><td style="text-align:center;border-bottom:1px solid var(--line);color:#C7C1CF">―</td></tr>
+      <tr><td style="padding:16px 18px;font-weight:700;border-bottom:1px solid var(--line)">男性参加者の募集</td><td style="text-align:center;font-size:22px;color:var(--rose);border-bottom:1px solid var(--line)">○</td><td style="text-align:center;font-size:22px;color:var(--leaf);border-bottom:1px solid var(--line)">●</td><td style="text-align:center;font-size:22px;color:var(--sky);border-bottom:1px solid var(--line)">○</td></tr>
+      <tr><td style="padding:16px 18px;font-weight:700;border-bottom:1px solid var(--line)">会場・観光資源の調整</td><td style="text-align:center;font-size:22px;color:var(--rose);border-bottom:1px solid var(--line)">○</td><td style="text-align:center;font-size:22px;color:var(--leaf);border-bottom:1px solid var(--line)">●</td><td style="text-align:center;border-bottom:1px solid var(--line);color:#C7C1CF">―</td></tr>
+      <tr><td style="padding:16px 18px;font-weight:700;border-bottom:1px solid var(--line)">当日の進行・運営</td><td style="text-align:center;font-size:22px;color:var(--rose);border-bottom:1px solid var(--line)">●</td><td style="text-align:center;font-size:22px;color:var(--leaf);border-bottom:1px solid var(--line)">○</td><td style="text-align:center;font-size:22px;color:var(--sky);border-bottom:1px solid var(--line)">○</td></tr>
+      <tr><td style="padding:16px 18px;font-weight:700;border-bottom:1px solid var(--line)">交際・成婚フォロー</td><td style="text-align:center;border-bottom:1px solid var(--line);color:#C7C1CF">―</td><td style="text-align:center;border-bottom:1px solid var(--line);color:#C7C1CF">―</td><td style="text-align:center;font-size:22px;color:var(--sky);border-bottom:1px solid var(--line)">●</td></tr>
+      <tr><td style="padding:16px 18px;font-weight:700">移住施策のご案内</td><td style="text-align:center;font-size:22px;color:var(--rose)">○</td><td style="text-align:center;font-size:22px;color:var(--leaf)">●</td><td style="text-align:center;color:#C7C1CF">―</td></tr>
+    </table>
+    <div style="margin-top:10px;font-size:12.5px;color:var(--sub)">● 主担当　○ 協力　※ 分担は自治体様のご要望・体制に応じて調整します。</div>
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>13</div></div>
+</section>
+
+<!-- ===== 14 SPONSOR ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="top"></div>
+  <div class="hd"><div class="no">05 ─ FOR COMPANIES</div><h2>企業様向け 協賛プラン</h2><p class="lead">地方創生に取り組みながら、全国の女性ターゲットへ自社の商品・サービスを届けられます。</p></div>
+  <div class="body" style="top:196px;display:grid;grid-template-columns:400px 1fr;gap:28px">
+    <div style="background:var(--plum);border-radius:20px;padding:28px 30px;color:#fff;position:relative;overflow:hidden">
+      <svg width="200" height="200" viewBox="0 0 200 200" style="position:absolute;right:-60px;bottom:-60px"><circle cx="100" cy="100" r="100" fill="#40355E"/></svg>
+      <div style="position:relative">
+        <div style="font-size:15px;opacity:.85">ご予算の目安</div>
+        <div style="display:flex;align-items:baseline;gap:4px;margin-top:8px"><span class="en" style="font-size:54px;font-weight:800;color:#F9A8BC;line-height:1">10</span><span style="font-size:20px;font-weight:900">万円</span><span style="font-size:22px;margin:0 6px">〜</span><span class="en" style="font-size:54px;font-weight:800;color:#F9A8BC;line-height:1">50</span><span style="font-size:20px;font-weight:900">万円</span></div>
+        <div style="margin-top:22px;border-top:1px solid rgba(255,255,255,.2);padding-top:16px">
+          <div style="font-size:14px;opacity:.85">リーチできる層</div>
+          <div style="font-size:20px;font-weight:900;margin-top:4px">全国の婚活女性<br>（アプリ会員 約1万人）</div>
+        </div>
+        <div style="margin-top:16px;font-size:13px;opacity:.8;line-height:1.7">ご予算・目的に応じてプランを個別に設計します。</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="card" style="padding:18px 20px"><div style="font-size:26px">📣</div><div style="font-size:17px;font-weight:900;color:var(--plum);margin-top:6px">広告での露出</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:4px">Meta広告などで配信するツアー告知に協賛企業様として掲載。</div></div>
+      <div class="card" style="padding:18px 20px"><div style="font-size:26px">📝</div><div style="font-size:17px;font-weight:900;color:var(--plum);margin-top:6px">PR記事の掲載</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:4px">商品紹介やイベントレポートのPR記事で、取り組みを発信。</div></div>
+      <div class="card" style="padding:18px 20px"><div style="font-size:26px">🎁</div><div style="font-size:17px;font-weight:900;color:var(--plum);margin-top:6px">商品提供・サンプリング</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:4px">ツアー参加者への商品提供で、体験を通じた認知を獲得。</div></div>
+      <div class="card" style="padding:18px 20px"><div style="font-size:26px">👔</div><div style="font-size:17px;font-weight:900;color:var(--plum);margin-top:6px">福利厚生プラン</div><div style="font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:4px">従業員様の出会い支援として活用できるプランもご用意。</div></div>
+      <div style="grid-column:1/3;background:var(--rose-l);border-radius:14px;padding:14px 20px;font-size:14.5px;color:var(--plum);font-weight:700">地方創生・少子化対策への貢献を、<span style="color:var(--rose)">CSR・SDGsの取り組み</span>として社内外に発信いただけます。</div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>14</div></div>
+</section>
+
+<!-- ===== 15 FAQ ===== -->
+<section class="slide">
+  <div class="top"></div>
+  <div class="hd"><div class="no">06 ─ FAQ</div><h2>よくあるご質問</h2></div>
+  <div class="body" style="top:132px;display:grid;grid-template-columns:1fr 1fr;gap:16px 22px">
+    <div class="card" style="padding:16px 20px"><div style="display:flex;gap:12px"><span class="en" style="background:var(--plum);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">Q</span><b style="font-size:16px;color:var(--plum);line-height:1.6">小さな町でも開催できますか？</b></div><div style="display:flex;gap:12px;margin-top:10px"><span class="en" style="background:var(--rose);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">A</span><div style="font-size:14px;line-height:1.7;color:var(--sub)">はい。むしろ地域の素朴な魅力が旅の価値になります。規模に合わせて人数や行程を設計します。</div></div></div>
+    <div class="card" style="padding:16px 20px"><div style="display:flex;gap:12px"><span class="en" style="background:var(--plum);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">Q</span><b style="font-size:16px;color:var(--plum);line-height:1.6">女性は本当に集まりますか？</b></div><div style="display:flex;gap:12px;margin-top:10px"><span class="en" style="background:var(--rose);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">A</span><div style="font-size:14px;line-height:1.7;color:var(--sub)">女性限定アプリの会員（約1万人）への告知に加え、Meta広告などで全国に向けて募集します。</div></div></div>
+    <div class="card" style="padding:16px 20px"><div style="display:flex;gap:12px"><span class="en" style="background:var(--plum);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">Q</span><b style="font-size:16px;color:var(--plum);line-height:1.6">イベント後のフォローはどうなりますか？</b></div><div style="display:flex;gap:12px;margin-top:10px"><span class="en" style="background:var(--rose);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">A</span><div style="font-size:14px;line-height:1.7;color:var(--sub)">各都道府県2社に限定した提携結婚相談所が、交際から成婚までをサポートします。</div></div></div>
+    <div class="card" style="padding:16px 20px"><div style="display:flex;gap:12px"><span class="en" style="background:var(--plum);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">Q</span><b style="font-size:16px;color:var(--plum);line-height:1.6">参加者の安全面は大丈夫ですか？</b></div><div style="display:flex;gap:12px;margin-top:10px"><span class="en" style="background:var(--rose);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">A</span><div style="font-size:14px;line-height:1.7;color:var(--sub)">会員制アプリでの申込みと、当日のスタッフ運営により、安心して参加できる環境を整えます。</div></div></div>
+    <div class="card" style="padding:16px 20px"><div style="display:flex;gap:12px"><span class="en" style="background:var(--plum);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">Q</span><b style="font-size:16px;color:var(--plum);line-height:1.6">費用はどのくらいかかりますか？</b></div><div style="display:flex;gap:12px;margin-top:10px"><span class="en" style="background:var(--rose);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">A</span><div style="font-size:14px;line-height:1.7;color:var(--sub)">開催規模・行程・集客範囲によって異なります。ヒアリングのうえ、お見積りをご提示します。</div></div></div>
+    <div class="card" style="padding:16px 20px"><div style="display:flex;gap:12px"><span class="en" style="background:var(--plum);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">Q</span><b style="font-size:16px;color:var(--plum);line-height:1.6">移住施策のPRもできますか？</b></div><div style="display:flex;gap:12px;margin-top:10px"><span class="en" style="background:var(--rose);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">A</span><div style="font-size:14px;line-height:1.7;color:var(--sub)">はい。行程内での移住相談コーナーや、告知ページでの支援制度の紹介などをご提案します。</div></div></div>
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>15</div></div>
+</section>
+
+<!-- ===== 16 HEARING ===== -->
+<section class="slide" style="background:var(--bg)">
+  <div class="top"></div>
+  <div class="hd"><div class="no">06 ─ HEARING SHEET</div><h2>開催検討 ヒアリングシート</h2><p class="lead">商談の場でご記入ください。最適な企画とお見積りのご提案に活用いたします。</p></div>
+  <div class="body" style="top:180px;display:grid;grid-template-columns:1fr 1fr;gap:28px">
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
+      <div style="font-weight:900;color:var(--plum);font-size:15px">■ ご検討の目的（複数可）</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"><div>☐ 結婚支援・少子化対策</div><div>☐ 移住・定住促進</div><div>☐ 関係人口の創出</div><div>☐ 観光・シティプロモーション</div></div>
+      <div style="font-weight:900;color:var(--plum);font-size:15px;margin-top:6px">■ これまでの婚活事業</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><div>☐ 自主開催あり</div><div>☐ 委託開催あり</div><div>☐ 実施なし</div></div>
+      <div style="font-weight:900;color:var(--plum);font-size:15px;margin-top:6px">■ 活かしたい地域資源</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><div>☐ 温泉</div><div>☐ 食・特産品</div><div>☐ 自然・アウトドア</div><div>☐ 農業・漁業体験</div><div>☐ 歴史・文化</div><div>☐ 祭り・イベント</div></div>
+      <div style="font-weight:900;color:var(--plum);font-size:15px;margin-top:6px">■ ご希望の開催時期</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px"><div>☐ 春</div><div>☐ 夏</div><div>☐ 秋</div><div>☐ 冬</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:170px 1fr;border-top:2px solid var(--plum);font-size:14px;align-content:start">
+      <div style="background:#F3EEF1;padding:13px 12px;border-bottom:1px solid var(--line);font-weight:700">自治体名・ご担当課</div><div style="border-bottom:1px solid var(--line)"></div>
+      <div style="background:#F3EEF1;padding:13px 12px;border-bottom:1px solid var(--line);font-weight:700">想定参加人数</div><div style="border-bottom:1px solid var(--line)"></div>
+      <div style="background:#F3EEF1;padding:13px 12px;border-bottom:1px solid var(--line);font-weight:700">ご予算感</div><div style="border-bottom:1px solid var(--line)"></div>
+      <div style="background:#F3EEF1;padding:13px 12px;border-bottom:1px solid var(--line);font-weight:700">移住支援制度</div><div style="border-bottom:1px solid var(--line)"></div>
+      <div style="background:#F3EEF1;padding:13px 12px;border-bottom:1px solid var(--line);font-weight:700">予算化の時期</div><div style="border-bottom:1px solid var(--line)"></div>
+      <div style="background:#F3EEF1;padding:13px 12px;border-bottom:1px solid var(--line);font-weight:700;height:104px">ご要望・備考</div><div style="border-bottom:1px solid var(--line)"></div>
+    </div>
+  </div>
+  <div class="ft"><div class="logo">お見合い<span>トラベル</span></div><div>16</div></div>
+</section>
+
+<!-- ===== 17 CONTACT ===== -->
+<section class="slide" style="background:linear-gradient(135deg,#2A2340 0%,#40355E 70%,#6A4470 100%)">
+  <svg width="1280" height="720" style="position:absolute;inset:0"><circle cx="1150" cy="110" r="250" fill="#fff" opacity=".04"/><circle cx="1150" cy="110" r="140" fill="#fff" opacity=".05"/><rect x="0" y="700" width="1280" height="20" fill="#E4577A"/></svg>
+  <div style="position:absolute;left:80px;top:64px;right:80px;display:grid;grid-template-columns:1fr 500px;gap:50px;color:#fff">
+    <div>
+      <div class="en" style="font-size:14px;letter-spacing:.3em;color:#F9A8BC;font-weight:700">CONTACT</div>
+      <h2 style="font-size:38px;font-weight:900;line-height:1.5;margin-top:14px">あなたのまちで、<br><span style="color:#F9A8BC">新しい出会いの旅</span>を<br>はじめませんか。</h2>
+      <div style="margin-top:24px;display:flex;flex-direction:column;gap:12px;font-size:16px">
+        <div style="display:flex;align-items:center;gap:12px"><span style="background:var(--rose);border-radius:6px;padding:3px 10px;font-weight:900;font-size:13px">自治体様</span>開催企画のご相談・お見積り</div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="background:var(--sun);color:var(--plum);border-radius:6px;padding:3px 10px;font-weight:900;font-size:13px">企業様</span>協賛プラン・福利厚生プランのご相談</div>
+      </div>
+      <div style="margin-top:30px;display:flex;flex-direction:column;gap:12px">
+        <div style="background:#fff;color:var(--plum);border-radius:16px;padding:16px 24px;display:flex;align-items:center;gap:18px;width:fit-content">
+          <svg width="46" height="46" viewBox="0 0 54 54"><circle cx="27" cy="27" r="27" fill="#E4577A"/><path d="M19 15 c-3 0 -5 3 -4 6 c2 8 9 15 17 17 c3 1 6 -1 6 -4 l0 -3 l-6 -3 l-3 3 c-4 -2 -7 -5 -9 -9 l3 -3 l-3 -6Z" fill="#fff"/></svg>
+          <div><div style="font-size:12px;color:var(--sub)">お電話でのお問い合わせ</div><div class="en" style="font-size:32px;font-weight:800">03-6712-7315</div></div>
+        </div>
+        <div style="background:rgba(255,255,255,.1);border-radius:16px;padding:14px 24px;display:flex;align-items:center;gap:18px;width:fit-content">
+          <svg width="40" height="40" viewBox="0 0 54 54"><circle cx="27" cy="27" r="27" fill="#fff"/><rect x="13" y="17" width="28" height="20" rx="3" fill="none" stroke="#2A2340" stroke-width="3"/><path d="M13 19 l14 10 l14 -10" fill="none" stroke="#2A2340" stroke-width="3"/></svg>
+          <div><div style="font-size:12px;opacity:.8">メール</div><div class="en" style="font-size:22px;font-weight:700">toiawase@hyatt-japan.com</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:26px 30px;margin-top:20px">
+      <div style="font-size:18px;font-weight:900;border-bottom:2px solid var(--rose);padding-bottom:8px">会社概要</div>
+      <table style="width:100%;font-size:14px;margin-top:8px;line-height:1.6">
+        <tr><td style="padding:11px 0;color:#BDB3D1;width:100px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.12)">会社名</td><td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,.12)">株式会社Hyatt</td></tr>
+        <tr><td style="padding:11px 0;color:#BDB3D1;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.12)">代表取締役</td><td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,.12)">石原 和樹</td></tr>
+        <tr><td style="padding:11px 0;color:#BDB3D1;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.12)">設立</td><td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,.12)">2017年11月</td></tr>
+        <tr><td style="padding:11px 0;color:#BDB3D1;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.12)">所在地</td><td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,.12)">東京都渋谷区桜丘町29番33号</td></tr>
+        <tr><td style="padding:11px 0;color:#BDB3D1;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.12)">事業内容</td><td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,.12)">お見合いトラベル（地方婚活旅）の企画・運営<br>成果報酬型インフルエンサーマーケティング<br>Webマーケティング</td></tr>
+        <tr><td style="padding:11px 0;color:#BDB3D1;vertical-align:top">Web</td><td style="padding:11px 0" class="en">hyatt-japan.com</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
