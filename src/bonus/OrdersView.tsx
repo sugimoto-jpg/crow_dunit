@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
-import { PLAN_LABEL, addMonths, contractMonths, contractTotal, expectedPayment, lastPayment, monthsInPeriod, paymentCount, periodMonths, ymFromIndex, ymLabel, type Order, type PaymentPlan, type Rules } from './calc';
+import { PLAN_LABEL, addMonths, contractMonths, expectedPayment, lastPayment, monthsInPeriod, paymentCount, periodMonths, ymFromIndex, ymLabel, type Order, type PaymentPlan, type Rules } from './calc';
 import { Card, IconButton, NumIn, Stat, TextIn, inputCls, yen } from './ui';
 
 const ALL = 'all';
@@ -165,7 +165,7 @@ export function OrdersView({ orders, setOrders, rules }: Props) {
           <Plus className="size-4" /> 受注を追加
         </button>
         <p className="mt-2 text-xs text-slate-500">
-          支払方法が「分割」なら、初回入金予定月から契約月数と同じ回数、毎月 配分 × 単月受注金額 の入金があるとみなします。「一括」なら、初回入金予定月に契約総額（単月受注金額 × 契約月数）× 配分 を1回で入金とみなします。期間内見込みは、そのうち査定期間に入る分です。月数を変えると終了月が、開始月を変えると同じ月数のまま終了月が動きます。
+          支払方法が「分割」なら、初回入金予定月から契約月数と同じ回数、毎月 配分 × 単月受注金額 の入金があるとみなします。「一括」なら、初回入金予定月に 配分 × 単月受注金額 を1回だけ入金とみなします（一括の場合は受注金額をそのまま入れてください）。期間内見込みは、そのうち査定期間に入る分です。月数を変えると終了月が、開始月を変えると同じ月数のまま終了月が動きます。
         </p>
       </Card>
     </>
@@ -175,7 +175,7 @@ export function OrdersView({ orders, setOrders, rules }: Props) {
 /** 入金予定の説明（分割は最終月と回数、一括は総額） */
 function paymentNote(o: Order): string {
   if (!paymentCount(o)) return '入金予定なし';
-  if (o.plan === 'lump') return `一括 ${yen(contractTotal(o))}円`;
+  if (o.plan === 'lump') return `一括 ${yen(o.monthly)}円を1回`;
   return `${ymLabel(lastPayment(o))}まで ${paymentCount(o)}回`;
 }
 

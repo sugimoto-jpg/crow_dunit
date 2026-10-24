@@ -12,7 +12,6 @@ import {
   addMonths,
   actualMonthly,
   contractMonths,
-  contractTotal,
   paymentCount,
   lastPayment,
   monthsInPeriod,
@@ -53,12 +52,13 @@ describe('contract period', () => {
     expect(monthsInPeriod(order({ firstPayment: '' }), period)).toBe(0);
   });
   it('pays a lump sum once in the first payment month', () => {
-    // 12ヶ月契約を一括：単月10万 × 12 = 120万を初回入金予定月に1回
+    // 12ヶ月契約を一括：受注金額10万 × 配分50% を初回入金予定月に1回だけ
     const lump = order({ plan: 'lump', share: 50, firstPayment: '2026-09' });
-    expect(contractTotal(lump)).toBe(1_200_000);
     expect(paymentCount(lump)).toBe(1);
     expect(lastPayment(lump)).toBe('2026-09');
-    expect(expectedMonthly([lump], period)).toEqual([0, 0, 600_000, 0, 0, 0]);
+    expect(expectedMonthly([lump], period)).toEqual([0, 0, 50_000, 0, 0, 0]);
+    // 画面の例：2,100,000 を一括、16ヶ月契約 → 期間内見込みは 2,100,000 × 1
+    expect(expectedPayment(order({ plan: 'lump', monthly: 2_100_000, contractStart: '2026-11', contractEnd: '2028-02', firstPayment: '2026-11' }), period)).toBe(2_100_000);
     expect(monthsInPeriod(lump, period)).toBe(1);
     // 初回入金予定月が査定期間の外なら、契約期間が重なっていても0
     expect(expectedPayment(order({ plan: 'lump', firstPayment: '2026-06' }), period)).toBe(0);

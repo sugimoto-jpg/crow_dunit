@@ -2,7 +2,7 @@
 
 export const PERIOD_MONTHS = 6;
 
-/** 支払方法：分割（契約月数と同じ回数で毎月）／一括（契約総額を1回で） */
+/** 支払方法：分割（契約月数と同じ回数で毎月）／一括（受注金額を1回で） */
 export type PaymentPlan = 'split' | 'lump';
 
 export const PLAN_LABEL: Record<PaymentPlan, string> = { split: '分割', lump: '一括' };
@@ -21,7 +21,7 @@ export interface Order {
   contractStart: string;
   /** 契約期間の最後の月（YYYY-MM） */
   contractEnd: string;
-  /** 支払方法。分割は契約月数と同じ回数で毎月、一括は契約総額を1回で入金 */
+  /** 支払方法。分割は契約月数と同じ回数で毎月、一括は受注金額を1回で入金 */
   plan: PaymentPlan;
   /** 初回入金予定月（YYYY-MM） */
   firstPayment: string;
@@ -205,20 +205,10 @@ export function contractMonths(o: Pick<Order, 'contractStart' | 'contractEnd'>):
   return a == null || b == null || b < a ? 0 : b - a + 1;
 }
 
-/** 契約総額（単月受注金額 × 契約月数・配分前） */
-export function contractTotal(o: Order): number {
-  return o.monthly * contractMonths(o);
-}
-
 /** 入金の回数（分割は契約月数、一括は1回）。契約期間が読めないときは 0 */
 export function paymentCount(o: Order): number {
   const n = contractMonths(o);
   return n === 0 ? 0 : o.plan === 'lump' ? 1 : n;
-}
-
-/** 1回あたりの入金額（配分前） */
-function perPayment(o: Order): number {
-  return o.plan === 'lump' ? contractTotal(o) : o.monthly;
 }
 
 /** 入金予定の最後の月。決まらないときは空 */
@@ -239,7 +229,8 @@ function paidMonths(o: Order, p: Period): boolean[] {
 
 /** 査定期間の各月の、その受注の入金見込み（配分後） */
 function schedule(o: Order, p: Period): number[] {
-  const amount = (o.share / 100) * perPayment(o);
+  // 1回あたりの入金は、分割でも一括でも 受注金額 × 配分（一括は1回だけ）
+  const amount = (o.share / 100) * o.monthly;
   return paidMonths(o, p).map((paid) => (paid ? amount : 0));
 }
 
