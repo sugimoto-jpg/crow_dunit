@@ -44,3 +44,29 @@ export function clear(): void {
     /* 保存できない環境では何もしない */
   }
 }
+
+export function loadJson<T>(key: string): T | null {
+  try {
+    const s = localStorage.getItem(key);
+    return s ? (JSON.parse(s) as T) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveJson(key: string, v: unknown): boolean {
+  try {
+    localStorage.setItem(key, JSON.stringify(v));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function removeKey(key: string): void {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    /* 保存できない環境では何もしない */
+  }
+}

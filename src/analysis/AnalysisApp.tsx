@@ -1,15 +1,11 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
   AlertTriangle,
-  ArrowRight,
   BarChart3,
   CheckCircle2,
   ChevronDown,
   ClipboardCopy,
-  ClipboardPaste,
   FileUp,
-  Link2,
-  ShieldCheck,
   Sparkles,
   Target,
   Trash2,
@@ -19,8 +15,11 @@ import {
 } from 'lucide-react';
 import { analyze, benchmarks, funnelColumns, stagesOf, stepStatus, weakestStep, type Analysis, type Lever, type Status, type Step } from './analyze';
 import { parseCockpit, promotions, yomiTotals, type Cockpit, type YomiRow } from './cockpit';
+import { DealsApp } from './DealsApp';
+import { fmt, pct } from './format';
+import { Welcome } from './Loader';
 import { playFor, stepLabel, volumePlay, type Play } from './playbook';
-import { clear, load, save, type Saved } from './storage';
+import { clear, load, loadJson, save, saveJson, type Saved } from './storage';
 import {
   ROLES,
   defaultRoles,
@@ -49,37 +48,7 @@ const SAMPLE = [
   '目標\t12,000\t2,700\t324\t270\t54\t16,200,000',
 ].join('\n');
 
-/** Excel で保存した Shift_JIS の CSV にも対応する */
-async function readText(file: File): Promise<string> {
-  const buf = await file.arrayBuffer();
-  try {
-    return new TextDecoder('utf-8', { fatal: true }).decode(buf);
-  } catch {
-    return new TextDecoder('shift_jis').decode(buf);
-  }
-}
 
-/** Google スプレッドシートの URL から、そのシートの CSV を取り出す（「リンクを知っている全員」が閲覧できる場合のみ） */
-async function fetchSheet(url: string): Promise<string> {
-  const id = url.match(/\/spreadsheets\/d\/([\w-]+)/)?.[1];
-  if (!id) throw new Error('Google スプレッドシートの URL ではないようです（https://docs.google.com/spreadsheets/d/… の形）。');
-  const gid = url.match(/[#&?]gid=(\d+)/)?.[1] ?? '0';
-  let res: Response;
-  try {
-    res = await fetch(`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&gid=${gid}`);
-  } catch {
-    throw new Error('シートを読み込めませんでした。共有設定が「リンクを知っている全員（閲覧者）」になっているか確認するか、範囲をコピーして貼り付けてください。');
-  }
-  const text = await res.text();
-  if (!res.ok || /^\s*</.test(text)) throw new Error('シートが非公開のため読み込めません。範囲をコピーして「貼り付け」から読み込んでください。');
-  return text;
-}
-
-export const fmt = (n: number | null | undefined): string => {
-  if (n == null || !Number.isFinite(n)) return '—';
-  return Math.abs(n) >= 100 ? Math.round(n).toLocaleString('ja-JP') : (Math.round(n * 10) / 10).toLocaleString('ja-JP');
-};
-const pct = (r: number | null | undefined) => (r == null || !Number.isFinite(r) ? '—' : `${(r * 100).toFixed(r < 0.1 ? 2 : 1)}%`);
 const rateText = (s: Pick<Step, 'isPrice'>, r: number | null | undefined) => (s.isPrice ? fmt(r) : pct(r));
 const benchKey = (s: Step) => `${s.from.name}→${s.to.name}`;
 
@@ -114,8 +83,20 @@ function newSaved(source: string, sourceName: string): Saved {
   };
 }
 
+type Mode = 'funnel' | 'deals';
+const MODE_KEY = 'aidma-kpi-analysis:mode';
+const MODES: [Mode, string][] = [
+  ['funnel', 'ファネル分析'],
+  ['deals', '案件フィルター'],
+];
+
 export function AnalysisApp() {
+  const [mode, setMode] = useState<Mode>(() => (location.hash === '#deals' ? 'deals' : (loadJson<Mode>(MODE_KEY) ?? 'funnel')));
   const [data, setData] = useState<Saved | null>(() => load());
+
+  useEffect(() => {
+    saveJson(MODE_KEY, mode);
+  }, [mode]);
   const [stored, setStored] = useState(true);
 
   useEffect(() => {
@@ -135,13 +116,13 @@ export function AnalysisApp() {
           <BarChart3 className="h-6 w-6 shrink-0 text-indigo-600" />
           <div className="min-w-0 flex-1">
             <h1 className="text-base font-bold sm:text-lg">数字分析・改善ナビ</h1>
-            {data && (
+            {mode === 'funnel' && data && (
               <p className="truncate text-xs text-slate-500">
                 {data.sourceName}・{data.importedAt} 取込
               </p>
             )}
           </div>
-          {data && (
+          {mode === 'funnel' && data && (
             <>
               <button
                 onClick={() => setData(null)}
@@ -156,15 +137,32 @@ export function AnalysisApp() {
             </>
           )}
         </div>
+        <nav className="mx-auto flex max-w-6xl gap-1 px-4">
+          {MODES.map(([id, label]) => (
+            <button
+              key={id}
+              onClick={() => setMode(id)}
+              className={`border-b-2 px-3 pb-2 text-sm font-semibold ${mode === id ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-5">
-        {!stored && (
-          <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-            このブラウザでは保存できなかったため、ページを閉じると再度読み込みが必要です。
-          </p>
+        {mode === 'deals' ? (
+          <DealsApp />
+        ) : (
+          <>
+            {!stored && (
+              <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+                このブラウザでは保存できなかったため、ページを閉じると再度読み込みが必要です。
+              </p>
+            )}
+            {data ? <Workspace data={data} onChange={(patch) => setData({ ...data, ...patch })} /> : <FunnelWelcome onLoad={(text, name) => setData(newSaved(text, name))} />}
+          </>
         )}
-        {data ? <Workspace data={data} onChange={(patch) => setData({ ...data, ...patch })} /> : <Welcome onLoad={(text, name) => setData(newSaved(text, name))} />}
       </main>
     </div>
   );
@@ -172,159 +170,47 @@ export function AnalysisApp() {
 
 /* ───────────────────────── 取り込み ───────────────────────── */
 
-function Welcome({ onLoad }: { onLoad: (text: string, name: string) => void }) {
-  const [tab, setTab] = useState<'paste' | 'file' | 'url'>('paste');
-  const [text, setText] = useState('');
-  const [url, setUrl] = useState('');
-  const [error, setError] = useState('');
-  const [busy, setBusy] = useState(false);
-  const file = useRef<HTMLInputElement>(null);
+function validateFunnel(t: string): string | null {
+  const { table } = readSource(t, looksTransposed(parseGrid(t)));
+  return describeColumns(table).some((c) => c.numeric) ? null : '数値の列が見つかりませんでした。見出し行と数字を含む範囲を選んでください。';
+}
 
-  function accept(t: string, name: string) {
-    const { table } = readSource(t, looksTransposed(parseGrid(t)));
-    if (!describeColumns(table).some((c) => c.numeric)) {
-      setError('数値の列が見つかりませんでした。見出し行と数字を含む範囲を選んでください。');
-      return;
-    }
-    onLoad(t, name);
-  }
+const FUNNEL_INTRO = (
+  <>
+    <BarChart3 className="mx-auto h-12 w-12 text-indigo-500" />
+    <h2 className="mt-3 text-xl font-bold">スプレッドシートの数字から「どこを直せば目標に届くか」を出す</h2>
+    <p className="mt-2 text-sm leading-relaxed text-slate-600">
+      架電数 → アポ数 → 商談数 → 受注数 → 売上 のような数字を読み込むと、
+      <br className="hidden sm:inline" />
+      転換率・目標からの逆算・ボトルネック・改善アクションを自動で出します。
+    </p>
+  </>
+);
 
-  async function run(job: () => Promise<void>) {
-    setError('');
-    setBusy(true);
-    try {
-      await job();
-    } catch (e) {
-      setError((e as Error).message || String(e));
-    } finally {
-      setBusy(false);
-    }
-  }
+const FUNNEL_HELP = (
+  <>
+    <h3 className="font-bold text-slate-800">読み込める表の形</h3>
+    <ul className="mt-2 list-disc space-y-1 pl-5">
+      <li>1行目が見出し（架電数・接続数・アポ数・商談数・受注数・売上 など）、2行目から月・週・担当者ごとの数字。</li>
+      <li>指標が縦、月が横に並んだ表も自動で入れ替えて読みます。</li>
+      <li>「目標」「計画」「予算」の行、または「アポ目標」のような列があれば目標として使います。「合計」行は自動で除きます。</li>
+      <li>「担当者」と「月」の両方の列がある表は、どちらの単位で比べるか・どの値で絞り込むかを選べます。</li>
+      <li>アイドマのヨミ表（コックピット）は、シート全体をコピーして貼り付ければ、そのまま読めます。</li>
+    </ul>
+  </>
+);
 
-  const tabs: [typeof tab, string, ReactNode][] = [
-    ['paste', '貼り付け', <ClipboardPaste key="p" className="h-4 w-4" />],
-    ['file', 'CSV ファイル', <FileUp key="f" className="h-4 w-4" />],
-    ['url', 'シートの URL', <Link2 key="u" className="h-4 w-4" />],
-  ];
-
+function FunnelWelcome({ onLoad }: { onLoad: (text: string, name: string) => void }) {
   return (
-    <div className="mx-auto mt-2 max-w-3xl">
-      <div className="text-center">
-        <BarChart3 className="mx-auto h-12 w-12 text-indigo-500" />
-        <h2 className="mt-3 text-xl font-bold">スプレッドシートの数字から「どこを直せば目標に届くか」を出す</h2>
-        <p className="mt-2 text-sm leading-relaxed text-slate-600">
-          架電数 → アポ数 → 商談数 → 受注数 → 売上 のような数字を読み込むと、
-          <br className="hidden sm:inline" />
-          転換率・目標からの逆算・ボトルネック・改善アクションを自動で出します。
-        </p>
-      </div>
-
-      <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
-        <div className="flex gap-1 rounded-xl bg-slate-100 p-1">
-          {tabs.map(([id, label, icon]) => (
-            <button
-              key={id}
-              onClick={() => setTab(id)}
-              className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-semibold sm:text-sm ${tab === id ? 'bg-white text-indigo-700 shadow' : 'text-slate-500'}`}
-            >
-              {icon}
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {tab === 'paste' && (
-          <div className="mt-4">
-            <p className="text-sm text-slate-600">スプレッドシートで見出し行ごと範囲を選んでコピー（Ctrl+C / ⌘+C）し、下に貼り付けてください。</p>
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              rows={8}
-              placeholder={'月\t架電数\tアポ数\t商談数\t受注数\t売上\n4月\t1800\t48\t40\t8\t2400000\n…\n目標\t…'}
-              className="mt-2 w-full rounded-lg border border-slate-300 p-3 font-mono text-xs focus:border-indigo-500 focus:outline-none"
-            />
-            <button
-              disabled={!text.trim()}
-              onClick={() => accept(text, '貼り付けた表')}
-              className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 font-bold text-white shadow hover:bg-indigo-700 disabled:opacity-40"
-            >
-              分析する
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
-        )}
-
-        {tab === 'file' && (
-          <div className="mt-4 text-center">
-            <p className="text-sm text-slate-600">スプレッドシートの「ファイル → ダウンロード → CSV」で保存したファイルを選びます（UTF-8 / Shift_JIS）。</p>
-            <input
-              ref={file}
-              type="file"
-              accept=".csv,.tsv,.txt,text/csv"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                e.target.value = '';
-                if (f) run(async () => accept(await readText(f), f.name));
-              }}
-            />
-            <button
-              onClick={() => file.current?.click()}
-              className="mx-auto mt-3 flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 font-bold text-white shadow hover:bg-indigo-700"
-            >
-              <FileUp className="h-5 w-5" />
-              CSV を選ぶ
-            </button>
-          </div>
-        )}
-
-        {tab === 'url' && (
-          <div className="mt-4">
-            <p className="text-sm text-slate-600">
-              Google スプレッドシートの URL（分析したいシートを開いた状態のもの）を貼り付けます。共有が「リンクを知っている全員」になっているシートだけ読めます。
-              社外秘の数字は「貼り付け」をおすすめします。
-            </p>
-            <div className="mt-2 flex gap-2">
-              <input
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="https://docs.google.com/spreadsheets/d/…/edit#gid=0"
-                className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
-              />
-              <button
-                disabled={!url.trim() || busy}
-                onClick={() => run(async () => accept(await fetchSheet(url.trim()), 'Google スプレッドシート'))}
-                className="shrink-0 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 disabled:opacity-40"
-              >
-                {busy ? '読込中…' : '読み込む'}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {error && <p className="mt-3 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{error}</p>}
-
-        <div className="mt-5 border-t border-slate-100 pt-4 text-center">
-          <button onClick={() => onLoad(SAMPLE, 'サンプルデータ')} className="text-sm font-semibold text-indigo-600 hover:underline">
-            サンプルの数字で試してみる
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 text-sm leading-relaxed text-slate-600 sm:p-6">
-        <h3 className="font-bold text-slate-800">読み込める表の形</h3>
-        <ul className="mt-2 list-disc space-y-1 pl-5">
-          <li>1行目が見出し（架電数・接続数・アポ数・商談数・受注数・売上 など）、2行目から月・週・担当者ごとの数字。</li>
-          <li>指標が縦、月が横に並んだ表も自動で入れ替えて読みます。</li>
-          <li>「目標」「計画」「予算」の行、または「アポ目標」のような列があれば目標として使います。「合計」行は自動で除きます。</li>
-          <li>「担当者」と「月」の両方の列がある表は、どちらの単位で比べるか・どの値で絞り込むかを選べます。</li>
-        </ul>
-        <p className="mt-3 flex items-start gap-1.5 text-xs text-slate-500">
-          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-          数字はこのブラウザの中だけで計算・保存され、外部のサーバーには送信されません（URL 読み込み時の Google への取得を除く）。
-        </p>
-      </div>
-    </div>
+    <Welcome
+      onLoad={onLoad}
+      validate={validateFunnel}
+      intro={FUNNEL_INTRO}
+      help={FUNNEL_HELP}
+      sample={SAMPLE}
+      sampleLabel="サンプルの数字で試してみる"
+      placeholder={'月\t架電数\tアポ数\t商談数\t受注数\t売上\n4月\t1800\t48\t40\t8\t2400000\n…\n目標\t…'}
+    />
   );
 }
 
