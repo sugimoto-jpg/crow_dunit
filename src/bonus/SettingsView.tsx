@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowUp, Plus, RotateCcw, Trash2 } from 'lucide-react';
 import { DEFAULT_RULES, type MissingPolicy, type MissionDef, type MissionKind, type Rules } from './calc';
-import { Card, Field, IconButton, NumIn, TextIn, inputCls } from './ui';
+import { Card, Field, IconButton, NumIn, TextIn, btnPrimary, inputCls } from './ui';
 
 interface Props {
   rules: Rules;
@@ -19,18 +19,18 @@ export function SettingsView({ rules, setRule, reset }: Props) {
   return (
     <>
       <Card title="査定期間">
-        <div className="flex flex-wrap gap-2">
-          <select className={`${inputCls} w-auto`} value={rules.periodYear} onChange={(e) => setRule('periodYear', Number(e.target.value))} aria-label="年">
+        <div className="grid max-w-md grid-cols-2 gap-2">
+          <select className={inputCls} value={rules.periodYear} onChange={(e) => setRule('periodYear', Number(e.target.value))} aria-label="年">
             {years(rules.periodYear).map((y) => (
               <option key={y} value={y}>{y}年</option>
             ))}
           </select>
-          <select className={`${inputCls} w-auto`} value={rules.periodStart} onChange={(e) => setRule('periodStart', Number(e.target.value))} aria-label="上半期・下半期">
+          <select className={inputCls} value={rules.periodStart} onChange={(e) => setRule('periodStart', Number(e.target.value))} aria-label="上半期・下半期">
             <option value={1}>上半期（1月〜6月）</option>
             <option value={7}>下半期（7月〜12月）</option>
           </select>
         </div>
-        <p className="mt-2 text-xs text-slate-500">受注一覧の契約期間のうち、この6ヶ月に入る月の分を入金の見込みにします。</p>
+        <p className="mt-2 text-xs text-muted">受注一覧の契約期間のうち、この6ヶ月に入る月の分を入金の見込みにします。</p>
       </Card>
 
       <Card title="賞与の計算ルール">
@@ -39,7 +39,7 @@ export function SettingsView({ rules, setRule, reset }: Props) {
           <Field label="マネジメント報酬(%)" value={rules.managementRate} onChange={(v) => setRule('managementRate', v)} />
           <Field label="粗利率(%・参考表示)" value={rules.grossRate} onChange={(v) => setRule('grossRate', v)} />
         </div>
-        <p className="mt-2 text-xs text-slate-500">
+        <p className="mt-2 text-xs text-muted">
           賞与対象原資 = 配分原資 × (賞与対象原資の率 − マネジメント報酬) = 配分原資 × {+(rules.poolRate - rules.managementRate).toFixed(2)}%
         </p>
       </Card>
@@ -48,7 +48,7 @@ export function SettingsView({ rules, setRule, reset }: Props) {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <Field label="四捨五入の単位(%・0で四捨五入しない)" value={rules.roundingUnit} onChange={(v) => setRule('roundingUnit', v)} />
           <Field label="反省文1枚あたりの減額(%)" value={rules.reflectionPenalty} onChange={(v) => setRule('reflectionPenalty', v)} />
-          <label className="block text-xs text-slate-500">
+          <label className="block text-xs text-muted">
             実数が未入力のミッションの扱い
             <select className={inputCls} value={rules.missingPolicy} onChange={(e) => setRule('missingPolicy', e.target.value as MissingPolicy)}>
               <option value="exclude">数えない（判定できたものだけで達成率）</option>
@@ -57,16 +57,16 @@ export function SettingsView({ rules, setRule, reset }: Props) {
             </select>
           </label>
         </div>
-        <p className="mt-2 text-xs text-slate-500">賞与倍率 = 達成数 ÷ マスの数 を四捨五入の単位で丸め − 反省文の枚数 × 減額。マスの数は6ヶ月分のミッションの合計です（月ごとに数が違っても大丈夫）。ミッションを作っていない月は数えません。</p>
+        <p className="mt-2 text-xs text-muted">賞与倍率 = 達成数 ÷ マスの数 を四捨五入の単位で丸め − 反省文の枚数 × 減額。マスの数は6ヶ月分のミッションの合計です（月ごとに数が違っても大丈夫）。ミッションを作っていない月は数えません。</p>
       </Card>
 
       <Card title="ミッションのテンプレート">
         <div className="-mx-4 overflow-x-auto px-4">
           <table className="w-full min-w-[720px] text-sm">
-            <thead className="text-left text-xs text-slate-500">
+            <thead className="text-left text-xs text-muted">
               <tr>
                 <th className="p-1">項目名</th>
-                <th className="p-1 w-36">判定の仕方</th>
+                <th className="p-1 w-48">判定の仕方</th>
                 <th className="p-1 w-36">目標</th>
                 <th className="p-1 w-20">単位</th>
                 <th className="p-1 w-24" />
@@ -74,7 +74,7 @@ export function SettingsView({ rules, setRule, reset }: Props) {
             </thead>
             <tbody>
               {rules.missionTemplate.map((m, k) => (
-                <tr key={m.id} className="border-t border-slate-100">
+                <tr key={m.id} className="border-t border-line">
                   <td className="p-1"><TextIn value={m.name} onChange={(v) => setMission(m.id, { name: v })} /></td>
                   <td className="p-1">
                     <select className={inputCls} value={m.kind} onChange={(e) => setMission(m.id, { kind: e.target.value as MissionKind })}>
@@ -84,11 +84,11 @@ export function SettingsView({ rules, setRule, reset }: Props) {
                     </select>
                   </td>
                   <td className="p-1">
-                    {m.kind === 'check' ? <span className="text-xs text-slate-400">—</span> : <NumIn value={m.target} placeholder="月ごとに入力" onChange={(v) => setMission(m.id, { target: v })} />}
+                    {m.kind === 'check' ? <span className="text-xs text-muted">—</span> : <NumIn value={m.target} placeholder="月ごとに入力" onChange={(v) => setMission(m.id, { target: v })} />}
                   </td>
                   <td className="p-1">{m.kind !== 'check' && <TextIn value={m.unit} onChange={(v) => setMission(m.id, { unit: v })} placeholder="件・%・円" />}</td>
                   <td className="p-1">
-                    <div className="flex justify-end gap-0.5 text-slate-400">
+                    <div className="flex justify-end gap-0.5 text-muted">
                       <IconButton label="上へ" disabled={k === 0} onClick={() => move(k, -1)}><ArrowUp className="size-4" /></IconButton>
                       <IconButton label="下へ" disabled={k === rules.missionTemplate.length - 1} onClick={() => move(k, 1)}><ArrowDown className="size-4" /></IconButton>
                       <IconButton label="削除" danger onClick={() => confirm(`「${m.name}」を削除しますか？`) && setRule('missionTemplate', rules.missionTemplate.filter((x) => x.id !== m.id))}>
@@ -102,12 +102,12 @@ export function SettingsView({ rules, setRule, reset }: Props) {
           </table>
         </div>
         <button
-          className="mt-3 inline-flex items-center gap-1 rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-bold text-emerald-700 hover:bg-emerald-50"
+          className={`mt-4 ${btnPrimary}`}
           onClick={() => setRule('missionTemplate', [...rules.missionTemplate, { id: crypto.randomUUID(), name: '', kind: 'gte', target: null, unit: '' }])}
         >
           <Plus className="size-4" /> 項目を追加
         </button>
-        <p className="mt-2 text-xs text-slate-500">ミッションは毎月変わるので、ここはひな形です。ミッション表で「テンプレートを読み込む」と、その月にこの項目が入り、月ごとに項目・目標を書き換えられます。</p>
+        <p className="mt-2 text-xs text-muted">ミッションは毎月変わるので、ここはひな形です。ミッション表で「テンプレートを読み込む」と、その月にこの項目が入り、月ごとに項目・目標を書き換えられます。</p>
       </Card>
 
       <Card title="他商材">
@@ -122,16 +122,16 @@ export function SettingsView({ rules, setRule, reset }: Props) {
           ))}
         </div>
         <button
-          className="mt-3 inline-flex items-center gap-1 rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-bold text-emerald-700 hover:bg-emerald-50"
+          className={`mt-4 ${btnPrimary}`}
           onClick={() => setRule('addonNames', [...rules.addonNames, ''])}
         >
           <Plus className="size-4" /> 商材を追加
         </button>
-        <p className="mt-2 text-xs text-slate-500">ここに並べた商材ごとに、予測画面で半年分の入金額を入れられます。</p>
+        <p className="mt-2 text-xs text-muted">ここに並べた商材ごとに、予測画面で半年分の入金額を入れられます。</p>
       </Card>
 
       <button
-        className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-rose-600"
+        className="inline-flex items-center gap-1 text-sm text-muted hover:text-bad"
         onClick={() => confirm('設定を初期値に戻しますか？（受注やミッションの記録は消えません）') && reset(DEFAULT_RULES)}
       >
         <RotateCcw className="size-4" /> 設定を初期値に戻す
