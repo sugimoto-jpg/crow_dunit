@@ -132,4 +132,14 @@ describe('analyze', () => {
       { bench: null, source: null },
     ]);
   });
+
+  it('ignores small rows and over-100% rates when taking the upper quartile', () => {
+    const st = (a: number, b: number) => [
+      { col: 0, name: 'アポ', role: 'appointment' as const, value: a, target: null },
+      { col: 1, name: '受注', role: 'deal' as const, value: b, target: null },
+    ];
+    const peers = [st(100, 10), st(50, 4), st(40, 6), st(1, 1), st(20, 25)];
+    // 1件で100%の行と、125%の行は外れる → 10%, 8%, 15% の上位25% = 12.5%
+    expect(benchmarks([null, null], peers, [])[0].bench).toBeCloseTo(0.125);
+  });
 });

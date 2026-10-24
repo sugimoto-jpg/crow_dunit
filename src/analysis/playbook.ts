@@ -99,6 +99,41 @@ const PRICE: Play = {
   check: 'プラン別の受注件数と平均値引き率',
 };
 
+const PROPOSAL_VISIT: Play = {
+  metric: '提案訪問率',
+  causes: ['初回訪問で提案日を決めずに帰っている', '提案までの間に温度感が下がっている', '決裁者の日程が押さえられていない'],
+  actions: [
+    '初回訪問の最後に、提案日をその場でカレンダーに入れてもらう（「来週◯日と◯日なら」の二択）',
+    '提案取得から1週間以内に提案訪問を設定するルールにし、未設定の案件を毎朝リストで確認する',
+    '提案前日に、ヒアリングで聞いた課題の確認メールを送って期待値を上げておく',
+    '提案訪問には決裁者の同席を依頼し、難しければ決裁者向けの要約資料を用意する',
+  ],
+  check: '提案取得から提案訪問までの日数と、日程未設定の案件数',
+};
+
+const YOMI: Play = {
+  metric: 'ヨミ取得率',
+  causes: ['提案の場で導入時期・予算・決裁の流れを確認できていない', '提案が相手の課題と結び付いていない', 'テストクロージングをしていない'],
+  actions: [
+    '提案の最後に「導入するとしたらいつから・どの予算で・誰が決めるか」を必ず確認する',
+    '同業種の導入事例と数字を提案書の冒頭に置き、相手の課題との結び付きを先に示す',
+    '「この内容なら前向きにご検討いただけますか」とテストクロージングをして、ヨミのランクを判定する',
+    '提案後24時間以内にお礼と論点整理のメールを送り、次回のクロージング日程を決める',
+  ],
+  check: '提案訪問からのヨミ取得率と、ヨミのランク（A・B・C）の内訳',
+};
+
+const YOMI_VISIT: Play = {
+  metric: 'ヨミ訪問率',
+  causes: ['ヨミ取得後のクロージング日程が決まっていない', '検討期限が合意されていない'],
+  actions: [
+    'ヨミ取得時に、クロージング訪問（または Web 面談）の日程をその場で決める',
+    '「◯日までにご決定いただければ△から開始できます」と検討期限を合意する',
+    'ヨミ一覧を毎朝確認し、日程未定のヨミに当日中に連絡する',
+  ],
+  check: 'ヨミ取得からヨミ訪問までの日数と、日程未定のヨミの数',
+};
+
 /** 段（from→to）に合う改善の型を返す */
 export function playFor(from: Role, to: Role): Play {
   if (to === 'revenue') return PRICE;
@@ -114,6 +149,12 @@ export function playFor(from: Role, to: Role): Play {
       return MEETING;
     case 'proposal':
       return PROPOSAL;
+    case 'proposalVisit':
+      return PROPOSAL_VISIT;
+    case 'yomi':
+      return YOMI;
+    case 'yomiVisit':
+      return YOMI_VISIT;
     case 'deal':
       return DEAL;
     default:
@@ -127,5 +168,7 @@ export const volumePlay = () => VOLUME;
 export function stepLabel(from: Role, to: Role, toName: string): string {
   if (to === 'revenue') return '単価';
   if (to === 'activity') return from === 'list' ? 'リスト消化率' : `${toName}の比率`;
+  if (to === 'meeting' && /^新規/.test(toName)) return '新規訪問率';
+  if (to === 'deal' && from === 'yomiVisit') return 'ヨミ受注率';
   return playFor(from, to).metric.split('・')[0];
 }

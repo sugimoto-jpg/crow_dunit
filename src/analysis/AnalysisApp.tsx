@@ -18,6 +18,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { analyze, benchmarks, funnelColumns, stagesOf, stepStatus, weakestStep, type Analysis, type Lever, type Status, type Step } from './analyze';
+import { parseCockpit, promotions, yomiTotals, type Cockpit, type YomiRow } from './cockpit';
 import { playFor, stepLabel, volumePlay, type Play } from './playbook';
 import { clear, load, save, type Saved } from './storage';
 import {
@@ -29,6 +30,7 @@ import {
   looksTransposed,
   parseGrid,
   sumGroups,
+  type Group,
   toNumber,
   toTable,
   type Role,
@@ -81,20 +83,28 @@ const pct = (r: number | null | undefined) => (r == null || !Number.isFinite(r) 
 const rateText = (s: Pick<Step, 'isPrice'>, r: number | null | undefined) => (s.isPrice ? fmt(r) : pct(r));
 const benchKey = (s: Step) => `${s.from.name}→${s.to.name}`;
 
+/** 貼り付けた内容を表にする。アイドマのヨミ表（コックピット）なら専用の読み方をする */
+function readSource(source: string, transpose: boolean): { table: ReturnType<typeof toTable>; cockpit: Cockpit | null } {
+  const grid = parseGrid(source);
+  const cockpit = parseCockpit(grid);
+  return { cockpit, table: cockpit ? toTable(cockpit.grid, false) : toTable(grid, transpose) };
+}
+
 function newSaved(source: string, sourceName: string): Saved {
   const grid = parseGrid(source);
-  const transpose = looksTransposed(grid);
-  const t = toTable(grid, transpose);
+  const { table: t, cockpit } = readSource(source, looksTransposed(grid));
+  const transpose = !cockpit && looksTransposed(grid);
   const cols = describeColumns(t);
-  const labelCol = cols.find((c) => !c.numeric)?.index ?? 0;
+  const labelCol = cockpit ? 1 : (cols.find((c) => !c.numeric)?.index ?? 0);
   return {
     source,
     sourceName,
     importedAt: new Date().toLocaleString('ja-JP'),
     transpose,
     labelCol,
-    filterCol: -1,
-    filterValue: '',
+    // ヨミ表は「区分」（期間ごとのブロック）で絞ってから比べる
+    filterCol: cockpit ? 0 : -1,
+    filterValue: cockpit?.sections[0] ?? '',
     roles: defaultRoles(cols),
     scope: ALL,
     goal: '',
@@ -171,8 +181,7 @@ function Welcome({ onLoad }: { onLoad: (text: string, name: string) => void }) {
   const file = useRef<HTMLInputElement>(null);
 
   function accept(t: string, name: string) {
-    const grid = parseGrid(t);
-    const table = toTable(grid, looksTransposed(grid));
+    const { table } = readSource(t, looksTransposed(parseGrid(t)));
     if (!describeColumns(table).some((c) => c.numeric)) {
       setError('数値の列が見つかりませんでした。見出し行と数字を含む範囲を選んでください。');
       return;
@@ -322,7 +331,7 @@ function Welcome({ onLoad }: { onLoad: (text: string, name: string) => void }) {
 /* ───────────────────────── 分析画面 ───────────────────────── */
 
 function Workspace({ data, onChange }: { data: Saved; onChange: (patch: Partial<Saved>) => void }) {
-  const table = useMemo(() => toTable(parseGrid(data.source), data.transpose), [data.source, data.transpose]);
+  const { table, cockpit } = useMemo(() => readSource(data.source, data.transpose), [data.source, data.transpose]);
   const cols = useMemo(() => describeColumns(table), [table]);
   const textCols = cols.filter((c) => !c.numeric);
   const labelCol = cols[data.labelCol] && !cols[data.labelCol].numeric ? data.labelCol : (textCols[0]?.index ?? -1);
@@ -330,17 +339,20 @@ function Workspace({ data, onChange }: { data: Saved; onChange: (patch: Partial<
     () => (data.filterCol >= 0 ? [...new Set(table.rows.map((r) => r[data.filterCol]).filter(Boolean))] : []),
     [table, data.filterCol],
   );
-  const { groups, targetRow } = useMemo(
+  const { groups: allGroups, targetRow } = useMemo(
     () => groupRows(table, cols, labelCol, { col: data.filterCol, value: data.filterValue }),
     [table, cols, labelCol, data.filterCol, data.filterValue],
   );
+  // 「全体」の行がある表（ヨミ表など）は、それを合計として使い、比較からは外す
+  const totalRow = allGroups.find((g) => g.label === '全体') ?? null;
+  const groups = useMemo(() => allGroups.filter((g) => g !== totalRow), [allGroups, totalRow]);
   const funnel = useMemo(() => funnelColumns(table.header, data.roles), [table.header, data.roles]);
   const isTime = looksLikeTime(groups.map((g) => g.label));
   const scopeGroup = data.scope === ALL ? null : groups.find((g) => g.label === data.scope) ?? null;
 
   const result = useMemo(() => {
     if (funnel.length < 2) return null;
-    const total = sumGroups(groups);
+    const total: Group = totalRow ?? sumGroups(groups);
     const g = scopeGroup ?? total;
     // 目標行は「全体」の目標として使う。転換率の目標は割合なので、担当者・月ごとの分析でも基準に使える
     const stages = stagesOf(funnel, g, scopeGroup ? null : targetRow);
@@ -368,7 +380,7 @@ function Workspace({ data, onChange }: { data: Saved; onChange: (patch: Partial<
       return { group: x, a: ga, weak: weakestStep(ga) };
     });
     return { a, autoGoal, autoBench, perGroup };
-  }, [funnel, groups, scopeGroup, targetRow, data.bench, data.goal, data.elapsed, data.total]);
+  }, [funnel, groups, totalRow, scopeGroup, targetRow, data.bench, data.goal, data.elapsed, data.total]);
 
   function setRole(name: string, role: Role | '') {
     const roles = { ...data.roles };
@@ -390,6 +402,7 @@ function Workspace({ data, onChange }: { data: Saved; onChange: (patch: Partial<
         setRole={setRole}
         rowCount={groups.length}
         hasTargetRow={!!targetRow}
+        isCockpit={!!cockpit}
       />
 
       {!result ? (
@@ -399,12 +412,13 @@ function Workspace({ data, onChange }: { data: Saved; onChange: (patch: Partial<
       ) : (
         <>
           <ScopeBar groups={groups.map((g) => g.label)} scope={scopeGroup ? data.scope : ALL} onScope={(scope) => onChange({ scope, goal: '' })} />
-          <GoalInputs data={data} onChange={onChange} a={result.a} autoGoal={result.autoGoal} />
+          <GoalInputs data={data} onChange={onChange} a={result.a} autoGoal={result.autoGoal} mission={cockpit?.mission ?? null} />
           <Summary a={result.a} />
+          {cockpit && cockpit.yomi.length > 0 && <YomiCard rows={cockpit.yomi} mission={cockpit.mission} />}
           <Priorities a={result.a} />
           <FunnelTable a={result.a} autoBench={result.autoBench} data={data} onChange={onChange} />
           {result.perGroup.length >= 2 && <Compare rows={result.perGroup} isTime={isTime} finalName={result.a.final.name} />}
-          <Report a={result.a} scope={scopeGroup?.label ?? '全体'} perGroup={result.perGroup} />
+          <Report a={result.a} scope={[data.filterCol >= 0 ? data.filterValue : '', scopeGroup?.label ?? '全体'].filter(Boolean).join(' / ')} perGroup={result.perGroup} yomi={cockpit?.yomi ?? []} mission={cockpit?.mission ?? null} />
         </>
       )}
     </div>
@@ -434,6 +448,7 @@ function Setup(props: {
   setRole: (name: string, role: Role | '') => void;
   rowCount: number;
   hasTargetRow: boolean;
+  isCockpit: boolean;
 }) {
   const { data, onChange, cols, labelCol, filterValues, setRole } = props;
   const textCols = cols.filter((c) => !c.numeric);
@@ -444,18 +459,19 @@ function Setup(props: {
         <ChevronDown className="h-4 w-4 transition group-open:rotate-180" />
         データの読み取り設定
         <span className="text-xs font-normal text-slate-500">
+          {props.isCockpit ? 'ヨミ表として読み込み・' : ''}
           {props.rowCount}行{props.hasTargetRow ? '・目標行あり' : ''}・役割 {Object.keys(data.roles).length}列
         </span>
       </summary>
       <div className="space-y-4 border-t border-slate-100 p-4 text-sm sm:px-5">
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-          <label className="flex items-center gap-2">
+          <label className={`flex items-center gap-2 ${props.isCockpit ? 'hidden' : ''}`}>
             <input
               type="checkbox"
               checked={data.transpose}
               onChange={(e) => {
                 const transpose = e.target.checked;
-                const cs = describeColumns(toTable(parseGrid(data.source), transpose));
+                const cs = describeColumns(readSource(data.source, transpose).table);
                 onChange({ transpose, roles: defaultRoles(cs), labelCol: cs.find((c) => !c.numeric)?.index ?? 0, filterCol: -1, filterValue: '', scope: ALL, bench: {} });
               }}
             />
@@ -548,13 +564,21 @@ function ScopeBar({ groups, scope, onScope }: { groups: string[]; scope: string;
   );
 }
 
-function GoalInputs({ data, onChange, a, autoGoal }: { data: Saved; onChange: (p: Partial<Saved>) => void; a: Analysis; autoGoal: number | null }) {
+function GoalInputs({ data, onChange, a, autoGoal, mission }: { data: Saved; onChange: (p: Partial<Saved>) => void; a: Analysis; autoGoal: number | null; mission: number | null }) {
   const input = 'w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none';
   return (
     <div className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-3 sm:p-5">
       <label className="text-sm">
         <span className="font-semibold">目標の{a.final.name}</span>
         <input className={`${input} mt-1`} value={data.goal} placeholder={autoGoal != null ? `${fmt(autoGoal)}（表の目標）` : '例：16,200,000'} onChange={(e) => onChange({ goal: e.target.value })} />
+        {mission !== null && String(mission) !== data.goal && (
+          <button onClick={() => onChange({ goal: String(mission) })} className="mt-1 text-xs font-semibold text-indigo-600 hover:underline">
+            月次ミッション {fmt(mission)} を目標にする
+          </button>
+        )}
+        {mission !== null && String(mission) === data.goal && (
+          <p className="mt-1 text-[11px] text-slate-500">ミッションは1か月の目標です。3か月の区分では「必要数」を、今の率で1か月にミッションを作るのに必要な数として見てください。</p>
+        )}
       </label>
       <label className="text-sm">
         <span className="font-semibold">経過した営業日</span>
@@ -736,7 +760,7 @@ function FunnelTable({ a, autoBench, data, onChange }: { a: Analysis; autoBench:
   return (
     <Card title="ファネルと目標からの逆算" icon={<BarChart3 className="h-5 w-5 text-indigo-600" />}>
       <p className="mb-3 text-xs text-slate-500">
-        「必要数」は今の転換率のまま目標を達成するのに必要な数です。「基準」は空欄なら自動（目標から逆算した率 → 上位25%の行の水準）で、数字を入れると上書きできます。
+        「必要数」は今の転換率のまま目標を達成するのに必要な数です。「基準」は空欄なら自動（目標から逆算した率 → 入口が10件以上ある行の上位25%の水準）で、数字を入れると上書きできます。
       </p>
       <div className="space-y-1">
         {a.stages.map((st, i) => {
@@ -922,8 +946,76 @@ function Trend({ rows }: { rows: GroupRow[] }) {
   );
 }
 
+/** ヨミ表右側のヨミ集計：計上見込みとミッションとの差、ランクを上げたときの効果 */
+function YomiCard({ rows, mission }: { rows: YomiRow[]; mission: number | null }) {
+  const t = yomiTotals(rows);
+  const promos = promotions(rows);
+  const gap = mission !== null ? mission - t.weighted : null;
+  const strong = rows.filter((r) => !r.subtotal && (r.prob ?? 0) >= 0.7).reduce((s, r) => s + r.weighted, 0);
+  return (
+    <Card title="ヨミ（今月の見込み）" icon={<Target className="h-5 w-5 text-indigo-600" />}>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {(
+          [
+            ['ヨミ金額の合計', fmt(t.amount)],
+            ['計上見込み（確度込み）', fmt(t.weighted)],
+            ['うち確度70%以上', fmt(strong)],
+            [gap !== null && gap <= 0 ? 'ミッション超過' : 'ミッションまで', gap === null ? '—' : fmt(Math.abs(gap))],
+          ] as [string, string][]
+        ).map(([label, value]) => (
+          <div key={label} className="rounded-xl bg-slate-50 p-3">
+            <p className="text-xs text-slate-500">{label}</p>
+            <p className="mt-1 text-lg font-bold tabular-nums">{value}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full min-w-[420px] text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 text-left text-xs whitespace-nowrap text-slate-500">
+              <th className="py-2 pr-3">ランク</th>
+              <th className="py-2 pr-3 text-right">確度</th>
+              <th className="py-2 pr-3 text-right">金額</th>
+              <th className="py-2 text-right">計上見込み</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.label} className={`border-b border-slate-100 ${r.subtotal ? 'bg-slate-50 font-bold' : ''} ${!r.subtotal && r.amount === 0 ? 'text-slate-400' : ''}`}>
+                <td className="py-1.5 pr-3 whitespace-nowrap">{r.label}</td>
+                <td className="py-1.5 pr-3 text-right tabular-nums">{r.subtotal ? '' : pct(r.prob)}</td>
+                <td className="py-1.5 pr-3 text-right tabular-nums">{fmt(r.amount)}</td>
+                <td className="py-1.5 text-right tabular-nums">{fmt(r.weighted)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {promos.length > 0 && (
+        <div className="mt-4">
+          <p className="mb-2 text-sm font-bold">ランクを1つ上げたときの効果（大きい順）</p>
+          <ul className="space-y-1.5 text-sm">
+            {promos.map((p) => (
+              <li key={p.from.label} className="flex items-center gap-2 rounded-lg bg-indigo-50 px-3 py-2">
+                <span className="flex-1">
+                  {p.from.label}（{fmt(p.from.amount)}）を<b>{p.to.label}</b>に上げる
+                  <span className="text-xs text-slate-500">（確度 {pct(p.from.prob)} → {pct(p.to.prob)}）</span>
+                </span>
+                <b className="tabular-nums text-indigo-700">+{fmt(p.uplift)}</b>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-xs text-slate-500">
+            ランクを上げるには：決裁者との面談設定、導入時期と予算の確認、検討期限の合意を、案件ごとに今週中に行います。
+          </p>
+        </div>
+      )}
+    </Card>
+  );
+}
+
 /** 共有用のテキスト（チャットやメールに貼って相談できる形） */
-export function buildReport(a: Analysis, scope: string, perGroup: GroupRow[]): string {
+export function buildReport(a: Analysis, scope: string, perGroup: GroupRow[], yomi: YomiRow[] = [], mission: number | null = null): string {
   const lines: string[] = [`【数字分析レポート】対象：${scope}`];
   lines.push(`${a.final.name}：実績 ${fmt(a.final.value)}${a.pace < 1 ? `（着地見込み ${fmt(a.forecast)}）` : ''} / 目標 ${fmt(a.goal)}${a.gap !== null ? ` / ${a.gap > 0 ? '不足' : '超過'} ${fmt(Math.abs(a.gap))}` : ''}`);
   lines.push('', '■ ファネル');
@@ -948,11 +1040,20 @@ export function buildReport(a: Analysis, scope: string, perGroup: GroupRow[]): s
       lines.push(`・${g.group.label}：${stepLabel(s.from.role, s.to.role, s.to.name)} ${rateText(s, s.rate)}（基準比 ${Math.round(g.weak!.score * 100)}%）`);
     });
   }
+  if (yomi.length) {
+    const t = yomiTotals(yomi);
+    lines.push('', '■ ヨミ');
+    lines.push(`金額合計 ${fmt(t.amount)} / 計上見込み ${fmt(t.weighted)}${mission !== null ? `（ミッション ${fmt(mission)} まであと ${fmt(mission - t.weighted)}）` : ''}`);
+    yomi.filter((r) => !r.subtotal && r.amount > 0).forEach((r) => lines.push(`・${r.label}（確度 ${pct(r.prob)}）：${fmt(r.amount)} → 計上 ${fmt(r.weighted)}`));
+    promotions(yomi)
+      .slice(0, 3)
+      .forEach((p) => lines.push(`  ↑ ${p.from.label}を${p.to.label}に上げると +${fmt(p.uplift)}`));
+  }
   return lines.join('\n');
 }
 
-function Report({ a, scope, perGroup }: { a: Analysis; scope: string; perGroup: GroupRow[] }) {
-  const text = buildReport(a, scope, perGroup);
+function Report({ a, scope, perGroup, yomi, mission }: { a: Analysis; scope: string; perGroup: GroupRow[]; yomi: YomiRow[]; mission: number | null }) {
+  const text = buildReport(a, scope, perGroup, yomi, mission);
   const [copied, setCopied] = useState(false);
   return (
     <Card

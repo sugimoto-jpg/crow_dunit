@@ -1,7 +1,7 @@
 import { parseCsv } from '../research/csv';
 
 /** ファネル上の役割（上から順に並ぶ）。revenue の手前の段は「件数→金額」なので転換率ではなく単価になる */
-export type Role = 'list' | 'activity' | 'contact' | 'appointment' | 'meeting' | 'proposal' | 'deal' | 'revenue';
+export type Role = 'list' | 'activity' | 'contact' | 'appointment' | 'meeting' | 'proposal' | 'proposalVisit' | 'yomi' | 'yomiVisit' | 'deal' | 'revenue';
 
 export const ROLES: { id: Role; label: string }[] = [
   { id: 'list', label: 'リスト・対象数' },
@@ -10,6 +10,9 @@ export const ROLES: { id: Role; label: string }[] = [
   { id: 'appointment', label: 'アポ獲得' },
   { id: 'meeting', label: '商談・面談実施' },
   { id: 'proposal', label: '提案・見積' },
+  { id: 'proposalVisit', label: '提案訪問' },
+  { id: 'yomi', label: 'ヨミ取得' },
+  { id: 'yomiVisit', label: 'ヨミ訪問' },
   { id: 'deal', label: '受注・成約' },
   { id: 'revenue', label: '売上・金額' },
 ];
@@ -20,6 +23,11 @@ const norm = (s: string) => s.normalize('NFKC').toLowerCase().replace(/\s+/g, ''
 /** 上から順に判定する（「受注金額」は売上、「商談設定」はアポのように、より具体的なものを先に置く。「獲得」はアポにもリードにも付くので使わない） */
 const ROLE_WORDS: [Role, RegExp][] = [
   ['revenue', /売上|売り上げ|金額|粗利|利益|mrr|arr|入金|revenue|成約額|受注額|契約額/],
+  // アイドマのヨミ表の段階（当日アポ → 新規 → 提案取得 → 提案訪問 → ヨミ取得 → ヨミ訪問 → 受注）
+  ['proposalVisit', /提案訪問/],
+  ['yomiVisit', /ヨミ訪問/],
+  ['yomi', /ヨミ/],
+  ['meeting', /^新規(訪問)?(数|件数|結果)?$/],
   ['appointment', /アポ|appo|商談設定|面談設定|日程調整|予約/],
   ['deal', /受注|成約|契約|クロージング|決定|申込|申し込み|購入|入会|deal|won/],
   ['proposal', /提案|見積|プレゼン/],

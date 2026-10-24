@@ -76,6 +76,9 @@ export function upperQuartile(xs: number[]): number | null {
   return s[lo] + (s[Math.min(lo + 1, s.length - 1)] - s[lo]) * (pos - lo);
 }
 
+/** 他の行の率を基準に使うときの最低件数（段の入口の数） */
+export const MIN_SAMPLE = 10;
+
 /**
  * 各段の基準値：手入力 > 目標から逆算した転換率 > 他の行（担当者・月）の上位25%水準。
  * targets は各段の目標値、peers は比較対象の各行のステージ（自分自身を含んでよい）。
@@ -86,7 +89,12 @@ export function benchmarks(targets: (number | null)[], peers: Stage[][], manual:
     const m = manual[i];
     if (m != null && m > 0) return { bench: m, source: 'manual' };
     if (fromT && toT) return { bench: toT / fromT, source: 'target' };
-    const rates = peers.map((p) => ratio(p[i + 1]?.value ?? 0, p[i]?.value ?? 0)).filter((r): r is number => r !== null);
+    // 件数の少ない行（1件で100%など）と、100%を超える集計の揺れは基準に使わない。単価の段は金額なので上限なし
+    const price = peers[0]?.[i + 1]?.role === 'revenue';
+    const rates = peers
+      .filter((p) => (p[i]?.value ?? 0) >= MIN_SAMPLE)
+      .map((p) => ratio(p[i + 1]?.value ?? 0, p[i]?.value ?? 0))
+      .filter((r): r is number => r !== null && (price || r <= 1));
     const top = upperQuartile(rates);
     return top !== null ? { bench: top, source: 'top' } : { bench: null, source: null };
   });
