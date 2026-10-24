@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Calculator, ClipboardCheck, Settings as SettingsIcon, Wallet } from 'lucide-react';
+import { Calculator, ClipboardCheck, ClipboardList, Settings as SettingsIcon, Wallet } from 'lucide-react';
 import type { Inputs, Order, Rules } from './calc';
 import { ForecastView } from './ForecastView';
 import { MissionView } from './MissionView';
+import { OrdersView } from './OrdersView';
 import { SettingsView } from './SettingsView';
 import { load, save } from './storage';
 
-type Tab = 'forecast' | 'missions' | 'settings';
+type Tab = 'forecast' | 'orders' | 'missions' | 'settings';
 const TABS = [
   { id: 'forecast', label: '予測', icon: Calculator },
+  { id: 'orders', label: '受注一覧', icon: ClipboardList },
   { id: 'missions', label: 'ミッション表', icon: ClipboardCheck },
   { id: 'settings', label: '設定', icon: SettingsIcon },
 ] as const;
@@ -49,7 +51,8 @@ export function BonusApp() {
           ))}
         </nav>
 
-        {tab === 'forecast' && <ForecastView orders={orders} setOrders={setOrders} rules={rules} inputs={inputs} setInput={setInput} goMissions={() => setTab('missions')} />}
+        {tab === 'forecast' && <ForecastView orders={orders} rules={rules} inputs={inputs} setInput={setInput} goOrders={() => setTab('orders')} goMissions={() => setTab('missions')} />}
+        {tab === 'orders' && <OrdersView orders={orders} setOrders={setOrders} rules={rules} />}
         {tab === 'missions' && <MissionView rules={rules} inputs={inputs} setInput={setInput} goSettings={() => setTab('settings')} />}
         {tab === 'settings' && <SettingsView rules={rules} setRule={setRule} reset={(r) => setRules(r)} />}
       </div>

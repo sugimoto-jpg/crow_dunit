@@ -10,10 +10,12 @@ export interface Order {
   share: number;
   /** 単月受注金額（円） */
   monthly: number;
-  /** 契約月数 */
-  months: number;
-  /** 査定期間の何ヶ月目から入金が始まるか（1〜6） */
-  startMonth: number;
+  /** 受注した月（YYYY-MM） */
+  orderMonth: string;
+  /** 契約期間の最初の月（YYYY-MM）。この月から毎月入金がある */
+  contractStart: string;
+  /** 契約期間の最後の月（YYYY-MM） */
+  contractEnd: string;
   /** 安定して入金がありそうな先か（②の予測に残す） */
   stable: boolean;
 }
@@ -42,6 +44,8 @@ export type MissingPolicy = 'exclude' | 'achieved' | 'failed';
 
 /** 設定シート：会社のルール。あとから変えられる */
 export interface Rules {
+  /** 査定期間の年 */
+  periodYear: number;
   /** 査定期間の最初の月（下半期なら7） */
   periodStart: number;
   /** 賞与対象原資の率（%） */
@@ -87,8 +91,11 @@ export interface Inputs {
 const blank = <T,>(v: T): T[] => Array(PERIOD_MONTHS).fill(v);
 const def = (id: string, name: string, kind: MissionKind = 'check', target: number | null = null, unit = ''): MissionDef => ({ id, name, kind, target, unit });
 
+const today = new Date();
+
 export const DEFAULT_RULES: Rules = {
-  periodStart: 7,
+  periodYear: today.getFullYear(),
+  periodStart: today.getMonth() < 6 ? 1 : 7,
   poolRate: 20,
   managementRate: 1.2,
   grossRate: 66.5,
@@ -141,27 +148,70 @@ export function monthLabel(periodStart: number, i: number): string {
   return `${((periodStart - 1 + i) % 12) + 1}月`;
 }
 
-function startIndex(o: Pick<Order, 'startMonth'>): number {
-  return Math.min(Math.max(Math.floor(o.startMonth) || 1, 1), PERIOD_MONTHS) - 1;
+/** 査定期間がいつか */
+export type Period = Pick<Rules, 'periodYear' | 'periodStart'>;
+
+/** 「YYYY-MM」を月の通し番号にする。読めないときは null */
+export function ymIndex(ym: string): number | null {
+  const m = /^(\d{4})-(\d{1,2})$/.exec(ym.trim());
+  if (!m) return null;
+  const month = Number(m[2]);
+  return month >= 1 && month <= 12 ? Number(m[1]) * 12 + month - 1 : null;
+}
+
+export function ymFromIndex(i: number): string {
+  return `${Math.floor(i / 12)}-${String((i % 12) + 1).padStart(2, '0')}`;
+}
+
+/** 「YYYY-MM」に n ヶ月足す */
+export function addMonths(ym: string, n: number): string {
+  const i = ymIndex(ym);
+  return i == null ? ym : ymFromIndex(i + n);
+}
+
+/** 「2026-07」→「2026年7月」 */
+export function ymLabel(ym: string): string {
+  const i = ymIndex(ym);
+  return i == null ? '未設定' : `${Math.floor(i / 12)}年${(i % 12) + 1}月`;
+}
+
+/** 査定期間の各月（YYYY-MM） */
+export function periodMonths(p: Period): string[] {
+  const first = p.periodYear * 12 + p.periodStart - 1;
+  return Array.from({ length: PERIOD_MONTHS }, (_, k) => ymFromIndex(first + k));
+}
+
+/** 契約期間の月数（開始月・終了月を含む）。期間が読めないときは 0 */
+export function contractMonths(o: Pick<Order, 'contractStart' | 'contractEnd'>): number {
+  const a = ymIndex(o.contractStart);
+  const b = ymIndex(o.contractEnd);
+  return a == null || b == null || b < a ? 0 : b - a + 1;
+}
+
+/** 査定期間の各月に、その受注の入金があるか */
+function activeMonths(o: Order, p: Period): boolean[] {
+  const a = ymIndex(o.contractStart);
+  const b = ymIndex(o.contractEnd);
+  return periodMonths(p).map((ym) => {
+    const i = ymIndex(ym)!;
+    return a != null && b != null && a <= i && i <= b;
+  });
 }
 
 /** 査定期間（6ヶ月）のうち、その受注の入金がある月数 */
-export function monthsInPeriod(o: Pick<Order, 'months' | 'startMonth'>): number {
-  return Math.max(0, Math.min(Math.floor(o.months) || 0, PERIOD_MONTHS - startIndex(o)));
+export function monthsInPeriod(o: Order, p: Period): number {
+  return activeMonths(o, p).filter(Boolean).length;
 }
 
 /** 受注履歴から見込む、その受注の期間内の入金額（配分後） */
-export function expectedPayment(o: Order): number {
-  return (o.share / 100) * o.monthly * monthsInPeriod(o);
+export function expectedPayment(o: Order, p: Period): number {
+  return (o.share / 100) * o.monthly * monthsInPeriod(o, p);
 }
 
 /** 受注履歴から見込む月別の入金額（配分後） */
-export function expectedMonthly(orders: Order[]): number[] {
+export function expectedMonthly(orders: Order[], p: Period): number[] {
   const out = blank(0);
-  for (const o of orders) {
-    const from = startIndex(o);
-    for (let i = from; i < from + monthsInPeriod(o); i++) out[i] += (o.share / 100) * o.monthly;
-  }
+  for (const o of orders) activeMonths(o, p).forEach((on, i) => on && (out[i] += (o.share / 100) * o.monthly));
   return out;
 }
 
@@ -170,12 +220,12 @@ export function enteredMonths(actual: (number | null)[]): number {
   return actual.filter((v) => v != null).length;
 }
 
-export function scenarioPayments(orders: Order[], inputs: Inputs, id: ScenarioId): number {
+export function scenarioPayments(orders: Order[], inputs: Inputs, p: Period, id: ScenarioId): number {
   switch (id) {
     case 'orders':
-      return sum(orders.map(expectedPayment));
+      return sum(orders.map((o) => expectedPayment(o, p)));
     case 'stable':
-      return sum(orders.filter((o) => o.stable).map(expectedPayment));
+      return sum(orders.filter((o) => o.stable).map((o) => expectedPayment(o, p)));
     case 'actual': {
       const n = enteredMonths(inputs.actualMonthly);
       return n ? (sum(inputs.actualMonthly.map((v) => v ?? 0)) / n) * PERIOD_MONTHS : 0;

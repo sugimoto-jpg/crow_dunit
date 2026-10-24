@@ -1,4 +1,4 @@
-import { DEFAULT_INPUTS, DEFAULT_RULES, PERIOD_MONTHS, type Inputs, type Mission, type MissionDef, type Order, type Rules } from './calc';
+import { DEFAULT_INPUTS, DEFAULT_RULES, PERIOD_MONTHS, addMonths, periodMonths, type Inputs, type Mission, type MissionDef, type Order, type Period, type Rules } from './calc';
 
 const KEY = 'aidma-bonus-forecast-v2';
 const OLD_KEY = 'aidma-bonus-forecast-v1';
@@ -15,9 +15,10 @@ export function load(): Saved {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const d = JSON.parse(raw) as Partial<Saved>;
+      const rules = { ...DEFAULT_RULES, ...d.rules };
       return migrateMissions({
-        orders: Array.isArray(d.orders) ? d.orders : [],
-        rules: { ...DEFAULT_RULES, ...d.rules },
+        orders: migrateOrders(Array.isArray(d.orders) ? d.orders : [], rules),
+        rules,
         inputs: { ...DEFAULT_INPUTS, ...d.inputs },
       });
     }
@@ -27,6 +28,28 @@ export function load(): Saved {
     /* 保存できない環境では毎回まっさらから始める */
   }
   return { orders: [], rules: DEFAULT_RULES, inputs: DEFAULT_INPUTS };
+}
+
+type OldOrder = Partial<Order> & { id: string; months?: number; startMonth?: number; actual?: unknown };
+
+/** 契約月数と「査定期間の何ヶ月目から」で持っていた頃の受注を、契約期間（開始月〜終了月）に直す */
+function migrateOrders(orders: OldOrder[], p: Period): Order[] {
+  const months = periodMonths(p);
+  return orders.map(({ months: n, startMonth, actual: _actual, ...o }) => {
+    if (o.contractStart != null) return o as Order;
+    const start = months[Math.min(Math.max((startMonth ?? 1) - 1, 0), PERIOD_MONTHS - 1)];
+    return {
+      company: '',
+      unit: '',
+      share: 100,
+      monthly: 0,
+      stable: true,
+      ...o,
+      orderMonth: start,
+      contractStart: start,
+      contractEnd: addMonths(start, Math.max((n ?? 1) - 1, 0)),
+    };
+  });
 }
 
 type OldRecord = { actual: (number | null)[]; target: (number | null)[] };
@@ -56,7 +79,7 @@ function migrateMissions(d: Saved): Saved {
 }
 
 /** 旧版（設定と入力が1つだった頃）の保存内容を引き継ぐ。ミッションの●×は新しいミッション表で入れ直す */
-function fromV1(d: { orders?: (Order & { actual?: unknown })[]; settings?: Record<string, unknown> }): Saved {
+function fromV1(d: { orders?: unknown[]; settings?: Record<string, unknown> }): Saved {
   const s = d.settings ?? {};
   const num = (k: string, fallback: number) => (typeof s[k] === 'number' ? (s[k] as number) : fallback);
   const rules: Rules = {
@@ -80,7 +103,7 @@ function fromV1(d: { orders?: (Order & { actual?: unknown })[]; settings?: Recor
     newBaseSalary: num('newBaseSalary', 0),
     lumpSum: num('lumpSum', 0),
   };
-  const orders = (Array.isArray(d.orders) ? d.orders : []).map(({ actual: _actual, ...o }) => o);
+  const orders = migrateOrders(Array.isArray(d.orders) ? (d.orders as OldOrder[]) : [], rules);
   return { orders, rules, inputs };
 }
 

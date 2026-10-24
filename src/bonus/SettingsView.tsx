@@ -19,10 +19,18 @@ export function SettingsView({ rules, setRule, reset }: Props) {
   return (
     <>
       <Card title="査定期間">
-        <select className={`${inputCls} max-w-xs`} value={rules.periodStart} onChange={(e) => setRule('periodStart', Number(e.target.value))}>
-          <option value={1}>上半期（1月〜6月）</option>
-          <option value={7}>下半期（7月〜12月）</option>
-        </select>
+        <div className="flex flex-wrap gap-2">
+          <select className={`${inputCls} w-auto`} value={rules.periodYear} onChange={(e) => setRule('periodYear', Number(e.target.value))} aria-label="年">
+            {years(rules.periodYear).map((y) => (
+              <option key={y} value={y}>{y}年</option>
+            ))}
+          </select>
+          <select className={`${inputCls} w-auto`} value={rules.periodStart} onChange={(e) => setRule('periodStart', Number(e.target.value))} aria-label="上半期・下半期">
+            <option value={1}>上半期（1月〜6月）</option>
+            <option value={7}>下半期（7月〜12月）</option>
+          </select>
+        </div>
+        <p className="mt-2 text-xs text-slate-500">受注一覧の契約期間のうち、この6ヶ月に入る月の分を入金の見込みにします。</p>
       </Card>
 
       <Card title="賞与の計算ルール">
@@ -130,4 +138,11 @@ export function SettingsView({ rules, setRule, reset }: Props) {
       </button>
     </>
   );
+}
+
+/** 選べる年（今年の前後と、いま選んでいる年） */
+function years(current: number): number[] {
+  const now = new Date().getFullYear();
+  const ys = new Set([current, ...Array.from({ length: 6 }, (_, k) => now - 3 + k)]);
+  return [...ys].sort((a, b) => a - b);
 }

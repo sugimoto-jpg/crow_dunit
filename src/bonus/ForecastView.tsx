@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
 import {
   PERIOD_MONTHS,
   SCENARIOS,
@@ -16,92 +15,46 @@ import {
   type Order,
   type Rules,
 } from './calc';
-import { Card, Field, NumIn, Stat, TextIn, inputCls, yen } from './ui';
+import { Card, Field, NumIn, Stat, yen } from './ui';
 
 const months = Array.from({ length: PERIOD_MONTHS }, (_, i) => i);
-const newOrder = (): Order => ({
-  id: crypto.randomUUID(),
-  company: '',
-  unit: '',
-  share: 100,
-  monthly: 0,
-  months: 6,
-  startMonth: 1,
-  stable: true,
-});
 
 interface Props {
   orders: Order[];
-  setOrders: (f: (os: Order[]) => Order[]) => void;
   rules: Rules;
   inputs: Inputs;
   setInput: <K extends keyof Inputs>(k: K, v: Inputs[K]) => void;
+  goOrders: () => void;
   goMissions: () => void;
 }
 
-export function ForecastView({ orders, setOrders, rules, inputs, setInput, goMissions }: Props) {
+export function ForecastView({ orders, rules, inputs, setInput, goOrders, goMissions }: Props) {
   const results = useMemo(
-    () => SCENARIOS.map((sc) => ({ ...sc, b: calculate(scenarioPayments(orders, inputs, sc.id), rules, inputs) })),
+    () => SCENARIOS.map((sc) => ({ ...sc, b: calculate(scenarioPayments(orders, inputs, rules, sc.id), rules, inputs) })),
     [orders, rules, inputs],
   );
-  const expected = useMemo(() => expectedMonthly(orders), [orders]);
-  const expectedStable = useMemo(() => expectedMonthly(orders.filter((o) => o.stable)), [orders]);
+  const expected = useMemo(() => expectedMonthly(orders, rules), [orders, rules]);
+  const expectedStable = useMemo(() => expectedMonthly(orders.filter((o) => o.stable), rules), [orders, rules]);
   const rate = bonusRate(rules, inputs);
   const label = (i: number) => monthLabel(rules.periodStart, i);
-  const patchOrder = (id: string, patch: Partial<Order>) => setOrders((os) => os.map((o) => (o.id === id ? { ...o, ...patch } : o)));
+  const inPeriod = orders.filter((o) => monthsInPeriod(o, rules) > 0);
 
   return (
     <>
-      <Card title="受注一覧">
-        <div className="-mx-4 overflow-x-auto px-4">
-          <table className="w-full min-w-[820px] text-sm">
-            <thead className="text-left text-xs text-slate-500">
-              <tr>
-                <th className="p-1">社名</th>
-                <th className="p-1">ユニット名</th>
-                <th className="p-1 w-20">配分(%)</th>
-                <th className="p-1 w-32">単月受注金額</th>
-                <th className="p-1 w-20">契約月数</th>
-                <th className="p-1 w-24">入金開始月</th>
-                <th className="p-1 w-28 text-right">期間内見込み</th>
-                <th className="p-1 w-14 text-center" title="②の予測に残す">安定</th>
-                <th className="p-1 w-8" />
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((o) => (
-                <tr key={o.id} className="border-t border-slate-100">
-                  <td className="p-1"><TextIn value={o.company} onChange={(v) => patchOrder(o.id, { company: v })} placeholder="株式会社〇〇" /></td>
-                  <td className="p-1"><TextIn value={o.unit} onChange={(v) => patchOrder(o.id, { unit: v })} placeholder="〇〇ユニット" /></td>
-                  <td className="p-1"><NumIn value={o.share} onChange={(v) => patchOrder(o.id, { share: v ?? 0 })} /></td>
-                  <td className="p-1"><NumIn value={o.monthly} onChange={(v) => patchOrder(o.id, { monthly: v ?? 0 })} /></td>
-                  <td className="p-1"><NumIn value={o.months} onChange={(v) => patchOrder(o.id, { months: v ?? 0 })} /></td>
-                  <td className="p-1">
-                    <select className={inputCls} value={o.startMonth} onChange={(e) => patchOrder(o.id, { startMonth: Number(e.target.value) })}>
-                      {months.map((i) => <option key={i} value={i + 1}>{label(i)}</option>)}
-                    </select>
-                  </td>
-                  <td className="p-1 text-right tabular-nums">
-                    {yen(expectedPayment(o))}
-                    <div className="text-[10px] text-slate-400">{monthsInPeriod(o)}ヶ月分</div>
-                  </td>
-                  <td className="p-1 text-center">
-                    <input type="checkbox" className="size-4 accent-emerald-600" checked={o.stable} onChange={(e) => patchOrder(o.id, { stable: e.target.checked })} />
-                  </td>
-                  <td className="p-1">
-                    <button className="rounded p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-600" onClick={() => setOrders((os) => os.filter((x) => x.id !== o.id))} aria-label="削除">
-                      <Trash2 className="size-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <Card
+        title="受注"
+        aside={
+          <button className="text-sm font-bold text-emerald-700 hover:underline" onClick={goOrders}>
+            受注一覧を開く →
+          </button>
+        }
+      >
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Stat label="登録した受注" value={`${orders.length}件`} />
+          <Stat label="査定期間に入金がある受注" value={`${inPeriod.length}件`} />
+          <Stat label="① 期間内の見込み（全件）" value={yen(inPeriod.reduce((s, o) => s + expectedPayment(o, rules), 0))} />
+          <Stat label="② 期間内の見込み（安定先）" value={yen(inPeriod.filter((o) => o.stable).reduce((s, o) => s + expectedPayment(o, rules), 0))} />
         </div>
-        <button className="mt-3 inline-flex items-center gap-1 rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-bold text-emerald-700 hover:bg-emerald-50" onClick={() => setOrders((os) => [...os, newOrder()])}>
-          <Plus className="size-4" /> 受注を追加
-        </button>
-        <p className="mt-2 text-xs text-slate-500">期間内見込み = 配分 × 単月受注金額 × 査定期間（6ヶ月）に入る月数。</p>
       </Card>
 
       <Card title="月別の入金額">

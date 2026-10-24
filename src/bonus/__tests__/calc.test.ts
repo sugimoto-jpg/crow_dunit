@@ -9,8 +9,12 @@ import {
   expectedPayment,
   judge,
   monthLabel,
+  addMonths,
+  contractMonths,
   monthsInPeriod,
+  periodMonths,
   scenarioPayments,
+  ymLabel,
   cloneMissions,
   tallyMonth,
   type Inputs,
@@ -19,8 +23,9 @@ import {
 } from '../calc';
 
 const order = (patch: Partial<Order>): Order => ({
-  id: 'x', company: 'A社', unit: '営業支援', share: 100, monthly: 100_000, months: 12, startMonth: 1, stable: true, ...patch,
+  id: 'x', company: 'A社', unit: '営業支援', share: 100, monthly: 100_000, orderMonth: '2026-06', contractStart: '2026-07', contractEnd: '2027-06', stable: true, ...patch,
 });
+const period = { periodYear: 2026, periodStart: 7 };
 const inputs = (patch: Partial<Inputs>): Inputs => ({ ...DEFAULT_INPUTS, ...patch });
 const checkRules = DEFAULT_RULES;
 const check = (actual: number | null): Mission => ({ id: crypto.randomUUID(), name: 'm', kind: 'check', target: null, unit: '', actual });
@@ -29,12 +34,22 @@ const records = (achieved: number): Inputs['monthMissions'] =>
   Array.from({ length: PERIOD_MONTHS }, (_, j) => Array.from({ length: 10 }, (_, k) => check(j * 10 + k < achieved ? 1 : 0)));
 const addons = (meikupui: number) => DEFAULT_RULES.addonNames.map((n) => (n === 'メイクプイ' ? meikupui : 0));
 
-describe('monthsInPeriod', () => {
-  it('caps at the 6-month period and respects the start month', () => {
-    expect(monthsInPeriod({ months: 12, startMonth: 1 })).toBe(6);
-    expect(monthsInPeriod({ months: 3, startMonth: 1 })).toBe(3);
-    expect(monthsInPeriod({ months: 12, startMonth: 5 })).toBe(2);
-    expect(monthsInPeriod({ months: 0, startMonth: 1 })).toBe(0);
+describe('contract period', () => {
+  it('counts the contract months that fall in the review period', () => {
+    expect(periodMonths(period)).toEqual(['2026-07', '2026-08', '2026-09', '2026-10', '2026-11', '2026-12']);
+    expect(periodMonths({ periodYear: 2026, periodStart: 1 })[5]).toBe('2026-06');
+    expect(contractMonths(order({}))).toBe(12);
+    expect(contractMonths(order({ contractEnd: '2026-06' }))).toBe(0);
+    expect(monthsInPeriod(order({}), period)).toBe(6);
+    expect(monthsInPeriod(order({ contractStart: '2026-05', contractEnd: '2026-09' }), period)).toBe(3);
+    expect(monthsInPeriod(order({ contractStart: '2026-11', contractEnd: '2027-10' }), period)).toBe(2);
+    expect(monthsInPeriod(order({ contractStart: '2025-01', contractEnd: '2025-12' }), period)).toBe(0);
+    expect(monthsInPeriod(order({ contractStart: '' }), period)).toBe(0);
+  });
+  it('handles month strings', () => {
+    expect(addMonths('2026-11', 3)).toBe('2027-02');
+    expect(ymLabel('2026-07')).toBe('2026年7月');
+    expect(ymLabel('')).toBe('未設定');
   });
   it('labels months from the period start', () => {
     expect(monthLabel(7, 0)).toBe('7月');
@@ -45,18 +60,18 @@ describe('monthsInPeriod', () => {
 
 describe('scenarios', () => {
   const orders = [
-    order({ share: 50, monthly: 200_000, months: 6 }), // 600,000
-    order({ share: 100, monthly: 100_000, months: 3, startMonth: 2, stable: false }), // 300,000
+    order({ share: 50, monthly: 200_000, contractEnd: '2026-12' }), // 600,000
+    order({ share: 100, monthly: 100_000, contractStart: '2026-08', contractEnd: '2026-10', stable: false }), // 300,000
   ];
   it('sums expected and stable-only payments', () => {
-    expect(expectedPayment(orders[0])).toBe(600_000);
-    expect(scenarioPayments(orders, DEFAULT_INPUTS, 'orders')).toBe(900_000);
-    expect(scenarioPayments(orders, DEFAULT_INPUTS, 'stable')).toBe(600_000);
-    expect(expectedMonthly(orders)).toEqual([100_000, 200_000, 200_000, 200_000, 100_000, 100_000]);
+    expect(expectedPayment(orders[0], period)).toBe(600_000);
+    expect(scenarioPayments(orders, DEFAULT_INPUTS, period, 'orders')).toBe(900_000);
+    expect(scenarioPayments(orders, DEFAULT_INPUTS, period, 'stable')).toBe(600_000);
+    expect(expectedMonthly(orders, period)).toEqual([100_000, 200_000, 200_000, 200_000, 100_000, 100_000]);
   });
   it('extrapolates actual payments from the entered months', () => {
-    expect(scenarioPayments(orders, inputs({ actualMonthly: [100_000, 300_000, null, null, null, null] }), 'actual')).toBe(1_200_000);
-    expect(scenarioPayments(orders, DEFAULT_INPUTS, 'actual')).toBe(0);
+    expect(scenarioPayments(orders, inputs({ actualMonthly: [100_000, 300_000, null, null, null, null] }), period, 'actual')).toBe(1_200_000);
+    expect(scenarioPayments(orders, DEFAULT_INPUTS, period, 'actual')).toBe(0);
   });
 });
 
@@ -116,7 +131,7 @@ describe('calculate', () => {
       newBaseSalary: 348_500,
       lumpSum: 50_000,
     });
-    const b = calculate(scenarioPayments([], i, 'actual'), checkRules, i);
+    const b = calculate(scenarioPayments([], i, period, 'actual'), checkRules, i);
     expect(Math.round(b.avgMonthly)).toBe(2_740_688);
     expect(Math.round(b.pool)).toBe(515_249);
     expect(Math.round(b.bonusTarget)).toBe(170_249);
