@@ -1,0 +1,98 @@
+@import 'tailwindcss';
+
+/* 色は役割で持ち、ライト／ダークで値だけを入れ替える */
+@theme inline {
+  --font-sans: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', system-ui, sans-serif;
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-warn: var(--warn);
+  --color-nav: var(--nav);
+  --color-nav-ink: var(--nav-ink);
+  --color-series-1: var(--series-1);
+  --color-series-2: var(--series-2);
+}
+
+:root {
+  color-scheme: light;
+  --canvas: #f3f5f9;
+  --surface: #ffffff;
+  --surface-2: #f6f7fa;
+  --line: #e3e7ee;
+  --line-strong: #cbd2dd;
+  --ink: #0f172a;
+  --ink-2: #334155;
+  --muted: #5f6b7e;
+  --faint: #9aa4b4;
+  --accent: #1f63c4;
+  --accent-ink: #1a56b0;
+  --accent-soft: #e8f0fb;
+  --good: #13804f;
+  --good-soft: #e6f5ee;
+  --bad: #c93636;
+  --bad-soft: #fdecec;
+  --warn: #a86400;
+  --nav: #0e1a36;
+  --nav-ink: #c3cde0;
+  /* グラフの系列色（dataviz の検証済みパレット 1・2 番） */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --canvas: #0b1120;
+    --surface: #121a2b;
+    --surface-2: #18223a;
+    --line: #253150;
+    --line-strong: #364470;
+    --ink: #e8edf6;
+    --ink-2: #c3cbda;
+    --muted: #93a0b6;
+    --faint: #5f6b85;
+    --accent: #4b8fe8;
+    --accent-ink: #8ab6f2;
+    --accent-soft: #172a4b;
+    --good: #4cc38a;
+    --good-soft: #12321f;
+    --bad: #f07575;
+    --bad-soft: #3a1a1f;
+    --warn: #e0a43a;
+    --nav: #070c18;
+    --nav-ink: #aab6cc;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+  }
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  -webkit-text-size-adjust: 100%;
+}
+
+/* 年月入力のカレンダーアイコンをダークでも見えるように */
+input[type='month']::-webkit-calendar-picker-indicator {
+  opacity: 0.6;
+}
+@media (prefers-color-scheme: dark) {
+  input[type='month']::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+}

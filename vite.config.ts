@@ -17,6 +17,8 @@ export default defineConfig({
       input: {
         main: fileURLToPath(new URL('./index.html', import.meta.url)),
         research: fileURLToPath(new URL('./research.html', import.meta.url)),
+        // bonus.html は入金額から賞与・月給を予測する別アプリ
+        bonus: fileURLToPath(new URL('./bonus.html', import.meta.url)),
       },
     },
   },
