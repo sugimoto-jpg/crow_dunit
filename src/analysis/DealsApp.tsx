@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChevronDown, Download, FileUp, Filter, ListFilter, Search, Table2, Trash2, X } from 'lucide-react';
-import { toCsv } from '../research/csv';
 import { Welcome } from './Loader';
 import {
   EMPTY,
@@ -23,6 +22,9 @@ import {
   type StageCol,
 } from './deals';
 import { fmt, pct } from './format';
+import { CrossSellView, StaleView, statusValuesOf, type FollowupSettings } from './FollowupViews';
+import { defaultOpenStatuses, detectFields } from './followup';
+import { Card, Tile, downloadCsv, select } from './parts';
 import { loadJson, removeKey, saveJson } from './storage';
 import { parseGrid, toTable } from './table';
 
@@ -37,7 +39,16 @@ interface DealsSaved {
   axis: number;
   axis2: number;
   amountCol: number;
+  view?: View;
+  followup?: FollowupSettings;
 }
+
+type View = 'summary' | 'stale' | 'cross';
+const VIEWS: [View, string][] = [
+  ['summary', '集計'],
+  ['stale', '滞留アラート'],
+  ['cross', 'クロスセル候補'],
+];
 
 /** 架空の案件一覧（サンプル） */
 function sample(): string {
@@ -153,21 +164,6 @@ export function DealsApp() {
   );
 }
 
-function Card({ title, icon, right, children }: { title: string; icon: ReactNode; right?: ReactNode; children: ReactNode }) {
-  return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-      <div className="mb-3 flex flex-wrap items-center gap-2">
-        {icon}
-        <h2 className="flex-1 font-bold">{title}</h2>
-        {right}
-      </div>
-      {children}
-    </section>
-  );
-}
-
-const select = 'rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm';
-
 function Deals({ data, onChange, onReplace, onClear }: { data: DealsSaved; onChange: (p: Partial<DealsSaved>) => void; onReplace: () => void; onClear: () => void }) {
   const table = useMemo(() => toTable(parseGrid(data.source), false), [data.source]);
   const cols = useMemo(() => describeDeals(table), [table]);
@@ -179,6 +175,12 @@ function Deals({ data, onChange, onReplace, onClear }: { data: DealsSaved; onCha
   const ref = useMemo(() => refDateCol(table, cols), [table, cols]);
   const stages = useMemo(() => stageCols(cols), [cols]);
   const rows = useMemo(() => applyFilters(all, f, -1, ref), [all, f, ref]);
+  const view = data.view ?? 'summary';
+  const fields = useMemo(() => detectFields(cols), [cols]);
+  const statusValues = useMemo(() => statusValuesOf(all, fields.status), [all, fields.status]);
+  const fu = data.followup ?? {};
+  const open = useMemo(() => fu.openStatuses ?? defaultOpenStatuses(statusValues), [fu.openStatuses, statusValues]);
+  const setFu = (p: FollowupSettings) => onChange({ followup: { ...fu, ...p } });
   const setF = (p: Partial<DealFilters>) => onChange({ filters: { ...f, ...p } });
   const active = Object.values(f.cats).some((v) => v.length) || !!f.from || !!f.to || !!f.q;
 
@@ -205,90 +207,105 @@ function Deals({ data, onChange, onReplace, onClear }: { data: DealsSaved; onCha
         </button>
       </div>
 
-      <Card
-        title="絞り込み"
-        icon={<Filter className="h-5 w-5 text-indigo-600" />}
-        right={
-          active && (
-            <button onClick={() => setF({ cats: {}, from: '', to: '', q: '' })} className="flex items-center gap-1 text-xs font-semibold text-rose-600 hover:underline">
-              <X className="h-3.5 w-3.5" />
-              すべて解除
-            </button>
-          )
-        }
-      >
-        <div className="space-y-3">
-          {cats.slice(0, 6).map((c) => (
-            <FacetRow key={c.index} col={c} rows={all} refCol={ref} filters={f} onToggle={toggle} onClear={() => setF({ cats: { ...f.cats, [c.index]: [] } })} />
-          ))}
-          {cats.length > 6 && (
-            <details className="group">
-              <summary className="flex cursor-pointer list-none items-center gap-1 text-sm font-semibold text-slate-600">
-                <ChevronDown className="h-4 w-4 transition group-open:rotate-180" />
-                その他の絞り込み（{cats.slice(6).map((c) => c.name).join('・')}）
-              </summary>
-              <div className="mt-3 space-y-3">
-                {cats.slice(6).map((c) => (
-                  <FacetRow key={c.index} col={c} rows={all} refCol={ref} filters={f} onToggle={toggle} onClear={() => setF({ cats: { ...f.cats, [c.index]: [] } })} />
-                ))}
-              </div>
-            </details>
-          )}
-          <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3 text-sm">
-            {dates.length > 0 && (
-              <>
-                <select className={select} value={f.dateCol} onChange={(e) => setF({ dateCol: +e.target.value })}>
-                  {dates.map((c) => (
-                    <option key={c.index} value={c.index}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-                <input type="date" className={select} value={f.from} onChange={(e) => setF({ from: e.target.value })} />
-                〜
-                <input type="date" className={select} value={f.to} onChange={(e) => setF({ to: e.target.value })} />
-                <QuickRanges onPick={(from, to) => setF({ from, to })} />
-              </>
-            )}
-            <label className="ml-auto flex min-w-[200px] flex-1 items-center gap-1 rounded-lg border border-slate-300 bg-white px-2 sm:flex-none">
-              <Search className="h-4 w-4 text-slate-400" />
-              <input value={f.q} onChange={(e) => setF({ q: e.target.value })} placeholder="キーワード（企業名など）" className="w-full py-1.5 text-sm outline-none" />
-            </label>
-          </div>
-        </div>
-      </Card>
-
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Tile label="該当件数" value={`${rows.length.toLocaleString()}件`} note={`全${all.length.toLocaleString()}件中 ${pct(all.length ? rows.length / all.length : null)}`} />
-        <Tile label={`${amountName ?? '金額'}の合計`} value={data.amountCol >= 0 ? fmt(total) : '—'} />
-        <Tile label="1件あたり" value={data.amountCol >= 0 && rows.length ? fmt(total / rows.length) : '—'} />
-        <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-          <p className="text-xs text-slate-500">合計する列</p>
-          <select className={`${select} mt-1 w-full`} value={data.amountCol} onChange={(e) => onChange({ amountCol: +e.target.value })}>
-            <option value={-1}>なし</option>
-            {nums.map((c) => (
-              <option key={c.index} value={c.index}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="flex gap-1 rounded-xl bg-slate-200/60 p-1">
+        {VIEWS.map(([id, label]) => (
+          <button
+            key={id}
+            onClick={() => onChange({ view: id })}
+            className={`flex-1 rounded-lg px-2 py-2 text-xs font-bold sm:text-sm ${view === id ? 'bg-white text-indigo-700 shadow' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
-      <Breakdown data={data} onChange={onChange} cats={cats} rows={rows} onPick={toggle} />
-      {stages.length > 0 && <Stages rows={rows} stages={stages} axis={cats.some((c) => c.index === data.axis) ? data.axis : (cats[0]?.index ?? -1)} axisName={cols.find((c) => c.index === data.axis)?.name ?? ''} amountCol={data.amountCol} />}
-      {f.dateCol >= 0 && <Monthly rows={rows} dateCol={f.dateCol} refCol={ref} amountCol={data.amountCol} dateName={cols.find((c) => c.index === f.dateCol)?.name ?? ''} />}
-      <RowsTable header={table.header} cols={cols} rows={rows} refCol={ref} fileName={data.sourceName} />
-    </div>
-  );
-}
+      {view !== 'cross' && (
+        <Card
+          title="絞り込み"
+          icon={<Filter className="h-5 w-5 text-indigo-600" />}
+          right={
+            active && (
+              <button onClick={() => setF({ cats: {}, from: '', to: '', q: '' })} className="flex items-center gap-1 text-xs font-semibold text-rose-600 hover:underline">
+                <X className="h-3.5 w-3.5" />
+                すべて解除
+              </button>
+            )
+          }
+        >
+          <div className="space-y-3">
+            {cats.slice(0, 6).map((c) => (
+              <FacetRow key={c.index} col={c} rows={all} refCol={ref} filters={f} onToggle={toggle} onClear={() => setF({ cats: { ...f.cats, [c.index]: [] } })} />
+            ))}
+            {cats.length > 6 && (
+              <details className="group">
+                <summary className="flex cursor-pointer list-none items-center gap-1 text-sm font-semibold text-slate-600">
+                  <ChevronDown className="h-4 w-4 transition group-open:rotate-180" />
+                  その他の絞り込み（{cats.slice(6).map((c) => c.name).join('・')}）
+                </summary>
+                <div className="mt-3 space-y-3">
+                  {cats.slice(6).map((c) => (
+                    <FacetRow key={c.index} col={c} rows={all} refCol={ref} filters={f} onToggle={toggle} onClear={() => setF({ cats: { ...f.cats, [c.index]: [] } })} />
+                  ))}
+                </div>
+              </details>
+            )}
+            <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3 text-sm">
+              {dates.length > 0 && (
+                <>
+                  <select className={select} value={f.dateCol} onChange={(e) => setF({ dateCol: +e.target.value })}>
+                    {dates.map((c) => (
+                      <option key={c.index} value={c.index}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                  <input type="date" className={select} value={f.from} onChange={(e) => setF({ from: e.target.value })} />
+                  〜
+                  <input type="date" className={select} value={f.to} onChange={(e) => setF({ to: e.target.value })} />
+                  <QuickRanges onPick={(from, to) => setF({ from, to })} />
+                </>
+              )}
+              <label className="ml-auto flex min-w-[200px] flex-1 items-center gap-1 rounded-lg border border-slate-300 bg-white px-2 sm:flex-none">
+                <Search className="h-4 w-4 text-slate-400" />
+                <input value={f.q} onChange={(e) => setF({ q: e.target.value })} placeholder="キーワード（企業名など）" className="w-full py-1.5 text-sm outline-none" />
+              </label>
+            </div>
+          </div>
+        </Card>
 
-function Tile({ label, value, note }: { label: string; value: string; note?: string }) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-      <p className="text-xs text-slate-500">{label}</p>
-      <p className="mt-1 text-xl font-bold tabular-nums sm:text-2xl">{value}</p>
-      {note && <p className="mt-0.5 text-[11px] text-slate-400">{note}</p>}
+      )}
+
+      {view === 'stale' && (
+        <StaleView rows={rows} f={fields} open={open} statusValues={statusValues} amountCol={data.amountCol} settings={fu} onSettings={setFu} fileName={data.sourceName} />
+      )}
+      {view === 'cross' && (
+        <CrossSellView rows={all} f={fields} open={open} statusValues={statusValues} amountCol={data.amountCol} settings={fu} onSettings={setFu} fileName={data.sourceName} />
+      )}
+      {view === 'summary' && (
+        <>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <Tile label="該当件数" value={`${rows.length.toLocaleString()}件`} note={`全${all.length.toLocaleString()}件中 ${pct(all.length ? rows.length / all.length : null)}`} />
+            <Tile label={`${amountName ?? '金額'}の合計`} value={data.amountCol >= 0 ? fmt(total) : '—'} />
+            <Tile label="1件あたり" value={data.amountCol >= 0 && rows.length ? fmt(total / rows.length) : '—'} />
+            <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+              <p className="text-xs text-slate-500">合計する列</p>
+              <select className={`${select} mt-1 w-full`} value={data.amountCol} onChange={(e) => onChange({ amountCol: +e.target.value })}>
+                <option value={-1}>なし</option>
+                {nums.map((c) => (
+                  <option key={c.index} value={c.index}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <Breakdown data={data} onChange={onChange} cats={cats} rows={rows} onPick={toggle} />
+          {stages.length > 0 && <Stages rows={rows} stages={stages} axis={cats.some((c) => c.index === data.axis) ? data.axis : (cats[0]?.index ?? -1)} axisName={cols.find((c) => c.index === data.axis)?.name ?? ''} amountCol={data.amountCol} />}
+          {f.dateCol >= 0 && <Monthly rows={rows} dateCol={f.dateCol} refCol={ref} amountCol={data.amountCol} dateName={cols.find((c) => c.index === f.dateCol)?.name ?? ''} />}
+          <RowsTable header={table.header} cols={cols} rows={rows} refCol={ref} fileName={data.sourceName} />
+        </>
+      )}
     </div>
   );
 }
@@ -608,14 +625,7 @@ function RowsTable({ header, cols, rows, refCol, fileName }: { header: string[];
     });
   }, [rows, sort, refCol]);
 
-  function download() {
-    const blob = new Blob([toCsv(header, sorted)], { type: 'text/csv' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `${fileName.replace(/\.[^.]+$/, '')}_絞り込み.csv`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
+  const download = () => downloadCsv(`${fileName.replace(/\.[^.]+$/, '')}_絞り込み.csv`, header, sorted);
 
   return (
     <Card
