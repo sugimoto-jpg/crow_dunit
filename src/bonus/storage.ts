@@ -12,8 +12,13 @@ export function load(): Saved {
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {
-      const d = JSON.parse(raw) as Partial<Saved>;
-      return { orders: Array.isArray(d.orders) ? d.orders : [], settings: { ...DEFAULT_SETTINGS, ...d.settings } };
+      const d = JSON.parse(raw) as { orders?: Order[]; settings?: Partial<Settings> & { makeup?: number } };
+      const settings = { ...DEFAULT_SETTINGS, ...d.settings };
+      // 旧版の「メイクアップ」はメイクプイの加算へ移す
+      if (d.settings?.makeup && !d.settings.addons) {
+        settings.addons = DEFAULT_SETTINGS.addons.map((a) => (a.name === 'メイクプイ' ? { ...a, amount: d.settings!.makeup! } : a));
+      }
+      return { orders: Array.isArray(d.orders) ? d.orders : [], settings };
     }
   } catch {
     /* 保存できない環境では毎回まっさらから始める */
