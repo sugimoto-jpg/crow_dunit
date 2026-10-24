@@ -36,7 +36,8 @@ type OldOrder = Partial<Order> & { id: string; months?: number; startMonth?: num
 function migrateOrders(orders: OldOrder[], p: Period): Order[] {
   const months = periodMonths(p);
   return orders.map(({ months: n, startMonth, actual: _actual, ...o }) => {
-    if (o.contractStart != null) return o as Order;
+    // 初回入金予定月がなかった頃は、契約期間の開始月から入金としていた
+    if (o.contractStart != null) return { ...o, firstPayment: o.firstPayment ?? o.contractStart } as Order;
     const start = months[Math.min(Math.max((startMonth ?? 1) - 1, 0), PERIOD_MONTHS - 1)];
     return {
       company: '',
@@ -48,6 +49,7 @@ function migrateOrders(orders: OldOrder[], p: Period): Order[] {
       orderMonth: start,
       contractStart: start,
       contractEnd: addMonths(start, Math.max((n ?? 1) - 1, 0)),
+      firstPayment: start,
     };
   });
 }

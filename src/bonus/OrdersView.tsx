@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
-import { addMonths, contractMonths, expectedPayment, monthsInPeriod, periodMonths, ymFromIndex, ymLabel, type Order, type Rules } from './calc';
+import { addMonths, contractMonths, expectedPayment, lastPayment, monthsInPeriod, periodMonths, ymFromIndex, ymLabel, type Order, type Rules } from './calc';
 import { Card, IconButton, NumIn, Stat, TextIn, inputCls, yen } from './ui';
 
 const ALL = 'all';
@@ -45,6 +45,7 @@ export function OrdersView({ orders, setOrders, rules }: Props) {
         orderMonth,
         contractStart: orderMonth,
         contractEnd: addMonths(orderMonth, DEFAULT_CONTRACT_MONTHS - 1),
+        firstPayment: orderMonth,
         stable: true,
       },
     ]);
@@ -82,7 +83,7 @@ export function OrdersView({ orders, setOrders, rules }: Props) {
           <p className="rounded-lg bg-slate-50 p-4 text-sm text-slate-500">{orders.length ? '条件に合う受注はありません。' : 'まだ受注がありません。「受注を追加」から入れてください。'}</p>
         ) : (
           <div className="-mx-4 overflow-x-auto px-4">
-            <table className="w-full min-w-[1280px] text-sm">
+            <table className="w-full min-w-[1440px] text-sm">
               <thead className="text-left text-xs text-slate-500">
                 <tr>
                   <th className="p-1 w-36">受注月</th>
@@ -92,6 +93,7 @@ export function OrdersView({ orders, setOrders, rules }: Props) {
                   <th className="p-1 w-32">単月受注金額</th>
                   <th className="p-1 w-72">契約期間（開始〜終了）</th>
                   <th className="p-1 w-16">月数</th>
+                  <th className="p-1 w-40">初回入金予定月</th>
                   <th className="p-1 w-28 text-right">期間内見込み</th>
                   <th className="p-1 w-12 text-center" title="②の予測に残す">安定</th>
                   <th className="p-1 w-8" />
@@ -111,7 +113,14 @@ export function OrdersView({ orders, setOrders, rules }: Props) {
                         <div className="flex items-center gap-1">
                           <MonthIn
                             value={o.contractStart}
-                            onChange={(v) => patch(o.id, { contractStart: v, contractEnd: n ? addMonths(v, n - 1) : o.contractEnd })}
+                            onChange={(v) =>
+                              patch(o.id, {
+                                contractStart: v,
+                                contractEnd: n ? addMonths(v, n - 1) : o.contractEnd,
+                                // 初回入金予定月を契約開始月のままにしていたら一緒に動かす
+                                firstPayment: o.firstPayment === o.contractStart ? v : o.firstPayment,
+                              })
+                            }
                           />
                           <span className="text-slate-400">〜</span>
                           <MonthIn value={o.contractEnd} onChange={(v) => patch(o.id, { contractEnd: v })} />
@@ -119,6 +128,10 @@ export function OrdersView({ orders, setOrders, rules }: Props) {
                       </td>
                       <td className="p-1">
                         <NumIn value={n || null} placeholder="—" onChange={(v) => v && v >= 1 && patch(o.id, { contractEnd: addMonths(o.contractStart, Math.floor(v) - 1) })} />
+                      </td>
+                      <td className="p-1">
+                        <MonthIn value={o.firstPayment} onChange={(v) => patch(o.id, { firstPayment: v })} />
+                        <div className="text-[10px] text-slate-400">{lastPayment(o) ? `${ymLabel(lastPayment(o))}まで入金予定` : '入金予定なし'}</div>
                       </td>
                       <td className="p-1 text-right tabular-nums">
                         {yen(expectedPayment(o, rules))}
@@ -143,7 +156,7 @@ export function OrdersView({ orders, setOrders, rules }: Props) {
           <Plus className="size-4" /> 受注を追加
         </button>
         <p className="mt-2 text-xs text-slate-500">
-          契約期間の各月に、配分 × 単月受注金額 の入金があるとみなします。期間内見込みは、そのうち査定期間に入る月の分です。月数を変えると終了月が、開始月を変えると同じ月数のまま終了月が動きます。
+          初回入金予定月から契約月数の分だけ、毎月 配分 × 単月受注金額 の入金があるとみなします。期間内見込みは、そのうち査定期間に入る月の分です。月数を変えると終了月が、開始月を変えると同じ月数のまま終了月が動きます。
         </p>
       </Card>
     </>

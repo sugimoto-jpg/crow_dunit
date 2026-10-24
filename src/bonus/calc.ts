@@ -12,10 +12,12 @@ export interface Order {
   monthly: number;
   /** 受注した月（YYYY-MM） */
   orderMonth: string;
-  /** 契約期間の最初の月（YYYY-MM）。この月から毎月入金がある */
+  /** 契約期間の最初の月（YYYY-MM） */
   contractStart: string;
   /** 契約期間の最後の月（YYYY-MM） */
   contractEnd: string;
+  /** 初回入金予定月（YYYY-MM）。この月から契約月数の分だけ毎月入金がある */
+  firstPayment: string;
   /** 安定して入金がありそうな先か（②の予測に残す） */
   stable: boolean;
 }
@@ -188,13 +190,19 @@ export function contractMonths(o: Pick<Order, 'contractStart' | 'contractEnd'>):
   return a == null || b == null || b < a ? 0 : b - a + 1;
 }
 
+/** 入金予定の最後の月（初回入金予定月から契約月数分）。決まらないときは空 */
+export function lastPayment(o: Order): string {
+  const n = contractMonths(o);
+  return n && ymIndex(o.firstPayment) != null ? addMonths(o.firstPayment, n - 1) : '';
+}
+
 /** 査定期間の各月に、その受注の入金があるか */
 function activeMonths(o: Order, p: Period): boolean[] {
-  const a = ymIndex(o.contractStart);
-  const b = ymIndex(o.contractEnd);
+  const a = ymIndex(o.firstPayment);
+  const n = contractMonths(o);
   return periodMonths(p).map((ym) => {
     const i = ymIndex(ym)!;
-    return a != null && b != null && a <= i && i <= b;
+    return a != null && a <= i && i < a + n;
   });
 }
 

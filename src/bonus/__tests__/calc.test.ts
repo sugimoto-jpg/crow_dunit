@@ -11,6 +11,7 @@ import {
   monthLabel,
   addMonths,
   contractMonths,
+  lastPayment,
   monthsInPeriod,
   periodMonths,
   scenarioPayments,
@@ -23,7 +24,7 @@ import {
 } from '../calc';
 
 const order = (patch: Partial<Order>): Order => ({
-  id: 'x', company: 'A社', unit: '営業支援', share: 100, monthly: 100_000, orderMonth: '2026-06', contractStart: '2026-07', contractEnd: '2027-06', stable: true, ...patch,
+  id: 'x', company: 'A社', unit: '営業支援', share: 100, monthly: 100_000, orderMonth: '2026-06', contractStart: '2026-07', contractEnd: '2027-06', firstPayment: '2026-07', stable: true, ...patch,
 });
 const period = { periodYear: 2026, periodStart: 7 };
 const inputs = (patch: Partial<Inputs>): Inputs => ({ ...DEFAULT_INPUTS, ...patch });
@@ -41,10 +42,19 @@ describe('contract period', () => {
     expect(contractMonths(order({}))).toBe(12);
     expect(contractMonths(order({ contractEnd: '2026-06' }))).toBe(0);
     expect(monthsInPeriod(order({}), period)).toBe(6);
-    expect(monthsInPeriod(order({ contractStart: '2026-05', contractEnd: '2026-09' }), period)).toBe(3);
-    expect(monthsInPeriod(order({ contractStart: '2026-11', contractEnd: '2027-10' }), period)).toBe(2);
-    expect(monthsInPeriod(order({ contractStart: '2025-01', contractEnd: '2025-12' }), period)).toBe(0);
+    expect(monthsInPeriod(order({ contractStart: '2026-05', contractEnd: '2026-09', firstPayment: '2026-05' }), period)).toBe(3);
+    expect(monthsInPeriod(order({ contractStart: '2026-11', contractEnd: '2027-10', firstPayment: '2026-11' }), period)).toBe(2);
+    expect(monthsInPeriod(order({ contractStart: '2025-01', contractEnd: '2025-12', firstPayment: '2025-01' }), period)).toBe(0);
     expect(monthsInPeriod(order({ contractStart: '' }), period)).toBe(0);
+    expect(monthsInPeriod(order({ firstPayment: '' }), period)).toBe(0);
+  });
+  it('pays for the contract months starting from the first payment month', () => {
+    // 契約は7月〜9月の3ヶ月、入金は1ヶ月遅れの8月〜10月
+    const o = order({ contractStart: '2026-07', contractEnd: '2026-09', firstPayment: '2026-08' });
+    expect(lastPayment(o)).toBe('2026-10');
+    expect(expectedMonthly([o], period)).toEqual([0, 100_000, 100_000, 100_000, 0, 0]);
+    // 12月に初回入金なら、期間内は12月の1ヶ月分だけ
+    expect(monthsInPeriod(order({ firstPayment: '2026-12' }), period)).toBe(1);
   });
   it('handles month strings', () => {
     expect(addMonths('2026-11', 3)).toBe('2027-02');
@@ -61,7 +71,7 @@ describe('contract period', () => {
 describe('scenarios', () => {
   const orders = [
     order({ share: 50, monthly: 200_000, contractEnd: '2026-12' }), // 600,000
-    order({ share: 100, monthly: 100_000, contractStart: '2026-08', contractEnd: '2026-10', stable: false }), // 300,000
+    order({ share: 100, monthly: 100_000, contractStart: '2026-08', contractEnd: '2026-10', firstPayment: '2026-08', stable: false }), // 300,000
   ];
   it('sums expected and stable-only payments', () => {
     expect(expectedPayment(orders[0], period)).toBe(600_000);
