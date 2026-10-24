@@ -12,6 +12,8 @@ import {
   addMonths,
   actualMonthly,
   contractMonths,
+  contractTotal,
+  paymentCount,
   lastPayment,
   monthsInPeriod,
   periodMonths,
@@ -26,7 +28,7 @@ import {
 } from '../calc';
 
 const order = (patch: Partial<Order>): Order => ({
-  id: 'x', company: 'A社', unit: '営業支援', share: 100, monthly: 100_000, orderMonth: '2026-06', contractStart: '2026-07', contractEnd: '2027-06', firstPayment: '2026-07', stable: true, ...patch,
+  id: 'x', company: 'A社', unit: '営業支援', share: 100, monthly: 100_000, orderMonth: '2026-06', contractStart: '2026-07', contractEnd: '2027-06', firstPayment: '2026-07', plan: 'split', stable: true, ...patch,
 });
 const period = { periodYear: 2026, periodStart: 7 };
 const inputs = (patch: Partial<Inputs>): Inputs => ({ ...DEFAULT_INPUTS, ...patch });
@@ -49,6 +51,18 @@ describe('contract period', () => {
     expect(monthsInPeriod(order({ contractStart: '2025-01', contractEnd: '2025-12', firstPayment: '2025-01' }), period)).toBe(0);
     expect(monthsInPeriod(order({ contractStart: '' }), period)).toBe(0);
     expect(monthsInPeriod(order({ firstPayment: '' }), period)).toBe(0);
+  });
+  it('pays a lump sum once in the first payment month', () => {
+    // 12ヶ月契約を一括：単月10万 × 12 = 120万を初回入金予定月に1回
+    const lump = order({ plan: 'lump', share: 50, firstPayment: '2026-09' });
+    expect(contractTotal(lump)).toBe(1_200_000);
+    expect(paymentCount(lump)).toBe(1);
+    expect(lastPayment(lump)).toBe('2026-09');
+    expect(expectedMonthly([lump], period)).toEqual([0, 0, 600_000, 0, 0, 0]);
+    expect(monthsInPeriod(lump, period)).toBe(1);
+    // 初回入金予定月が査定期間の外なら、契約期間が重なっていても0
+    expect(expectedPayment(order({ plan: 'lump', firstPayment: '2026-06' }), period)).toBe(0);
+    expect(paymentCount(order({ plan: 'lump', contractEnd: '2026-01' }))).toBe(0);
   });
   it('pays for the contract months starting from the first payment month', () => {
     // 契約は7月〜9月の3ヶ月、入金は1ヶ月遅れの8月〜10月

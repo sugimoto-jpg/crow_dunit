@@ -2,6 +2,11 @@
 
 export const PERIOD_MONTHS = 6;
 
+/** 支払方法：分割（契約月数と同じ回数で毎月）／一括（契約総額を1回で） */
+export type PaymentPlan = 'split' | 'lump';
+
+export const PLAN_LABEL: Record<PaymentPlan, string> = { split: '分割', lump: '一括' };
+
 export interface Order {
   id: string;
   company: string;
@@ -16,7 +21,9 @@ export interface Order {
   contractStart: string;
   /** 契約期間の最後の月（YYYY-MM） */
   contractEnd: string;
-  /** 初回入金予定月（YYYY-MM）。この月から契約月数の分だけ毎月入金がある */
+  /** 支払方法。分割は契約月数と同じ回数で毎月、一括は契約総額を1回で入金 */
+  plan: PaymentPlan;
+  /** 初回入金予定月（YYYY-MM） */
   firstPayment: string;
   /** 安定して入金がありそうな先か（②の予測に残す） */
   stable: boolean;
@@ -198,36 +205,58 @@ export function contractMonths(o: Pick<Order, 'contractStart' | 'contractEnd'>):
   return a == null || b == null || b < a ? 0 : b - a + 1;
 }
 
-/** 入金予定の最後の月（初回入金予定月から契約月数分）。決まらないときは空 */
-export function lastPayment(o: Order): string {
+/** 契約総額（単月受注金額 × 契約月数・配分前） */
+export function contractTotal(o: Order): number {
+  return o.monthly * contractMonths(o);
+}
+
+/** 入金の回数（分割は契約月数、一括は1回）。契約期間が読めないときは 0 */
+export function paymentCount(o: Order): number {
   const n = contractMonths(o);
+  return n === 0 ? 0 : o.plan === 'lump' ? 1 : n;
+}
+
+/** 1回あたりの入金額（配分前） */
+function perPayment(o: Order): number {
+  return o.plan === 'lump' ? contractTotal(o) : o.monthly;
+}
+
+/** 入金予定の最後の月。決まらないときは空 */
+export function lastPayment(o: Order): string {
+  const n = paymentCount(o);
   return n && ymIndex(o.firstPayment) != null ? addMonths(o.firstPayment, n - 1) : '';
 }
 
 /** 査定期間の各月に、その受注の入金があるか */
-function activeMonths(o: Order, p: Period): boolean[] {
+function paidMonths(o: Order, p: Period): boolean[] {
   const a = ymIndex(o.firstPayment);
-  const n = contractMonths(o);
+  const n = paymentCount(o);
   return periodMonths(p).map((ym) => {
     const i = ymIndex(ym)!;
     return a != null && a <= i && i < a + n;
   });
 }
 
-/** 査定期間（6ヶ月）のうち、その受注の入金がある月数 */
+/** 査定期間の各月の、その受注の入金見込み（配分後） */
+function schedule(o: Order, p: Period): number[] {
+  const amount = (o.share / 100) * perPayment(o);
+  return paidMonths(o, p).map((paid) => (paid ? amount : 0));
+}
+
+/** 査定期間（6ヶ月）のうち、その受注の入金がある回数 */
 export function monthsInPeriod(o: Order, p: Period): number {
-  return activeMonths(o, p).filter(Boolean).length;
+  return paidMonths(o, p).filter(Boolean).length;
 }
 
 /** 受注履歴から見込む、その受注の期間内の入金額（配分後） */
 export function expectedPayment(o: Order, p: Period): number {
-  return (o.share / 100) * o.monthly * monthsInPeriod(o, p);
+  return sum(schedule(o, p));
 }
 
 /** 受注履歴から見込む月別の入金額（配分後） */
 export function expectedMonthly(orders: Order[], p: Period): number[] {
   const out = blank(0);
-  for (const o of orders) activeMonths(o, p).forEach((on, i) => on && (out[i] += (o.share / 100) * o.monthly));
+  for (const o of orders) schedule(o, p).forEach((v, i) => (out[i] += v));
   return out;
 }
 

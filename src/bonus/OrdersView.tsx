@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
-import { addMonths, contractMonths, expectedPayment, lastPayment, monthsInPeriod, periodMonths, ymFromIndex, ymLabel, type Order, type Rules } from './calc';
+import { PLAN_LABEL, addMonths, contractMonths, contractTotal, expectedPayment, lastPayment, monthsInPeriod, paymentCount, periodMonths, ymFromIndex, ymLabel, type Order, type PaymentPlan, type Rules } from './calc';
 import { Card, IconButton, NumIn, Stat, TextIn, inputCls, yen } from './ui';
 
 const ALL = 'all';
@@ -45,6 +45,7 @@ export function OrdersView({ orders, setOrders, rules }: Props) {
         orderMonth,
         contractStart: orderMonth,
         contractEnd: addMonths(orderMonth, DEFAULT_CONTRACT_MONTHS - 1),
+        plan: 'split',
         firstPayment: orderMonth,
         stable: true,
       },
@@ -83,7 +84,7 @@ export function OrdersView({ orders, setOrders, rules }: Props) {
           <p className="rounded-lg bg-slate-50 p-4 text-sm text-slate-500">{orders.length ? '条件に合う受注はありません。' : 'まだ受注がありません。「受注を追加」から入れてください。'}</p>
         ) : (
           <div className="-mx-4 overflow-x-auto px-4">
-            <table className="w-full min-w-[1440px] text-sm">
+            <table className="w-full min-w-[1560px] text-sm">
               <thead className="text-left text-xs text-slate-500">
                 <tr>
                   <th className="p-1 w-36">受注月</th>
@@ -93,6 +94,7 @@ export function OrdersView({ orders, setOrders, rules }: Props) {
                   <th className="p-1 w-32">単月受注金額</th>
                   <th className="p-1 w-72">契約期間（開始〜終了）</th>
                   <th className="p-1 w-16">月数</th>
+                  <th className="p-1 w-24">支払方法</th>
                   <th className="p-1 w-40">初回入金予定月</th>
                   <th className="p-1 w-28 text-right">期間内見込み</th>
                   <th className="p-1 w-12 text-center" title="②の予測に残す">安定</th>
@@ -130,12 +132,19 @@ export function OrdersView({ orders, setOrders, rules }: Props) {
                         <NumIn value={n || null} placeholder="—" onChange={(v) => v && v >= 1 && patch(o.id, { contractEnd: addMonths(o.contractStart, Math.floor(v) - 1) })} />
                       </td>
                       <td className="p-1">
+                        <select className={inputCls} value={o.plan} onChange={(e) => patch(o.id, { plan: e.target.value as PaymentPlan })}>
+                          {(Object.keys(PLAN_LABEL) as PaymentPlan[]).map((k) => (
+                            <option key={k} value={k}>{PLAN_LABEL[k]}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="p-1">
                         <MonthIn value={o.firstPayment} onChange={(v) => patch(o.id, { firstPayment: v })} />
-                        <div className="text-[10px] text-slate-400">{lastPayment(o) ? `${ymLabel(lastPayment(o))}まで入金予定` : '入金予定なし'}</div>
+                        <div className="text-[10px] text-slate-400">{paymentNote(o)}</div>
                       </td>
                       <td className="p-1 text-right tabular-nums">
                         {yen(expectedPayment(o, rules))}
-                        <div className="text-[10px] text-slate-400">{monthsInPeriod(o, rules)}ヶ月分</div>
+                        <div className="text-[10px] text-slate-400">{o.plan === 'lump' ? (monthsInPeriod(o, rules) ? '一括入金' : '期間外') : `${monthsInPeriod(o, rules)}回分`}</div>
                       </td>
                       <td className="p-1 text-center">
                         <input type="checkbox" className="size-4 accent-emerald-600" checked={o.stable} onChange={(e) => patch(o.id, { stable: e.target.checked })} />
@@ -156,11 +165,18 @@ export function OrdersView({ orders, setOrders, rules }: Props) {
           <Plus className="size-4" /> 受注を追加
         </button>
         <p className="mt-2 text-xs text-slate-500">
-          初回入金予定月から契約月数の分だけ、毎月 配分 × 単月受注金額 の入金があるとみなします。期間内見込みは、そのうち査定期間に入る月の分です。月数を変えると終了月が、開始月を変えると同じ月数のまま終了月が動きます。
+          支払方法が「分割」なら、初回入金予定月から契約月数と同じ回数、毎月 配分 × 単月受注金額 の入金があるとみなします。「一括」なら、初回入金予定月に契約総額（単月受注金額 × 契約月数）× 配分 を1回で入金とみなします。期間内見込みは、そのうち査定期間に入る分です。月数を変えると終了月が、開始月を変えると同じ月数のまま終了月が動きます。
         </p>
       </Card>
     </>
   );
+}
+
+/** 入金予定の説明（分割は最終月と回数、一括は総額） */
+function paymentNote(o: Order): string {
+  if (!paymentCount(o)) return '入金予定なし';
+  if (o.plan === 'lump') return `一括 ${yen(contractTotal(o))}円`;
+  return `${ymLabel(lastPayment(o))}まで ${paymentCount(o)}回`;
 }
 
 /** 年月の入力（YYYY-MM）。月の入力に対応しないブラウザでは「2026-07」のように打てる */
