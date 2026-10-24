@@ -27,6 +27,8 @@ export interface Order {
   firstPayment: string;
   /** 安定して入金がありそうな先か（②の予測に残す） */
   stable: boolean;
+  /** 受注一覧で隠しているか（表示だけの設定で、計算には入る） */
+  hidden?: boolean;
 }
 
 /** 判定の仕方：実数が目標以上で達成 / 目標以下で達成 / ●×を手で付ける */
