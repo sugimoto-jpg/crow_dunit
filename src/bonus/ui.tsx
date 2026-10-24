@@ -1,4 +1,5 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { caretAfter, formatNumber, formatTyped, parseNumber, significantBefore } from './numberFormat';
 
 export const yen = (n: number) => Math.round(n).toLocaleString('ja-JP');
 
@@ -38,31 +39,35 @@ export function TextIn({ value, onChange, placeholder }: { value: string; onChan
   return <input className={inputCls} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />;
 }
 
-/** カンマ付きで貼り付けても読める数値入力。空欄は null */
+/** 数値入力。打つそばから3桁ごとに「,」を付ける（例：1,000,000）。空欄は null */
 export function NumIn({ value, onChange, placeholder, className = '' }: { value: number | null; onChange: (v: number | null) => void; placeholder?: string; className?: string }) {
-  const [text, setText] = useState(value == null ? '' : String(value));
+  const [text, setText] = useState(formatNumber(value));
+  const ref = useRef<HTMLInputElement>(null);
+  const caret = useRef<number | null>(null);
   useEffect(() => {
-    setText((t) => (parse(t) === value ? t : value == null ? '' : String(value)));
+    setText((t) => (parseNumber(t) === value ? t : formatNumber(value)));
   }, [value]);
+  // 「,」が増減してもカーソルが同じ数字の後ろに残るようにする
+  useLayoutEffect(() => {
+    if (caret.current != null && ref.current === document.activeElement) ref.current?.setSelectionRange(caret.current, caret.current);
+    caret.current = null;
+  }, [text]);
   return (
     <input
+      ref={ref}
       className={`${inputCls} text-right tabular-nums ${className}`}
       inputMode="decimal"
       value={text}
       placeholder={placeholder}
       onChange={(e) => {
-        setText(e.target.value);
-        onChange(parse(e.target.value));
+        const raw = e.target.value;
+        const next = formatTyped(raw);
+        caret.current = caretAfter(next, significantBefore(raw, e.target.selectionStart ?? raw.length));
+        setText(next);
+        onChange(parseNumber(raw));
       }}
     />
   );
-}
-
-function parse(t: string): number | null {
-  const s = t.replace(/[,，\s円%]/g, '').replace(/[０-９．－]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0));
-  if (s === '') return null;
-  const n = Number(s);
-  return Number.isFinite(n) ? n : null;
 }
 
 export function IconButton({ label, onClick, disabled, danger, children }: { label: string; onClick: () => void; disabled?: boolean; danger?: boolean; children: ReactNode }) {
