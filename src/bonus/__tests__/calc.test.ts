@@ -28,16 +28,16 @@ describe('scenarios', () => {
 });
 
 describe('calculate', () => {
-  it('follows the review sheet: average → gross 66.5% → pool 20% → minus base → ×bonus rate', () => {
+  it('reproduces the review sheet: pool = average × (20% − management 1.2%)', () => {
     const s = { ...DEFAULT_SETTINGS, makeup: 500_000, baseSalary: 345_000, newBaseSalary: 348_500, lumpSum: 50_000, previousBonus: 103_431 };
     const b = calculate(1_638_450, s);
     expect(b.total).toBe(2_138_450);
-    expect(b.avgMonthly).toBeCloseTo(356_408.33, 2);
-    expect(b.grossProfit).toBeCloseTo(237_011.54, 2);
-    expect(b.pool).toBeCloseTo(47_402.31, 2);
-    expect(b.bonusTarget).toBeCloseTo(-297_597.69, 2);
-    expect(b.bonus).toBeCloseTo(-238_078.15, 2);
-    expect(b.lumpMonthly).toBeCloseTo(8_333.33, 2);
-    expect(b.totalSalary).toBeCloseTo(348_500 - 238_078.15 - 8_333.33, 1);
+    expect(Math.round(b.avgMonthly)).toBe(356_408);
+    expect(b.effectivePoolRate).toBeCloseTo(18.8, 10);
+    expect(Math.round(b.pool)).toBe(67_005);
+    expect(Math.round(b.bonusTarget)).toBe(-277_995);
+    expect(Math.round(b.bonus)).toBe(-222_396);
+    expect(Math.round(b.lumpMonthly)).toBe(8_333);
+    expect(Math.round(b.totalSalary)).toBe(117_770);
   });
 });

@@ -27,6 +27,8 @@ export interface Settings {
   grossRate: number;
   /** 賞与対象原資の率（%） */
   poolRate: number;
+  /** マネジメント報酬（%）。賞与対象原資の率から差し引く */
+  managementRate: number;
   /** 倍率・等級（査定表の参考値） */
   multiplier: number;
   grade: number;
@@ -46,6 +48,7 @@ export const DEFAULT_SETTINGS: Settings = {
   makeup: 0,
   grossRate: 66.5,
   poolRate: 20,
+  managementRate: 1.2,
   multiplier: 0,
   grade: 0,
   baseSalary: 0,
@@ -98,9 +101,11 @@ export interface Breakdown {
   total: number;
   /** 配分原資（平均月入金額） */
   avgMonthly: number;
-  /** 給与対象原資（平均月入金額×粗利率） */
+  /** 給与対象原資（平均月入金額×粗利率。参考値） */
   grossProfit: number;
-  /** 賞与対象原資（給与対象原資×賞与対象原資の率） */
+  /** 賞与対象原資に掛ける率（%）＝賞与対象原資の率−マネジメント報酬 */
+  effectivePoolRate: number;
+  /** 賞与対象原資（配分原資×実効率） */
   pool: number;
   /** 賞与対象金額（賞与対象原資−基本給） */
   bonusTarget: number;
@@ -118,7 +123,8 @@ export function calculate(payments: number, s: Settings): Breakdown {
   const total = payments + s.makeup;
   const avgMonthly = total / PERIOD_MONTHS;
   const grossProfit = avgMonthly * (s.grossRate / 100);
-  const pool = grossProfit * (s.poolRate / 100);
+  const effectivePoolRate = s.poolRate - s.managementRate;
+  const pool = avgMonthly * (effectivePoolRate / 100);
   const bonusTarget = pool - s.baseSalary;
   const bonus = bonusTarget * (s.bonusRate / 100);
   const lumpMonthly = s.lumpSum / PERIOD_MONTHS;
@@ -128,6 +134,7 @@ export function calculate(payments: number, s: Settings): Breakdown {
     total,
     avgMonthly,
     grossProfit,
+    effectivePoolRate,
     pool,
     bonusTarget,
     bonus,

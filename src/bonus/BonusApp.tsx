@@ -106,10 +106,11 @@ export function BonusApp() {
         </Card>
 
         <Card title="査定条件">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             <Field label="メイクアップ" value={settings.makeup} onChange={(v) => set('makeup', v)} />
             <Field label="粗利率(%)" value={settings.grossRate} onChange={(v) => set('grossRate', v)} />
             <Field label="賞与対象原資の率(%)" value={settings.poolRate} onChange={(v) => set('poolRate', v)} />
+            <Field label="マネジメント報酬(%)" value={settings.managementRate} onChange={(v) => set('managementRate', v)} />
             <Field label="賞与倍率(%)" value={settings.bonusRate} onChange={(v) => set('bonusRate', v)} />
             <Field label="倍率" value={settings.multiplier} onChange={(v) => set('multiplier', v)} />
             <Field label="等級" value={settings.grade} onChange={(v) => set('grade', v)} />
@@ -127,7 +128,7 @@ export function BonusApp() {
         </div>
 
         <p className="text-xs text-slate-500">
-          計算式：合計 = 半年間の入金額 + メイクアップ ／ 配分原資 = 合計 ÷ 6 ／ 給与対象原資 = 配分原資 × 粗利率 ／ 賞与対象原資 = 給与対象原資 × 賞与対象原資の率 ／
+          計算式：合計 = 半年間の入金額 + メイクアップ ／ 配分原資 = 合計 ÷ 6 ／ 賞与対象原資 = 配分原資 × (賞与対象原資の率 − マネジメント報酬) ／ 給与対象原資 = 配分原資 × 粗利率（参考） ／
           賞与対象金額 = 賞与対象原資 − 現在の基本給 ／ 賞与額 = 賞与対象金額 × 賞与倍率 ／ 総合計給与 = 査定後の基本給 + 賞与額 − 一時金 ÷ 6
         </p>
       </div>
@@ -141,8 +142,8 @@ function ScenarioCard({ title, note, b }: { title: string; note: string; b: Brea
     ['メイクアップ', b.makeup],
     ['合計', b.total],
     ['配分原資（平均月入金額）', b.avgMonthly],
-    ['給与対象原資（×粗利率）', b.grossProfit],
-    ['賞与対象原資', b.pool],
+    ['給与対象原資（×粗利率・参考）', b.grossProfit],
+    [`賞与対象原資（×${+b.effectivePoolRate.toFixed(2)}%）`, b.pool],
     ['賞与対象金額（−基本給）', b.bonusTarget],
     ['賞与額', b.bonus, true],
     ['前回賞与との差', b.bonusDiff],
