@@ -2,7 +2,26 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ChevronDown, Download, FileUp, Filter, ListFilter, Search, Table2, Trash2, X } from 'lucide-react';
 import { toCsv } from '../research/csv';
 import { Welcome } from './Loader';
-import { EMPTY, PRIORITY, applyFilters, byMonth, countBy, crossTab, describeDeals, emptyFilters, isMoneyName, parseDate, sumOf, type DealCol, type DealFilters } from './deals';
+import {
+  EMPTY,
+  PRIORITY,
+  applyFilters,
+  byMonth,
+  countBy,
+  crossTab,
+  dateOf,
+  dealRows,
+  describeDeals,
+  emptyFilters,
+  isMoneyName,
+  refDateCol,
+  stageCols,
+  stageFunnel,
+  sumOf,
+  type DealCol,
+  type DealFilters,
+  type StageCol,
+} from './deals';
 import { fmt, pct } from './format';
 import { loadJson, removeKey, saveJson } from './storage';
 import { parseGrid, toTable } from './table';
@@ -57,14 +76,16 @@ function validate(text: string): string | null {
 }
 
 function newSaved(source: string, sourceName: string): DealsSaved {
-  const cols = describeDeals(toTable(parseGrid(source), false));
+  const t = toTable(parseGrid(source), false);
+  const cols = describeDeals(t);
   const cats = cols.filter((c) => c.kind === 'category');
   const money = cols.find((c) => c.kind === 'number' && isMoneyName(c.name)) ?? cols.find((c) => c.kind === 'number');
   return {
     source,
     sourceName,
     importedAt: new Date().toLocaleString('ja-JP'),
-    filters: emptyFilters(cols.find((c) => c.kind === 'date')?.index ?? -1),
+    // 期間の絞り込みは、必ず入っている「情報更新日」などの年付きの日付を初期値にする
+    filters: emptyFilters(refDateCol(t, cols) >= 0 ? refDateCol(t, cols) : (cols.find((c) => c.kind === 'date')?.index ?? -1)),
     axis: cats[0]?.index ?? -1,
     axis2: -1,
     amountCol: money?.index ?? -1,
@@ -154,7 +175,10 @@ function Deals({ data, onChange, onReplace, onClear }: { data: DealsSaved; onCha
   const dates = cols.filter((c) => c.kind === 'date');
   const nums = cols.filter((c) => c.kind === 'number');
   const f = data.filters;
-  const rows = useMemo(() => applyFilters(table.rows, f), [table, f]);
+  const all = useMemo(() => dealRows(table, cols), [table, cols]);
+  const ref = useMemo(() => refDateCol(table, cols), [table, cols]);
+  const stages = useMemo(() => stageCols(cols), [cols]);
+  const rows = useMemo(() => applyFilters(all, f, -1, ref), [all, f, ref]);
   const setF = (p: Partial<DealFilters>) => onChange({ filters: { ...f, ...p } });
   const active = Object.values(f.cats).some((v) => v.length) || !!f.from || !!f.to || !!f.q;
 
@@ -170,7 +194,7 @@ function Deals({ data, onChange, onReplace, onClear }: { data: DealsSaved; onCha
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
         <span className="min-w-0 flex-1 truncate">
-          {data.sourceName}（{table.rows.length.toLocaleString()}件）・{data.importedAt} 取込
+          {data.sourceName}（{all.length.toLocaleString()}件）・{data.importedAt} 取込
         </span>
         <button onClick={onReplace} className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-semibold text-slate-600 hover:bg-slate-100">
           <FileUp className="h-3.5 w-3.5" />
@@ -195,7 +219,7 @@ function Deals({ data, onChange, onReplace, onClear }: { data: DealsSaved; onCha
       >
         <div className="space-y-3">
           {cats.slice(0, 6).map((c) => (
-            <FacetRow key={c.index} col={c} rows={table.rows} filters={f} onToggle={toggle} onClear={() => setF({ cats: { ...f.cats, [c.index]: [] } })} />
+            <FacetRow key={c.index} col={c} rows={all} refCol={ref} filters={f} onToggle={toggle} onClear={() => setF({ cats: { ...f.cats, [c.index]: [] } })} />
           ))}
           {cats.length > 6 && (
             <details className="group">
@@ -205,7 +229,7 @@ function Deals({ data, onChange, onReplace, onClear }: { data: DealsSaved; onCha
               </summary>
               <div className="mt-3 space-y-3">
                 {cats.slice(6).map((c) => (
-                  <FacetRow key={c.index} col={c} rows={table.rows} filters={f} onToggle={toggle} onClear={() => setF({ cats: { ...f.cats, [c.index]: [] } })} />
+                  <FacetRow key={c.index} col={c} rows={all} refCol={ref} filters={f} onToggle={toggle} onClear={() => setF({ cats: { ...f.cats, [c.index]: [] } })} />
                 ))}
               </div>
             </details>
@@ -235,7 +259,7 @@ function Deals({ data, onChange, onReplace, onClear }: { data: DealsSaved; onCha
       </Card>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Tile label="該当件数" value={`${rows.length.toLocaleString()}件`} note={`全${table.rows.length.toLocaleString()}件中 ${pct(table.rows.length ? rows.length / table.rows.length : null)}`} />
+        <Tile label="該当件数" value={`${rows.length.toLocaleString()}件`} note={`全${all.length.toLocaleString()}件中 ${pct(all.length ? rows.length / all.length : null)}`} />
         <Tile label={`${amountName ?? '金額'}の合計`} value={data.amountCol >= 0 ? fmt(total) : '—'} />
         <Tile label="1件あたり" value={data.amountCol >= 0 && rows.length ? fmt(total / rows.length) : '—'} />
         <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
@@ -252,8 +276,9 @@ function Deals({ data, onChange, onReplace, onClear }: { data: DealsSaved; onCha
       </div>
 
       <Breakdown data={data} onChange={onChange} cats={cats} rows={rows} onPick={toggle} />
-      {f.dateCol >= 0 && <Monthly rows={rows} dateCol={f.dateCol} amountCol={data.amountCol} dateName={cols.find((c) => c.index === f.dateCol)?.name ?? ''} />}
-      <RowsTable header={table.header} cols={cols} rows={rows} fileName={data.sourceName} />
+      {stages.length > 0 && <Stages rows={rows} stages={stages} axis={cats.some((c) => c.index === data.axis) ? data.axis : (cats[0]?.index ?? -1)} axisName={cols.find((c) => c.index === data.axis)?.name ?? ''} amountCol={data.amountCol} />}
+      {f.dateCol >= 0 && <Monthly rows={rows} dateCol={f.dateCol} refCol={ref} amountCol={data.amountCol} dateName={cols.find((c) => c.index === f.dateCol)?.name ?? ''} />}
+      <RowsTable header={table.header} cols={cols} rows={rows} refCol={ref} fileName={data.sourceName} />
     </div>
   );
 }
@@ -269,9 +294,23 @@ function Tile({ label, value, note }: { label: string; value: string; note?: str
 }
 
 /** 1列分の絞り込みボタン。件数は「この列以外の条件」で数える */
-function FacetRow({ col, rows, filters, onToggle, onClear }: { col: DealCol; rows: string[][]; filters: DealFilters; onToggle: (col: number, v: string) => void; onClear: () => void }) {
+function FacetRow({
+  col,
+  rows,
+  refCol,
+  filters,
+  onToggle,
+  onClear,
+}: {
+  col: DealCol;
+  rows: string[][];
+  refCol: number;
+  filters: DealFilters;
+  onToggle: (col: number, v: string) => void;
+  onClear: () => void;
+}) {
   const [all, setAll] = useState(false);
-  const counts = useMemo(() => countBy(applyFilters(rows, filters, col.index), col.index), [rows, filters, col.index]);
+  const counts = useMemo(() => countBy(applyFilters(rows, filters, col.index, refCol), col.index), [rows, filters, col.index, refCol]);
   const selected = filters.cats[col.index] ?? [];
   const count = new Map(counts.map((b) => [b.value, b.count]));
   // 選択中の値は、他の条件で0件になっても消さない
@@ -447,9 +486,9 @@ function Breakdown({ data, onChange, cats, rows, onPick }: { data: DealsSaved; o
   );
 }
 
-function Monthly({ rows, dateCol, amountCol, dateName }: { rows: string[][]; dateCol: number; amountCol: number; dateName: string }) {
+function Monthly({ rows, dateCol, refCol, amountCol, dateName }: { rows: string[][]; dateCol: number; refCol: number; amountCol: number; dateName: string }) {
   const [hover, setHover] = useState<number | null>(null);
-  const months = useMemo(() => byMonth(rows, dateCol, amountCol), [rows, dateCol, amountCol]);
+  const months = useMemo(() => byMonth(rows, dateCol, amountCol, refCol), [rows, dateCol, amountCol, refCol]);
   if (months.length < 2) return null;
   const W = 640;
   const H = 160;
@@ -483,7 +522,72 @@ function Monthly({ rows, dateCol, amountCol, dateName }: { rows: string[][]; dat
   );
 }
 
-function RowsTable({ header, cols, rows, fileName }: { header: string[]; cols: DealCol[]; rows: string[][]; fileName: string }) {
+/** 段階の日付が入っているかで、どこまで進んだかを数える（チャネル別・商材別の受注率） */
+function Stages({ rows, stages, axis, axisName, amountCol }: { rows: string[][]; stages: StageCol[]; axis: number; axisName: string; amountCol: number }) {
+  const [all, setAll] = useState(false);
+  const data = useMemo(() => stageFunnel(rows, stages, axis, amountCol), [rows, stages, axis, amountCol]);
+  const total = data[0];
+  const overall = (r: (typeof data)[number]) => (r.total ? r.reached[r.reached.length - 1] / r.total : null);
+  const rate = (r: (typeof data)[number], i: number) => {
+    const prev = i === 0 ? r.total : r.reached[i - 1];
+    return prev ? r.reached[i] / prev : null;
+  };
+  // 全体と比べて2割以上低い／高い率に色を付ける（10件未満は判定しない）
+  const tone = (v: number | null, base: number | null, n: number) =>
+    v === null || base === null || !base || n < 10 ? '' : v < base * 0.8 ? 'font-bold text-rose-600' : v > base * 1.2 ? 'font-bold text-emerald-700' : '';
+  const shown = all ? data : data.slice(0, 13);
+  return (
+    <Card title={`段階ごとの到達と受注率（${axisName}別）`} icon={<Table2 className="h-5 w-5 text-indigo-600" />}>
+      <p className="mb-2 text-xs text-slate-500">
+        「{stages.map((s) => s.label).join('」「')}」の日付が入っている案件を、その段階まで進んだ案件として数えます。率は1つ前の段階からの割合、軸は上の「内訳」で選んだ列です。
+      </p>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[720px] text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 text-left text-xs whitespace-nowrap text-slate-500">
+              <th className="py-2 pr-3">{axisName}</th>
+              <th className="py-2 pr-3 text-right">件数</th>
+              {stages.map((s) => (
+                <th key={s.index} className="py-2 pr-3 text-right">
+                  {s.label}
+                </th>
+              ))}
+              <th className="py-2 pr-3 text-right">件数→{stages[stages.length - 1].label}</th>
+              {amountCol >= 0 && <th className="py-2 text-right">{stages[stages.length - 1].label}金額</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {shown.map((r, k) => (
+              <tr key={r.value} className={`border-b border-slate-100 ${k === 0 ? 'bg-slate-50 font-bold' : ''}`}>
+                <td className="py-1.5 pr-3 whitespace-nowrap">{r.value}</td>
+                <td className="py-1.5 pr-3 text-right tabular-nums">{r.total.toLocaleString()}</td>
+                {stages.map((s, i) => {
+                  const cls = k ? tone(rate(r, i), rate(total, i), i ? r.reached[i - 1] : r.total) : '';
+                  return (
+                    <td key={s.index} className="py-1.5 pr-3 text-right whitespace-nowrap tabular-nums">
+                      {r.reached[i].toLocaleString()}
+                      <span className={`ml-1 text-xs ${cls || 'text-slate-500'}`}>{pct(rate(r, i))}</span>
+                    </td>
+                  );
+                })}
+                <td className={`py-1.5 pr-3 text-right tabular-nums ${k ? tone(overall(r), overall(total), r.total) : ''}`}>{pct(overall(r))}</td>
+                {amountCol >= 0 && <td className="py-1.5 text-right tabular-nums">{fmt(r.wonAmount)}</td>}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {data.length > 13 && (
+        <button onClick={() => setAll(!all)} className="mt-2 text-xs font-semibold text-indigo-600 hover:underline">
+          {all ? '閉じる' : `ほか${data.length - 13}件を表示`}
+        </button>
+      )}
+      <p className="mt-2 text-xs text-slate-500">赤字＝全体より2割以上低い、緑＝2割以上高い（10件未満は色を付けません）。</p>
+    </Card>
+  );
+}
+
+function RowsTable({ header, cols, rows, refCol, fileName }: { header: string[]; cols: DealCol[]; rows: string[][]; refCol: number; fileName: string }) {
   const [limit, setLimit] = useState(ROW_PAGE);
   const [sort, setSort] = useState<{ col: number; desc: boolean } | null>(null);
   const kind = (i: number) => cols.find((c) => c.index === i)?.kind;
@@ -492,7 +596,7 @@ function RowsTable({ header, cols, rows, fileName }: { header: string[]; cols: D
     const k = kind(sort.col);
     const key = (r: string[]) => {
       const v = r[sort.col] ?? '';
-      if (k === 'date') return parseDate(v) ?? -Infinity;
+      if (k === 'date') return dateOf(r, sort.col, refCol) ?? -Infinity;
       if (k === 'number') return Number(v.normalize('NFKC').replace(/[^\d.-]/g, '')) || 0;
       return v;
     };
@@ -502,7 +606,7 @@ function RowsTable({ header, cols, rows, fileName }: { header: string[]; cols: D
       const c = typeof x === 'number' && typeof y === 'number' ? x - y : String(x).localeCompare(String(y), 'ja');
       return sort.desc ? -c : c;
     });
-  }, [rows, sort]);
+  }, [rows, sort, refCol]);
 
   function download() {
     const blob = new Blob([toCsv(header, sorted)], { type: 'text/csv' });

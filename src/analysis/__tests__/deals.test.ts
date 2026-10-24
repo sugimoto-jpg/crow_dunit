@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EMPTY, applyFilters, byMonth, countBy, crossTab, describeDeals, emptyFilters, parseDate, sumOf } from '../deals';
+import { EMPTY, applyFilters, byMonth, countBy, crossTab, dateOf, dealRows, describeDeals, emptyFilters, parseDate, refDateCol, stageCols, stageFunnel, sumOf } from '../deals';
 import { parseGrid, toTable } from '../table';
 
 const TEXT = [
@@ -58,6 +58,42 @@ describe('deals', () => {
     expect(byMonth(t.rows, idx('アポ日')).map((b) => [b.value, b.count])).toEqual([
       ['2026-09', 2],
       ['2026-10', 3],
+    ]);
+  });
+});
+
+describe('yomi sheet columns', () => {
+  const TEXT2 = [
+    '現在\t情報更新日\t属性\tアポチャネル\t提案商材\t金額合計\t企業名\t"新規\n実施\n日時"\t"提案\n実施\n日時"\t"ヨミ\n実施\n日時"\t"受注\n日時"',
+    'キャンセル\t2025/07/11\t新規\t紹介\tSP\t¥1,950,000\tA社\t\t\t\t',
+    '受注\t2026/01/16\t新規\t紹介\tSP\t¥1,950,000\tB社\t12/08\t12/20\t01/10\t01/16',
+    'FB\t2026/10/20\tフォロー\tIS\tCM\t¥2,250,000\tC社\t10/01\t\t\t',
+    'FC\t2026/10/22\t新規\tIS\tSP\t¥0\tD社\t10/22\t10/22\t\t',
+    '\t\t\t\t\t¥0\t\t\t\t\t',
+  ].join('\n');
+  const t2 = toTable(parseGrid(TEXT2), false);
+  const c2 = describeDeals(t2);
+
+  it('drops formula-only rows and reads year-less dates against the update date', () => {
+    const rows = dealRows(t2, c2);
+    expect(rows).toHaveLength(4);
+    const ref = refDateCol(t2, c2);
+    expect(t2.header[ref]).toBe('情報更新日');
+    const visit = t2.header.findIndex((h) => h.startsWith('新規'));
+    // 12/08 は更新日 2026/01/16 に近い 2025年
+    expect(dateOf(rows[1], visit, ref)).toBe(new Date(2025, 11, 8).getTime());
+    expect(byMonth(rows, visit, -1, ref).map((b) => b.value)).toEqual(['2025-12', '2026-10']);
+  });
+
+  it('counts how far each deal got by channel', () => {
+    const rows = dealRows(t2, c2);
+    const stages = stageCols(c2);
+    expect(stages.map((s) => s.label)).toEqual(['新規実施', '提案実施', 'ヨミ実施', '受注']);
+    const f = stageFunnel(rows, stages, t2.header.indexOf('アポチャネル'), t2.header.indexOf('金額合計'));
+    expect(f.map((r) => [r.value, r.total, ...r.reached, r.wonAmount])).toEqual([
+      ['全体', 4, 3, 2, 1, 1, 1_950_000],
+      ['紹介', 2, 1, 1, 1, 1, 1_950_000],
+      ['IS', 2, 2, 1, 0, 0, 0],
     ]);
   });
 });

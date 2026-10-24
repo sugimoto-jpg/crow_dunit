@@ -62,6 +62,30 @@ export function describeDeals(t: Table): DealCol[] {
   return cols.sort((a, b) => rank(a) - rank(b));
 }
 
+/** 年の入った日付列（「情報更新日」を優先）。年なしの日付（07/09 など）の年を決める手がかりにする */
+export function refDateCol(t: Table, cols: DealCol[]): number {
+  const full = cols.filter((c) => c.kind === 'date' && t.rows.some((r) => /^\d{4}/.test(norm(r[c.index] ?? ''))));
+  return (full.find((c) => /更新日/.test(c.name)) ?? full[0])?.index ?? -1;
+}
+
+/** 行の日付。年がなければ、同じ行の基準日にいちばん近い年（前年・同年・翌年）にする */
+export function dateOf(r: string[], col: number, ref = -1): number | null {
+  const v = r[col] ?? '';
+  if (/^\d{4}/.test(norm(v)) || ref < 0) return parseDate(v);
+  const base = parseDate(r[ref] ?? '');
+  if (base === null) return parseDate(v);
+  const y = new Date(base).getFullYear();
+  const cands = [y - 1, y, y + 1].map((yy) => parseDate(v, yy)).filter((d): d is number => d !== null);
+  return cands.length ? cands.reduce((a, b) => (Math.abs(a - base) <= Math.abs(b - base) ? a : b)) : null;
+}
+
+/** 1行＝1案件として数える行。主要な列（現在・属性…・企業名）がすべて空の行は、数式だけが入った空行として除く */
+export function dealRows(t: Table, cols: DealCol[]): string[][] {
+  const key = cols.filter((c) => PRIORITY.includes(norm(c.name)) || /企業|会社|社名|顧客/.test(c.name)).map((c) => c.index);
+  if (!key.length) return t.rows;
+  return t.rows.filter((r) => key.some((i) => (r[i] ?? '').trim() !== ''));
+}
+
 export interface DealFilters {
   /** 列 index → 選んだ値（空なら絞り込まない） */
   cats: Record<number, string[]>;
@@ -77,7 +101,7 @@ export const emptyFilters = (dateCol = -1): DealFilters => ({ cats: {}, dateCol,
 const cell = (r: string[], i: number) => r[i] || EMPTY;
 
 /** except に列 index を渡すと、その列の条件だけ外して数える（各選択肢の横に出す件数用） */
-export function applyFilters(rows: string[][], f: DealFilters, except = -1): string[][] {
+export function applyFilters(rows: string[][], f: DealFilters, except = -1, ref = -1): string[][] {
   const from = f.from ? parseDate(f.from) : null;
   const to = f.to ? parseDate(f.to) : null;
   const q = norm(f.q).toLowerCase();
@@ -85,7 +109,7 @@ export function applyFilters(rows: string[][], f: DealFilters, except = -1): str
   return rows.filter((r) => {
     for (const [k, v] of cats) if (!v.includes(cell(r, +k))) return false;
     if (f.dateCol >= 0 && (from !== null || to !== null)) {
-      const d = parseDate(r[f.dateCol] ?? '');
+      const d = dateOf(r, f.dateCol, ref);
       if (d === null || (from !== null && d < from) || (to !== null && d > to)) return false;
     }
     if (q && !r.some((c) => norm(c).toLowerCase().includes(q))) return false;
@@ -132,10 +156,10 @@ export function sumOf(rows: string[][], col: number): number {
 }
 
 /** 月ごとの件数と金額（YYYY-MM の昇順） */
-export function byMonth(rows: string[][], dateCol: number, amountCol = -1): Bucket[] {
+export function byMonth(rows: string[][], dateCol: number, amountCol = -1, ref = -1): Bucket[] {
   const map = new Map<string, Bucket>();
   for (const r of rows) {
-    const d = parseDate(r[dateCol] ?? '');
+    const d = dateOf(r, dateCol, ref);
     if (d === null) continue;
     const dt = new Date(d);
     const value = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}`;
@@ -145,4 +169,55 @@ export function byMonth(rows: string[][], dateCol: number, amountCol = -1): Buck
     if (amountCol >= 0) b.amount += toNumber(r[amountCol] ?? '') ?? 0;
   }
   return [...map.values()].sort((a, b) => a.value.localeCompare(b.value));
+}
+
+/** 段階の日付列（入っていればその段階まで進んだ案件） */
+const STAGE_DEFS: { label: string; re: RegExp }[] = [
+  { label: '新規実施', re: /新規.*実施/ },
+  { label: '提案実施', re: /提案.*実施/ },
+  { label: 'ヨミ実施', re: /ヨミ.*実施/ },
+  { label: '受注', re: /受注.*日/ },
+];
+
+export interface StageCol {
+  label: string;
+  index: number;
+}
+
+export function stageCols(cols: DealCol[]): StageCol[] {
+  const found = STAGE_DEFS.flatMap((d) => {
+    const c = cols.find((x) => d.re.test(norm(x.name)));
+    return c ? [{ label: d.label, index: c.index }] : [];
+  });
+  return found.length >= 2 ? found : [];
+}
+
+export interface StageRow {
+  value: string;
+  total: number;
+  /** 各段階まで進んだ件数（stages と同じ順） */
+  reached: number[];
+  /** 最後の段階（受注）まで進んだ案件の金額 */
+  wonAmount: number;
+}
+
+function stageRow(value: string, rows: string[][], stages: StageCol[], amountCol: number): StageRow {
+  const reached = stages.map((s) => rows.filter((r) => (r[s.index] ?? '').trim() !== '').length);
+  const last = stages[stages.length - 1];
+  const won = rows.filter((r) => (r[last.index] ?? '').trim() !== '');
+  return { value, total: rows.length, reached, wonAmount: sumOf(won, amountCol) };
+}
+
+/** 段階ごとの到達件数。先頭は全体、続けて axis の値ごと（件数の多い順） */
+export function stageFunnel(rows: string[][], stages: StageCol[], axis = -1, amountCol = -1): StageRow[] {
+  const out = [stageRow('全体', rows, stages, amountCol)];
+  if (axis < 0) return out;
+  const groups = new Map<string, string[][]>();
+  for (const r of rows) {
+    const k = cell(r, axis);
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k)!.push(r);
+  }
+  for (const b of countBy(rows, axis)) out.push(stageRow(b.value, groups.get(b.value)!, stages, amountCol));
+  return out;
 }
