@@ -1,4 +1,4 @@
-import { DEFAULT_INPUTS, DEFAULT_RULES, type Inputs, type Order, type Rules } from './calc';
+import { DEFAULT_INPUTS, DEFAULT_RULES, PERIOD_MONTHS, type Inputs, type Mission, type MissionDef, type Order, type Rules } from './calc';
 
 const KEY = 'aidma-bonus-forecast-v2';
 const OLD_KEY = 'aidma-bonus-forecast-v1';
@@ -15,11 +15,11 @@ export function load(): Saved {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const d = JSON.parse(raw) as Partial<Saved>;
-      return {
+      return migrateMissions({
         orders: Array.isArray(d.orders) ? d.orders : [],
         rules: { ...DEFAULT_RULES, ...d.rules },
         inputs: { ...DEFAULT_INPUTS, ...d.inputs },
-      };
+      });
     }
     const old = localStorage.getItem(OLD_KEY);
     if (old) return fromV1(JSON.parse(old));
@@ -27,6 +27,32 @@ export function load(): Saved {
     /* 保存できない環境では毎回まっさらから始める */
   }
   return { orders: [], rules: DEFAULT_RULES, inputs: DEFAULT_INPUTS };
+}
+
+type OldRecord = { actual: (number | null)[]; target: (number | null)[] };
+
+/**
+ * ミッションが全月共通だった頃の保存内容を、月ごとのミッションに移す。
+ * 共通の項目はテンプレートにし、記録のある月にだけ項目を作る。
+ */
+function migrateMissions(d: Saved): Saved {
+  const rules = d.rules as Rules & { missions?: MissionDef[] };
+  const inputs = d.inputs as Inputs & { records?: Record<string, OldRecord> };
+  if (rules.missions) {
+    const { missions, ...rest } = rules;
+    d.rules = { ...rest, missionTemplate: missions };
+  }
+  if (inputs.records) {
+    const { records, ...rest } = inputs;
+    const defs = d.rules.missionTemplate;
+    const monthMissions = Array.from({ length: PERIOD_MONTHS }, (_, i): Mission[] =>
+      defs.some((m) => records[m.id]?.actual[i] != null)
+        ? defs.map((m) => ({ ...m, id: crypto.randomUUID(), target: records[m.id]?.target[i] ?? m.target, actual: records[m.id]?.actual[i] ?? null }))
+        : [],
+    );
+    d.inputs = { ...rest, monthMissions };
+  }
+  return d;
 }
 
 /** 旧版（設定と入力が1つだった頃）の保存内容を引き継ぐ。ミッションの●×は新しいミッション表で入れ直す */

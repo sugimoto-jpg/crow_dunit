@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { PERIOD_MONTHS, bonusRate, emptyRecord, judge, monthLabel, monthTarget, type Inputs, type MissionDef, type Rules } from './calc';
-import { Card, Field, NumIn, Stat } from './ui';
+import { ArrowDown, ArrowUp, Copy, FileDown, Plus, Trash2 } from 'lucide-react';
+import { PERIOD_MONTHS, bonusRate, cloneMissions, judge, monthLabel, tallyMonth, type Inputs, type Mission, type MissionKind, type Rules } from './calc';
+import { Card, Field, IconButton, NumIn, Stat, TextIn, inputCls } from './ui';
 
 const months = Array.from({ length: PERIOD_MONTHS }, (_, i) => i);
-const KIND_TEXT = { gte: '以上で達成', lte: '以下で達成', check: '●×で判定' } as const;
-const POLICY_TEXT = { exclude: '未入力のマスは数えずに', achieved: '未入力のマスは達成とみなして', failed: '未入力のマスは未達とみなして' } as const;
+const POLICY_TEXT = { exclude: '未入力の項目は数えずに', achieved: '未入力の項目は達成とみなして', failed: '未入力の項目は未達とみなして' } as const;
+const btnCls = 'inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm font-bold disabled:opacity-40';
 
 interface Props {
   rules: Rules;
@@ -17,26 +18,29 @@ export function MissionView({ rules, inputs, setInput, goSettings }: Props) {
   const [month, setMonth] = useState(0);
   const rate = bonusRate(rules, inputs);
   const label = (i: number) => monthLabel(rules.periodStart, i);
+  const list = inputs.monthMissions[month] ?? [];
 
-  /** ミッション m の i ヶ月目の実数・目標を書き換える */
-  const patch = (m: MissionDef, i: number, field: 'actual' | 'target', v: number | null) => {
-    const rec = inputs.records[m.id] ?? emptyRecord();
-    setInput('records', { ...inputs.records, [m.id]: { ...rec, [field]: months.map((j) => (j === i ? v : rec[field][j] ?? null)) } });
+  const setList = (ms: Mission[]) => setInput('monthMissions', months.map((i) => (i === month ? ms : inputs.monthMissions[i] ?? [])));
+  const patch = (id: string, p: Partial<Mission>) => setList(list.map((m) => (m.id === id ? { ...m, ...p } : m)));
+  const move = (k: number, d: -1 | 1) => {
+    const ms = [...list];
+    [ms[k], ms[k + d]] = [ms[k + d], ms[k]];
+    setList(ms);
   };
+  /** 項目を差し込む。すでに項目がある月は上書きの確認をする */
+  const fill = (ms: Mission[], what: string) => {
+    if (list.length && !confirm(`${label(month)}のミッションを${what}で置き換えますか？（入力した実数は消えます）`)) return;
+    setList(ms);
+  };
+  const prev = month > 0 ? inputs.monthMissions[month - 1] ?? [] : [];
 
   return (
     <>
-      <Card
-        title="月のミッション入力"
-        aside={
-          <button className="text-sm font-bold text-emerald-700 hover:underline" onClick={goSettings}>
-            項目・目標を設定で変える →
-          </button>
-        }
-      >
+      <Card title="月のミッション">
         <div className="mb-4 flex flex-wrap gap-1">
           {months.map((i) => {
-            const done = rules.missions.filter((m) => judge(m, inputs.records[m.id], i) != null).length;
+            const t = tallyMonth(inputs.monthMissions[i] ?? []);
+            const n = (inputs.monthMissions[i] ?? []).length;
             return (
               <button
                 key={i}
@@ -44,96 +48,129 @@ export function MissionView({ rules, inputs, setInput, goSettings }: Props) {
                 onClick={() => setMonth(i)}
               >
                 {label(i)}
-                <span className="ml-1 text-[10px] font-normal opacity-80">{done}/{rules.missions.length}</span>
+                <span className="ml-1 text-[10px] font-normal opacity-80">{n ? `${t.achieved}/${n}` : '未作成'}</span>
               </button>
             );
           })}
         </div>
 
+        <div className="mb-3 flex flex-wrap gap-2">
+          <button className={`${btnCls} border-slate-300 text-slate-700 hover:bg-slate-50`} disabled={!prev.length} onClick={() => fill(cloneMissions(prev), '前月の項目')}>
+            <Copy className="size-4" /> 前月（{month > 0 ? label(month - 1) : '—'}）の項目をコピー
+          </button>
+          <button className={`${btnCls} border-slate-300 text-slate-700 hover:bg-slate-50`} disabled={!rules.missionTemplate.length} onClick={() => fill(cloneMissions(rules.missionTemplate), 'テンプレート')}>
+            <FileDown className="size-4" /> テンプレートを読み込む
+          </button>
+          <button className="text-sm text-emerald-700 hover:underline" onClick={goSettings}>
+            テンプレートを編集 →
+          </button>
+        </div>
+
+        {list.length === 0 ? (
+          <p className="rounded-lg bg-slate-50 p-4 text-sm text-slate-500">
+            {label(month)}のミッションはまだありません。その月に出たミッションを「項目を追加」で入れるか、前月やテンプレートから読み込んで書き換えてください。
+          </p>
+        ) : (
+          <div className="-mx-4 overflow-x-auto px-4">
+            <table className="w-full min-w-[900px] text-sm">
+              <thead className="text-left text-xs text-slate-500">
+                <tr>
+                  <th className="p-1">ミッション</th>
+                  <th className="p-1 w-36">判定の仕方</th>
+                  <th className="p-1 w-32">目標</th>
+                  <th className="p-1 w-16">単位</th>
+                  <th className="p-1 w-44">実数</th>
+                  <th className="p-1 w-14 text-center">判定</th>
+                  <th className="p-1 w-24" />
+                </tr>
+              </thead>
+              <tbody>
+                {list.map((m, k) => {
+                  const numeric = m.kind !== 'check';
+                  return (
+                    <tr key={m.id} className="border-t border-slate-100">
+                      <td className="p-1"><TextIn value={m.name} onChange={(v) => patch(m.id, { name: v })} placeholder="ミッション名" /></td>
+                      <td className="p-1">
+                        <select className={inputCls} value={m.kind} onChange={(e) => patch(m.id, { kind: e.target.value as MissionKind, actual: null })}>
+                          <option value="gte">実数が目標以上</option>
+                          <option value="lte">実数が目標以下</option>
+                          <option value="check">●×を手で付ける</option>
+                        </select>
+                      </td>
+                      <td className="p-1">{numeric ? <NumIn value={m.target} placeholder="目標" onChange={(v) => patch(m.id, { target: v })} /> : <span className="text-xs text-slate-400">—</span>}</td>
+                      <td className="p-1">{numeric && <TextIn value={m.unit} onChange={(v) => patch(m.id, { unit: v })} placeholder="件・%" />}</td>
+                      <td className="p-1">
+                        {numeric ? (
+                          <NumIn value={m.actual} placeholder="未入力" onChange={(v) => patch(m.id, { actual: v })} />
+                        ) : (
+                          <div className="flex gap-1">
+                            {([1, 0] as const).map((v) => (
+                              <button
+                                key={v}
+                                className={`flex-1 rounded-md border px-2 py-1 text-sm font-bold ${m.actual === v ? (v ? 'border-emerald-600 bg-emerald-50 text-emerald-700' : 'border-rose-400 bg-rose-50 text-rose-600') : 'border-slate-300 text-slate-400'}`}
+                                onClick={() => patch(m.id, { actual: m.actual === v ? null : v })}
+                              >
+                                {v ? '● 達成' : '× 未達'}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </td>
+                      <td className="p-1 text-center">
+                        <Mark result={judge(m)} />
+                        {numeric && m.target == null && <div className="text-[10px] text-amber-600">目標なし</div>}
+                      </td>
+                      <td className="p-1">
+                        <div className="flex justify-end gap-0.5 text-slate-400">
+                          <IconButton label="上へ" disabled={k === 0} onClick={() => move(k, -1)}><ArrowUp className="size-4" /></IconButton>
+                          <IconButton label="下へ" disabled={k === list.length - 1} onClick={() => move(k, 1)}><ArrowDown className="size-4" /></IconButton>
+                          <IconButton label="削除" danger onClick={() => setList(list.filter((x) => x.id !== m.id))}><Trash2 className="size-4" /></IconButton>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <button
+          className={`${btnCls} mt-3 border-emerald-600 text-emerald-700 hover:bg-emerald-50`}
+          onClick={() => setList([...list, { id: crypto.randomUUID(), name: '', kind: 'gte', target: null, unit: '', actual: null }])}
+        >
+          <Plus className="size-4" /> 項目を追加
+        </button>
+      </Card>
+
+      <Card title="半年のミッション達成状況">
         <div className="-mx-4 overflow-x-auto px-4">
-          <table className="w-full min-w-[640px] text-sm">
-            <thead className="text-left text-xs text-slate-500">
+          <table className="w-full min-w-[560px] text-sm">
+            <thead className="text-xs text-slate-500">
               <tr>
-                <th className="p-1">ミッション</th>
-                <th className="p-1 w-36">目標</th>
-                <th className="p-1 w-40">実数</th>
-                <th className="p-1 w-20 text-center">判定</th>
+                <th className="p-1 text-left">月</th>
+                <th className="p-1 text-right">項目数</th>
+                <th className="p-1 text-right">達成 ●</th>
+                <th className="p-1 text-right">未達 ×</th>
+                <th className="p-1 text-right">未入力</th>
+                <th className="p-1 text-right">達成率</th>
               </tr>
             </thead>
             <tbody>
-              {rules.missions.map((m) => {
-                const rec = inputs.records[m.id];
-                const result = judge(m, rec, month);
+              {months.map((i) => {
+                const ms = inputs.monthMissions[i] ?? [];
+                const t = tallyMonth(ms);
+                const judged = t.achieved + t.failed;
                 return (
-                  <tr key={m.id} className="border-t border-slate-100">
-                    <td className="p-1">
-                      {m.name}
-                      <div className="text-[10px] text-slate-400">{KIND_TEXT[m.kind]}</div>
-                    </td>
-                    <td className="p-1">
-                      {m.kind === 'check' ? (
-                        <span className="text-xs text-slate-400">—</span>
-                      ) : (
-                        <div className="flex items-center gap-1">
-                          <NumIn value={rec?.target[month] ?? null} placeholder={m.target == null ? '目標を入力' : String(m.target)} onChange={(v) => patch(m, month, 'target', v)} />
-                          <span className="text-xs text-slate-500">{m.unit}</span>
-                        </div>
-                      )}
-                    </td>
-                    <td className="p-1">
-                      {m.kind === 'check' ? (
-                        <div className="flex gap-1">
-                          {([1, 0] as const).map((v) => (
-                            <button
-                              key={v}
-                              className={`flex-1 rounded-md border px-2 py-1 text-sm font-bold ${rec?.actual[month] === v ? (v ? 'border-emerald-600 bg-emerald-50 text-emerald-700' : 'border-rose-400 bg-rose-50 text-rose-600') : 'border-slate-300 text-slate-400'}`}
-                              onClick={() => patch(m, month, 'actual', rec?.actual[month] === v ? null : v)}
-                            >
-                              {v ? '● 達成' : '× 未達'}
-                            </button>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-1">
-                          <NumIn value={rec?.actual[month] ?? null} placeholder="未入力" onChange={(v) => patch(m, month, 'actual', v)} />
-                          <span className="text-xs text-slate-500">{m.unit}</span>
-                        </div>
-                      )}
-                    </td>
-                    <td className="p-1 text-center">
-                      <Mark result={result} />
-                      {result == null && m.kind !== 'check' && monthTarget(m, rec, month) == null && <div className="text-[10px] text-amber-600">目標なし</div>}
-                    </td>
+                  <tr key={i} className={`cursor-pointer border-t border-slate-100 hover:bg-slate-50 ${month === i ? 'bg-emerald-50/50' : ''}`} onClick={() => setMonth(i)}>
+                    <td className="p-1 font-bold">{label(i)}</td>
+                    <td className="p-1 text-right tabular-nums">{ms.length || <span className="text-slate-400">未作成</span>}</td>
+                    <td className="p-1 text-right tabular-nums text-emerald-700">{t.achieved}</td>
+                    <td className="p-1 text-right tabular-nums text-rose-600">{t.failed}</td>
+                    <td className="p-1 text-right tabular-nums text-slate-400">{t.missing}</td>
+                    <td className="p-1 text-right tabular-nums">{judged ? `${Math.round((t.achieved / judged) * 100)}%` : '—'}</td>
                   </tr>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-
-      <Card title="ミッション達成状況">
-        <div className="-mx-4 overflow-x-auto px-4">
-          <table className="w-full min-w-[640px] text-sm">
-            <thead className="text-xs text-slate-500">
-              <tr>
-                <th className="p-1 text-left">ミッション</th>
-                {months.map((i) => <th key={i} className="p-1 w-14 text-center">{label(i)}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {rules.missions.map((m) => (
-                <tr key={m.id} className="border-t border-slate-100">
-                  <td className="p-1">{m.name}</td>
-                  {months.map((i) => (
-                    <td key={i} className="p-1 text-center">
-                      <button onClick={() => setMonth(i)} aria-label={`${m.name} ${label(i)}`}>
-                        <Mark result={judge(m, inputs.records[m.id], i)} />
-                      </button>
-                    </td>
-                  ))}
-                </tr>
-              ))}
             </tbody>
           </table>
         </div>
@@ -149,8 +186,8 @@ export function MissionView({ rules, inputs, setInput, goSettings }: Props) {
         <p className="mt-2 text-sm">
           賞与倍率 <span className="text-lg font-bold text-emerald-700">{rate.rate}%</span>
           <span className="ml-2 text-xs text-slate-500">
-            ＝ {POLICY_TEXT[rules.missingPolicy]}達成率を出し、{rules.roundingUnit > 0 ? `${rules.roundingUnit}%単位に四捨五入` : '四捨五入せず'} − 反省文 × {rules.reflectionPenalty}%
-            {rate.missing > 0 && `（未入力 ${rate.missing}マス）`}
+            ＝ 6ヶ月分の全ミッションのうち{POLICY_TEXT[rules.missingPolicy]}達成率を出し、{rules.roundingUnit > 0 ? `${rules.roundingUnit}%単位に四捨五入` : '四捨五入せず'} − 反省文 × {rules.reflectionPenalty}%
+            {rate.missing > 0 && `（未入力 ${rate.missing}項目）`}
           </span>
         </p>
       </Card>

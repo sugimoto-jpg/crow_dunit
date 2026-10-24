@@ -21,16 +21,23 @@ export interface Order {
 /** 判定の仕方：実数が目標以上で達成 / 目標以下で達成 / ●×を手で付ける */
 export type MissionKind = 'gte' | 'lte' | 'check';
 
+/** ミッションの定義（設定のテンプレートに使う） */
 export interface MissionDef {
   id: string;
   name: string;
   kind: MissionKind;
-  /** 毎月の標準の目標値（月ごとに上書きできる） */
+  /** 目標値 */
   target: number | null;
   unit: string;
 }
 
-/** 未入力の月をどう数えるか */
+/** ある月のミッション。ミッションは毎月変わるので、月ごとに項目・目標・実数を持つ */
+export interface Mission extends MissionDef {
+  /** 実数（チェック型は 1=● / 0=×）。未入力は null */
+  actual: number | null;
+}
+
+/** 実数が未入力のミッションをどう数えるか */
 export type MissingPolicy = 'exclude' | 'achieved' | 'failed';
 
 /** 設定シート：会社のルール。あとから変えられる */
@@ -48,15 +55,10 @@ export interface Rules {
   /** 反省文1枚あたりの減額（%） */
   reflectionPenalty: number;
   missingPolicy: MissingPolicy;
-  missions: MissionDef[];
+  /** 新しい月に読み込むミッションのテンプレート */
+  missionTemplate: MissionDef[];
   /** 他商材の名前 */
   addonNames: string[];
-}
-
-/** ミッション表の1項目分の記録。月ごとの実数（チェック型は 1=● / 0=×）と目標の上書き */
-export interface MissionRecord {
-  actual: (number | null)[];
-  target: (number | null)[];
 }
 
 /** 今期の入力 */
@@ -65,7 +67,8 @@ export interface Inputs {
   actualMonthly: (number | null)[];
   /** 他商材の半年分の入金（addonNames と同じ並び） */
   addons: number[];
-  records: Record<string, MissionRecord>;
+  /** 月ごとのミッション（6ヶ月分） */
+  monthMissions: Mission[][];
   /** 反省文の枚数 */
   reflections: number;
   /** 賞与倍率を手入力で決めるとき（%）。null ならミッション表から計算 */
@@ -92,7 +95,7 @@ export const DEFAULT_RULES: Rules = {
   roundingUnit: 10,
   reflectionPenalty: 5,
   missingPolicy: 'exclude',
-  missions: [
+  missionTemplate: [
     def('m1', '①売上ミッション達成', 'gte', null, '円'),
     def('m2', '②12営業日以内 新規アポ達成'),
     def('m3', '③5営業日以内 フォローアポ達成'),
@@ -110,7 +113,7 @@ export const DEFAULT_RULES: Rules = {
 export const DEFAULT_INPUTS: Inputs = {
   actualMonthly: blank(null),
   addons: [0, 0, 0, 0],
-  records: {},
+  monthMissions: Array.from({ length: PERIOD_MONTHS }, () => []),
   reflections: 0,
   bonusRateOverride: null,
   grade: 0,
@@ -120,8 +123,9 @@ export const DEFAULT_INPUTS: Inputs = {
   lumpSum: 0,
 };
 
-export function emptyRecord(): MissionRecord {
-  return { actual: blank(null), target: blank(null) };
+/** テンプレートや前月の項目から、その月のミッションを作る（実数は空にする） */
+export function cloneMissions(defs: MissionDef[]): Mission[] {
+  return defs.map(({ name, kind, target, unit }) => ({ id: crypto.randomUUID(), name, kind, target, unit, actual: null }));
 }
 
 export type ScenarioId = 'orders' | 'stable' | 'actual';
@@ -179,19 +183,29 @@ export function scenarioPayments(orders: Order[], inputs: Inputs, id: ScenarioId
   }
 }
 
-/** その月の目標値（月ごとの上書きがなければ標準の目標） */
-export function monthTarget(m: MissionDef, rec: MissionRecord | undefined, i: number): number | null {
-  return rec?.target[i] ?? m.target;
+/** ミッションを達成したか。判定できないとき（未入力・目標なし）は null */
+export function judge(m: Mission): boolean | null {
+  if (m.actual == null) return null;
+  if (m.kind === 'check') return m.actual > 0;
+  if (m.target == null) return null;
+  return m.kind === 'gte' ? m.actual >= m.target : m.actual <= m.target;
 }
 
-/** その月のミッションを達成したか。判定できないとき（未入力・目標なし）は null */
-export function judge(m: MissionDef, rec: MissionRecord | undefined, i: number): boolean | null {
-  const actual = rec?.actual[i] ?? null;
-  if (actual == null) return null;
-  if (m.kind === 'check') return actual > 0;
-  const target = monthTarget(m, rec, i);
-  if (target == null) return null;
-  return m.kind === 'gte' ? actual >= target : actual <= target;
+export interface MonthTally {
+  achieved: number;
+  failed: number;
+  missing: number;
+}
+
+export function tallyMonth(missions: Mission[]): MonthTally {
+  const t = { achieved: 0, failed: 0, missing: 0 };
+  for (const m of missions) {
+    const r = judge(m);
+    if (r == null) t.missing++;
+    else if (r) t.achieved++;
+    else t.failed++;
+  }
+  return t;
 }
 
 export interface BonusRate {
@@ -214,16 +228,11 @@ export function bonusRate(rules: Rules, inputs: Inputs): BonusRate {
   let achieved = 0;
   let total = 0;
   let missing = 0;
-  for (const m of rules.missions) {
-    for (let i = 0; i < PERIOD_MONTHS; i++) {
-      const r = judge(m, inputs.records[m.id], i);
-      if (r == null) {
-        missing++;
-        if (rules.missingPolicy === 'exclude') continue;
-        if (rules.missingPolicy === 'achieved') achieved++;
-      } else if (r) achieved++;
-      total++;
-    }
+  for (const missions of inputs.monthMissions.slice(0, PERIOD_MONTHS)) {
+    const t = tallyMonth(missions);
+    achieved += t.achieved + (rules.missingPolicy === 'achieved' ? t.missing : 0);
+    total += t.achieved + t.failed + (rules.missingPolicy === 'exclude' ? 0 : t.missing);
+    missing += t.missing;
   }
   const multiplier = total ? Math.round((achieved / total) * 100) : 0;
   const rounded = rules.roundingUnit > 0 ? Math.round(multiplier / rules.roundingUnit) * rules.roundingUnit : multiplier;

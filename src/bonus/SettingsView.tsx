@@ -1,7 +1,6 @@
-import type { ReactNode } from 'react';
 import { ArrowDown, ArrowUp, Plus, RotateCcw, Trash2 } from 'lucide-react';
 import { DEFAULT_RULES, type MissingPolicy, type MissionDef, type MissionKind, type Rules } from './calc';
-import { Card, Field, NumIn, TextIn, inputCls } from './ui';
+import { Card, Field, IconButton, NumIn, TextIn, inputCls } from './ui';
 
 interface Props {
   rules: Rules;
@@ -10,11 +9,11 @@ interface Props {
 }
 
 export function SettingsView({ rules, setRule, reset }: Props) {
-  const setMission = (id: string, patch: Partial<MissionDef>) => setRule('missions', rules.missions.map((m) => (m.id === id ? { ...m, ...patch } : m)));
+  const setMission = (id: string, patch: Partial<MissionDef>) => setRule('missionTemplate', rules.missionTemplate.map((m) => (m.id === id ? { ...m, ...patch } : m)));
   const move = (k: number, d: -1 | 1) => {
-    const ms = [...rules.missions];
+    const ms = [...rules.missionTemplate];
     [ms[k], ms[k + d]] = [ms[k + d], ms[k]];
-    setRule('missions', ms);
+    setRule('missionTemplate', ms);
   };
 
   return (
@@ -42,31 +41,31 @@ export function SettingsView({ rules, setRule, reset }: Props) {
           <Field label="四捨五入の単位(%・0で四捨五入しない)" value={rules.roundingUnit} onChange={(v) => setRule('roundingUnit', v)} />
           <Field label="反省文1枚あたりの減額(%)" value={rules.reflectionPenalty} onChange={(v) => setRule('reflectionPenalty', v)} />
           <label className="block text-xs text-slate-500">
-            未入力の月の扱い
+            実数が未入力のミッションの扱い
             <select className={inputCls} value={rules.missingPolicy} onChange={(e) => setRule('missingPolicy', e.target.value as MissingPolicy)}>
-              <option value="exclude">数えない（入力済みの月だけで達成率）</option>
+              <option value="exclude">数えない（判定できたものだけで達成率）</option>
               <option value="achieved">達成とみなす</option>
               <option value="failed">未達とみなす</option>
             </select>
           </label>
         </div>
-        <p className="mt-2 text-xs text-slate-500">賞与倍率 = 達成数 ÷ マスの数 を四捨五入の単位で丸め − 反省文の枚数 × 減額。期の途中は「数えない」にすると、ここまでの達成ペースで予測できます。</p>
+        <p className="mt-2 text-xs text-slate-500">賞与倍率 = 達成数 ÷ マスの数 を四捨五入の単位で丸め − 反省文の枚数 × 減額。マスの数は6ヶ月分のミッションの合計です（月ごとに数が違っても大丈夫）。ミッションを作っていない月は数えません。</p>
       </Card>
 
-      <Card title="ミッション項目">
+      <Card title="ミッションのテンプレート">
         <div className="-mx-4 overflow-x-auto px-4">
           <table className="w-full min-w-[720px] text-sm">
             <thead className="text-left text-xs text-slate-500">
               <tr>
                 <th className="p-1">項目名</th>
                 <th className="p-1 w-36">判定の仕方</th>
-                <th className="p-1 w-36">毎月の目標</th>
+                <th className="p-1 w-36">目標</th>
                 <th className="p-1 w-20">単位</th>
                 <th className="p-1 w-24" />
               </tr>
             </thead>
             <tbody>
-              {rules.missions.map((m, k) => (
+              {rules.missionTemplate.map((m, k) => (
                 <tr key={m.id} className="border-t border-slate-100">
                   <td className="p-1"><TextIn value={m.name} onChange={(v) => setMission(m.id, { name: v })} /></td>
                   <td className="p-1">
@@ -83,8 +82,8 @@ export function SettingsView({ rules, setRule, reset }: Props) {
                   <td className="p-1">
                     <div className="flex justify-end gap-0.5 text-slate-400">
                       <IconButton label="上へ" disabled={k === 0} onClick={() => move(k, -1)}><ArrowUp className="size-4" /></IconButton>
-                      <IconButton label="下へ" disabled={k === rules.missions.length - 1} onClick={() => move(k, 1)}><ArrowDown className="size-4" /></IconButton>
-                      <IconButton label="削除" danger onClick={() => confirm(`「${m.name}」を削除しますか？`) && setRule('missions', rules.missions.filter((x) => x.id !== m.id))}>
+                      <IconButton label="下へ" disabled={k === rules.missionTemplate.length - 1} onClick={() => move(k, 1)}><ArrowDown className="size-4" /></IconButton>
+                      <IconButton label="削除" danger onClick={() => confirm(`「${m.name}」を削除しますか？`) && setRule('missionTemplate', rules.missionTemplate.filter((x) => x.id !== m.id))}>
                         <Trash2 className="size-4" />
                       </IconButton>
                     </div>
@@ -96,11 +95,11 @@ export function SettingsView({ rules, setRule, reset }: Props) {
         </div>
         <button
           className="mt-3 inline-flex items-center gap-1 rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-bold text-emerald-700 hover:bg-emerald-50"
-          onClick={() => setRule('missions', [...rules.missions, { id: crypto.randomUUID(), name: '', kind: 'gte', target: null, unit: '' }])}
+          onClick={() => setRule('missionTemplate', [...rules.missionTemplate, { id: crypto.randomUUID(), name: '', kind: 'gte', target: null, unit: '' }])}
         >
           <Plus className="size-4" /> 項目を追加
         </button>
-        <p className="mt-2 text-xs text-slate-500">毎月の目標を空欄にすると、ミッション表で月ごとに目標を入れられます（売上目標など）。目標を入れていても、月ごとに上書きできます。</p>
+        <p className="mt-2 text-xs text-slate-500">ミッションは毎月変わるので、ここはひな形です。ミッション表で「テンプレートを読み込む」と、その月にこの項目が入り、月ごとに項目・目標を書き換えられます。</p>
       </Card>
 
       <Card title="他商材">
@@ -130,19 +129,5 @@ export function SettingsView({ rules, setRule, reset }: Props) {
         <RotateCcw className="size-4" /> 設定を初期値に戻す
       </button>
     </>
-  );
-}
-
-function IconButton({ label, onClick, disabled, danger, children }: { label: string; onClick: () => void; disabled?: boolean; danger?: boolean; children: ReactNode }) {
-  return (
-    <button
-      className={`rounded p-1 disabled:opacity-30 ${danger ? 'hover:bg-rose-50 hover:text-rose-600' : 'hover:bg-slate-100 hover:text-slate-700'}`}
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={label}
-      title={label}
-    >
-      {children}
-    </button>
   );
 }
