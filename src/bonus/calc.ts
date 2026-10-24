@@ -18,35 +18,58 @@ export interface Order {
   stable: boolean;
 }
 
-/** 受注一覧の外で入る他商材の入金（マーケメディア・メイクプイなど） */
-export interface Addon {
+/** 判定の仕方：実数が目標以上で達成 / 目標以下で達成 / ●×を手で付ける */
+export type MissionKind = 'gte' | 'lte' | 'check';
+
+export interface MissionDef {
+  id: string;
   name: string;
-  amount: number;
+  kind: MissionKind;
+  /** 毎月の標準の目標値（月ごとに上書きできる） */
+  target: number | null;
+  unit: string;
 }
 
-export interface Mission {
-  name: string;
-  /** 月ごとの達成（●）。査定期間の6ヶ月分 */
-  done: boolean[];
-}
+/** 未入力の月をどう数えるか */
+export type MissingPolicy = 'exclude' | 'achieved' | 'failed';
 
-export interface Settings {
+/** 設定シート：会社のルール。あとから変えられる */
+export interface Rules {
   /** 査定期間の最初の月（下半期なら7） */
   periodStart: number;
-  addons: Addon[];
-  /** 実際の月別入金額（配分後）。未入力の月は null */
-  actualMonthly: (number | null)[];
-  missions: Mission[];
-  /** 反省文の枚数（1枚につき賞与倍率 −5%） */
-  reflections: number;
-  /** 賞与倍率を手入力で決めるとき（%）。null ならミッション達成から計算 */
-  bonusRateOverride: number | null;
-  /** 粗利率（%・参考表示） */
-  grossRate: number;
   /** 賞与対象原資の率（%） */
   poolRate: number;
   /** マネジメント報酬（%）。賞与対象原資の率から差し引く */
   managementRate: number;
+  /** 粗利率（%・参考表示） */
+  grossRate: number;
+  /** 賞与倍率を何%単位に四捨五入するか（0なら四捨五入しない） */
+  roundingUnit: number;
+  /** 反省文1枚あたりの減額（%） */
+  reflectionPenalty: number;
+  missingPolicy: MissingPolicy;
+  missions: MissionDef[];
+  /** 他商材の名前 */
+  addonNames: string[];
+}
+
+/** ミッション表の1項目分の記録。月ごとの実数（チェック型は 1=● / 0=×）と目標の上書き */
+export interface MissionRecord {
+  actual: (number | null)[];
+  target: (number | null)[];
+}
+
+/** 今期の入力 */
+export interface Inputs {
+  /** 実際の月別入金額（配分後）。未入力の月は null */
+  actualMonthly: (number | null)[];
+  /** 他商材の半年分の入金（addonNames と同じ並び） */
+  addons: number[];
+  records: Record<string, MissionRecord>;
+  /** 反省文の枚数 */
+  reflections: number;
+  /** 賞与倍率を手入力で決めるとき（%）。null ならミッション表から計算 */
+  bonusRateOverride: number | null;
   grade: number;
   /** 現在の基本給 */
   baseSalary: number;
@@ -58,35 +81,48 @@ export interface Settings {
   lumpSum: number;
 }
 
-export const MISSION_NAMES = [
-  '①売上ミッション達成',
-  '②12営業日以内 新規アポ達成',
-  '③5営業日以内 フォローアポ達成',
-  '④有効商談率の達成（51%）',
-  '⑤有効商談率の達成（33%）',
-  '⑥月初計画時の目標アポ数の達成',
-  '⑦勤怠・管理・休暇・資料を期限内に報告',
-  '⑧クロスセル受注数達成',
-  '⑨商談動画の当日投稿',
-  '⑩約束の100%投稿',
-];
+const blank = <T,>(v: T): T[] => Array(PERIOD_MONTHS).fill(v);
+const def = (id: string, name: string, kind: MissionKind = 'check', target: number | null = null, unit = ''): MissionDef => ({ id, name, kind, target, unit });
 
-export const DEFAULT_SETTINGS: Settings = {
+export const DEFAULT_RULES: Rules = {
   periodStart: 7,
-  addons: ['マーケメディア', 'メイクプイ', 'クラウドローン', 'セールススクール'].map((name) => ({ name, amount: 0 })),
-  actualMonthly: Array(PERIOD_MONTHS).fill(null),
-  missions: MISSION_NAMES.map((name) => ({ name, done: Array(PERIOD_MONTHS).fill(true) })),
-  reflections: 0,
-  bonusRateOverride: null,
-  grossRate: 66.5,
   poolRate: 20,
   managementRate: 1.2,
+  grossRate: 66.5,
+  roundingUnit: 10,
+  reflectionPenalty: 5,
+  missingPolicy: 'exclude',
+  missions: [
+    def('m1', '①売上ミッション達成', 'gte', null, '円'),
+    def('m2', '②12営業日以内 新規アポ達成'),
+    def('m3', '③5営業日以内 フォローアポ達成'),
+    def('m4', '④有効商談率の達成（51%）', 'gte', 51, '%'),
+    def('m5', '⑤有効商談率の達成（33%）', 'gte', 33, '%'),
+    def('m6', '⑥月初計画時の目標アポ数の達成'),
+    def('m7', '⑦勤怠・管理・休暇・資料を期限内に報告'),
+    def('m8', '⑧クロスセル受注数達成'),
+    def('m9', '⑨商談動画の当日投稿'),
+    def('m10', '⑩約束の100%投稿'),
+  ],
+  addonNames: ['マーケメディア', 'メイクプイ', 'クラウドローン', 'セールススクール'],
+};
+
+export const DEFAULT_INPUTS: Inputs = {
+  actualMonthly: blank(null),
+  addons: [0, 0, 0, 0],
+  records: {},
+  reflections: 0,
+  bonusRateOverride: null,
   grade: 0,
   baseSalary: 0,
   previousBonus: 0,
   newBaseSalary: 0,
   lumpSum: 0,
 };
+
+export function emptyRecord(): MissionRecord {
+  return { actual: blank(null), target: blank(null) };
+}
 
 export type ScenarioId = 'orders' | 'stable' | 'actual';
 
@@ -117,7 +153,7 @@ export function expectedPayment(o: Order): number {
 
 /** 受注履歴から見込む月別の入金額（配分後） */
 export function expectedMonthly(orders: Order[]): number[] {
-  const out = Array<number>(PERIOD_MONTHS).fill(0);
+  const out = blank(0);
   for (const o of orders) {
     const from = startIndex(o);
     for (let i = from; i < from + monthsInPeriod(o); i++) out[i] += (o.share / 100) * o.monthly;
@@ -130,22 +166,40 @@ export function enteredMonths(actual: (number | null)[]): number {
   return actual.filter((v) => v != null).length;
 }
 
-export function scenarioPayments(orders: Order[], s: Settings, id: ScenarioId): number {
+export function scenarioPayments(orders: Order[], inputs: Inputs, id: ScenarioId): number {
   switch (id) {
     case 'orders':
       return sum(orders.map(expectedPayment));
     case 'stable':
       return sum(orders.filter((o) => o.stable).map(expectedPayment));
     case 'actual': {
-      const n = enteredMonths(s.actualMonthly);
-      return n ? (sum(s.actualMonthly.map((v) => v ?? 0)) / n) * PERIOD_MONTHS : 0;
+      const n = enteredMonths(inputs.actualMonthly);
+      return n ? (sum(inputs.actualMonthly.map((v) => v ?? 0)) / n) * PERIOD_MONTHS : 0;
     }
   }
 }
 
+/** その月の目標値（月ごとの上書きがなければ標準の目標） */
+export function monthTarget(m: MissionDef, rec: MissionRecord | undefined, i: number): number | null {
+  return rec?.target[i] ?? m.target;
+}
+
+/** その月のミッションを達成したか。判定できないとき（未入力・目標なし）は null */
+export function judge(m: MissionDef, rec: MissionRecord | undefined, i: number): boolean | null {
+  const actual = rec?.actual[i] ?? null;
+  if (actual == null) return null;
+  if (m.kind === 'check') return actual > 0;
+  const target = monthTarget(m, rec, i);
+  if (target == null) return null;
+  return m.kind === 'gte' ? actual >= target : actual <= target;
+}
+
 export interface BonusRate {
   achieved: number;
+  /** 達成率の分母（数えたマスの数） */
   total: number;
+  /** 判定できなかったマスの数 */
+  missing: number;
   /** 倍率（達成率％・四捨五入） */
   multiplier: number;
   /** 賞与倍率（%） */
@@ -153,16 +207,28 @@ export interface BonusRate {
 }
 
 /**
- * 賞与倍率 = 達成率を10%単位に四捨五入 − 反省文1枚につき5%。
+ * 賞与倍率 = 達成率を roundingUnit 単位に四捨五入 − 反省文 × reflectionPenalty。
  * 過去シート（倍率78→80%、51/60=85→90%−反省文1枚=85%）と一致する。
  */
-export function bonusRate(s: Settings): BonusRate {
-  const cells = s.missions.flatMap((m) => m.done.slice(0, PERIOD_MONTHS));
-  const achieved = cells.filter(Boolean).length;
-  const total = cells.length;
+export function bonusRate(rules: Rules, inputs: Inputs): BonusRate {
+  let achieved = 0;
+  let total = 0;
+  let missing = 0;
+  for (const m of rules.missions) {
+    for (let i = 0; i < PERIOD_MONTHS; i++) {
+      const r = judge(m, inputs.records[m.id], i);
+      if (r == null) {
+        missing++;
+        if (rules.missingPolicy === 'exclude') continue;
+        if (rules.missingPolicy === 'achieved') achieved++;
+      } else if (r) achieved++;
+      total++;
+    }
+  }
   const multiplier = total ? Math.round((achieved / total) * 100) : 0;
-  const rate = s.bonusRateOverride ?? Math.max(0, Math.round(multiplier / 10) * 10 - s.reflections * 5);
-  return { achieved, total, multiplier, rate };
+  const rounded = rules.roundingUnit > 0 ? Math.round(multiplier / rules.roundingUnit) * rules.roundingUnit : multiplier;
+  const rate = inputs.bonusRateOverride ?? Math.max(0, rounded - inputs.reflections * rules.reflectionPenalty);
+  return { achieved, total, missing, multiplier, rate };
 }
 
 export interface Breakdown {
@@ -194,17 +260,17 @@ export interface Breakdown {
   totalSalary: number;
 }
 
-export function calculate(payments: number, s: Settings): Breakdown {
-  const addons = sum(s.addons.map((a) => a.amount));
+export function calculate(payments: number, rules: Rules, inputs: Inputs): Breakdown {
+  const addons = sum(inputs.addons.slice(0, rules.addonNames.length));
   const total = payments + addons;
   const avgMonthly = total / PERIOD_MONTHS;
-  const grossProfit = avgMonthly * (s.grossRate / 100);
-  const effectivePoolRate = s.poolRate - s.managementRate;
+  const grossProfit = avgMonthly * (rules.grossRate / 100);
+  const effectivePoolRate = rules.poolRate - rules.managementRate;
   const pool = avgMonthly * (effectivePoolRate / 100);
-  const bonusTarget = pool - s.baseSalary;
-  const rate = bonusRate(s).rate;
+  const bonusTarget = pool - inputs.baseSalary;
+  const rate = bonusRate(rules, inputs).rate;
   const bonus = bonusTarget * (rate / 100);
-  const lumpMonthly = s.lumpSum / PERIOD_MONTHS;
+  const lumpMonthly = inputs.lumpSum / PERIOD_MONTHS;
   return {
     payments,
     addons,
@@ -216,9 +282,9 @@ export function calculate(payments: number, s: Settings): Breakdown {
     bonusTarget,
     bonusRate: rate,
     bonus,
-    bonusDiff: bonus - s.previousBonus,
+    bonusDiff: bonus - inputs.previousBonus,
     lumpMonthly,
-    totalSalary: s.newBaseSalary + bonus - lumpMonthly,
+    totalSalary: inputs.newBaseSalary + bonus - lumpMonthly,
   };
 }
 

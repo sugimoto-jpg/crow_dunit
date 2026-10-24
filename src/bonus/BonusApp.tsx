@@ -1,53 +1,29 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Plus, Trash2, Wallet } from 'lucide-react';
-import {
-  PERIOD_MONTHS,
-  SCENARIOS,
-  bonusRate,
-  calculate,
-  enteredMonths,
-  expectedMonthly,
-  expectedPayment,
-  monthLabel,
-  monthsInPeriod,
-  scenarioPayments,
-  type Breakdown,
-  type Order,
-  type Settings,
-} from './calc';
+import { useEffect, useState } from 'react';
+import { Calculator, ClipboardCheck, Settings as SettingsIcon, Wallet } from 'lucide-react';
+import type { Inputs, Order, Rules } from './calc';
+import { ForecastView } from './ForecastView';
+import { MissionView } from './MissionView';
+import { SettingsView } from './SettingsView';
 import { load, save } from './storage';
 
-const yen = (n: number) => Math.round(n).toLocaleString('ja-JP');
-const months = Array.from({ length: PERIOD_MONTHS }, (_, i) => i);
-const newOrder = (): Order => ({
-  id: crypto.randomUUID(),
-  company: '',
-  unit: '',
-  share: 100,
-  monthly: 0,
-  months: 6,
-  startMonth: 1,
-  stable: true,
-});
+type Tab = 'forecast' | 'missions' | 'settings';
+const TABS = [
+  { id: 'forecast', label: '予測', icon: Calculator },
+  { id: 'missions', label: 'ミッション表', icon: ClipboardCheck },
+  { id: 'settings', label: '設定', icon: SettingsIcon },
+] as const;
 
 export function BonusApp() {
   const [initial] = useState(load);
-  const [orders, setOrders] = useState<Order[]>(initial.orders.length ? initial.orders : [newOrder()]);
-  const [settings, setSettings] = useState<Settings>(initial.settings);
+  const [orders, setOrders] = useState<Order[]>(initial.orders);
+  const [rules, setRules] = useState<Rules>(initial.rules);
+  const [inputs, setInputs] = useState<Inputs>(initial.inputs);
+  const [tab, setTab] = useState<Tab>('forecast');
 
-  useEffect(() => save({ orders, settings }), [orders, settings]);
+  useEffect(() => save({ orders, rules, inputs }), [orders, rules, inputs]);
 
-  const results = useMemo(
-    () => SCENARIOS.map((sc) => ({ ...sc, b: calculate(scenarioPayments(orders, settings, sc.id), settings) })),
-    [orders, settings],
-  );
-  const expected = useMemo(() => expectedMonthly(orders), [orders]);
-  const expectedStable = useMemo(() => expectedMonthly(orders.filter((o) => o.stable)), [orders]);
-  const rate = bonusRate(settings);
-
-  const patchOrder = (id: string, patch: Partial<Order>) => setOrders((os) => os.map((o) => (o.id === id ? { ...o, ...patch } : o)));
-  const set = <K extends keyof Settings>(k: K, v: Settings[K]) => setSettings((s) => ({ ...s, [k]: v }));
-  const label = (i: number) => monthLabel(settings.periodStart, i);
+  const setRule = <K extends keyof Rules>(k: K, v: Rules[K]) => setRules((r) => ({ ...r, [k]: v }));
+  const setInput = <K extends keyof Inputs>(k: K, v: Inputs[K]) => setInputs((s) => ({ ...s, [k]: v }));
 
   return (
     <div className="min-h-screen px-4 py-6 text-slate-800">
@@ -58,288 +34,25 @@ export function BonusApp() {
             <h1 className="text-xl font-bold">賞与・給与予測</h1>
             <p className="text-sm text-slate-500">半年ごとの査定を、受注と入金額から3通りで予測します。入力内容はこの端末にだけ保存されます。</p>
           </div>
-          <label className="text-sm text-slate-600">
-            査定期間{' '}
-            <select className="rounded-md border border-slate-300 px-2 py-1" value={settings.periodStart} onChange={(e) => set('periodStart', Number(e.target.value))}>
-              <option value={1}>上半期（1月〜6月）</option>
-              <option value={7}>下半期（7月〜12月）</option>
-            </select>
-          </label>
         </header>
 
-        <Card title="受注一覧">
-          <div className="-mx-4 overflow-x-auto px-4">
-            <table className="w-full min-w-[820px] text-sm">
-              <thead className="text-left text-xs text-slate-500">
-                <tr>
-                  <th className="p-1">社名</th>
-                  <th className="p-1">ユニット名</th>
-                  <th className="p-1 w-20">配分(%)</th>
-                  <th className="p-1 w-32">単月受注金額</th>
-                  <th className="p-1 w-20">契約月数</th>
-                  <th className="p-1 w-24">入金開始月</th>
-                  <th className="p-1 w-28 text-right">期間内見込み</th>
-                  <th className="p-1 w-14 text-center" title="②の予測に残す">安定</th>
-                  <th className="p-1 w-8" />
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((o) => (
-                  <tr key={o.id} className="border-t border-slate-100">
-                    <td className="p-1"><TextIn value={o.company} onChange={(v) => patchOrder(o.id, { company: v })} placeholder="株式会社〇〇" /></td>
-                    <td className="p-1"><TextIn value={o.unit} onChange={(v) => patchOrder(o.id, { unit: v })} placeholder="〇〇ユニット" /></td>
-                    <td className="p-1"><NumIn value={o.share} onChange={(v) => patchOrder(o.id, { share: v ?? 0 })} /></td>
-                    <td className="p-1"><NumIn value={o.monthly} onChange={(v) => patchOrder(o.id, { monthly: v ?? 0 })} /></td>
-                    <td className="p-1"><NumIn value={o.months} onChange={(v) => patchOrder(o.id, { months: v ?? 0 })} /></td>
-                    <td className="p-1">
-                      <select className={inputCls} value={o.startMonth} onChange={(e) => patchOrder(o.id, { startMonth: Number(e.target.value) })}>
-                        {months.map((i) => <option key={i} value={i + 1}>{label(i)}</option>)}
-                      </select>
-                    </td>
-                    <td className="p-1 text-right tabular-nums">
-                      {yen(expectedPayment(o))}
-                      <div className="text-[10px] text-slate-400">{monthsInPeriod(o)}ヶ月分</div>
-                    </td>
-                    <td className="p-1 text-center">
-                      <input type="checkbox" className="size-4 accent-emerald-600" checked={o.stable} onChange={(e) => patchOrder(o.id, { stable: e.target.checked })} />
-                    </td>
-                    <td className="p-1">
-                      <button className="rounded p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-600" onClick={() => setOrders((os) => os.filter((x) => x.id !== o.id))} aria-label="削除">
-                        <Trash2 className="size-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <button className="mt-3 inline-flex items-center gap-1 rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-bold text-emerald-700 hover:bg-emerald-50" onClick={() => setOrders((os) => [...os, newOrder()])}>
-            <Plus className="size-4" /> 受注を追加
-          </button>
-          <p className="mt-2 text-xs text-slate-500">期間内見込み = 配分 × 単月受注金額 × 査定期間（6ヶ月）に入る月数。</p>
-        </Card>
-
-        <Card title="月別の入金額">
-          <div className="-mx-4 overflow-x-auto px-4">
-            <table className="w-full min-w-[760px] text-sm">
-              <thead className="text-xs text-slate-500">
-                <tr>
-                  <th className="p-1 text-left" />
-                  {months.map((i) => <th key={i} className="p-1 text-right">{label(i)}</th>)}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th className="p-1 text-left text-xs font-normal text-slate-600">実際の入金額（配分後）</th>
-                  {months.map((i) => (
-                    <td key={i} className="p-1">
-                      <NumIn
-                        value={settings.actualMonthly[i] ?? null}
-                        placeholder="未入力"
-                        onChange={(v) => set('actualMonthly', months.map((j) => (j === i ? v : settings.actualMonthly[j] ?? null)))}
-                      />
-                    </td>
-                  ))}
-                </tr>
-                <tr className="text-xs text-slate-500">
-                  <th className="p-1 text-left font-normal">① 受注履歴の見込み</th>
-                  {expected.map((v, i) => <td key={i} className="p-1 text-right tabular-nums">{yen(v)}</td>)}
-                </tr>
-                <tr className="text-xs text-slate-500">
-                  <th className="p-1 text-left font-normal">② 安定先の見込み</th>
-                  {expectedStable.map((v, i) => <td key={i} className="p-1 text-right tabular-nums">{yen(v)}</td>)}
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-2 text-xs text-slate-500">
-            評価シートの月別の金額を入れます。期の途中なら入金済みの月だけ入れれば、その平均で6ヶ月分を推計します（入力済み {enteredMonths(settings.actualMonthly)} / 6ヶ月）。
-          </p>
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {settings.addons.map((a, k) => (
-              <label key={k} className="block text-xs text-slate-500">
-                <input
-                  className="w-full bg-transparent text-xs text-slate-500 focus:outline-none"
-                  value={a.name}
-                  onChange={(e) => set('addons', settings.addons.map((x, j) => (j === k ? { ...x, name: e.target.value } : x)))}
-                  aria-label="商材名"
-                />
-                <NumIn value={a.amount} onChange={(v) => set('addons', settings.addons.map((x, j) => (j === k ? { ...x, amount: v ?? 0 } : x)))} />
-              </label>
-            ))}
-          </div>
-          <p className="mt-2 text-xs text-slate-500">他商材の入金は半年分の合計を入れます。3つの予測すべてに加算します（商材名は書き換えられます）。</p>
-        </Card>
-
-        <Card title="ミッション達成">
-          <div className="-mx-4 overflow-x-auto px-4">
-            <table className="w-full min-w-[640px] text-sm">
-              <thead className="text-xs text-slate-500">
-                <tr>
-                  <th className="p-1 text-left">ミッション</th>
-                  {months.map((i) => <th key={i} className="p-1 w-14 text-center">{label(i)}</th>)}
-                </tr>
-              </thead>
-              <tbody>
-                {settings.missions.map((m, k) => (
-                  <tr key={k} className="border-t border-slate-100">
-                    <td className="p-1">
-                      <input
-                        className="w-full bg-transparent focus:outline-none"
-                        value={m.name}
-                        onChange={(e) => set('missions', settings.missions.map((x, j) => (j === k ? { ...x, name: e.target.value } : x)))}
-                      />
-                    </td>
-                    {months.map((i) => (
-                      <td key={i} className="p-1 text-center">
-                        <button
-                          className={`size-7 rounded-full text-base font-bold ${m.done[i] ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'}`}
-                          onClick={() =>
-                            set('missions', settings.missions.map((x, j) => (j === k ? { ...x, done: months.map((d) => (d === i ? !x.done[d] : !!x.done[d])) } : x)))
-                          }
-                          aria-label={`${m.name} ${label(i)}`}
-                        >
-                          {m.done[i] ? '●' : '×'}
-                        </button>
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Stat label="達成数" value={`${rate.achieved} / ${rate.total}`} />
-            <Stat label="倍率（達成率）" value={`${rate.multiplier}`} />
-            <Field label="反省文の枚数（1枚 −5%）" value={settings.reflections} onChange={(v) => set('reflections', v)} />
-            <label className="block text-xs text-slate-500">
-              賞与倍率を手入力（空欄なら自動）
-              <NumIn value={settings.bonusRateOverride} placeholder={`${rate.rate}`} onChange={(v) => set('bonusRateOverride', v)} />
-            </label>
-          </div>
-          <p className="mt-2 text-sm">
-            賞与倍率 <span className="text-lg font-bold text-emerald-700">{rate.rate}%</span>
-            <span className="ml-2 text-xs text-slate-500">＝ 達成率を10%単位に四捨五入 − 反省文 × 5%</span>
-          </p>
-        </Card>
-
-        <Card title="査定条件">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            <Field label="賞与対象原資の率(%)" value={settings.poolRate} onChange={(v) => set('poolRate', v)} />
-            <Field label="マネジメント報酬(%)" value={settings.managementRate} onChange={(v) => set('managementRate', v)} />
-            <Field label="粗利率(%・参考)" value={settings.grossRate} onChange={(v) => set('grossRate', v)} />
-            <Field label="等級" value={settings.grade} onChange={(v) => set('grade', v)} />
-            <Field label="現在の基本給" value={settings.baseSalary} onChange={(v) => set('baseSalary', v)} />
-            <Field label="前回賞与" value={settings.previousBonus} onChange={(v) => set('previousBonus', v)} />
-            <Field label="査定後の基本給" value={settings.newBaseSalary} onChange={(v) => set('newBaseSalary', v)} />
-            <Field label="一時金" value={settings.lumpSum} onChange={(v) => set('lumpSum', v)} />
-          </div>
-        </Card>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          {results.map((r) => (
-            <ScenarioCard key={r.id} title={r.title} note={r.note} b={r.b} />
+        <nav className="flex gap-1 rounded-xl bg-slate-200/70 p-1">
+          {TABS.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold ${tab === id ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-600 hover:text-slate-800'}`}
+              onClick={() => setTab(id)}
+            >
+              <Icon className="size-4" />
+              {label}
+            </button>
           ))}
-        </div>
+        </nav>
 
-        <p className="text-xs text-slate-500">
-          計算式：合計 = 半年間の入金額 + 他商材 ／ 配分原資 = 合計 ÷ 6 ／ 賞与対象原資 = 配分原資 × (賞与対象原資の率 − マネジメント報酬) ／
-          賞与対象金額 = 賞与対象原資 − 現在の基本給 ／ 賞与額 = 賞与対象金額 × 賞与倍率 ／ 総合計給与 = 査定後の基本給 + 賞与額 − 一時金 ÷ 6
-        </p>
+        {tab === 'forecast' && <ForecastView orders={orders} setOrders={setOrders} rules={rules} inputs={inputs} setInput={setInput} goMissions={() => setTab('missions')} />}
+        {tab === 'missions' && <MissionView rules={rules} inputs={inputs} setInput={setInput} goSettings={() => setTab('settings')} />}
+        {tab === 'settings' && <SettingsView rules={rules} setRule={setRule} reset={(r) => setRules(r)} />}
       </div>
     </div>
   );
-}
-
-function ScenarioCard({ title, note, b }: { title: string; note: string; b: Breakdown }) {
-  const rows: [string, number, boolean?][] = [
-    ['半年間の入金額', b.payments, true],
-    ['他商材', b.addons],
-    ['合計', b.total],
-    ['配分原資（平均月入金額）', b.avgMonthly],
-    ['給与対象原資（×粗利率・参考）', b.grossProfit],
-    [`賞与対象原資（×${+b.effectivePoolRate.toFixed(2)}%）`, b.pool],
-    ['賞与対象金額（−基本給）', b.bonusTarget],
-    [`賞与額（×${b.bonusRate}%）`, b.bonus, true],
-    ['前回賞与との差', b.bonusDiff],
-    ['一時金月割り', b.lumpMonthly],
-  ];
-  return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <h2 className="font-bold">{title}</h2>
-      <p className="mb-3 text-xs text-slate-500">{note}</p>
-      <dl className="space-y-1 text-sm">
-        {rows.map(([label, v, strong]) => (
-          <div key={label} className={`flex justify-between gap-2 ${strong ? 'font-bold' : ''}`}>
-            <dt className="text-slate-600">{label}</dt>
-            <dd className={`tabular-nums ${v < 0 ? 'text-rose-600' : ''}`}>{yen(v)}</dd>
-          </div>
-        ))}
-      </dl>
-      <div className="mt-3 flex items-baseline justify-between rounded-lg bg-emerald-50 px-3 py-2">
-        <span className="text-sm font-bold text-emerald-800">総合計給与（月）</span>
-        <span className={`text-xl font-bold tabular-nums ${b.totalSalary < 0 ? 'text-rose-600' : 'text-emerald-700'}`}>¥{yen(b.totalSalary)}</span>
-      </div>
-    </section>
-  );
-}
-
-function Card({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <h2 className="mb-3 font-bold">{title}</h2>
-      {children}
-    </section>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="text-xs text-slate-500">
-      {label}
-      <div className="mt-0.5 py-1 text-right text-sm font-bold text-slate-800 tabular-nums">{value}</div>
-    </div>
-  );
-}
-
-function Field({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
-  return (
-    <label className="block text-xs text-slate-500">
-      {label}
-      <NumIn value={value} onChange={(v) => onChange(v ?? 0)} />
-    </label>
-  );
-}
-
-const inputCls = 'mt-0.5 w-full rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none';
-
-function TextIn({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
-  return <input className={inputCls} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />;
-}
-
-/** カンマ付きで貼り付けても読める数値入力。空欄は null */
-function NumIn({ value, onChange, placeholder }: { value: number | null; onChange: (v: number | null) => void; placeholder?: string }) {
-  const [text, setText] = useState(value == null ? '' : String(value));
-  useEffect(() => {
-    setText((t) => (parse(t) === value ? t : value == null ? '' : String(value)));
-  }, [value]);
-  return (
-    <input
-      className={`${inputCls} text-right tabular-nums`}
-      inputMode="decimal"
-      value={text}
-      placeholder={placeholder}
-      onChange={(e) => {
-        setText(e.target.value);
-        onChange(parse(e.target.value));
-      }}
-    />
-  );
-}
-
-function parse(t: string): number | null {
-  const s = t.replace(/[,，\s円%]/g, '').replace(/[０-９．－]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0));
-  if (s === '') return null;
-  const n = Number(s);
-  return Number.isFinite(n) ? n : null;
 }
