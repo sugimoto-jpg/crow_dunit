@@ -67,10 +67,19 @@ export interface Rules {
   addonNames: string[];
 }
 
+/** 入金履歴：企業・ユニットごとの、月別の実際の入金額 */
+export interface PaymentRow {
+  id: string;
+  company: string;
+  unit: string;
+  /** 配分（%） */
+  share: number;
+  /** 月（YYYY-MM）ごとの入金額（配分前）。未入力の月は持たないか null */
+  amounts: Record<string, number | null>;
+}
+
 /** 今期の入力 */
 export interface Inputs {
-  /** 実際の月別入金額（配分後）。未入力の月は null */
-  actualMonthly: (number | null)[];
   /** 他商材の半年分の入金（addonNames と同じ並び） */
   addons: number[];
   /** 月ごとのミッション（6ヶ月分） */
@@ -120,7 +129,6 @@ export const DEFAULT_RULES: Rules = {
 };
 
 export const DEFAULT_INPUTS: Inputs = {
-  actualMonthly: blank(null),
   addons: [0, 0, 0, 0],
   monthMissions: Array.from({ length: PERIOD_MONTHS }, () => []),
   reflections: 0,
@@ -223,20 +231,34 @@ export function expectedMonthly(orders: Order[], p: Period): number[] {
   return out;
 }
 
+/** 入金履歴から、査定期間の月別の入金額（配分後）を出す。どの企業も未入力の月は null */
+export function actualMonthly(rows: PaymentRow[], p: Period): (number | null)[] {
+  return periodMonths(p).map((ym) => {
+    const entered = rows.filter((r) => r.amounts[ym] != null);
+    return entered.length ? sum(entered.map((r) => paidAfterShare(r, ym))) : null;
+  });
+}
+
+/** その月の入金額（配分後） */
+export function paidAfterShare(r: PaymentRow, ym: string): number {
+  return ((r.amounts[ym] ?? 0) * r.share) / 100;
+}
+
 /** 実入金の入力済みの月数 */
 export function enteredMonths(actual: (number | null)[]): number {
   return actual.filter((v) => v != null).length;
 }
 
-export function scenarioPayments(orders: Order[], inputs: Inputs, p: Period, id: ScenarioId): number {
+/** 予測ごとの半年間の入金額。actual は査定期間の月別の実入金額（配分後） */
+export function scenarioPayments(orders: Order[], actual: (number | null)[], p: Period, id: ScenarioId): number {
   switch (id) {
     case 'orders':
       return sum(orders.map((o) => expectedPayment(o, p)));
     case 'stable':
       return sum(orders.filter((o) => o.stable).map((o) => expectedPayment(o, p)));
     case 'actual': {
-      const n = enteredMonths(inputs.actualMonthly);
-      return n ? (sum(inputs.actualMonthly.map((v) => v ?? 0)) / n) * PERIOD_MONTHS : 0;
+      const n = enteredMonths(actual);
+      return n ? (sum(actual.map((v) => v ?? 0)) / n) * PERIOD_MONTHS : 0;
     }
   }
 }

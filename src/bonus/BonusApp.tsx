@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Calculator, ClipboardCheck, ClipboardList, Settings as SettingsIcon, Wallet } from 'lucide-react';
-import type { Inputs, Order, Rules } from './calc';
+import { Banknote, Calculator, ClipboardCheck, ClipboardList, Settings as SettingsIcon, Wallet } from 'lucide-react';
+import type { Inputs, Order, PaymentRow, Rules } from './calc';
 import { ForecastView } from './ForecastView';
 import { MissionView } from './MissionView';
 import { OrdersView } from './OrdersView';
+import { PaymentsView } from './PaymentsView';
 import { SettingsView } from './SettingsView';
 import { load, save } from './storage';
 
-type Tab = 'forecast' | 'orders' | 'missions' | 'settings';
+type Tab = 'forecast' | 'orders' | 'payments' | 'missions' | 'settings';
 const TABS = [
   { id: 'forecast', label: '予測', icon: Calculator },
   { id: 'orders', label: '受注一覧', icon: ClipboardList },
+  { id: 'payments', label: '入金履歴入力', icon: Banknote },
   { id: 'missions', label: 'ミッション表', icon: ClipboardCheck },
   { id: 'settings', label: '設定', icon: SettingsIcon },
 ] as const;
@@ -20,9 +22,10 @@ export function BonusApp() {
   const [orders, setOrders] = useState<Order[]>(initial.orders);
   const [rules, setRules] = useState<Rules>(initial.rules);
   const [inputs, setInputs] = useState<Inputs>(initial.inputs);
+  const [payments, setPayments] = useState<PaymentRow[]>(initial.payments);
   const [tab, setTab] = useState<Tab>('forecast');
 
-  useEffect(() => save({ orders, rules, inputs }), [orders, rules, inputs]);
+  useEffect(() => save({ orders, rules, inputs, payments }), [orders, rules, inputs, payments]);
 
   const setRule = <K extends keyof Rules>(k: K, v: Rules[K]) => setRules((r) => ({ ...r, [k]: v }));
   const setInput = <K extends keyof Inputs>(k: K, v: Inputs[K]) => setInputs((s) => ({ ...s, [k]: v }));
@@ -51,8 +54,9 @@ export function BonusApp() {
           ))}
         </nav>
 
-        {tab === 'forecast' && <ForecastView orders={orders} rules={rules} inputs={inputs} setInput={setInput} goOrders={() => setTab('orders')} goMissions={() => setTab('missions')} />}
+        {tab === 'forecast' && <ForecastView orders={orders} payments={payments} rules={rules} inputs={inputs} setInput={setInput} goOrders={() => setTab('orders')} goPayments={() => setTab('payments')} goMissions={() => setTab('missions')} />}
         {tab === 'orders' && <OrdersView orders={orders} setOrders={setOrders} rules={rules} />}
+        {tab === 'payments' && <PaymentsView payments={payments} setPayments={setPayments} orders={orders} rules={rules} />}
         {tab === 'missions' && <MissionView rules={rules} inputs={inputs} setInput={setInput} goSettings={() => setTab('settings')} />}
         {tab === 'settings' && <SettingsView rules={rules} setRule={setRule} reset={(r) => setRules(r)} />}
       </div>

@@ -10,6 +10,7 @@ import {
   judge,
   monthLabel,
   addMonths,
+  actualMonthly,
   contractMonths,
   lastPayment,
   monthsInPeriod,
@@ -21,6 +22,7 @@ import {
   type Inputs,
   type Mission,
   type Order,
+  type PaymentRow,
 } from '../calc';
 
 const order = (patch: Partial<Order>): Order => ({
@@ -75,13 +77,20 @@ describe('scenarios', () => {
   ];
   it('sums expected and stable-only payments', () => {
     expect(expectedPayment(orders[0], period)).toBe(600_000);
-    expect(scenarioPayments(orders, DEFAULT_INPUTS, period, 'orders')).toBe(900_000);
-    expect(scenarioPayments(orders, DEFAULT_INPUTS, period, 'stable')).toBe(600_000);
+    expect(scenarioPayments(orders, [], period, 'orders')).toBe(900_000);
+    expect(scenarioPayments(orders, [], period, 'stable')).toBe(600_000);
     expect(expectedMonthly(orders, period)).toEqual([100_000, 200_000, 200_000, 200_000, 100_000, 100_000]);
   });
   it('extrapolates actual payments from the entered months', () => {
-    expect(scenarioPayments(orders, inputs({ actualMonthly: [100_000, 300_000, null, null, null, null] }), period, 'actual')).toBe(1_200_000);
-    expect(scenarioPayments(orders, DEFAULT_INPUTS, period, 'actual')).toBe(0);
+    expect(scenarioPayments(orders, [100_000, 300_000, null, null, null, null], period, 'actual')).toBe(1_200_000);
+    expect(scenarioPayments(orders, [null, null, null, null, null, null], period, 'actual')).toBe(0);
+  });
+  it('sums the payment history of each company and unit after the share', () => {
+    const rows: PaymentRow[] = [
+      { id: 'a', company: 'A社', unit: '営業支援', share: 50, amounts: { '2026-07': 400_000, '2026-08': 400_000, '2026-06': 999_999 } },
+      { id: 'b', company: 'B社', unit: 'セールス', share: 100, amounts: { '2026-07': 100_000, '2026-08': null } },
+    ];
+    expect(actualMonthly(rows, period)).toEqual([300_000, 200_000, null, null, null, null]);
   });
 });
 
@@ -131,8 +140,15 @@ describe('bonusRate', () => {
 
 describe('calculate', () => {
   it('reproduces the 2025 second-half review sheet', () => {
+    // 評価シートの月別の金額を、2社に分けて入れる
+    const sheet = [2_331_779, 3_014_217, 3_264_271, 2_036_784, 2_252_683, 2_233_207];
+    const months = ['2025-07', '2025-08', '2025-09', '2025-10', '2025-11', '2025-12'];
+    const rows: PaymentRow[] = [
+      { id: 'a', company: 'A社', unit: '営業支援', share: 100, amounts: Object.fromEntries(months.map((m, k) => [m, sheet[k] - 1_000_000])) },
+      { id: 'b', company: 'B社', unit: '営業支援', share: 50, amounts: Object.fromEntries(months.map((m) => [m, 2_000_000])) },
+    ];
+    const p2025 = { periodYear: 2025, periodStart: 7 };
     const i = inputs({
-      actualMonthly: [2_331_779, 3_014_217, 3_264_271, 2_036_784, 2_252_683, 2_233_207],
       addons: addons(1_311_186),
       monthMissions: records(51),
       reflections: 1,
@@ -141,7 +157,7 @@ describe('calculate', () => {
       newBaseSalary: 348_500,
       lumpSum: 50_000,
     });
-    const b = calculate(scenarioPayments([], i, period, 'actual'), checkRules, i);
+    const b = calculate(scenarioPayments([], actualMonthly(rows, p2025), p2025, 'actual'), checkRules, i);
     expect(Math.round(b.avgMonthly)).toBe(2_740_688);
     expect(Math.round(b.pool)).toBe(515_249);
     expect(Math.round(b.bonusTarget)).toBe(170_249);

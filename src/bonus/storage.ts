@@ -1,4 +1,4 @@
-import { DEFAULT_INPUTS, DEFAULT_RULES, PERIOD_MONTHS, addMonths, periodMonths, type Inputs, type Mission, type MissionDef, type Order, type Period, type Rules } from './calc';
+import { DEFAULT_INPUTS, DEFAULT_RULES, PERIOD_MONTHS, addMonths, periodMonths, type Inputs, type Mission, type MissionDef, type Order, type PaymentRow, type Period, type Rules } from './calc';
 
 const KEY = 'aidma-bonus-forecast-v2';
 const OLD_KEY = 'aidma-bonus-forecast-v1';
@@ -7,6 +7,8 @@ export interface Saved {
   orders: Order[];
   rules: Rules;
   inputs: Inputs;
+  /** 入金履歴（企業・ユニット別） */
+  payments: PaymentRow[];
 }
 
 /** 入力内容はこの端末のブラウザにだけ保存する（外部送信なし） */
@@ -16,18 +18,33 @@ export function load(): Saved {
     if (raw) {
       const d = JSON.parse(raw) as Partial<Saved>;
       const rules = { ...DEFAULT_RULES, ...d.rules };
-      return migrateMissions({
-        orders: migrateOrders(Array.isArray(d.orders) ? d.orders : [], rules),
-        rules,
-        inputs: { ...DEFAULT_INPUTS, ...d.inputs },
-      });
+      return migratePayments(
+        migrateMissions({
+          orders: migrateOrders(Array.isArray(d.orders) ? d.orders : [], rules),
+          rules,
+          inputs: { ...DEFAULT_INPUTS, ...d.inputs },
+          payments: Array.isArray(d.payments) ? d.payments : [],
+        }),
+      );
     }
     const old = localStorage.getItem(OLD_KEY);
     if (old) return fromV1(JSON.parse(old));
   } catch {
     /* 保存できない環境では毎回まっさらから始める */
   }
-  return { orders: [], rules: DEFAULT_RULES, inputs: DEFAULT_INPUTS };
+  return { orders: [], rules: DEFAULT_RULES, inputs: DEFAULT_INPUTS, payments: [] };
+}
+
+/** 月別の合計だけを入れていた頃の実入金額を、入金履歴の1行に移す */
+function migratePayments(d: Saved): Saved {
+  const { actualMonthly, ...inputs } = d.inputs as Inputs & { actualMonthly?: (number | null)[] };
+  if (!actualMonthly) return d;
+  const months = periodMonths(d.rules);
+  const amounts = Object.fromEntries(months.flatMap((ym, k) => (actualMonthly[k] != null ? [[ym, actualMonthly[k]]] : [])));
+  const payments = Object.keys(amounts).length
+    ? [...d.payments, { id: crypto.randomUUID(), company: '合計（以前の入力）', unit: '', share: 100, amounts }]
+    : d.payments;
+  return { ...d, inputs: inputs as Inputs, payments };
 }
 
 type OldOrder = Partial<Order> & { id: string; months?: number; startMonth?: number; actual?: unknown };
@@ -95,7 +112,6 @@ function fromV1(d: { orders?: unknown[]; settings?: Record<string, unknown> }): 
   if (oldAddons) rules.addonNames = oldAddons.map((a) => a.name);
   const inputs: Inputs = {
     ...DEFAULT_INPUTS,
-    actualMonthly: Array.isArray(s.actualMonthly) ? (s.actualMonthly as (number | null)[]) : DEFAULT_INPUTS.actualMonthly,
     addons: oldAddons ? oldAddons.map((a) => a.amount) : rules.addonNames.map((n) => (n === 'メイクプイ' ? num('makeup', 0) : 0)),
     reflections: num('reflections', 0),
     bonusRateOverride: typeof s.bonusRateOverride === 'number' ? s.bonusRateOverride : null,
@@ -106,7 +122,8 @@ function fromV1(d: { orders?: unknown[]; settings?: Record<string, unknown> }): 
     lumpSum: num('lumpSum', 0),
   };
   const orders = migrateOrders(Array.isArray(d.orders) ? (d.orders as OldOrder[]) : [], rules);
-  return { orders, rules, inputs };
+  const actualMonthly = Array.isArray(s.actualMonthly) ? (s.actualMonthly as (number | null)[]) : undefined;
+  return migratePayments({ orders, rules, inputs: { ...inputs, actualMonthly } as Inputs, payments: [] });
 }
 
 export function save(d: Saved): void {

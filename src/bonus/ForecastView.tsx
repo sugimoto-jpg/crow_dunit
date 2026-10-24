@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import {
   PERIOD_MONTHS,
   SCENARIOS,
+  actualMonthly,
   bonusRate,
   calculate,
   enteredMonths,
@@ -13,25 +14,29 @@ import {
   type Breakdown,
   type Inputs,
   type Order,
+  type PaymentRow,
   type Rules,
 } from './calc';
-import { Card, Field, NumIn, Stat, yen } from './ui';
+import { Card, Field, Stat, yen } from './ui';
 
 const months = Array.from({ length: PERIOD_MONTHS }, (_, i) => i);
 
 interface Props {
   orders: Order[];
+  payments: PaymentRow[];
   rules: Rules;
   inputs: Inputs;
   setInput: <K extends keyof Inputs>(k: K, v: Inputs[K]) => void;
   goOrders: () => void;
+  goPayments: () => void;
   goMissions: () => void;
 }
 
-export function ForecastView({ orders, rules, inputs, setInput, goOrders, goMissions }: Props) {
+export function ForecastView({ orders, payments, rules, inputs, setInput, goOrders, goPayments, goMissions }: Props) {
+  const actual = useMemo(() => actualMonthly(payments, rules), [payments, rules]);
   const results = useMemo(
-    () => SCENARIOS.map((sc) => ({ ...sc, b: calculate(scenarioPayments(orders, inputs, rules, sc.id), rules, inputs) })),
-    [orders, rules, inputs],
+    () => SCENARIOS.map((sc) => ({ ...sc, b: calculate(scenarioPayments(orders, actual, rules, sc.id), rules, inputs) })),
+    [orders, actual, rules, inputs],
   );
   const expected = useMemo(() => expectedMonthly(orders, rules), [orders, rules]);
   const expectedStable = useMemo(() => expectedMonthly(orders.filter((o) => o.stable), rules), [orders, rules]);
@@ -57,7 +62,14 @@ export function ForecastView({ orders, rules, inputs, setInput, goOrders, goMiss
         </div>
       </Card>
 
-      <Card title="月別の入金額">
+      <Card
+        title="月別の入金額"
+        aside={
+          <button className="text-sm font-bold text-emerald-700 hover:underline" onClick={goPayments}>
+            入金履歴を入力する →
+          </button>
+        }
+      >
         <div className="-mx-4 overflow-x-auto px-4">
           <table className="w-full min-w-[760px] text-sm">
             <thead className="text-xs text-slate-500">
@@ -68,14 +80,10 @@ export function ForecastView({ orders, rules, inputs, setInput, goOrders, goMiss
             </thead>
             <tbody>
               <tr>
-                <th className="p-1 text-left text-xs font-normal text-slate-600">実際の入金額（配分後）</th>
-                {months.map((i) => (
-                  <td key={i} className="p-1">
-                    <NumIn
-                      value={inputs.actualMonthly[i] ?? null}
-                      placeholder="未入力"
-                      onChange={(v) => setInput('actualMonthly', months.map((j) => (j === i ? v : inputs.actualMonthly[j] ?? null)))}
-                    />
+                <th className="p-1 text-left text-xs font-bold text-slate-700">③ 実際の入金額（配分後）</th>
+                {actual.map((v, i) => (
+                  <td key={i} className="p-1 text-right font-bold tabular-nums">
+                    {v == null ? <span className="font-normal text-slate-400">未入力</span> : yen(v)}
                   </td>
                 ))}
               </tr>
@@ -91,7 +99,7 @@ export function ForecastView({ orders, rules, inputs, setInput, goOrders, goMiss
           </table>
         </div>
         <p className="mt-2 text-xs text-slate-500">
-          評価シートの月別の金額を入れます。期の途中なら入金済みの月だけ入れれば、その平均で6ヶ月分を推計します（入力済み {enteredMonths(inputs.actualMonthly)} / 6ヶ月）。
+          実際の入金額は「入金履歴入力」で企業・ユニット別に入れた額の合計（配分後）です。期の途中なら入金済みの月の平均で6ヶ月分を推計します（入力済み {enteredMonths(actual)} / 6ヶ月）。
         </p>
         {rules.addonNames.length > 0 && (
           <>
