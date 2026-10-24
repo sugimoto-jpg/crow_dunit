@@ -1,5 +1,5 @@
-/** RFC 4180 形式の CSV を読む（ダブルクォート内の改行・カンマ・"" に対応、先頭の BOM は無視） */
-export function parseCsv(text: string): string[][] {
+/** RFC 4180 形式の CSV を読む（ダブルクォート内の改行・カンマ・"" に対応、先頭の BOM は無視）。sep にタブを渡すと TSV も読める */
+export function parseCsv(text: string, sep = ','): string[][] {
   const rows: string[][] = [];
   let row: string[] = [];
   let field = '';
@@ -15,7 +15,7 @@ export function parseCsv(text: string): string[][] {
         } else quoted = false;
       } else field += c;
     } else if (c === '"') quoted = true;
-    else if (c === ',') {
+    else if (c === sep) {
       row.push(field);
       field = '';
     } else if (c === '\n' || c === '\r') {

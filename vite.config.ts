@@ -13,10 +13,11 @@ export default defineConfig({
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   build: {
     rollupOptions: {
-      // research.html は受注一覧から紹介先を探す別アプリ（ゲームとは独立）
+      // research.html は受注一覧から紹介先を探す別アプリ、analysis.html は KPI の数字分析アプリ（どちらもゲームとは独立）
       input: {
         main: fileURLToPath(new URL('./index.html', import.meta.url)),
         research: fileURLToPath(new URL('./research.html', import.meta.url)),
+        analysis: fileURLToPath(new URL('./analysis.html', import.meta.url)),
       },
     },
   },
