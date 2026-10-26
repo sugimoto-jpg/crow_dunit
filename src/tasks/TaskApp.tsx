@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { Check, ChevronRight, Coins, Flame, Plus, Sparkles, Swords, Timer, Trash2, Undo2, Wand2, X } from 'lucide-react';
+import { Bell, Check, ChevronRight, Coins, ExternalLink, Flame, MailCheck, Plus, Sparkles, Swords, Timer, Trash2, Undo2, Wand2, X } from 'lucide-react';
 import { setSfxEnabled, sfx, unlockAudio } from '../audio/sfx';
 import {
   BUCKET_LABEL,
@@ -18,6 +18,7 @@ import {
   hpOf,
   levelOf,
   newTask,
+  safeUrl,
   nextTask,
   splitLines,
   streakOf,
@@ -30,7 +31,9 @@ import {
   type Size,
   type State,
   type Task,
+  type TaskSource,
 } from './logic';
+import { LinkError, fetchMessages, loadLink, markRead, parseLinkCode, saveLink, suggestTitle, type MembersLink, type MembersMessage } from './members';
 import { load, onExternalChange, save } from './storage';
 
 const CHEERS = ['ナイス！', 'いいね！', 'その調子！', 'さすが！', 'えらい！', 'かっこいい！', 'やったね！'];
@@ -180,6 +183,7 @@ function ChoiceRow<T extends string>({ options, value, onChange }: { options: { 
       {options.map((o) => (
         <button
           key={o.id}
+          type="button"
           onClick={() => onChange(o.id)}
           className={`flex-1 rounded-2xl border-2 px-2 py-2.5 text-sm font-bold transition ${
             value === o.id ? 'border-pink-400 bg-pink-50 text-pink-600' : 'border-slate-200 bg-white text-slate-600 hover:border-pink-200'
@@ -214,7 +218,12 @@ export function TaskApp() {
   const [poofId, setPoofId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ text: string; undo?: State } | null>(null);
   const [levelUp, setLevelUp] = useState<number | null>(null);
-  const [sheet, setSheet] = useState<null | 'add' | 'sort' | { detail: string } | { focus: string }>(null);
+  const [sheet, setSheet] = useState<null | 'add' | 'sort' | 'members' | { detail: string } | { focus: string }>(null);
+  // メンバーズ連携（メンションベル経由）
+  const [link, setLink] = useState<MembersLink | null>(loadLink);
+  const [messages, setMessages] = useState<MembersMessage[]>([]);
+  const [membersError, setMembersError] = useState('');
+  const [draft, setDraft] = useState<{ title: string; source: TaskSource } | null>(null);
   const [sound, setSound] = useState(() => {
     try {
       return localStorage.getItem('aidma-task-quest-sound') !== 'off';
@@ -258,6 +267,42 @@ export function TaskApp() {
     const t = setTimeout(() => setToast(null), 5000);
     return () => clearTimeout(t);
   }, [toast]);
+
+  // メンバーズのメンションを読む：開いたとき・画面に戻ったとき・1分ごと（画面が見えている間だけ）
+  async function refreshMembers(l = link) {
+    if (!l) return;
+    try {
+      setMessages(await fetchMessages(l));
+      setMembersError('');
+    } catch (e) {
+      setMembersError(e instanceof Error ? e.message : '読み込めませんでした。');
+      if (e instanceof LinkError && e.revoked) setMessages([]);
+    }
+  }
+  useEffect(() => {
+    if (!link) return;
+    void refreshMembers(link);
+    const t = setInterval(() => document.visibilityState === 'visible' && void refreshMembers(link), 60_000);
+    const onVis = () => document.visibilityState === 'visible' && void refreshMembers(link);
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      clearInterval(t);
+      document.removeEventListener('visibilitychange', onVis);
+    };
+  }, [link]);
+  const unread = messages.filter((m) => !m.readAt);
+
+  async function readMessages(ids: string[]) {
+    if (!link || !ids.length) return;
+    const at = new Date().toISOString();
+    setMessages((ms) => ms.map((m) => (ids.includes(m.id) ? { ...m, readAt: m.readAt ?? at } : m)));
+    try {
+      await markRead(link, ids);
+    } catch (e) {
+      setMembersError(e instanceof Error ? e.message : '既読にできませんでした。');
+      void refreshMembers();
+    }
+  }
 
   const active = useMemo(() => activeTasks(state.tasks, today), [state.tasks, today]);
   const unsorted = active.filter((t) => !t.sorted);
@@ -350,6 +395,22 @@ export function TaskApp() {
             <span className="flex items-center gap-1 rounded-full bg-white/25 px-3 py-1 text-sm font-extrabold">
               <Coins size={16} /> {state.player.coins}
             </span>
+            <button
+              onClick={() => {
+                sfx.select();
+                setSheet('members');
+                void refreshMembers();
+              }}
+              className="relative rounded-full bg-white/25 p-1.5"
+              aria-label={unread.length ? `メンバーズの未読 ${unread.length}件` : 'メンバーズ'}
+            >
+              <Bell size={18} />
+              {unread.length > 0 && (
+                <span className="absolute -top-1 -right-1 grid h-5 min-w-5 place-items-center rounded-full bg-yellow-300 px-1 text-[11px] font-extrabold text-pink-700">
+                  {unread.length > 99 ? '99+' : unread.length}
+                </span>
+              )}
+            </button>
             <button onClick={() => setSound((v) => !v)} className="rounded-full bg-white/25 px-2 py-1 text-sm" aria-label={sound ? '音を消す' : '音を出す'}>
               {sound ? '🔊' : '🔇'}
             </button>
@@ -377,6 +438,24 @@ export function TaskApp() {
       </header>
 
       {saveFailed && <p className="mt-3 rounded-2xl bg-amber-50 p-3 text-xs text-amber-700">このブラウザでは保存できません（プライベートモードなど）。閉じると消えてしまいます。</p>}
+
+      {/* メンバーズの未読 */}
+      {unread.length > 0 && (
+        <button
+          onClick={() => setSheet('members')}
+          className="mt-4 flex w-full items-center justify-between gap-2 rounded-2xl bg-sky-50 px-4 py-3 text-left ring-2 ring-sky-200"
+        >
+          <span className="min-w-0 text-sm font-bold text-sky-800">
+            📨 メンバーズから {unread.length}件
+            <span className="block truncate text-xs font-normal text-sky-700">
+              {unread[0].senderName}さん：{unread[0].body.replace(/@\S+/g, '').replace(/\s+/g, ' ').trim()}
+            </span>
+          </span>
+          <span className="flex shrink-0 items-center text-sm font-extrabold text-sky-600">
+            見る <ChevronRight size={18} />
+          </span>
+        </button>
+      )}
 
       {/* 仕分けまち */}
       {unsorted.length > 0 && (
@@ -519,13 +598,44 @@ export function TaskApp() {
 
       {sheet === 'add' && (
         <AddSheet
-          onClose={() => setSheet(null)}
+          draft={draft}
+          onClose={() => {
+            setSheet(draft ? 'members' : null);
+            setDraft(null);
+          }}
           onAdd={(tasks) => {
             update((s) => ({ ...s, tasks: [...s.tasks, ...tasks] }));
             sfx.confirm();
+            if (draft) {
+              void readMessages([draft.source.messageId]);
+              setToast({ text: 'メンションをモンスターにしました！' });
+            }
+            setDraft(null);
             setSheet(tasks.some((t) => !t.sorted) ? 'sort' : null);
           }}
           today={today}
+        />
+      )}
+      {sheet === 'members' && (
+        <MembersSheet
+          link={link}
+          messages={messages}
+          error={membersError}
+          taskOf={(id) => state.tasks.find((t) => t.source?.messageId === id)}
+          onClose={() => setSheet(null)}
+          onLink={(l) => {
+            saveLink(l);
+            setLink(l);
+            setMembersError('');
+            if (!l) setMessages([]);
+          }}
+          onRefresh={() => void refreshMembers()}
+          onRead={(ids) => void readMessages(ids)}
+          onMakeTask={(m) => {
+            sfx.select();
+            setDraft({ title: suggestTitle(m), source: { kind: 'members', messageId: m.id, sender: m.senderName, url: safeUrl(m.url) } });
+            setSheet('add');
+          }}
         />
       )}
       {sheet === 'sort' && (
@@ -687,16 +797,16 @@ function WeekStamps({ log, today }: { log: Record<string, number>; today: string
 // ------------------------------------------------------------
 // 追加：1つずつ / まとめて書き出す
 // ------------------------------------------------------------
-function AddSheet({ onClose, onAdd, today }: { onClose: () => void; onAdd: (t: Task[]) => void; today: string }) {
+function AddSheet({ onClose, onAdd, today, draft }: { onClose: () => void; onAdd: (t: Task[]) => void; today: string; draft: { title: string; source: TaskSource } | null }) {
   const [mode, setMode] = useState<'one' | 'dump'>('one');
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(draft?.title ?? '');
   const [due, setDue] = useState<Due>('today');
   const [size, setSize] = useState<Size>('S');
   const [dump, setDump] = useState('');
   const lines = splitLines(dump);
   return (
-    <Sheet title="モンスターを追加" onClose={onClose}>
-      <div className="mb-4 grid grid-cols-2 rounded-2xl bg-slate-100 p-1 text-sm font-bold">
+    <Sheet title={draft ? 'メンションをモンスターにする' : 'モンスターを追加'} onClose={onClose}>
+      <div className={`mb-4 grid-cols-2 rounded-2xl bg-slate-100 p-1 text-sm font-bold ${draft ? 'hidden' : 'grid'}`}>
         {(
           [
             ['one', '1つずつ'],
@@ -713,10 +823,11 @@ function AddSheet({ onClose, onAdd, today }: { onClose: () => void; onAdd: (t: T
           onSubmit={(e) => {
             e.preventDefault();
             if (!title.trim()) return;
-            onAdd([newTask(title, due, size, today, new Date())]);
+            onAdd([newTask(title, due, size, today, new Date(), true, draft?.source)]);
           }}
           className="space-y-4"
         >
+          {draft && <p className="rounded-2xl bg-sky-50 p-3 text-xs text-sky-800">{draft.source.sender}さんからのメンションです。やることがわかるように、名前を書きかえてもOK。</p>}
           <label className="block">
             <span className="text-sm font-bold">なにをする？</span>
             <input
@@ -915,11 +1026,162 @@ function DetailSheet(props: {
           </div>
         </div>
 
+        {task.source && (
+          <p className="flex items-center justify-between gap-2 rounded-2xl bg-sky-50 p-3 text-xs text-sky-800">
+            <span>📨 {task.source.sender}さんからのメンバーズのメンション</span>
+            {task.source.url && (
+              <a href={task.source.url} target="_blank" rel="noreferrer" className="flex shrink-0 items-center gap-1 font-bold text-sky-600">
+                開く <ExternalLink size={14} />
+              </a>
+            )}
+          </p>
+        )}
         <button onClick={props.onDefeat} className="w-full rounded-2xl bg-pink-500 py-3.5 font-extrabold text-white">
           ⚔️ たおした！（おわった）
         </button>
         <button onClick={props.onRemove} className="flex w-full items-center justify-center gap-1 py-1 text-sm font-bold text-slate-400">
           <Trash2 size={14} /> にがす（やらなくていいことにする）
+        </button>
+      </div>
+    </Sheet>
+  );
+}
+
+// ------------------------------------------------------------
+// メンバーズ：メンションベルが受け取ったメンションを見る・タスクにする
+// ------------------------------------------------------------
+const timeOf = (iso: string) => {
+  const d = new Date(iso);
+  const same = dateStr(d) === dateStr(new Date());
+  return new Intl.DateTimeFormat('ja-JP', same ? { hour: '2-digit', minute: '2-digit' } : { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(d);
+};
+
+function MembersSheet(props: {
+  link: MembersLink | null;
+  messages: MembersMessage[];
+  error: string;
+  taskOf: (messageId: string) => Task | undefined;
+  onClose: () => void;
+  onLink: (l: MembersLink | null) => void;
+  onRefresh: () => void;
+  onRead: (ids: string[]) => void;
+  onMakeTask: (m: MembersMessage) => void;
+}) {
+  const [code, setCode] = useState('');
+  const [codeError, setCodeError] = useState('');
+  const [showRead, setShowRead] = useState(false);
+  const unread = props.messages.filter((m) => !m.readAt);
+  const shown = showRead ? props.messages : unread;
+
+  if (!props.link) {
+    return (
+      <Sheet title="📨 メンバーズ連携" onClose={props.onClose}>
+        <div className="space-y-3 text-sm">
+          <p className="text-slate-600">メンバーズで自分あて・ALLのメンションが届いたら、ここで確認して、そのままモンスター（タスク）にできます。</p>
+          <ol className="list-decimal space-y-1 rounded-2xl bg-sky-50 p-3 pl-7 text-xs text-sky-900">
+            <li>メンションベルを開いて「⚙️ 通知と連携の設定」→「タスククエストとの連携」</li>
+            <li>「連携コードを発行する」→「連携コードをコピー」</li>
+            <li>下に貼りつけて「連携する」</li>
+          </ol>
+          <textarea
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            rows={3}
+            placeholder="TQ1. から始まる連携コード"
+            className="w-full rounded-2xl border-2 border-slate-200 px-3 py-2 font-mono text-xs outline-none focus:border-sky-300"
+          />
+          {codeError && <p className="text-xs text-rose-600">{codeError}</p>}
+          <button
+            disabled={!code.trim()}
+            onClick={() => {
+              const l = parseLinkCode(code);
+              if (!l) return setCodeError('連携コードの形がちがうみたい。メンションベルでコピーしたものを、そのまま貼ってね。');
+              sfx.confirm();
+              props.onLink(l);
+            }}
+            className="w-full rounded-2xl bg-sky-500 py-3 font-extrabold text-white disabled:opacity-40"
+          >
+            連携する
+          </button>
+          <p className="text-[11px] text-slate-400">連携コードはこのブラウザの中だけに保存します。ほかの人には教えないでね。</p>
+        </div>
+      </Sheet>
+    );
+  }
+
+  return (
+    <Sheet title="📨 メンバーズのメンション" onClose={props.onClose}>
+      {props.error && (
+        <div className="mb-3 rounded-2xl bg-amber-50 p-3 text-xs text-amber-800">
+          {props.error}
+          <button onClick={props.onRefresh} className="ml-2 font-bold underline">
+            もう一度
+          </button>
+        </div>
+      )}
+      <div className="mb-3 flex items-center justify-between text-xs">
+        <span className="font-bold text-slate-500">{unread.length ? `未読 ${unread.length}件` : '未読はありません ✨'}</span>
+        <span className="flex gap-3">
+          <button onClick={() => setShowRead((v) => !v)} className="font-bold text-sky-600">
+            {showRead ? '未読だけ' : '既読も見る'}
+          </button>
+          {unread.length > 1 && (
+            <button onClick={() => props.onRead(unread.map((m) => m.id))} className="font-bold text-slate-400">
+              全部既読
+            </button>
+          )}
+        </span>
+      </div>
+      {shown.length === 0 ? (
+        <p className="py-6 text-center text-sm text-slate-400">{props.messages.length ? 'ぜんぶ確認ずみ！' : 'まだメンションは届いていません'}</p>
+      ) : (
+        <ul className="space-y-2">
+          {shown.map((m) => {
+            const task = props.taskOf(m.id);
+            const url = safeUrl(m.url);
+            return (
+              <li key={m.id} className={`rounded-2xl p-3 ring-1 ${m.readAt ? 'bg-white ring-slate-100' : 'bg-sky-50/60 ring-sky-200'}`}>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className={`rounded-full px-2 py-0.5 font-bold ${m.mention === 'me' ? 'bg-pink-100 text-pink-600' : 'bg-slate-100 text-slate-500'}`}>{m.mention === 'me' ? '自分あて' : 'ALL'}</span>
+                  <span className="min-w-0 flex-1 truncate font-bold">{m.senderName}さん</span>
+                  <span className="shrink-0 text-slate-400">{timeOf(m.sentAt)}</span>
+                </div>
+                {m.chatName && <div className="mt-1 truncate text-[11px] text-slate-400">{m.chatName}</div>}
+                <p className="mt-1 line-clamp-4 text-sm break-all whitespace-pre-wrap">{m.body || '（ファイルが届きました）'}</p>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  {task ? (
+                    <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700">{task.doneAt ? '✓ たおしたよ' : '⚔️ モンスターになってるよ'}</span>
+                  ) : (
+                    <button onClick={() => props.onMakeTask(m)} className="rounded-full bg-pink-500 px-3 py-1.5 text-xs font-extrabold text-white">
+                      ⚔️ タスクにする
+                    </button>
+                  )}
+                  {!m.readAt && (
+                    <button onClick={() => props.onRead([m.id])} className="flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-slate-500 ring-1 ring-slate-200">
+                      <MailCheck size={14} /> 既読にする
+                    </button>
+                  )}
+                  {url && (
+                    <a href={url} target="_blank" rel="noreferrer" onClick={() => !m.readAt && props.onRead([m.id])} className="flex items-center gap-1 px-1 text-xs font-bold text-sky-600">
+                      メンバーズで開く <ExternalLink size={13} />
+                    </a>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      <div className="mt-4 flex justify-between text-[11px] text-slate-400">
+        <span>1分ごとに新しいメンションを確認します</span>
+        <button
+          onClick={() => {
+            props.onLink(null);
+            props.onClose();
+          }}
+          className="underline"
+        >
+          このブラウザの連携をやめる
         </button>
       </div>
     </Sheet>

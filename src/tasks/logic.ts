@@ -17,6 +17,14 @@ export interface Step {
   done: boolean;
 }
 
+/** どこから来たタスクか（メンバーズのメンションからなど） */
+export interface TaskSource {
+  kind: 'members';
+  messageId: string;
+  sender: string;
+  url: string | null;
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -28,6 +36,7 @@ export interface Task {
   sorted: boolean;
   createdAt: string;
   doneAt: string | null;
+  source?: TaskSource;
 }
 
 export interface Player {
@@ -235,8 +244,8 @@ export function focusBonus(s: State, now: Date): Result {
   return finish(s, { ...s, player: gain(s.player, FOCUS_COINS, dateStr(now), 0) }, FOCUS_COINS, false);
 }
 
-export function newTask(title: string, due: Due, size: Size, today: string, now: Date, sorted = true): Task {
-  return { id: uid(), title: title.trim(), size, dueDate: dueDateFor(due, today), steps: [], sorted, createdAt: now.toISOString(), doneAt: null };
+export function newTask(title: string, due: Due, size: Size, today: string, now: Date, sorted = true, source?: TaskSource): Task {
+  return { id: uid(), title: title.trim(), size, dueDate: dueDateFor(due, today), steps: [], sorted, createdAt: now.toISOString(), doneAt: null, ...(source ? { source } : {}) };
 }
 
 /** まとめて書き出した文章を1行1タスクにする（箇条書きの記号は取る） */
@@ -245,6 +254,11 @@ export function splitLines(text: string): string[] {
     .split(/\r?\n/)
     .map((l) => l.replace(/^\s*(?:[-*・●○□■☐✓✔]|\d+[.)、．]|[（(]?\d+[)）])\s*/, '').trim())
     .filter(Boolean);
+}
+
+/** 画面のリンクに使ってよい URL（https だけ） */
+export function safeUrl(u: unknown): string | null {
+  return typeof u === 'string' && /^https:\/\/[^\s]+$/.test(u) ? u : null;
 }
 
 /** 保存データの読み込み（壊れていても落ちないように形を整える） */
@@ -262,6 +276,10 @@ export function normalize(raw: unknown): State {
           steps: Array.isArray(t.steps) ? t.steps.filter((x) => x && typeof x.text === 'string') : [],
           sorted: t.sorted !== false,
           doneAt: t.doneAt ?? null,
+          source:
+            t.source && typeof t.source.messageId === 'string'
+              ? { kind: 'members' as const, messageId: t.source.messageId, sender: String(t.source.sender ?? ''), url: safeUrl(t.source.url) }
+              : undefined,
         }))
     : [];
   const p = (r.player ?? {}) as Partial<Player>;
