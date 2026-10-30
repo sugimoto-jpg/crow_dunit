@@ -281,6 +281,21 @@ button.ghost,.file-btn{background:#fff;color:#33475e;border-color:#cfd8e3}
 .ptable.c5 .pcol .pf{margin:0 9px;padding:8px}
 .ptable.c5 .pcol .pf li{font-size:10px}
 .ptable.c5 .pcol .pl .lv{font-size:18px}
+.ptable.c6{gap:8px}
+.ptable.c6 .pcol .ph{margin:0 7px;padding:10px 2px 8px}
+.ptable.c6 .pcol .ph .pn{font-size:12.5px}
+.ptable.c6 .pcol .ph .pu{font-size:9px}
+.ptable.c6 .pcol .pp{padding:9px 4px}
+.ptable.c6 .pcol .pp .nm{font-size:9px}
+.ptable.c6 .pcol .pp .sp{font-size:15px}
+.ptable.c6 .pcol .pp .tt{font-size:10.5px}
+.ptable.c6 .pcol.self .pp .sp{font-size:20px}
+.ptable.c6 .pcol .pf{margin:0 7px;padding:7px 6px}
+.ptable.c6 .pcol .pf li{font-size:9.2px;padding-left:8px}
+.ptable.c6 .pcol .pl{padding:8px 4px}
+.ptable.c6 .pcol .pl .ll{font-size:9.5px}
+.ptable.c6 .pcol .pl .lv{font-size:15.5px}
+.ptable.c6 .pcol .pl .ld{font-size:9px}
 
 /* P7+ プラン詳細 */
 .dl{width:350px;min-width:350px}
@@ -555,11 +570,14 @@ window.UNIT_MASTER = [
   'use strict';
 
   var STORE = 'tokubetsu-ryokin-v1';
-  var PLAN_KEYS = ['A', 'B', 'C', 'D'];
+  var PLAN_KEYS = ['S', 'A', 'B', 'C', 'D'];
 
   /* ---------- 初期値 ---------- */
   function defaultPlan(key) {
     var d = {
+      S: {
+                units: [], normalMonthly: '', recommended: false
+      },
       A: {
                 units: ['productivity', 'management', 'fieldwork'], unitMonths: 13, normalMonthly: 120, recommended: true
       },
@@ -574,7 +592,7 @@ window.UNIT_MASTER = [
       }
     }[key];
     return {
-      enabled: key !== 'D',
+      enabled: key !== 'D' && key !== 'S',
       label: 'プラン' + key,
       nickname: '',
       structureTop: '',
@@ -801,13 +819,24 @@ window.UNIT_MASTER = [
     });
   }
   /* プラン副題（詳細ページの題名） */
-  function autoNickname(p) {
-    var r = unitRoles(p), n = r.length;
+  function autoNickname(key) {
+    var p = state.plans[key], r = unitRoles(p), n = r.length;
     if (!n) return '';
     if (n === 1) return r[0];
     if (n === 2) return r[0] + '＋' + r[1];
-    if (p.units.some(function (u) { return u.key === 'fieldwork'; })) return 'フルスペック実行支援';
-    return n + 'ユニット統合支援';
+    if (!p.units.some(function (u) { return u.key === 'fieldwork'; })) return n + 'ユニット統合支援';
+    /* 下位プランもフルスペックなら、増えた機能で呼び分ける */
+    var base = basePlan(key), bp = base ? state.plans[base] : null;
+    if (bp && bp.units.some(function (u) { return u.key === 'fieldwork'; })) {
+      var delta = p.units.filter(function (u) {
+        return !bp.units.some(function (v) { return v.key === u.key; });
+      });
+      if (delta.length) {
+        var m = master(delta[0].key);
+        return 'フルスペック＋' + or(m.role, m.short);
+      }
+    }
+    return 'フルスペック実行支援';
   }
   /* 体制キャッチ（組織図の小見出し） */
   function autoStructureTop(p) {
@@ -856,7 +885,10 @@ window.UNIT_MASTER = [
     else tail = '専任チームが初月から稼働します。';
     return lead + tail;
   }
-  function nicknameOf(p) { return or(p.nickname, '') !== '' ? p.nickname : autoNickname(p); }
+  function nicknameOf(k) {
+    var p = state.plans[k];
+    return or(p.nickname, '') !== '' ? p.nickname : autoNickname(k);
+  }
   function structureTopOf(p) { return or(p.structureTop, '') !== '' ? p.structureTop : autoStructureTop(p); }
   function structureNoteOf(p) { return or(p.structureNote, '') !== '' ? p.structureNote : autoStructureNote(p); }
   function summaryOf(key) {
@@ -947,7 +979,7 @@ window.UNIT_MASTER = [
     PLAN_KEYS.forEach(function (k, i) { h.push(planForm(k, i)); });
 
     /* ロードマップ */
-    var rm = ['<details class="sec"><summary>8. 導入までのフロー</summary><div class="sec-body">'];
+    var rm = ['<details class="sec"><summary>9. 導入までのフロー</summary><div class="sec-body">'];
     state.roadmap.forEach(function (s, i) {
       rm.push('<div class="urow"><div class="un">STEP 0' + (i + 1) + '</div>' +
         fText('roadmap.' + i + '.title', '項目名', '') +
@@ -960,7 +992,7 @@ window.UNIT_MASTER = [
     h.push(rm.join(''));
 
     /* ページ構成 */
-    h.push('<details class="sec"><summary>9. ページ構成</summary><div class="sec-body">' +
+    h.push('<details class="sec"><summary>10. ページ構成</summary><div class="sec-body">' +
       [['cover', '表紙'], ['background', '特別提案の背景'], ['cost', '自社雇用コスト'], ['org', 'プラン別 組織図'],
       ['basic', '基本プラン表'], ['table', '特別料金表'], ['details', 'プラン詳細'],
       ['roadmap', '導入フロー'], ['closing', '最終ページ']]
@@ -968,7 +1000,7 @@ window.UNIT_MASTER = [
       '</div></details>');
 
     /* ユニットマスタ */
-    var um = ['<details class="sec"><summary>10. ユニットマスタ編集<span class="tag">' + state.unitMaster.length + 'ユニット</span></summary><div class="sec-body">' +
+    var um = ['<details class="sec"><summary>11. ユニットマスタ編集<span class="tag">' + state.unitMaster.length + 'ユニット</span></summary><div class="sec-body">' +
       '<p class="note">標準の料金・期間・人数・実施内容を変更できます。ここでの変更は次に選択したときの初期値になります。</p>'];
     state.unitMaster.forEach(function (u, i) {
       um.push('<details class="sec" style="margin-bottom:8px"><summary>' + esc(u.name) + '</summary><div class="sec-body">' +
@@ -1029,7 +1061,8 @@ window.UNIT_MASTER = [
       '<div class="sec-body' + (p.enabled ? '' : ' plan-off') + '">'];
 
     h.push('<div style="margin-bottom:10px">' + fChk('plans.' + k + '.enabled', 'このプランを料金表に表示する', true) +
-      (k === 'D' ? '<p class="note">Dプランを活用しない場合はチェックを外してください（料金表に一切表示されません）。</p>' : '') +
+      (k === 'D' || k === 'S'
+        ? '<p class="note">' + esc(p.label) + 'を使わない場合はチェックを外してください（料金表・組織図・詳細ページに一切表示されません）。</p>' : '') +
       '</div>');
 
     h.push(fText('plans.' + k + '.label', 'プラン表示名', 'プラン' + k, '料金表・組織図に出る名前'));
@@ -1084,7 +1117,7 @@ window.UNIT_MASTER = [
     /* 文言 */
     h.push('<div style="margin-top:10px">' +
       '<p class="note">下の5項目は選んだユニットから自動で作成されます。文章を変えたいときだけ入力してください（入力すると自動生成より優先されます）。</p>' +
-      fText('plans.' + k + '.nickname', 'プラン副題', '自動: ' + (autoNickname(p) || '—'), '自動生成・詳細ページの題名') +
+      fText('plans.' + k + '.nickname', 'プラン副題', '自動: ' + (autoNickname(k) || '—'), '自動生成・詳細ページの題名') +
       fText('plans.' + k + '.structureTop', '体制キャッチ', '自動: ' + (autoStructureTop(p) || '—'), '自動生成') +
       fText('plans.' + k + '.unitsCaption', '構成メモ', '自動: ' + (captionOf(p) || '—'), '自動生成') +
       fText('plans.' + k + '.structureNote', '組織図の補足', '自動: ' + (autoStructureNote(p) || '—'), '自動生成') +
@@ -1302,7 +1335,7 @@ window.UNIT_MASTER = [
     }).join('');
 
     return '<section class="slide">' + head('SPECIAL PRICING TABLE', '【特別料金表】プラン別機能・価格比較') +
-      '<div class="s-body"><div class="ptable' + (cols >= 5 ? ' c5' : '') +
+      '<div class="s-body"><div class="ptable' + (cols >= 6 ? ' c5 c6' : (cols >= 5 ? ' c5' : '')) +
       '" style="grid-template-columns:repeat(' + cols + ',1fr);width:100%">' + self + plans + '</div></div></section>';
   }
 
@@ -1327,7 +1360,7 @@ window.UNIT_MASTER = [
     var showTri = p.units.length > 0 && p.units.length <= 6;
 
     return '<section class="slide">' +
-      head('PLAN DETAILS', p.label + '：詳細' + (nicknameOf(p) ? '（' + nicknameOf(p) + '）' : '')) +
+      head('PLAN DETAILS', p.label + '：詳細' + (nicknameOf(k) ? '（' + nicknameOf(k) + '）' : '')) +
       '<div class="s-body">' +
       '<div class="card tint dl"><h3 class="card-ttl">' + esc(p.label) + (showTri ? ' 組織図' : ' 構成・特別価格') + '</h3>' +
       (showTri ? '<div class="dtri">' + triangle(p) + '</div>' : '') +
