@@ -82,12 +82,18 @@
         { title: '定例改善・成果創出', period: '週次／月次PDCA', desc: '数値検証を重ね、御社専任の最強体制を確立します。', foot: '継続的な成果最大化' }
       ],
       schema: 2,
+      templates: [],
       pages: { cover: true, background: true, cost: true, org: true, basic: true, table: true, details: true, roadmap: true, closing: true },
       unitMaster: JSON.parse(JSON.stringify(window.UNIT_MASTER)),
       plans: {}
     };
     state = s; /* master() から参照するため先に代入 */
     PLAN_KEYS.forEach(function (k) { s.plans[k] = defaultPlan(k); });
+    /* 初期テンプレート: いつでも標準構成に戻せるようにしておく */
+    s.templates = [{
+      id: 'tpl-standard', name: '標準パターン（初期設定）',
+      savedAt: new Date().toISOString().slice(0, 10), data: templateData()
+    }];
     return s;
   }
 
@@ -166,6 +172,44 @@
   }
 
   function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { } }
+
+  /* ---------- テンプレート ----------
+   * お客様情報（meta）以外、つまりプラン構成・基本プラン表・自社雇用コスト・
+   * 導入フロー・ページ構成・ユニットマスタを1セットとして保存する。 */
+  var TPL_KEYS = ['plans', 'basic', 'pages', 'hire', 'roadmap', 'unitMaster'];
+
+  function templateData() {
+    var d = {};
+    TPL_KEYS.forEach(function (k) { d[k] = JSON.parse(JSON.stringify(state[k])); });
+    return d;
+  }
+  function newTemplate(name) {
+    return {
+      id: 't' + Date.now() + Math.floor(Math.random() * 1000),
+      name: name, savedAt: new Date().toISOString().slice(0, 10), data: templateData()
+    };
+  }
+  function applyTemplate(t) {
+    var d = (t && t.data) || {}, cur = state;
+    var base = defaults();   /* defaults() は state を書き換えるので退避してから戻す */
+    state = cur;
+    TPL_KEYS.forEach(function (k) {
+      if (d[k] === undefined) return;
+      state[k] = Array.isArray(base[k]) ? JSON.parse(JSON.stringify(d[k])) : merge(base[k], d[k]);
+    });
+    mergeMaster();   /* 足りないユニットは標準マスタから補う */
+    migrateAutoText();
+    save(); renderAll();
+  }
+  function templateSummary(t) {
+    var d = (t && t.data) || {}, ps = d.plans || {};
+    var live = PLAN_KEYS.filter(function (k) { return ps[k] && ps[k].enabled; });
+    if (!live.length) return 'プランなし';
+    return live.map(function (k) {
+      var p = ps[k], n = (p.units || []).length;
+      return (p.label || 'プラン' + k) + '(' + n + 'ユニット)';
+    }).join(' / ');
+  }
 
   /* ---------- ユーティリティ ---------- */
   function esc(v) {
@@ -375,8 +419,12 @@
       '2. 「PDF / 印刷」を押し、送信先を「PDFに保存」、用紙を横向き、<b>余白を「なし」</b>、' +
       '<b>「背景のグラフィック」にチェック</b>を入れて保存してください。<br>' +
       '3. 「HTMLで書き出し」を使うと、そのまま送れる1枚のHTMLファイルになります。<br>' +
-      '4. 入力内容はこのブラウザに自動保存されます。別のPCで使う場合は「入力内容を保存」でJSONを持ち出してください。</p>' +
+      '4. 入力内容はこのブラウザに自動保存されます。別のPCで使う場合は「入力内容を保存」でJSONを持ち出してください。<br>' +
+      '5. よく使うプラン構成は「テンプレート」に保存しておくと、次回から1クリックで呼び出せます。</p>' +
       '</div></details>');
+
+    /* テンプレート */
+    h.push(templateForm());
 
     /* 基本情報 */
     h.push('<details class="sec" open><summary>1. 基本情報</summary><div class="sec-body">' +
@@ -455,6 +503,44 @@
     h.push(um.join(''));
 
     document.getElementById('form').innerHTML = h.join('');
+  }
+
+  function templateForm() {
+    var list = state.templates || [];
+    var h = ['<details class="sec"><summary>テンプレート<span class="tag">' + list.length + '件</span></summary><div class="sec-body">' +
+      '<p class="note">よく使うプラン構成を丸ごと保存して、次回からワンクリックで呼び出せます。' +
+      '保存されるのは<b>プラン構成・基本プラン表・自社雇用コスト・導入フロー・ページ構成・ユニットマスタ</b>です。' +
+      'お客様情報（会社名・先方名・申込期日・契約開始時期など）は含まれないので、テンプレートを適用しても入力済みのお客様情報はそのまま残ります。</p>' +
+      '<div class="field"><label>いまの内容をテンプレートとして保存</label>' +
+      '<div class="row" style="align-items:center">' +
+      '<input type="text" id="tpl-name" placeholder="例）営業組織構築パターン">' +
+      '<button type="button" data-act="tpl-save" style="flex:none">保存</button>' +
+      '</div></div>'];
+
+    if (!list.length) {
+      h.push('<p class="empty">保存したテンプレートはまだありません。</p>');
+    } else {
+      list.forEach(function (t, i) {
+        h.push('<div class="urow"><div class="un">' + esc(t.name) +
+          '<span class="k">' + esc(t.savedAt || '') + '</span></div>' +
+          '<p class="note" style="margin:0 0 7px">' + esc(templateSummary(t)) + '</p>' +
+          '<div class="tplb">' +
+          '<button type="button" data-act="tpl-apply" data-i="' + i + '">このテンプレートを適用</button>' +
+          '<button type="button" class="ghost mini-btn" data-act="tpl-update" data-i="' + i + '">いまの内容で上書き</button>' +
+          '<button type="button" class="ghost mini-btn" data-act="tpl-rename" data-i="' + i + '">名前変更</button>' +
+          '<button type="button" class="ghost mini-btn" data-act="tpl-del" data-i="' + i + '">削除</button>' +
+          '</div></div>');
+      });
+    }
+
+    h.push('<div class="row" style="margin-top:10px">' +
+      '<button type="button" class="ghost" data-act="tpl-export">テンプレートを書き出し</button>' +
+      '<label class="file-btn" style="text-align:center">テンプレートを読み込み' +
+      '<input type="file" id="tpl-load" accept="application/json,.json"></label>' +
+      '</div>');
+    h.push('<p class="note">書き出したJSONを渡せば、他の方のアプリにも同じテンプレートを読み込めます。</p>');
+    h.push('</div></details>');
+    return h.join('');
   }
 
   function basicForm() {
@@ -1139,6 +1225,65 @@
     save(); renderAll();
   }
 
+  function templateAction(act, i) {
+    var list = state.templates || (state.templates = []);
+    var t = list[i];
+    if (act === 'tpl-save') {
+      var el = document.getElementById('tpl-name');
+      var name = el ? el.value.trim() : '';
+      if (!name) { alert('テンプレート名を入力してください。'); if (el) el.focus(); return; }
+      if (list.some(function (x) { return x.name === name; }) &&
+        !confirm('同じ名前のテンプレートがあります。別のテンプレートとして追加しますか？')) return;
+      list.push(newTemplate(name));
+    } else if (act === 'tpl-export') {
+      if (!list.length) { alert('書き出すテンプレートがありません。'); return; }
+      download(JSON.stringify({ type: 'tokubetsu-ryokin-templates', templates: list }, null, 2),
+        '特別料金表_テンプレート.json', 'application/json');
+      return;
+    } else if (!t) {
+      return;
+    } else if (act === 'tpl-apply') {
+      if (!confirm('「' + t.name + '」を適用します。\nいまのプラン構成・基本プラン表・導入フローなどは置き換わります（お客様情報はそのまま残ります）。よろしいですか？')) return;
+      applyTemplate(t);
+      return;
+    } else if (act === 'tpl-update') {
+      if (!confirm('「' + t.name + '」をいまの内容で上書きします。よろしいですか？')) return;
+      t.data = templateData();
+      t.savedAt = new Date().toISOString().slice(0, 10);
+    } else if (act === 'tpl-rename') {
+      var nm = prompt('テンプレート名', t.name);
+      if (nm === null) return;
+      nm = nm.trim();
+      if (!nm) return;
+      t.name = nm;
+    } else if (act === 'tpl-del') {
+      if (!confirm('「' + t.name + '」を削除します。よろしいですか？')) return;
+      list.splice(i, 1);
+    } else { return; }
+    save(); renderAll();
+  }
+
+  function importTemplates(text) {
+    var data = JSON.parse(text);
+    var incoming = Array.isArray(data) ? data : (data && data.templates) || (data && data.data ? [data] : null);
+    if (!incoming || !incoming.length) throw new Error('テンプレートが入っていません');
+    if (!state.templates) state.templates = [];
+    var n = 0;
+    incoming.forEach(function (t) {
+      if (!t || !t.data) return;
+      state.templates.push({
+        id: 't' + Date.now() + Math.floor(Math.random() * 1000),
+        name: String(t.name || '読み込んだテンプレート'),
+        savedAt: t.savedAt || new Date().toISOString().slice(0, 10),
+        data: t.data
+      });
+      n++;
+    });
+    if (!n) throw new Error('テンプレートが入っていません');
+    save(); renderAll();
+    return n;
+  }
+
   function onAction(el) {
     var act = el.getAttribute('data-act'), i = parseInt(el.getAttribute('data-i'), 10);
     if (act === 'basic-add') {
@@ -1150,6 +1295,8 @@
       state.basic.recommend = r === i ? -1 : (r > i ? r - 1 : r);
     } else if (act === 'basic-rec') {
       state.basic.recommend = i;
+    } else if (act.indexOf('tpl-') === 0) {
+      return templateAction(act, i);
     } else if (act === 'items-edit' || act === 'items-reset') {
       var pk = el.getAttribute('data-plan'), pu = state.plans[pk] && state.plans[pk].units[i];
       if (!pu) return;
@@ -1191,6 +1338,18 @@
     document.getElementById('btn-save').addEventListener('click', function () {
       download(JSON.stringify(state, null, 2), fileName('json'), 'application/json');
     });
+    document.addEventListener('change', function (e) {
+      if (!e.target || e.target.id !== 'tpl-load') return;
+      var f = e.target.files[0]; if (!f) return;
+      var r = new FileReader();
+      r.onload = function () {
+        try { alert(importTemplates(r.result) + '件のテンプレートを読み込みました。'); }
+        catch (err) { alert('読み込めませんでした: ' + err.message); }
+      };
+      r.readAsText(f, 'utf-8');
+      e.target.value = '';
+    });
+
     document.getElementById('file-load').addEventListener('change', function (e) {
       var f = e.target.files[0]; if (!f) return;
       var r = new FileReader();
