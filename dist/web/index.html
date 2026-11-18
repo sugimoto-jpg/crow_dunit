@@ -112,6 +112,18 @@ button.ghost,.file-btn{background:#fff;color:#33475e;border-color:#cfd8e3}
 .ovl-p{margin:0;font-size:11.5px;color:var(--muted);line-height:1.7}
 .ovl-t{flex:1;min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;white-space:pre}
 .ovl-b{display:flex;gap:8px;justify-content:flex-end}
+.ovl-p:empty{display:none}
+.ovl-p{white-space:pre-line}
+.ovl-in{width:100%}
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:60;
+  background:var(--navy);color:#fff;border-radius:10px;padding:11px 16px;
+  display:flex;align-items:center;gap:14px;font-size:12.5px;font-weight:600;
+  box-shadow:0 8px 24px rgba(16,42,69,.3);max-width:90vw;opacity:1;transition:opacity .35s;
+}
+.toast.out{opacity:0}
+.toast .t-act{background:transparent;border:1px solid rgba(255,255,255,.55);color:#fff;font-size:11.5px;padding:4px 11px}
+.toast .t-act:hover{background:rgba(255,255,255,.12)}
 .pg-bar{width:100%;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
 .pg-bar i{display:block;height:100%;width:0;background:var(--blue);transition:width .2s}
 
@@ -359,7 +371,7 @@ button.ghost,.file-btn{background:#fff;color:#33475e;border-color:#cfd8e3}
   .stage+.stage{break-before:page;page-break-before:always}
   .stage>.slide{transform:none !important}
   .stage .pno{display:none}
-  #measure,#render{display:none !important}
+  #measure,#render,.toast,.ovl{display:none !important}
   .slide{break-inside:avoid;page-break-inside:avoid}
 }
 </style>
@@ -1701,6 +1713,64 @@ window.UNIT_MASTER = [
     var c = or(state.meta.company, '料金表').replace(/[\\/:*?"<>|]/g, '');
     return c + '_特別料金表.' + ext;
   }
+  /* ---------- アプリ内ダイアログ ----------
+   * 公開版（claude.ai の表示枠）ではブラウザ標準の alert / confirm / prompt が
+   * 無効化され、confirm は押さなくても「キャンセル」になってしまうため、
+   * すべて自前のダイアログに置き換えている。 */
+  function modal(o) {
+    var ov = document.createElement('div');
+    ov.className = 'ovl';
+    ov.innerHTML = '<div class="ovl-box" style="width:min(420px,100%)">' +
+      '<div class="ovl-h"></div><p class="ovl-p"></p>' +
+      (o.input !== undefined ? '<input type="text" class="ovl-in">' : '') +
+      '<div class="ovl-b">' +
+      (o.cancelText ? '<button type="button" class="ghost ovl-cancel"></button>' : '') +
+      '<button type="button" class="ovl-ok"></button></div></div>';
+    ov.querySelector('.ovl-h').textContent = o.title || '';
+    ov.querySelector('.ovl-p').textContent = o.body || '';
+    ov.querySelector('.ovl-ok').textContent = o.okText || 'OK';
+    var inp = ov.querySelector('.ovl-in');
+    if (inp) inp.value = o.input;
+    if (o.cancelText) ov.querySelector('.ovl-cancel').textContent = o.cancelText;
+    function close() { ov.remove(); }
+    function ok() { var v = inp ? inp.value.trim() : true; close(); if (o.onOk) o.onOk(v); }
+    ov.querySelector('.ovl-ok').addEventListener('click', ok);
+    if (o.cancelText) ov.querySelector('.ovl-cancel').addEventListener('click', close);
+    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    ov.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && inp) ok();
+      if (e.key === 'Escape') close();
+    });
+    document.body.appendChild(ov);
+    if (inp) { inp.focus(); inp.select(); } else ov.querySelector('.ovl-ok').focus();
+  }
+  function uiAlert(msg, title) { modal({ title: title || 'お知らせ', body: msg, okText: '閉じる' }); }
+  function uiConfirm(msg, onOk, okText) {
+    modal({ title: '確認', body: msg, okText: okText || '実行', cancelText: 'キャンセル', onOk: onOk });
+  }
+  function uiPrompt(msg, def, onOk) {
+    modal({ title: msg, body: '', input: def == null ? '' : def, okText: '保存', cancelText: 'キャンセル',
+      onOk: function (v) { if (v) onOk(v); } });
+  }
+  function toast(msg, actionLabel, onAction) {
+    /* 重ならないように前のトーストは片付ける */
+    Array.prototype.forEach.call(document.querySelectorAll('.toast'), function (x) { x.remove(); });
+    var el = document.createElement('div');
+    el.className = 'toast';
+    el.innerHTML = '<span></span>' + (actionLabel ? '<button type="button" class="t-act"></button>' : '');
+    el.querySelector('span').textContent = msg;
+    if (actionLabel) {
+      var btn = el.querySelector('.t-act');
+      btn.textContent = actionLabel;
+      btn.addEventListener('click', function () { el.remove(); onAction(); });
+    }
+    document.body.appendChild(el);
+    setTimeout(function () {
+      el.classList.add('out');
+      setTimeout(function () { if (el.parentNode) el.remove(); }, 400);
+    }, actionLabel ? 9000 : 4000);
+  }
+
   /* 公開版（ダウンロードが使えない環境）は内容を表示してコピーしてもらう */
   function copyModal(name, text) {
     var ov = document.createElement('div');
@@ -1733,7 +1803,7 @@ window.UNIT_MASTER = [
   function saveViaHost(name, data) {
     function fallback() {
       if (typeof data === 'string') copyModal(name, data);
-      else alert('この環境ではファイルを保存できませんでした。お手数ですが別のブラウザでお試しください。');
+      else uiAlert('この環境ではファイルを保存できませんでした。お手数ですが別のブラウザでお試しください。');
     }
     if (!window.claude || !window.claude.use) { fallback(); return; }
     window.claude.use('downloads').then(function (d) {
@@ -1790,7 +1860,7 @@ window.UNIT_MASTER = [
 
   function makePdf() {
     if (!pdfReady()) {
-      alert('この環境ではPDFを直接作成できません。\n「HTMLで書き出し」で保存したファイルを開き、ブラウザの印刷からPDFに保存してください。');
+      uiAlert('この環境ではPDFを直接作成できません。\n「HTMLで書き出し」で保存したファイルを開き、ブラウザの印刷からPDFに保存してください。');
       return;
     }
     var slides = fittedSlides();
@@ -1800,11 +1870,11 @@ window.UNIT_MASTER = [
     try {
       /* 印刷時と同じ 254mm × 142.9mm（720×405pt）で作る */
       pdf = new window.jspdf.jsPDF({ orientation: 'landscape', unit: 'pt', format: [720, 405], compress: true });
-    } catch (e) { pg.close(); alert('PDFの作成に失敗しました。'); return; }
+    } catch (e) { pg.close(); uiAlert('PDFの作成に失敗しました。'); return; }
 
     function fail() {
       pg.close(); box.innerHTML = '';
-      alert('PDFの作成に失敗しました。\n「HTMLで書き出し」で保存したファイルを開き、ブラウザの印刷からPDFに保存してください。');
+      uiAlert('PDFの作成に失敗しました。\n「HTMLで書き出し」で保存したファイルを開き、ブラウザの印刷からPDFに保存してください。');
     }
     function step() {
       if (i >= slides.length) {
@@ -1873,34 +1943,53 @@ window.UNIT_MASTER = [
     if (act === 'tpl-save') {
       var el = document.getElementById('tpl-name');
       var name = el ? el.value.trim() : '';
-      if (!name) { alert('テンプレート名を入力してください。'); if (el) el.focus(); return; }
-      if (list.some(function (x) { return x.name === name; }) &&
-        !confirm('同じ名前のテンプレートがあります。別のテンプレートとして追加しますか？')) return;
+      if (!name) { uiAlert('テンプレート名を入力してください。'); if (el) el.focus(); return; }
+      if (list.some(function (x) { return x.name === name; })) {
+        uiConfirm('「' + name + '」は既にあります。別のテンプレートとして追加しますか？', function () {
+          list.push(newTemplate(name));
+          save(); renderAll();
+          toast('「' + name + '」を保存しました');
+        }, '追加する');
+        return;
+      }
       list.push(newTemplate(name));
+      save(); renderAll();
+      toast('「' + name + '」を保存しました');
+      return;
     } else if (act === 'tpl-export') {
-      if (!list.length) { alert('書き出すテンプレートがありません。'); return; }
+      if (!list.length) { uiAlert('書き出すテンプレートがありません。'); return; }
       download(JSON.stringify({ type: 'tokubetsu-ryokin-templates', templates: list }, null, 2),
         '特別料金表_テンプレート.json', 'application/json');
       return;
     } else if (!t) {
       return;
     } else if (act === 'tpl-apply') {
-      if (!confirm('「' + t.name + '」を適用します。\nいまのプラン構成・基本プラン表・導入フローなどは置き換わります（お客様情報はそのまま残ります）。よろしいですか？')) return;
+      var prev = templateData();   /* 取り消せるように今の内容を控えておく */
       applyTemplate(t);
+      toast('「' + t.name + '」を適用しました', '元に戻す', function () {
+        applyTemplate({ data: prev });
+        toast('元に戻しました');
+      });
       return;
     } else if (act === 'tpl-update') {
-      if (!confirm('「' + t.name + '」をいまの内容で上書きします。よろしいですか？')) return;
-      t.data = templateData();
-      t.savedAt = new Date().toISOString().slice(0, 10);
+      uiConfirm('「' + t.name + '」をいまの内容で上書きします。よろしいですか？', function () {
+        t.data = templateData();
+        t.savedAt = new Date().toISOString().slice(0, 10);
+        save(); renderAll();
+        toast('「' + t.name + '」を上書きしました');
+      }, '上書きする');
+      return;
     } else if (act === 'tpl-rename') {
-      var nm = prompt('テンプレート名', t.name);
-      if (nm === null) return;
-      nm = nm.trim();
-      if (!nm) return;
-      t.name = nm;
+      uiPrompt('テンプレート名', t.name, function (nm) {
+        t.name = nm; save(); renderAll();
+      });
+      return;
     } else if (act === 'tpl-del') {
-      if (!confirm('「' + t.name + '」を削除します。よろしいですか？')) return;
-      list.splice(i, 1);
+      uiConfirm('「' + t.name + '」を削除します。よろしいですか？', function () {
+        list.splice(i, 1); save(); renderAll();
+        toast('「' + t.name + '」を削除しました');
+      }, '削除する');
+      return;
     } else { return; }
     save(); renderAll();
   }
@@ -1931,7 +2020,7 @@ window.UNIT_MASTER = [
     if (act === 'basic-add') {
       state.basic.rows.push({ name: '新しいプラン', months: 13, price: 0 });
     } else if (act === 'basic-del') {
-      if (state.basic.rows.length <= 1) { alert('プランは1つ以上必要です。'); return; }
+      if (state.basic.rows.length <= 1) { uiAlert('プランは1つ以上必要です。'); return; }
       state.basic.rows.splice(i, 1);
       var r = N(state.basic.recommend);
       state.basic.recommend = r === i ? -1 : (r > i ? r - 1 : r);
@@ -1991,8 +2080,8 @@ window.UNIT_MASTER = [
       var f = e.target.files[0]; if (!f) return;
       var r = new FileReader();
       r.onload = function () {
-        try { alert(importTemplates(r.result) + '件のテンプレートを読み込みました。'); }
-        catch (err) { alert('読み込めませんでした: ' + err.message); }
+        try { toast(importTemplates(r.result) + '件のテンプレートを読み込みました'); }
+        catch (err) { uiAlert('読み込めませんでした: ' + err.message); }
       };
       r.readAsText(f, 'utf-8');
       e.target.value = '';
@@ -2005,14 +2094,20 @@ window.UNIT_MASTER = [
         try {
           state = merge(defaults(), JSON.parse(r.result));
           mergeMaster(); save(); renderAll();
-        } catch (err) { alert('読み込めませんでした: ' + err.message); }
+        } catch (err) { uiAlert('読み込めませんでした: ' + err.message); }
         e.target.value = '';
       };
       r.readAsText(f, 'utf-8');
     });
     document.getElementById('btn-reset').addEventListener('click', function () {
-      if (!confirm('入力内容をすべて初期状態に戻します。よろしいですか？')) return;
-      defaults(); save(); renderAll();
+      var before = templateData();
+      uiConfirm('入力内容をすべて初期状態に戻します。よろしいですか？', function () {
+        defaults(); save(); renderAll();
+        toast('初期状態に戻しました', '元に戻す', function () {
+          applyTemplate({ data: before });
+          toast('元に戻しました');
+        });
+      }, '初期化する');
     });
     var z = document.getElementById('zoom');
     z.addEventListener('input', function () {
